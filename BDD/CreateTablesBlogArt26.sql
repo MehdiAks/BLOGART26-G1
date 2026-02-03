@@ -21,8 +21,8 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
--- Base de données: u437341779_BLOGART26
-USE u437341779_BLOGART26;
+-- Base de données: BLOGART26
+USE BLOGART26;
 
 -- ----------------------------------------------
 --
