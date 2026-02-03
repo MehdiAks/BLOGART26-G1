@@ -170,19 +170,19 @@ $renderMatchCard = static function (array $ba_bec_match): string {
                     </p>
                 </div>
             </header>
-            <div class="wrapper">
-                <div class="match-card__team">
-                    <span>Domicile</span>
-                    <strong><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></strong>
-                </div>
-                <div class="match-card__score">
-                    <?php echo $score !== '' ? htmlspecialchars($score) : 'vs'; ?>
-                </div>
-                <div class="match-card__team">
-                    <span>Extérieur</span>
-                    <strong><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></strong>
-                </div>
-            </div>
+                    <div class="wrapper">
+                        <div class="match-card__team">
+                            <span>Domicile</span>
+                            <strong><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></strong>
+                        </div>
+                        <div class="match-card__score">
+                            <?php echo $score !== '' ? htmlspecialchars($score) : 'vs'; ?>
+                        </div>
+                        <div class="match-card__team">
+                            <span>Extérieur</span>
+                            <strong><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></strong>
+                        </div>
+                    </div>
             <?php if (!empty($ba_bec_match['location'])): ?>
                 <p class="match-card__location">Lieu : <?php echo htmlspecialchars($ba_bec_match['location']); ?></p>
             <?php endif; ?>
