@@ -14,8 +14,10 @@ if (isset($_COOKIE['cookieConsent']) && $_COOKIE['cookieConsent'] === "rejected"
 
 
 $ba_bec_success = $_SESSION['success'] ?? null;
-$ba_bec_errorPseudo = $ba_bec_errorPassword = "";
+$ba_bec_errorPseudo = $ba_bec_errorPassword = $ba_bec_errorCaptcha = "";
 $ba_bec_pseudo = "";
+$ba_bec_recaptchaSiteKey = getenv('RECAPTCHA_SITE_KEY');
+$ba_bec_recaptchaSiteKeyEscaped = htmlspecialchars($ba_bec_recaptchaSiteKey ?? '', ENT_QUOTES, 'UTF-8');
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -31,6 +33,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (empty($ba_bec_errorPseudo) && empty($ba_bec_errorPassword)) {
+        $ba_bec_recaptcha = verifyRecaptcha($_POST['g-recaptcha-response'] ?? '', 'login');
+        if (!$ba_bec_recaptcha['valid']) {
+            $ba_bec_errorCaptcha = $ba_bec_recaptcha['message'] ?: 'Échec de la vérification reCAPTCHA.';
+        }
+    }
+
+    if (empty($ba_bec_errorPseudo) && empty($ba_bec_errorPassword) && empty($ba_bec_errorCaptcha)) {
         // Vérifier si l'utilisateur existe
         $ba_bec_user = sql_select("MEMBRE", "*", "pseudoMemb = '$ba_bec_pseudo'");
 
@@ -63,6 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
 
         <form action="" method="post" class="auth-form">
+            <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-login">
             <div class="auth-stack">
                 <!-- Nom d'utilisateur -->
                 <div class="champ">
@@ -91,6 +101,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php if (!empty($ba_bec_errorPassword)): ?>
                         <div class="alert alert-danger mt-2"><?= $ba_bec_errorPassword ?></div>
                     <?php endif; ?>
+                    <?php if (!empty($ba_bec_errorCaptcha)): ?>
+                        <div class="alert alert-danger mt-2"><?= $ba_bec_errorCaptcha ?></div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -106,6 +119,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     </section>
 </main>
+
+<?php if (!empty($ba_bec_recaptchaSiteKey)): ?>
+<script src="https://www.google.com/recaptcha/api.js?render=<?php echo $ba_bec_recaptchaSiteKeyEscaped; ?>"></script>
+<?php endif; ?>
 
 <script>
     document.querySelectorAll('.password-toggle').forEach((button) => {
@@ -136,4 +153,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         document.addEventListener('pointercancel', hide);
         document.addEventListener('touchend', hide);
     });
+</script>
+<script>
+    (function () {
+        var form = document.querySelector('.auth-form');
+        var tokenInput = document.getElementById('g-recaptcha-response-login');
+        var siteKey = '<?php echo $ba_bec_recaptchaSiteKeyEscaped; ?>';
+        if (!form || !tokenInput || !siteKey || typeof grecaptcha === 'undefined') {
+            return;
+        }
+
+        var isSubmitting = false;
+        form.addEventListener('submit', function (event) {
+            if (isSubmitting) {
+                return;
+            }
+            event.preventDefault();
+            if (typeof grecaptcha === 'undefined') {
+                form.submit();
+                return;
+            }
+            grecaptcha.ready(function () {
+                grecaptcha.execute(siteKey, {action: 'login'})
+                    .then(function (token) {
+                        tokenInput.value = token;
+                        isSubmitting = true;
+                        form.submit();
+                    });
+            });
+        });
+    })();
 </script>
