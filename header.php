@@ -3,6 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 $ba_bec_pseudoMemb = $_SESSION['pseudoMemb'] ?? null;
 $ba_bec_numStat = $_SESSION['numStat'] ?? null;
 $hasBackgroundVideo = $pageHasVideo ?? false;
+$current_page = $_SERVER['SCRIPT_NAME'];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -15,196 +16,13 @@ $hasBackgroundVideo = $pageHasVideo ?? false;
     <link href="<?php echo ROOT_URL . '/src/css/css-propre/reset.css'; ?>" rel="stylesheet">
     <link href="<?php echo ROOT_URL . '/src/css/css-propre/style.css'; ?>" rel="stylesheet">
     <link href="<?php echo ROOT_URL . '/src/css/css-propre/fonts.css'; ?>" rel="stylesheet">
+        <link href="<?php echo ROOT_URL . '/src/css/css-header-footer/header-et-footer.css'; ?>" rel="stylesheet">
     <link rel="icon" type="image/png" href="/src/images/logo.png" />
     <?php if (!empty($pageStyles) && is_array($pageStyles)) : ?>
         <?php foreach ($pageStyles as $stylePath) : ?>
             <link href="<?php echo htmlspecialchars($stylePath); ?>" rel="stylesheet">
         <?php endforeach; ?>
     <?php endif; ?>
-
-
-    <style>
-        :root {
-            --bec-offwhite: #f6f1ea;
-            --bec-dark: #1c1c1c;
-            --bec-accent: #67081D;
-        }
-
-        html {
-            background-color: var(--bec-offwhite);
-        }
-
-        body {
-            position: relative;
-            background-color: var(--bec-offwhite);
-            color: var(--bec-dark);
-        }
-
-        body.has-site-video {
-            background-color: transparent;
-        }
-
-        .site-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-            z-index: 0;
-        }
-
-        .site-background-video {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .site-background-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .site-background {
-                display: none;
-            }
-
-            body {
-                background-color: var(--bec-offwhite);
-            }
-        }
-
-        .site-main {
-            text-align: left;
-            min-height: 60vh;
-            position: relative;
-            z-index: 1;
-        }
-
-        .site-header .navbar-brand {
-            font-weight: 700;
-            color: var(--bec-dark);
-        }
-
-        .site-header {
-            background-color: transparent;
-            border-bottom: none;
-            position: relative;
-            z-index: 1;
-        }
-
-        .site-header .navbar-brand span {
-            font-size: 1.1rem;
-        }
-
-        .site-header .navbar-nav .nav-link {
-            color: var(--bec-dark);
-            font-weight: 500;
-        }
-
-        .site-header .header-nav ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-
-        .site-header .header-nav a {
-            color: var(--bec-dark);
-            text-decoration: none;
-            font-weight: 500;
-            font-family: "Montserrat", sans-serif;
-        }
-
-        .site-header .header-nav a:hover,
-        .site-header .header-nav a:focus {
-            color: var(--bec-accent);
-        }
-
-        .site-header .navbar-nav .nav-link:hover,
-        .site-header .navbar-nav .nav-link:focus {
-            color: var(--bec-accent);
-        }
-
-        .site-logo {
-            height: 44px;
-            width: auto;
-        }
-
-        .btn-bec-primary {
-            background-color: var(--bec-accent);
-            border-color: var(--bec-accent);
-            color: #fff;
-        }
-
-        .btn-bec-primary:hover {
-            background-color: #8a0a27;
-            border-color: #8a0a27;
-        }
-
-        .btn-bec-outline {
-            border-color: rgba(103, 8, 29, 0.35);
-            color: var(--bec-accent);
-        }
-
-        .btn-bec-outline:hover {
-            background-color: rgba(103, 8, 29, 0.08);
-        }
-
-        .site-footer {
-            background-color: #fff;
-        }
-
-        .site-footer a,
-        .site-footer h3,
-        .site-footer h4,
-        .site-footer p {
-            color: var(--bec-dark);
-        }
-
-        .cookie-popup {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            left: auto;
-            width: min(420px, 90vw);
-            background-color: #1f1f1f;
-            color: #fff;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-            text-align: left;
-        }
-
-        .cookie-content {
-            max-width: 100%;
-        }
-
-        .cookie-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: flex-start;
-        }
-
-        .cookie-buttons button {
-            border-radius: 999px;
-            padding: 10px 16px;
-        }
-
-        @media (max-width: 768px) {
-            .site-main {
-                padding-top: 20px;
-                padding-bottom: 40px;
-            }
-        }
-    </style>
 
 </head>
 
@@ -227,19 +45,19 @@ $hasBackgroundVideo = $pageHasVideo ?? false;
             <nav class="header-nav">
                 <ul>
                     <li>
-                        <a href="<?php echo ROOT_URL . '/index.php'; ?>">Accueil</a>
+                        <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
                     </li>
                     <li>
-                        <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>">Notre histoire</a>
+                        <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
                     </li>
                     <li>
-                        <a href="<?php echo ROOT_URL . '/actualites.php'; ?>">Actualités</a>
+                        <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
                     </li>
                     <li>
-                        <a href="<?php echo ROOT_URL . '/matches.php'; ?>">Matchs</a>
+                        <a href="<?php echo ROOT_URL . '/matches.php'; ?>" <?php if ($current_page == '/matches.php') echo 'class="current"'; ?>>Matchs</a>
                     </li>
                     <li>
-                        <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>">Anciens et amis</a>
+                        <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
                     </li>
                 </ul>
             </nav>
