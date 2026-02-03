@@ -2,6 +2,13 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
+sql_connect();
+$ba_bec_tableCheckStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
+if ($ba_bec_tableCheckStmt->fetchColumn()) {
+    header('Location: ../../views/backend/matches/list.php');
+    exit;
+}
+
 $ba_bec_numMatch = (int) ($_POST['numMatch'] ?? 0);
 $ba_bec_sourceId = ctrlSaisies($_POST['sourceId'] ?? '');
 $ba_bec_competition = ctrlSaisies($_POST['competition'] ?? '');
