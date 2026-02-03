@@ -1,0 +1,26 @@
+.matches-hero__title{
+    text-align: center;
+    font-size: 60px;
+}
+
+.matches-hero__text {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.matches-hero__meta {
+margin-top: 60px;
+}
+
+.matches-list__title {
+    text-align: center;
+    margin-top: 90px;
+}
+
+.col-12{
+    text-align: center;
+    background-color: white;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 2rem;
+}
