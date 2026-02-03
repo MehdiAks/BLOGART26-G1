@@ -3,8 +3,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
+sql_connect();
+$ba_bec_tableCheckStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
+$ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
+
 $ba_bec_match = null;
-if (isset($_GET['numMatch'])) {
+if (!$ba_bec_hasBecMatchesTable && isset($_GET['numMatch'])) {
     $ba_bec_numMatch = (int) $_GET['numMatch'];
     $ba_bec_match = sql_select('MATCH_CLUB', '*', "numMatch = $ba_bec_numMatch");
     $ba_bec_match = $ba_bec_match[0] ?? null;
@@ -17,7 +21,12 @@ if (isset($_GET['numMatch'])) {
             <h1>Modifier un match</h1>
         </div>
         <div class="col-md-12">
-            <?php if ($ba_bec_match) : ?>
+            <?php if ($ba_bec_hasBecMatchesTable) : ?>
+                <div class="alert alert-info">
+                    L'édition des matchs est désactivée pour la table bec_matches.
+                </div>
+                <a href="list.php" class="btn btn-primary">Retour</a>
+            <?php elseif ($ba_bec_match) : ?>
                 <form action="<?php echo ROOT_URL . '/api/matches/update.php' ?>" method="post">
                     <input type="hidden" name="numMatch" value="<?php echo $ba_bec_match['numMatch']; ?>" />
                     <div class="form-group">
