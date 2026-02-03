@@ -41,7 +41,16 @@ $ba_bec_queryBase = [
 $ba_bec_nextQuery = array_merge($ba_bec_queryBase, ['page' => $ba_bec_page + 1]);
 
 $ba_bec_pendingLabel = $ba_bec_showAll ? 'Tous les matchs' : 'Matchs sans score';
-$ba_bec_actionsDisabled = $ba_bec_hasBecMatchesTable;
+$ba_bec_formatTime = static function ($time): string {
+    if (empty($time)) {
+        return '';
+    }
+    $timestamp = strtotime($time);
+    if ($timestamp === false) {
+        return (string) $time;
+    }
+    return date('H:i', $timestamp);
+};
 ?>
 
 <div class="container">
@@ -55,17 +64,8 @@ $ba_bec_actionsDisabled = $ba_bec_hasBecMatchesTable;
                 <?php else : ?>
                     <a href="list.php?show=all&per_page=<?php echo $ba_bec_perPage; ?>" class="btn btn-secondary">Afficher tous les matchs</a>
                 <?php endif; ?>
-                <?php if ($ba_bec_actionsDisabled) : ?>
-                    <button class="btn btn-success" disabled>Create</button>
-                <?php else : ?>
-                    <a href="create.php" class="btn btn-success">Create</a>
-                <?php endif; ?>
+                <a href="create.php" class="btn btn-success">Create</a>
             </div>
-            <?php if ($ba_bec_actionsDisabled) : ?>
-                <div class="alert alert-info">
-                    Les actions de création, modification et suppression sont désactivées pour la table bec_matches.
-                </div>
-            <?php endif; ?>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -76,8 +76,6 @@ $ba_bec_actionsDisabled = $ba_bec_hasBecMatchesTable;
                         <th>Domicile</th>
                         <th>Extérieur</th>
                         <th>Score</th>
-                        <th>Lieu</th>
-                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -87,7 +85,7 @@ $ba_bec_actionsDisabled = $ba_bec_hasBecMatchesTable;
                             <td><?php echo $ba_bec_match['numMatch']; ?></td>
                             <td><?php echo htmlspecialchars($ba_bec_match['competition']); ?></td>
                             <td><?php echo htmlspecialchars($ba_bec_match['matchDate']); ?></td>
-                            <td><?php echo htmlspecialchars($ba_bec_match['matchTime'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($ba_bec_formatTime($ba_bec_match['matchTime'] ?? '')); ?></td>
                             <td><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></td>
                             <td><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></td>
                             <td>
@@ -97,16 +95,9 @@ $ba_bec_actionsDisabled = $ba_bec_hasBecMatchesTable;
                                     À compléter
                                 <?php endif; ?>
                             </td>
-                            <td><?php echo htmlspecialchars($ba_bec_match['location'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($ba_bec_match['status'] ?? ''); ?></td>
                             <td>
-                                <?php if ($ba_bec_actionsDisabled) : ?>
-                                    <button class="btn btn-primary" disabled>Edit</button>
-                                    <button class="btn btn-danger" disabled>Delete</button>
-                                <?php else : ?>
-                                    <a href="edit.php?numMatch=<?php echo $ba_bec_match['numMatch']; ?>" class="btn btn-primary">Edit</a>
-                                    <a href="delete.php?numMatch=<?php echo $ba_bec_match['numMatch']; ?>" class="btn btn-danger">Delete</a>
-                                <?php endif; ?>
+                                <a href="edit.php?numMatch=<?php echo $ba_bec_match['numMatch']; ?>" class="btn btn-primary">Edit</a>
+                                <a href="delete.php?numMatch=<?php echo $ba_bec_match['numMatch']; ?>" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                     <?php } ?>

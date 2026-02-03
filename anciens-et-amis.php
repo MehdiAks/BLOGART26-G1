@@ -1,5 +1,11 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+
+// Charger les styles spécifiques à cette page
+$pageStyles = [
+    ROOT_URL . '/src/css/anciens-et-amis.css',
+];
+
 require_once 'header.php';
 ?>
 
@@ -18,7 +24,7 @@ require_once 'header.php';
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
                 <img
-                    src="..."
+                    src="src/images/background/background-actualite.jpg"
                     class="article-image mb-3"
                     alt="Ancien joueur en entraînement"
                 >
@@ -35,7 +41,7 @@ require_once 'header.php';
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
                 <img
-                    src="..."
+                    src="src/images/background/background-article.jpg"
                     class="article-image mb-3"
                     alt="Supporters réunis"
                 >
@@ -52,7 +58,7 @@ require_once 'header.php';
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
                 <img
-                    src="..."
+                    src="src/images/background/background-index.jpg"
                     class="article-image mb-3"
                     alt="Moment de convivialité"
                 >
