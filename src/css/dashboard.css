@@ -1,0 +1,34 @@
+.admin-dashboard .card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.admin-dashboard .card-text {
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.admin-dashboard .admin-actions {
+  margin-top: 0.5rem;
+}
+
+.admin-dashboard .btn {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+}
+
+.admin-dashboard .btn:hover,
+.admin-dashboard .btn:focus {
+  background-color: #5c636a;
+  border-color: #565e64;
+  color: #fff;
+}
+
+.admin-dashboard .btn:disabled,
+.admin-dashboard .btn.disabled {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  opacity: 0.65;
+}
