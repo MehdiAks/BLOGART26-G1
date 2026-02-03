@@ -37,6 +37,11 @@ $ba_bec_coms = sql_select("comment c INNER JOIN article a ON c.numArt = a.numArt
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            <div class="mb-3">
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
+                    Retour au panneau admin
+                </a>
+            </div>
             <table class="table table-striped">
     <div class="row">
         <h1 class="titre text-start" style="margin: 2rem 10rem 2rem 10rem;">Commentaires en attente</h1>
