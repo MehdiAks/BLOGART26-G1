@@ -19,9 +19,9 @@ sql_connect();
 
 $articleStmt = $DB->prepare(
     'SELECT numArt, libTitrArt, libChapoArt, urlPhotArt, dtCreaArt
-     FROM ARTICLE
-     ORDER BY RAND()
-     LIMIT 3'
+    FROM ARTICLE
+    ORDER BY RAND()
+    LIMIT 3'
 );
 // On exécute la requête préparée.
 $articleStmt->execute();
