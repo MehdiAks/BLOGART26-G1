@@ -85,6 +85,39 @@ INSERT INTO `COMMENT` (`numCom`, `dtCreaCom`, `libCom`, `dtModCom`, `attModOK`, 
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `MATCH_CLUB`
+--
+
+CREATE TABLE `MATCH_CLUB` (
+  `numMatch` int NOT NULL,
+  `sourceId` varchar(120) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `competition` varchar(120) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `matchDate` date NOT NULL,
+  `matchTime` time DEFAULT NULL,
+  `teamHome` varchar(120) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `teamAway` varchar(120) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `location` varchar(160) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `status` varchar(40) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `scoreHome` int DEFAULT NULL,
+  `scoreAway` int DEFAULT NULL,
+  `sourceUrl` varchar(255) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `dtCreaMatch` datetime DEFAULT CURRENT_TIMESTAMP,
+  `dtMajMatch` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+--
+-- Déchargement des données de la table `MATCH_CLUB`
+--
+
+INSERT INTO `MATCH_CLUB` (`numMatch`, `sourceId`, `competition`, `matchDate`, `matchTime`, `teamHome`, `teamAway`, `location`, `status`, `scoreHome`, `scoreAway`, `sourceUrl`, `dtCreaMatch`, `dtMajMatch`) VALUES
+(1, 'ffbb-2026-02-08-bec-1', 'Championnat Pré-Nationale', '2026-02-08', '20:30:00', 'BEC Basket', 'Bordeaux Basket Club', 'Salle Saint-Genès, Bordeaux', 'À venir', NULL, NULL, 'https://www.ffbb.com/competitions/ffbb-2026-02-08-bec-1', '2026-02-01 09:00:00', NULL),
+(2, 'ffbb-2026-02-15-bec-2', 'Championnat Pré-Nationale', '2026-02-15', '18:00:00', 'Stade Bordelais', 'BEC Basket', 'Gymnase Nelson-Paillou, Bordeaux', 'À venir', NULL, NULL, 'https://www.ffbb.com/competitions/ffbb-2026-02-15-bec-2', '2026-02-01 09:00:00', NULL),
+(3, 'ffbb-2026-02-22-bec-3', 'Coupe de la Gironde', '2026-02-22', '16:30:00', 'BEC Basket', 'AS Mérignac', 'Salle Saint-Genès, Bordeaux', 'À venir', NULL, NULL, 'https://www.ffbb.com/competitions/ffbb-2026-02-22-bec-3', '2026-02-01 09:00:00', NULL),
+(4, 'ffbb-2026-03-01-bec-4', 'Championnat Pré-Nationale', '2026-03-01', '19:00:00', 'US Talence', 'BEC Basket', 'Complexe Sportif Henri-Deschamps, Talence', 'À venir', NULL, NULL, 'https://www.ffbb.com/competitions/ffbb-2026-03-01-bec-4', '2026-02-01 09:00:00', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `COOKIE_CONSENT`
 --
 
@@ -353,6 +386,12 @@ ALTER TABLE `ARTICLE`
 --
 ALTER TABLE `COMMENT`
   MODIFY `numCom` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT pour la table `MATCH_CLUB`
+--
+ALTER TABLE `MATCH_CLUB`
+  MODIFY `numMatch` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `COOKIE_CONSENT`
