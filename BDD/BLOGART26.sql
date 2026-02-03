@@ -340,7 +340,7 @@ INSERT INTO `LIKEART` (`numMemb`, `numArt`, `likeA`) VALUES
 --
 
 CREATE TABLE `MEMBRE` (
-  `numMemb` int NOT NULL,
+  `numMemb` int NOT NULL AUTO_INCREMENT,
   `prenomMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `nomMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `pseudoMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
@@ -451,7 +451,7 @@ INSERT INTO `STATUT` (`numStat`, `libStat`, `dtCreaStat`) VALUES
 --
 
 CREATE TABLE `THEMATIQUE` (
-  `numThem` int NOT NULL,
+  `numThem` int NOT NULL AUTO_INCREMENT,
   `libThem` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
