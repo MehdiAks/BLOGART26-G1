@@ -88,7 +88,7 @@
             list-style: none;
             display: flex;
             gap: 60px;
-            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .site-header .header-nav a {
