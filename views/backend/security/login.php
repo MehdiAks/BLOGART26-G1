@@ -98,8 +98,8 @@ include '../../../header.php'; ?>
                             data-target="mdp"
                             aria-label="Afficher le mot de passe"
                         >
-                            <span class="icon icon-closed">Masquer</span>
-                            <span class="icon icon-open">Afficher</span>
+                            <span class="icon icon-closed">Afficher</span>
+                            <span class="icon icon-open">Masquer</span>
                         </button>
                     </div>
                     <?php if (!empty($ba_bec_errorPassword)): ?>
