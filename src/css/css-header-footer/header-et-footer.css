@@ -63,6 +63,7 @@
         .site-header .navbar-brand {
             font-weight: 700;
             color: var(--bec-dark);
+            padding-right: 60px;
         }
 
         .site-header {
