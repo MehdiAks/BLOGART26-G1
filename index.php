@@ -97,3 +97,5 @@ $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
 </main>
 
 <?php require_once 'footer.php'; ?>
+
+<p></p>
