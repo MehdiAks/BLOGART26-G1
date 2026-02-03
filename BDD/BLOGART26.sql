@@ -31,18 +31,18 @@ CREATE TABLE `ARTICLE` (
   `numArt` int NOT NULL,
   `dtCreaArt` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtMajArt` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `libTitrArt` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `libChapoArt` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `libAccrochArt` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `parag1Art` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `libSsTitr1Art` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `parag2Art` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `libSsTitr2Art` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `parag3Art` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `libConclArt` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `urlPhotArt` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `libTitrArt` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `libChapoArt` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `libAccrochArt` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `parag1Art` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `libSsTitr1Art` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `parag2Art` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `libSsTitr2Art` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `parag3Art` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `libConclArt` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `urlPhotArt` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `numThem` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `ARTICLE`
@@ -267,15 +267,15 @@ CREATE TABLE `club_logos` (
 CREATE TABLE `COMMENT` (
   `numCom` int NOT NULL,
   `dtCreaCom` datetime DEFAULT CURRENT_TIMESTAMP,
-  `libCom` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `libCom` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `dtModCom` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `attModOK` tinyint(1) DEFAULT '0',
-  `notifComKOAff` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `notifComKOAff` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `dtDelLogCom` datetime DEFAULT NULL,
   `delLogiq` tinyint(1) DEFAULT '0',
   `numArt` int NOT NULL,
   `numMemb` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `COMMENT`
@@ -315,7 +315,7 @@ CREATE TABLE `LIKEART` (
   `numMemb` int NOT NULL,
   `numArt` int NOT NULL,
   `likeA` tinyint(1) DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `LIKEART`
@@ -341,18 +341,18 @@ INSERT INTO `LIKEART` (`numMemb`, `numArt`, `likeA`) VALUES
 
 CREATE TABLE `MEMBRE` (
   `numMemb` int NOT NULL AUTO_INCREMENT,
-  `prenomMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `nomMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `pseudoMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `passMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `eMailMemb` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `prenomMemb` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nomMemb` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pseudoMemb` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `passMemb` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `eMailMemb` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `dtCreaMemb` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtMajMemb` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `accordMemb` tinyint(1) DEFAULT '1',
-  `cookieMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `cookieMemb` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `numStat` int NOT NULL,
   PRIMARY KEY (`numMemb`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `MEMBRE`
@@ -377,8 +377,8 @@ INSERT INTO `MEMBRE` (`numMemb`, `prenomMemb`, `nomMemb`, `pseudoMemb`, `passMem
 
 CREATE TABLE `MOTCLE` (
   `numMotCle` int NOT NULL,
-  `libMotCle` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+  `libMotCle` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `MOTCLE`
@@ -402,7 +402,7 @@ INSERT INTO `MOTCLE` (`numMotCle`, `libMotCle`) VALUES
 CREATE TABLE `MOTCLEARTICLE` (
   `numArt` int NOT NULL,
   `numMotCle` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `MOTCLEARTICLE`
@@ -432,9 +432,9 @@ INSERT INTO `MOTCLEARTICLE` (`numArt`, `numMotCle`) VALUES
 
 CREATE TABLE `STATUT` (
   `numStat` int NOT NULL,
-  `libStat` varchar(25) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `libStat` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `dtCreaStat` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `STATUT`
@@ -453,9 +453,9 @@ INSERT INTO `STATUT` (`numStat`, `libStat`, `dtCreaStat`) VALUES
 
 CREATE TABLE `THEMATIQUE` (
   `numThem` int NOT NULL AUTO_INCREMENT,
-  `libThem` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `libThem` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`numThem`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `THEMATIQUE`
