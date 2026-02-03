@@ -3,8 +3,6 @@ require_once 'header.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/ctrlSaisies.php';
 
-session_start(); 
-
 // Vérification de la présence de numArt
 if (!isset($_GET['numArt']) || empty($_GET['numArt'])) {
     die("Aucun article sélectionné.");
