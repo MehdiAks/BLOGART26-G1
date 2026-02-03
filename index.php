@@ -29,45 +29,48 @@ $articleStmt->execute();
 $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<main class="container py-5 site-main">
-    <div id="carouselExampleAutoplaying" class="carousel slide mb-5" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="<?php echo ROOT_URL . '/src/images/background/background-actualite.jpg'; ?>" class="d-block w-100"
-                    alt="Première image du carrousel">
+<main class="site-main">
+    <div class="container-fluid px-0">
+        <div id="carouselExampleAutoplaying" class="carousel slide mb-5" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="<?php echo ROOT_URL . '/src/images/background/background-actualite.jpg'; ?>" class="d-block w-100"
+                        alt="Première image du carrousel">
+                </div>
+                <div class="carousel-item">
+                    <img src="<?php echo ROOT_URL . '/src/images/background/background-article.jpg'; ?>" class="d-block w-100"
+                        alt="Deuxième image du carrousel">
+                </div>
+                <div class="carousel-item">
+                    <img src="<?php echo ROOT_URL . '/src/images/background/background-index.jpg'; ?>" class="d-block w-100"
+                        alt="Troisième image du carrousel">
+                </div>
             </div>
-            <div class="carousel-item">
-                <img src="<?php echo ROOT_URL . '/src/images/background/background-article.jpg'; ?>" class="d-block w-100"
-                    alt="Deuxième image du carrousel">
-            </div>
-            <div class="carousel-item">
-                <img src="<?php echo ROOT_URL . '/src/images/background/background-index.jpg'; ?>" class="d-block w-100"
-                    alt="Troisième image du carrousel">
-            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
-    <section class="p-4 p-md-5 bg-white border rounded-3 shadow-sm mb-5">
-        <h1 class="mb-3">Bienvenue au BEC</h1>
-        <p class="lead mb-4">
-            Une page d'accueil simple, construite uniquement avec Bootstrap.
-        </p>
-        <div class="d-flex gap-2">
-            <a class="btn btn-primary" href="actualites.php">Voir les actualités</a>
-            <a class="btn btn-outline-secondary" href="contact.php">Nous contacter</a>
-        </div>
-    </section>
+    <div class="container py-5">
+        <section class="p-4 p-md-5 bg-white border rounded-3 shadow-sm mb-5">
+            <h1 class="mb-3">Bienvenue au BEC</h1>
+            <p class="lead mb-4">
+                Une page d'accueil simple, construite uniquement avec Bootstrap.
+            </p>
+            <div class="d-flex gap-2">
+                <a class="btn btn-primary" href="actualites.php">Voir les actualités</a>
+                <a class="btn btn-outline-secondary" href="contact.php">Nous contacter</a>
+            </div>
+        </section>
 
-    <section aria-label="Dernières actualités" class="row g-4">
+        <section aria-label="Dernières actualités" class="row g-4">
         <!-- Si on a au moins un article récupéré, on les affiche. -->
         <?php if (!empty($ba_bec_articles)): ?>
             <!-- On parcourt les 3 articles aléatoires récupérés depuis la base. -->
@@ -121,7 +124,8 @@ $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
         <?php endif; ?>
-    </section>
+        </section>
+    </div>
 </main>
 
 <?php require_once 'footer.php'; ?>
