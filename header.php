@@ -42,7 +42,7 @@ $current_page = $_SERVER['SCRIPT_NAME'];
                 <span>Bordeaux Étudiant Club</span>
             </a>
 
-            <nav class="header-nav">
+            <nav class="header-nav" aria-label="Navigation principale">
                 <ul>
                     <li>
                         <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
@@ -62,30 +62,37 @@ $current_page = $_SERVER['SCRIPT_NAME'];
                 </ul>
             </nav>
 
-            <div class="header-actions">
-                <?php if ($ba_bec_pseudoMemb): ?>
-                    <details class="header-menu">
-                        <summary class="header-menu__toggle">
-                            <span class="header-user"><?php echo htmlspecialchars($ba_bec_pseudoMemb); ?></span>
-                            <span class="header-burger" aria-hidden="true">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </span>
-                        </summary>
-                        <div class="header-menu__dropdown">
-                            <a href="<?php echo ROOT_URL . '/compte.php'; ?>">Mon compte</a>
-                            <?php if ($ba_bec_numStat === 1 || $ba_bec_numStat === 2): ?>
-                                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>">Panneau admin</a>
+            <div class="header-burger-wrapper">
+                <details class="header-burger-menu">
+                    <summary class="header-burger-toggle" aria-label="Ouvrir le menu">
+                        <span class="header-burger-icon" aria-hidden="true">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </summary>
+                    <div class="header-burger-panel">
+                        <div class="header-burger-actions">
+                            <p class="header-burger-title">Espace membre</p>
+                            <?php if ($ba_bec_pseudoMemb): ?>
+                                <div class="header-burger-user">
+                                    <span><?php echo htmlspecialchars($ba_bec_pseudoMemb); ?></span>
+                                </div>
+                                <div class="header-burger-links">
+                                    <a href="<?php echo ROOT_URL . '/compte.php'; ?>">Mon compte</a>
+                                    <?php if ($ba_bec_numStat === 1 || $ba_bec_numStat === 2): ?>
+                                        <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>">Panneau admin</a>
+                                    <?php endif; ?>
+                                    <a class="header-burger-logout" href="<?php echo ROOT_URL . '/api/security/disconnect.php'; ?>">Déconnexion</a>
+                                </div>
+                            <?php else: ?>
+                                <a class="btn btn-bec-primary w-100" href="<?php echo ROOT_URL . '/views/backend/security/login.php'; ?>">
+                                    Connexion / Inscription
+                                </a>
                             <?php endif; ?>
-                            <a class="header-menu__logout" href="<?php echo ROOT_URL . '/api/security/disconnect.php'; ?>">Déconnexion</a>
                         </div>
-                    </details>
-                <?php else: ?>
-                    <a class="btn btn-bec-primary" href="<?php echo ROOT_URL . '/views/backend/security/login.php'; ?>">
-                        Connexion / Inscription
-                    </a>
-                <?php endif; ?>
+                    </div>
+                </details>
             </div>
         </div>
     </header>

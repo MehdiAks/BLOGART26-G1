@@ -342,7 +342,7 @@ INSERT INTO `MEMBRE` (`numMemb`, `prenomMemb`, `nomMemb`, `pseudoMemb`, `passMem
 --
 
 CREATE TABLE `MOTCLE` (
-  `numMotCle` int NOT NULL,
+  `numMotCle` int NOT NULL AUTO_INCREMENT,
   `libMotCle` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -400,7 +400,7 @@ INSERT INTO `MOTCLEARTICLE` (`numArt`, `numMotCle`) VALUES
 --
 
 CREATE TABLE `STATUT` (
-  `numStat` int NOT NULL,
+  `numStat` int NOT NULL AUTO_INCREMENT,
   `libStat` varchar(25) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `dtCreaStat` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
@@ -536,6 +536,12 @@ ALTER TABLE `bec_matches`
 --
 ALTER TABLE `COMMENT`
   MODIFY `numCom` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT pour la table `STATUT`
+--
+ALTER TABLE `STATUT`
+  MODIFY `numStat` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
