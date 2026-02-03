@@ -42,6 +42,26 @@ $current_page = $_SERVER['SCRIPT_NAME'];
                 <span>Bordeaux Étudiant Club</span>
             </a>
 
+            <nav class="header-nav" aria-label="Navigation principale">
+                <ul>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/matches.php'; ?>" <?php if ($current_page == '/matches.php') echo 'class="current"'; ?>>Matchs</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
+                    </li>
+                </ul>
+            </nav>
+
             <div class="header-burger-wrapper">
                 <details class="header-burger-menu">
                     <summary class="header-burger-toggle" aria-label="Ouvrir le menu">
@@ -52,26 +72,6 @@ $current_page = $_SERVER['SCRIPT_NAME'];
                         </span>
                     </summary>
                     <div class="header-burger-panel">
-                        <nav class="header-burger-nav">
-                            <p class="header-burger-title">Navigation</p>
-                            <ul>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/matches.php'; ?>" <?php if ($current_page == '/matches.php') echo 'class="current"'; ?>>Matchs</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
-                                </li>
-                            </ul>
-                        </nav>
                         <div class="header-burger-actions">
                             <p class="header-burger-title">Espace membre</p>
                             <?php if ($ba_bec_pseudoMemb): ?>
