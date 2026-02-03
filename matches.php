@@ -41,7 +41,7 @@ if ($matchesTable === 'bec_matches') {
 
 $matchesStmt = $DB->prepare($matchesQuery);
 $matchesStmt->execute();
-$ba_bec_matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
+$allMatches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $seniorKeywords = [
     'senior',
@@ -84,8 +84,34 @@ $resolveClubTeam = static function (array $match) use ($clubIdentifiers): string
 
     return $home !== '' ? $home : $away;
 };
+$resolveClubSide = static function (array $match) use ($clubIdentifiers): string {
+    $location = strtolower((string) ($match['location'] ?? ''));
+    if ($location !== '') {
+        if (str_contains($location, 'domicile')) {
+            return 'home';
+        }
+        if (str_contains($location, 'extérieur') || str_contains($location, 'exterieur')) {
+            return 'away';
+        }
+    }
+
+    $home = (string) ($match['teamHome'] ?? '');
+    $away = (string) ($match['teamAway'] ?? '');
+    foreach ($clubIdentifiers as $identifier) {
+        if ($identifier !== '' && stripos($home, $identifier) !== false) {
+            return 'home';
+        }
+    }
+    foreach ($clubIdentifiers as $identifier) {
+        if ($identifier !== '' && stripos($away, $identifier) !== false) {
+            return 'away';
+        }
+    }
+
+    return 'unknown';
+};
 $seniorMatches = [];
-foreach ($ba_bec_matches as $ba_bec_match) {
+foreach ($allMatches as $ba_bec_match) {
     if (!$isSeniorMatch($ba_bec_match)) {
         continue;
     }
@@ -97,10 +123,78 @@ foreach ($ba_bec_matches as $ba_bec_match) {
 }
 
 $ba_bec_matches = array_values($seniorMatches);
+if (empty($ba_bec_matches)) {
+    $ba_bec_matches = $allMatches;
+}
+
+$homeMatches = [];
+$awayMatches = [];
+foreach ($ba_bec_matches as $ba_bec_match) {
+    $side = $resolveClubSide($ba_bec_match);
+    if ($side === 'away') {
+        $awayMatches[] = $ba_bec_match;
+    } else {
+        $homeMatches[] = $ba_bec_match;
+    }
+}
 
 $lastUpdateStmt = $DB->query($lastUpdateQuery);
 $lastUpdateRow = $lastUpdateStmt->fetch(PDO::FETCH_ASSOC);
 $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
+
+$renderMatchCard = static function (array $ba_bec_match): string {
+    $matchDate = new DateTime($ba_bec_match['matchDate']);
+    $displayDate = $matchDate->format('d/m/Y');
+    $displayTime = '';
+    if (!empty($ba_bec_match['matchTime'])) {
+        $matchTime = new DateTime($ba_bec_match['matchTime']);
+        $displayTime = $matchTime->format('H:i');
+    }
+    $score = '';
+    if ($ba_bec_match['scoreHome'] !== null && $ba_bec_match['scoreAway'] !== null) {
+        $score = (int) $ba_bec_match['scoreHome'] . ' - ' . (int) $ba_bec_match['scoreAway'];
+    }
+
+    ob_start();
+    ?>
+    <div class="col-12">
+        <article class="match-card">
+            <header class="match-card__header">
+                <div>
+                    <p class="match-card__competition"><?php echo htmlspecialchars($ba_bec_match['competition']); ?></p>
+                    <p class="match-card__date">
+                        <?php echo htmlspecialchars($displayDate); ?>
+                        <?php if ($displayTime !== ''): ?>
+                            <span>• <?php echo htmlspecialchars($displayTime); ?></span>
+                        <?php endif; ?>
+                    </p>
+                </div>
+                <?php if (!empty($ba_bec_match['status'])): ?>
+                    <span class="match-card__status"><?php echo htmlspecialchars($ba_bec_match['status']); ?></span>
+                <?php endif; ?>
+            </header>
+            <div class="match-card__teams">
+                <div class="match-card__team">
+                    <span class="match-card__label">Domicile</span>
+                    <strong><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></strong>
+                </div>
+                <div class="match-card__score">
+                    <?php echo $score !== '' ? htmlspecialchars($score) : 'vs'; ?>
+                </div>
+                <div class="match-card__team">
+                    <span class="match-card__label">Extérieur</span>
+                    <strong><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></strong>
+                </div>
+            </div>
+            <?php if (!empty($ba_bec_match['location'])): ?>
+                <p class="match-card__location">Lieu : <?php echo htmlspecialchars($ba_bec_match['location']); ?></p>
+            <?php endif; ?>
+        </article>
+    </div>
+    <?php
+
+    return (string) ob_get_clean();
+};
 ?>
 
 <main class="container py-5">
@@ -108,8 +202,7 @@ $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
         <p class="matches-hero__eyebrow">Calendrier</p>
         <h1 class="matches-hero__title">Les prochains matchs des équipes seniors</h1>
         <p class="matches-hero__text">
-            Retrouvez ici le prochain match de chaque équipe senior du club. Les données sont synchronisées depuis le
-            calendrier FFBB et enregistrées sur le serveur pour un affichage rapide.
+            Retrouvez ici le prochain match de chaque équipe senior du club, affiché selon la date du jour.
         </p>
         <div class="matches-hero__meta">
             <span class="matches-hero__source">
@@ -125,61 +218,30 @@ $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
     </section>
 
     <section class="matches-list" aria-live="polite">
-        <?php if (!empty($ba_bec_matches)): ?>
-            <div class="row g-4">
-                <?php foreach ($ba_bec_matches as $ba_bec_match): ?>
-                    <?php
-                    $matchDate = new DateTime($ba_bec_match['matchDate']);
-                    $displayDate = $matchDate->format('d/m/Y');
-                    $displayTime = '';
-                    if (!empty($ba_bec_match['matchTime'])) {
-                        $matchTime = new DateTime($ba_bec_match['matchTime']);
-                        $displayTime = $matchTime->format('H:i');
-                    }
-                    $score = '';
-                    if ($ba_bec_match['scoreHome'] !== null && $ba_bec_match['scoreAway'] !== null) {
-                        $score = (int) $ba_bec_match['scoreHome'] . ' - ' . (int) $ba_bec_match['scoreAway'];
-                    }
-                    ?>
-                    <div class="col-12">
-                        <article class="match-card">
-                            <header class="match-card__header">
-                                <div>
-                                    <p class="match-card__competition"><?php echo htmlspecialchars($ba_bec_match['competition']); ?></p>
-                                    <p class="match-card__date">
-                                        <?php echo htmlspecialchars($displayDate); ?>
-                                        <?php if ($displayTime !== ''): ?>
-                                            <span>• <?php echo htmlspecialchars($displayTime); ?></span>
-                                        <?php endif; ?>
-                                    </p>
-                                </div>
-                                <?php if (!empty($ba_bec_match['status'])): ?>
-                                    <span class="match-card__status"><?php echo htmlspecialchars($ba_bec_match['status']); ?></span>
-                                <?php endif; ?>
-                            </header>
-                            <div class="match-card__teams">
-                                <div class="match-card__team">
-                                    <span class="match-card__label">Domicile</span>
-                                    <strong><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></strong>
-                                </div>
-                                <div class="match-card__score">
-                                    <?php echo $score !== '' ? htmlspecialchars($score) : 'vs'; ?>
-                                </div>
-                                <div class="match-card__team">
-                                    <span class="match-card__label">Extérieur</span>
-                                    <strong><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></strong>
-                                </div>
-                            </div>
-                            <?php if (!empty($ba_bec_match['location'])): ?>
-                                <p class="match-card__location">Lieu : <?php echo htmlspecialchars($ba_bec_match['location']); ?></p>
-                            <?php endif; ?>
-                        </article>
+        <?php if (!empty($homeMatches) || !empty($awayMatches)): ?>
+            <?php if (!empty($homeMatches)): ?>
+                <div class="mb-5">
+                    <h2 class="matches-list__title">Matchs à domicile</h2>
+                    <div class="row g-4">
+                        <?php foreach ($homeMatches as $ba_bec_match): ?>
+                            <?php echo $renderMatchCard($ba_bec_match); ?>
+                        <?php endforeach; ?>
                     </div>
-                <?php endforeach; ?>
-            </div>
+                </div>
+            <?php endif; ?>
+            <?php if (!empty($awayMatches)): ?>
+                <div>
+                    <h2 class="matches-list__title">Matchs à l'extérieur</h2>
+                    <div class="row g-4">
+                        <?php foreach ($awayMatches as $ba_bec_match): ?>
+                            <?php echo $renderMatchCard($ba_bec_match); ?>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
         <?php else: ?>
             <div class="alert alert-light border matches-empty" role="status">
-                Aucun match n'est disponible pour le moment. Les données seront ajoutées après la synchronisation FFBB.
+                Aucun match n'est disponible pour le moment.
             </div>
         <?php endif; ?>
     </section>
