@@ -1,5 +1,11 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+
+// Charger les styles spécifiques à cette page
+$pageStyles = [
+    ROOT_URL . '/src/css/anciens-et-amis.css',
+];
+
 require_once 'header.php';
 ?>
 
