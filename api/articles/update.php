@@ -19,7 +19,13 @@ $ba_bec_parag3Art = ctrlSaisies($_POST['parag3Art']);
 $ba_bec_libConclArt = ctrlSaisies($_POST['libConclArt']);
 $ba_bec_numThem = ctrlSaisies($_POST['numThem']);
 $ba_bec_numArt = ctrlSaisies($_POST['numArt']);
-$ba_bec_numMotCle = $_POST['motCle'];
+$ba_bec_numMotCle = isset($_POST['motCle']) ? (array) $_POST['motCle'] : [];
+
+if (function_exists('mb_substr')) {
+    $ba_bec_libAccrochArt = mb_substr($ba_bec_libAccrochArt, 0, 100);
+} else {
+    $ba_bec_libAccrochArt = substr($ba_bec_libAccrochArt, 0, 100);
+}
 
 // Récupérer l'ancienne image de l'article
 $ba_bec_article = sql_select("ARTICLE", "urlPhotArt", "numArt = '$ba_bec_numArt'")[0];
