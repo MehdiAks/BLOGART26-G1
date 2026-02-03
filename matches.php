@@ -28,13 +28,13 @@ if ($matchesTable === 'bec_matches') {
             Score_domicile AS scoreHome,
             Score_exterieur AS scoreAway
         FROM {$matchesTable}
-        WHERE Date >= CURDATE()
+        WHERE Date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
         ORDER BY Date ASC, Heure ASC";
     $lastUpdateQuery = "SELECT MAX(Date) AS lastUpdate FROM {$matchesTable}";
 } else {
     $matchesQuery = "SELECT numMatch, competition, matchDate, matchTime, teamHome, teamAway, location, status, scoreHome, scoreAway
         FROM {$matchesTable}
-        WHERE matchDate >= CURDATE()
+        WHERE matchDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
         ORDER BY matchDate ASC, matchTime ASC";
     $lastUpdateQuery = "SELECT MAX(COALESCE(dtMajMatch, dtCreaMatch)) AS lastUpdate FROM {$matchesTable}";
 }
