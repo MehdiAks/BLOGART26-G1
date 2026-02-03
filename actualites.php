@@ -13,6 +13,14 @@ sql_connect();
 $search = trim($_GET['search'] ?? '');
 $ba_bec_keyword = trim($_GET['keyword'] ?? '');
 $theme = isset($_GET['theme']) ? (int) $_GET['theme'] : 0;
+$sort = $_GET['sort'] ?? 'recent';
+$isPartial = isset($_GET['partial']) && $_GET['partial'] === '1';
+
+function format_news_count(int $count): string
+{
+    $suffix = $count > 1 ? 's' : '';
+    return $count . ' actualité' . $suffix . ' trouvée' . $suffix;
+}
 
 $themeStmt = $DB->prepare('SELECT numThem, libThem FROM THEMATIQUE ORDER BY libThem ASC');
 $themeStmt->execute();
@@ -36,74 +44,30 @@ if ($ba_bec_keyword !== '') {
     $params[':keyword'] = '%' . $ba_bec_keyword . '%';
 }
 
-$query = 'SELECT a.numArt, a.libTitrArt, a.libChapoArt, a.urlPhotArt, t.libThem FROM ARTICLE a INNER JOIN THEMATIQUE t ON a.numThem = t.numThem';
+$orderMap = [
+    'recent' => 'a.dtCreaArt DESC',
+    'oldest' => 'a.dtCreaArt ASC',
+    'liked' => 'likeCount DESC, a.dtCreaArt DESC',
+];
+$orderBy = $orderMap[$sort] ?? $orderMap['recent'];
+
+$query = 'SELECT a.numArt, a.libTitrArt, a.libChapoArt, a.urlPhotArt, t.libThem, COALESCE(l.likeCount, 0) as likeCount FROM ARTICLE a INNER JOIN THEMATIQUE t ON a.numThem = t.numThem LEFT JOIN (SELECT numArt, COUNT(*) as likeCount FROM LIKEART WHERE likeA = 1 GROUP BY numArt) l ON a.numArt = l.numArt';
 if (!empty($conditions)) {
     $query .= ' WHERE ' . implode(' AND ', $conditions);
 }
-$query .= ' ORDER BY a.dtCreaArt DESC';
+$query .= ' ORDER BY ' . $orderBy;
 
 $articleStmt = $DB->prepare($query);
 $articleStmt->execute($params);
 $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
-?>
 
-<main class="container py-5">
-    <section class="news-summary">
-        <p class="news-summary__eyebrow">Actualités</p>
-        <h1 class="news-summary__title">Restez au plus près de la vie du club</h1>
-        <p class="news-summary__text">
-            Entre résultats, interviews, moments forts et coulisses, retrouvez ici l'ensemble des actualités du BEC.
-            Ce fil éditorial met en avant les histoires qui font vibrer la communauté, avec des mises à jour régulières
-            pour ne rien manquer des temps forts.
-        </p>
-    </section>
-
-    <section class="news-filters" aria-label="Filtres des actualités">
-        <form method="get" class="row g-3 align-items-end">
-            <div class="col-12 col-lg-4">
-                <label for="theme" class="form-label">Thématique</label>
-                <select id="theme" name="theme" class="form-select">
-                    <option value="0">Toutes les thématiques</option>
-                    <?php foreach ($ba_bec_thematiques as $ba_bec_thematique): ?>
-                        <option value="<?php echo (int) $ba_bec_thematique['numThem']; ?>" <?php echo $theme === (int) $ba_bec_thematique['numThem'] ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($ba_bec_thematique['libThem']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="col-12 col-lg-4">
-                <label for="search" class="form-label">Recherche par titre</label>
-                <input
-                    type="search"
-                    id="search"
-                    name="search"
-                    class="form-control"
-                    placeholder="Ex: victoire, équipe, match"
-                    value="<?php echo htmlspecialchars($search, ENT_QUOTES); ?>"
-                />
-            </div>
-            <div class="col-12 col-lg-4">
-                <label for="keyword" class="form-label">Mots-clés</label>
-                <input
-                    type="text"
-                    id="keyword"
-                    name="keyword"
-                    class="form-control"
-                    placeholder="Ex: entraînement, événement"
-                    value="<?php echo htmlspecialchars($ba_bec_keyword, ENT_QUOTES); ?>"
-                />
-            </div>
-            <div class="col-12 d-flex flex-wrap gap-2">
-                <button type="submit" class="btn btn-primary">Appliquer les filtres</button>
-                <a class="btn btn-outline-secondary" href="<?php echo ROOT_URL . '/actualites.php'; ?>">Réinitialiser</a>
-                <p class="news-filters__count ms-lg-auto mb-0">
-                    <?php echo count($ba_bec_articles); ?> actualité<?php echo count($ba_bec_articles) > 1 ? 's' : ''; ?> trouvée<?php echo count($ba_bec_articles) > 1 ? 's' : ''; ?>
-                </p>
-            </div>
-        </form>
-    </section>
-
-    <section class="news-grid" aria-live="polite">
+function render_news_grid(array $ba_bec_articles): string
+{
+    $articleCount = count($ba_bec_articles);
+    $countLabel = format_news_count($articleCount);
+    ob_start();
+    ?>
+    <section class="news-grid" aria-live="polite" data-news-count="<?php echo $articleCount; ?>" data-news-count-label="<?php echo htmlspecialchars($countLabel, ENT_QUOTES); ?>">
         <div class="row g-4">
             <?php if (!empty($ba_bec_articles)): ?>
                 <?php foreach ($ba_bec_articles as $ba_bec_article): ?>
@@ -146,7 +110,129 @@ $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </div>
     </section>
+    <?php
+    return ob_get_clean();
+}
+
+if ($isPartial) {
+    echo render_news_grid($ba_bec_articles);
+    exit;
+}
+?>
+
+<main class="container py-5">
+    <section class="news-summary">
+        <p class="news-summary__eyebrow">Actualités</p>
+        <h1 class="news-summary__title">Restez au plus près de la vie du club</h1>
+        <p class="news-summary__text">
+            Entre résultats, interviews, moments forts et coulisses, retrouvez ici l'ensemble des actualités du BEC.
+            Ce fil éditorial met en avant les histoires qui font vibrer la communauté, avec des mises à jour régulières
+            pour ne rien manquer des temps forts.
+        </p>
+    </section>
+
+    <section class="news-filters" aria-label="Filtres des actualités">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-12 col-lg-3">
+                <label for="theme" class="form-label">Thématique</label>
+                <select id="theme" name="theme" class="form-select">
+                    <option value="0">Toutes les thématiques</option>
+                    <?php foreach ($ba_bec_thematiques as $ba_bec_thematique): ?>
+                        <option value="<?php echo (int) $ba_bec_thematique['numThem']; ?>" <?php echo $theme === (int) $ba_bec_thematique['numThem'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($ba_bec_thematique['libThem']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="col-12 col-lg-3">
+                <label for="search" class="form-label">Recherche par titre</label>
+                <input
+                    type="search"
+                    id="search"
+                    name="search"
+                    class="form-control"
+                    placeholder="Ex: victoire, équipe, match"
+                    value="<?php echo htmlspecialchars($search, ENT_QUOTES); ?>"
+                />
+            </div>
+            <div class="col-12 col-lg-3">
+                <label for="keyword" class="form-label">Mots-clés</label>
+                <input
+                    type="text"
+                    id="keyword"
+                    name="keyword"
+                    class="form-control"
+                    placeholder="Ex: entraînement, événement"
+                    value="<?php echo htmlspecialchars($ba_bec_keyword, ENT_QUOTES); ?>"
+                />
+            </div>
+            <div class="col-12 col-lg-3">
+                <label for="sort" class="form-label">Trier</label>
+                <select id="sort" name="sort" class="form-select">
+                    <option value="recent" <?php echo $sort === 'recent' ? 'selected' : ''; ?>>Plus récent</option>
+                    <option value="oldest" <?php echo $sort === 'oldest' ? 'selected' : ''; ?>>Plus ancien</option>
+                    <option value="liked" <?php echo $sort === 'liked' ? 'selected' : ''; ?>>Les plus likés</option>
+                </select>
+            </div>
+            <div class="col-12 d-flex flex-wrap gap-2">
+                <button type="submit" class="btn btn-primary">Appliquer les filtres</button>
+                <a class="btn btn-outline-secondary" href="<?php echo ROOT_URL . '/actualites.php'; ?>">Réinitialiser</a>
+                <p class="news-filters__count ms-lg-auto mb-0" id="news-count">
+                    <?php echo format_news_count(count($ba_bec_articles)); ?>
+                </p>
+            </div>
+        </form>
+    </section>
+
+    <?php echo render_news_grid($ba_bec_articles); ?>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('.news-filters form');
+    const grid = document.querySelector('.news-grid');
+    if (!form || !grid || typeof window.fetch !== 'function') {
+        return;
+    }
+
+    const buildUrl = (includePartial) => {
+        const formData = new FormData(form);
+        if (includePartial) {
+            formData.append('partial', '1');
+        }
+        const params = new URLSearchParams(formData);
+        const action = form.getAttribute('action') || window.location.pathname;
+        return `${action}?${params.toString()}`;
+    };
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const url = buildUrl(true);
+        try {
+            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const html = await response.text();
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            const newGrid = temp.querySelector('.news-grid');
+            if (!newGrid) {
+                throw new Error('No grid found in response');
+            }
+            grid.replaceWith(newGrid);
+            const countElement = document.getElementById('news-count');
+            if (countElement && newGrid.dataset.newsCountLabel) {
+                countElement.textContent = newGrid.dataset.newsCountLabel;
+            }
+            const historyUrl = buildUrl(false);
+            window.history.replaceState({}, '', historyUrl);
+        } catch (error) {
+            form.submit();
+        }
+    });
+});
+</script>
 
 <?php
 require_once 'footer.php';
