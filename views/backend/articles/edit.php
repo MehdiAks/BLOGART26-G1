@@ -46,7 +46,7 @@ if (isset($_GET['numArt'])) {
                 <div class="form-group">
                     <label for="libAccrochArt">Accroche</label>
                     <input id="libAccrochArt" name="libAccrochArt" class="form-control" type="text"
-                        value="<?php echo $ba_bec_article['libAccrochArt']; ?>" maxlength="1000" required />
+                        value="<?php echo $ba_bec_article['libAccrochArt']; ?>" maxlength="100" required />
                 </div>
 
                 <div class="form-group">

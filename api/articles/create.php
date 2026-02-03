@@ -19,12 +19,13 @@ $ba_bec_libConclArt = ctrlSaisies($_POST['libConclArt']);
 $ba_bec_numThem = ctrlSaisies($_POST['numThem']);
         
 
-$ba_bec_newMotCle = $_POST['motCle'];
-var_dump($ba_bec_newMotCle);
-var_dump(gettype($ba_bec_newMotCle));
+if (function_exists('mb_substr')) {
+    $ba_bec_libAccrochArt = mb_substr($ba_bec_libAccrochArt, 0, 100);
+} else {
+    $ba_bec_libAccrochArt = substr($ba_bec_libAccrochArt, 0, 100);
+}
 
-
-$ba_bec_numMotCle = $_POST['motCle'];
+$ba_bec_numMotCle = isset($_POST['motCle']) ? (array) $_POST['motCle'] : [];
 $ba_bec_urlPhotArt = "";
 if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
     $ba_bec_tmpName = $_FILES['urlPhotArt']['tmp_name'];
@@ -61,7 +62,6 @@ sql_insert(
     "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', '$ba_bec_nom_image', '$ba_bec_numThem'"
 );
 $ba_bec_lastArt = sql_select('ARTICLE', 'numArt', null, 'numArt DESC')[0]['numArt'];
-var_dump($ba_bec_lastArt);
 
 
 
