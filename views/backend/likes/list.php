@@ -22,6 +22,11 @@ if (isset($_GET['numMemb'])) {
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            <div class="mb-3">
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
+                    Retour au panneau admin
+                </a>
+            </div>
             <h1>Gestion des likes</h1>
             <table class="table table-striped">
                 <thead>

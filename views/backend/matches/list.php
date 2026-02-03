@@ -56,6 +56,11 @@ $ba_bec_formatTime = static function ($time): string {
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            <div class="mb-3">
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
+                    Retour au panneau admin
+                </a>
+            </div>
             <h1><?php echo $ba_bec_pendingLabel; ?></h1>
             <p>Affichage : <?php echo (int) $ba_bec_total; ?> match(s) au total.</p>
             <div class="mb-3">
