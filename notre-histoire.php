@@ -1,5 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+$pageStyles = [ROOT_URL . '/src/css/notre-histoire.css'];
 require_once 'header.php';
 ?>
 
