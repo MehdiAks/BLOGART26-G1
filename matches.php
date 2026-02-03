@@ -13,18 +13,37 @@ $tableCheckStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
 $hasBecMatchesTable = (bool) $tableCheckStmt->fetchColumn();
 $matchesTable = $hasBecMatchesTable ? 'bec_matches' : 'MATCH_CLUB';
 
-$matchesStmt = $DB->prepare(
-    "SELECT numMatch, competition, matchDate, matchTime, teamHome, teamAway, location, status, scoreHome, scoreAway
-     FROM {$matchesTable}
-     WHERE matchDate >= CURDATE()
-     ORDER BY matchDate ASC, matchTime ASC"
-);
+$matchesQuery = '';
+$lastUpdateQuery = '';
+
+if ($matchesTable === 'bec_matches') {
+    $matchesQuery = "SELECT MatchNo AS numMatch,
+            Competition AS competition,
+            Date AS matchDate,
+            Heure AS matchTime,
+            Equipe_domicile AS teamHome,
+            Equipe_exterieure AS teamAway,
+            Domicile_Exterieur AS location,
+            Phase AS status,
+            Score_domicile AS scoreHome,
+            Score_exterieur AS scoreAway
+        FROM {$matchesTable}
+        WHERE Date >= CURDATE()
+        ORDER BY Date ASC, Heure ASC";
+    $lastUpdateQuery = "SELECT MAX(Date) AS lastUpdate FROM {$matchesTable}";
+} else {
+    $matchesQuery = "SELECT numMatch, competition, matchDate, matchTime, teamHome, teamAway, location, status, scoreHome, scoreAway
+        FROM {$matchesTable}
+        WHERE matchDate >= CURDATE()
+        ORDER BY matchDate ASC, matchTime ASC";
+    $lastUpdateQuery = "SELECT MAX(COALESCE(dtMajMatch, dtCreaMatch)) AS lastUpdate FROM {$matchesTable}";
+}
+
+$matchesStmt = $DB->prepare($matchesQuery);
 $matchesStmt->execute();
 $ba_bec_matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-$lastUpdateStmt = $DB->query(
-    "SELECT MAX(COALESCE(dtMajMatch, dtCreaMatch)) AS lastUpdate FROM {$matchesTable}"
-);
+$lastUpdateStmt = $DB->query($lastUpdateQuery);
 $lastUpdateRow = $lastUpdateStmt->fetch(PDO::FETCH_ASSOC);
 $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
 ?>
