@@ -39,13 +39,12 @@ require_once 'header.php';
                     class="article-image mb-3"
                     alt="Supporters réunis"
                 >
-                <h2 class="h5">Réseau des amis</h2>
+                <h2 class="h5">Amis et événements</h2>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent feugiat, lorem ac aliquet
-                    commodo, lorem ipsum consequat lectus, vitae commodo urna mauris nec metus.
+                    Retrouvez nos amis et événements sur Facebook 
                 </p>
-                <a href="src/images/background/background-article.jpg">
-                    Découvrir supporters-bec.jpg
+                <a href="https://www.facebook.com/becofficiel/?locale=fr_FR">
+                    Notre Facebook
                 </a>
             </div>
         </div>
@@ -57,13 +56,12 @@ require_once 'header.php';
                     class="article-image mb-3"
                     alt="Moment de convivialité"
                 >
-                <h2 class="h5">Événements & retrouvailles</h2>
+                <h2 class="h5">Retrouvailles et évenements</h2>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique, tellus id consequat
-                    sodales, nisl neque aliquet urna, ut viverra turpis leo non quam.
+                    Quand est-ce qu'on se retrouve ? 
                 </p>
                 <a href="src/images/background/background-index.jpg">
-                    Voir retrouvailles-anciens.jpg
+                    Retrouvailles
                 </a>
             </div>
         </div>
