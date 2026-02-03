@@ -1,13 +1,14 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+$pageStyles = [ROOT_URL . '/src/css/dashboard.css'];
 include '../../header.php';
 
 
 ?>
 
 <!-- Bootstrap admin dashboard template -->
-<div>
+<div class="admin-dashboard">
     <hr class="my-3">
     <div style="color: black; font-size: 30px; font-family: Montserrat; font-weight: 400; padding-left: 3rem ;word-wrap: break-word">Liens permettant d'administrer le Blog d'Articles</div>    
     <hr class="my-3">
@@ -23,7 +24,7 @@ include '../../header.php';
                     <div class="card-body">
                         <h5 class="card-title">Matchs</h5>
                         <p class="card-text">Planifiez les rencontres, horaires et résultats.</p>
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="admin-actions d-flex flex-wrap gap-2">
                             <a href="/views/backend/matches/list.php" class="btn btn-primary">Liste</a>
                             <a href="/views/backend/matches/create.php" class="btn btn-success">Créer</a>
                             <a href="/views/backend/matches/edit.php" class="btn btn-warning disabled">Modifier</a>
@@ -37,7 +38,7 @@ include '../../header.php';
                     <div class="card-body">
                         <h5 class="card-title">Articles</h5>
                         <p class="card-text">Créez des articles avec images et mots-clés associés.</p>
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="admin-actions d-flex flex-wrap gap-2">
                             <a href="/views/backend/articles/list.php" class="btn btn-primary">Liste</a>
                             <a href="/views/backend/articles/create.php" class="btn btn-success">Créer</a>
                             <a href="/views/backend/articles/edit.php" class="btn btn-warning disabled">Modifier</a>
@@ -53,7 +54,7 @@ include '../../header.php';
                     <div class="card-body">
                         <h5 class="card-title">Likes</h5>
                         <p class="card-text">Suivez les appréciations des articles.</p>
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="admin-actions d-flex flex-wrap gap-2">
                             <a href="/views/backend/likes/list.php" class="btn btn-primary">Liste</a>
                             <a href="/views/backend/likes/create.php" class="btn btn-success">Créer</a>
                             <a href="/views/backend/likes/edit.php" class="btn btn-warning disabled">Modifier</a>
@@ -67,7 +68,7 @@ include '../../header.php';
                     <div class="card-body">
                         <h5 class="card-title">Commentaires</h5>
                         <p class="card-text">Modérez et organisez les retours des lecteurs.</p>
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="admin-actions d-flex flex-wrap gap-2">
                             <a href="/views/backend/comments/list.php" class="btn btn-primary">Liste</a>
                             <a href="/views/backend/comments/create.php" class="btn btn-success">Créer</a>
                             <a href="/views/backend/comments/edit.php" class="btn btn-warning disabled">Modifier</a>
@@ -81,7 +82,7 @@ include '../../header.php';
                     <div class="card-body">
                         <h5 class="card-title">Mots-clés</h5>
                         <p class="card-text">Classez les articles par mots-clés.</p>
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="admin-actions d-flex flex-wrap gap-2">
                             <a href="/views/backend/keywords/list.php" class="btn btn-primary">Liste</a>
                             <a href="/views/backend/keywords/create.php" class="btn btn-success">Créer</a>
                             <a href="/views/backend/keywords/edit.php" class="btn btn-warning disabled">Modifier</a>
@@ -95,7 +96,7 @@ include '../../header.php';
                     <div class="card-body">
                         <h5 class="card-title">Thématiques</h5>
                         <p class="card-text">Structurez les catégories du blog.</p>
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="admin-actions d-flex flex-wrap gap-2">
                             <a href="/views/backend/thematiques/list.php" class="btn btn-primary">Liste</a>
                             <a href="/views/backend/thematiques/create.php" class="btn btn-success">Créer</a>
                             <a href="/views/backend/thematiques/edit.php" class="btn btn-warning disabled">Modifier</a>
@@ -111,7 +112,7 @@ include '../../header.php';
                     <div class="card-body">
                         <h5 class="card-title">Statuts</h5>
                         <p class="card-text">Gérez les rôles et permissions.</p>
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="admin-actions d-flex flex-wrap gap-2">
                             <a href="/views/backend/statuts/list.php" class="btn btn-primary">Liste</a>
                             <a href="/views/backend/statuts/create.php" class="btn btn-success">Créer</a>
                             <a href="/views/backend/statuts/edit.php" class="btn btn-warning disabled">Modifier</a>
@@ -125,7 +126,7 @@ include '../../header.php';
                     <div class="card-body">
                         <h5 class="card-title">Membres</h5>
                         <p class="card-text">Inscription, accès et sécurité des comptes.</p>
-                        <div class="d-flex flex-wrap gap-2">
+                        <div class="admin-actions d-flex flex-wrap gap-2">
                             <a href="/views/backend/members/list.php" class="btn btn-primary">Liste</a>
                             <a href="/views/backend/members/create.php" class="btn btn-success">Créer</a>
                             <a href="/views/backend/members/edit.php" class="btn btn-warning disabled">Modifier</a>
