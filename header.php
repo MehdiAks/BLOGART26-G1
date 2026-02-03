@@ -12,11 +12,9 @@ $hasBackgroundVideo = $pageHasVideo ?? false;
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="<?php echo ROOT_URL . '/src/css/reset.css'; ?>" rel="stylesheet">
-    <link href="<?php echo ROOT_URL . '/src/css/variables.css'; ?>" rel="stylesheet">
-    <link href="<?php echo ROOT_URL . '/src/css/system.css'; ?>" rel="stylesheet">
-    <link href="<?php echo ROOT_URL . '/src/css/style.css'; ?>" rel="stylesheet">
-    <link href="<?php echo ROOT_URL . '/src/css/fonts.css'; ?>" rel="stylesheet">
+    <link href="<?php echo ROOT_URL . '/src/css/css-propre/reset.css'; ?>" rel="stylesheet">
+    <link href="<?php echo ROOT_URL . '/src/css/css-propre/style.css'; ?>" rel="stylesheet">
+    <link href="<?php echo ROOT_URL . '/src/css/css-propre/fonts.css'; ?>" rel="stylesheet">
     <link rel="icon" type="image/png" href="/src/images/logo.png" />
     <?php if (!empty($pageStyles) && is_array($pageStyles)) : ?>
         <?php foreach ($pageStyles as $stylePath) : ?>
@@ -239,9 +237,6 @@ $hasBackgroundVideo = $pageHasVideo ?? false;
                     </li>
                     <li>
                         <a href="<?php echo ROOT_URL . '/matches.php'; ?>">Matchs</a>
-                    </li>
-                    <li>
-                        <a href="<?php echo ROOT_URL . '/contact.php'; ?>">Contact</a>
                     </li>
                     <li>
                         <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>">Anciens et amis</a>
