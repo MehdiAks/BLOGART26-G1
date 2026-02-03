@@ -123,6 +123,7 @@ if (isset($_SESSION['user_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="<?php echo ROOT_URL; ?>/src/css/css-propre/fonts.css" rel="stylesheet"/>
     <link href="<?php echo ROOT_URL; ?>/src/css/stylearticle.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -152,13 +153,14 @@ if (isset($_SESSION['user_id'])) {
         </header>
 
         <section class="article-body">
-            <div class="article-lead">
-                <?php echo ($ba_bec_article['libChapoArt']); ?> 
-            </div>
+            <div class="container">
+                <div class="article-lead">
+                    <?php echo ($ba_bec_article['libChapoArt']); ?> 
+                </div>
 
-            <div class="article-layout">
-                <div class="article-content">
-                    <article>
+                <div class="row g-4">
+                    <div class="col-12 col-lg-8">
+                        <article class="bg-white">
                         <h2 class="phraseaccroche">
                             <?php echo ($ba_bec_article['libAccrochArt']); ?> 
                         </h2>
@@ -166,7 +168,7 @@ if (isset($_SESSION['user_id'])) {
                             <?php echo ($ba_bec_article['parag1Art']); ?> 
                         </p>
                         <figure class="article-figure">
-                            <img class="image2" src="<?php echo ROOT_URL . '/src/uploads/' . ($ba_bec_article['urlPhotArt']); ?>" alt="Image article">
+                            <img class="image2 img-fluid w-100" src="<?php echo ROOT_URL . '/src/uploads/' . ($ba_bec_article['urlPhotArt']); ?>" alt="Image article">
                             <figcaption class="article-caption">
                                 © Groupe 1 Bordeaux étudiant club + Description de l’image
                             </figcaption>
@@ -201,7 +203,7 @@ if (isset($_SESSION['user_id'])) {
                             </div>
                             <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>" />
                             <div class="btn-se-connecter">
-                                <button type="submit">Envoyer</button>
+                                <button type="submit" class="btn btn-primary">Envoyer</button>
                             </div>  
                         </form>
                     </div>
@@ -224,52 +226,53 @@ if (isset($_SESSION['user_id'])) {
                             <p>Il n'y a pas encore de commentaires pour cet article.</p>
                         <?php endif; ?>
                     </div>
-                </div>
-
-                <aside class="article-sidebar">
-                    <h2>Autres articles</h2>
-                    <?php
-                    $randomArticles = sql_select("ARTICLE", "*", "1=1 ORDER BY RAND() LIMIT 3");
-
-                    if (!empty($randomArticles)):
-                        foreach ($randomArticles as $randomArticle): ?>
-                            <div class="random-article">
-                                <img class="imagedroite" src="<?php echo ROOT_URL . '/src/uploads/' . ($randomArticle['urlPhotArt']); ?>" alt="Image article">
-                                <h3 class="titredroite">
-                                    <?php echo ($randomArticle['libTitrArt']); ?>
-                                </h3>
-                                <p class="txtdroite">
-                                    <?php echo ($randomArticle['libChapoArt']); ?>
-                                </p>
-                                <a href="article.php?numArt=<?php echo $randomArticle['numArt']; ?>" class="clickable-text">Lire l'article →</a>
-                            </div>
-                        <?php endforeach;
-                    else: ?>
-                        <p>Aucun article disponible.</p>
-                    <?php endif; ?>
-                    <div class="likes-section">
-                        <h2>Évaluer cet article</h2>
-                        <div class="vote-buttons">
-                            <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post">
-                                <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
-                                <input type="hidden" name="likeA" value="1">
-                                <button type="submit" class="btn-vote <?php echo $userVote === 1 ? 'active-like' : ''; ?>">
-                                    <img src="<?php echo ROOT_URL; ?>/src/images/pnglike.png" alt="Like">
-                                    <h3><?php echo $likeCount; ?></h3>
-                                </button>
-                            </form>
-
-                            <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post">
-                                <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
-                                <input type="hidden" name="likeA" value="0">
-                                <button type="submit" class="btn-vote <?php echo $userVote === 0 ? 'active-dislike' : ''; ?>">
-                                    <img src="<?php echo ROOT_URL; ?>/src/images/pngdislike.png" alt="Dislike">
-                                    <h3><?php echo $dislikeCount; ?></h3>
-                                </button>
-                            </form>
-                        </div>
                     </div>
-                </aside>
+
+                    <aside class="article-sidebar col-12 col-lg-4">
+                        <h2>Autres articles</h2>
+                        <?php
+                        $randomArticles = sql_select("ARTICLE", "*", "1=1 ORDER BY RAND() LIMIT 3");
+
+                        if (!empty($randomArticles)):
+                            foreach ($randomArticles as $randomArticle): ?>
+                                <div class="random-article">
+                                    <img class="imagedroite img-fluid w-100" src="<?php echo ROOT_URL . '/src/uploads/' . ($randomArticle['urlPhotArt']); ?>" alt="Image article">
+                                    <h3 class="titredroite">
+                                        <?php echo ($randomArticle['libTitrArt']); ?>
+                                    </h3>
+                                    <p class="txtdroite">
+                                        <?php echo ($randomArticle['libChapoArt']); ?>
+                                    </p>
+                                    <a href="article.php?numArt=<?php echo $randomArticle['numArt']; ?>" class="btn btn-outline-primary btn-sm">Lire l'article →</a>
+                                </div>
+                            <?php endforeach;
+                        else: ?>
+                            <p>Aucun article disponible.</p>
+                        <?php endif; ?>
+                        <div class="likes-section">
+                            <h2>Évaluer cet article</h2>
+                            <div class="vote-buttons d-flex gap-3">
+                                <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post">
+                                    <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
+                                    <input type="hidden" name="likeA" value="1">
+                                    <button type="submit" class="btn btn-light d-flex align-items-center gap-2 <?php echo $userVote === 1 ? 'active-like' : ''; ?>">
+                                        <img src="<?php echo ROOT_URL; ?>/src/images/pnglike.png" alt="Like">
+                                        <span><?php echo $likeCount; ?></span>
+                                    </button>
+                                </form>
+
+                                <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post">
+                                    <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
+                                    <input type="hidden" name="likeA" value="0">
+                                    <button type="submit" class="btn btn-light d-flex align-items-center gap-2 <?php echo $userVote === 0 ? 'active-dislike' : ''; ?>">
+                                        <img src="<?php echo ROOT_URL; ?>/src/images/pngdislike.png" alt="Dislike">
+                                        <span><?php echo $dislikeCount; ?></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
             </div>
         </section>
     </div>
