@@ -187,7 +187,7 @@ $renderMatchCard = static function (array $ba_bec_match): string {
                 <p class="match-card__location">Lieu : <?php echo htmlspecialchars($ba_bec_match['location']); ?></p>
             <?php endif; ?>
 
-            <a href="article.html" class="btn-more">En savoir plus</a>
+            <a href="erreur404.php" class="btn-more">En savoir plus</a>
         </article>
     </div>
     <?php

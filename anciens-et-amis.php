@@ -66,7 +66,7 @@ require_once 'header.php';
                 <p>
                     Quand est-ce qu'on se retrouve ? 
                 </p>
-                <a href="#retrouvailles">
+                <a href="erreur404.php">
                     Retrouvailles
                 </a>
             </div>
