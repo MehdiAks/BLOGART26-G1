@@ -43,6 +43,61 @@ $matchesStmt = $DB->prepare($matchesQuery);
 $matchesStmt->execute();
 $ba_bec_matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
 
+$seniorKeywords = [
+    'senior',
+    'sénior',
+    'pré-nationale',
+    'pre-nationale',
+];
+$clubIdentifiers = [
+    'bec',
+    'bordeaux',
+    'etudiant',
+];
+$isSeniorMatch = static function (array $match) use ($seniorKeywords): bool {
+    $haystack = strtolower(
+        ($match['competition'] ?? '') . ' ' . ($match['teamHome'] ?? '') . ' ' . ($match['teamAway'] ?? '')
+    );
+    foreach ($seniorKeywords as $keyword) {
+        if ($keyword !== '' && str_contains($haystack, $keyword)) {
+            return true;
+        }
+    }
+
+    return false;
+};
+$resolveClubTeam = static function (array $match) use ($clubIdentifiers): string {
+    $home = (string) ($match['teamHome'] ?? '');
+    $away = (string) ($match['teamAway'] ?? '');
+
+    foreach ($clubIdentifiers as $identifier) {
+        if ($identifier !== '' && stripos($home, $identifier) !== false) {
+            return $home;
+        }
+    }
+
+    foreach ($clubIdentifiers as $identifier) {
+        if ($identifier !== '' && stripos($away, $identifier) !== false) {
+            return $away;
+        }
+    }
+
+    return $home !== '' ? $home : $away;
+};
+$seniorMatches = [];
+foreach ($ba_bec_matches as $ba_bec_match) {
+    if (!$isSeniorMatch($ba_bec_match)) {
+        continue;
+    }
+
+    $teamKey = $resolveClubTeam($ba_bec_match);
+    if (!array_key_exists($teamKey, $seniorMatches)) {
+        $seniorMatches[$teamKey] = $ba_bec_match;
+    }
+}
+
+$ba_bec_matches = array_values($seniorMatches);
+
 $lastUpdateStmt = $DB->query($lastUpdateQuery);
 $lastUpdateRow = $lastUpdateStmt->fetch(PDO::FETCH_ASSOC);
 $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
@@ -51,10 +106,10 @@ $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
 <main class="container py-5">
     <section class="matches-hero">
         <p class="matches-hero__eyebrow">Calendrier</p>
-        <h1 class="matches-hero__title">Les prochains matchs du BEC</h1>
+        <h1 class="matches-hero__title">Les prochains matchs des équipes seniors</h1>
         <p class="matches-hero__text">
-            Retrouvez ici les prochaines rencontres du club. Les données sont synchronisées depuis le calendrier FFBB
-            et enregistrées sur le serveur pour un affichage rapide.
+            Retrouvez ici le prochain match de chaque équipe senior du club. Les données sont synchronisées depuis le
+            calendrier FFBB et enregistrées sur le serveur pour un affichage rapide.
         </p>
         <div class="matches-hero__meta">
             <span class="matches-hero__source">
@@ -86,7 +141,7 @@ $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
                         $score = (int) $ba_bec_match['scoreHome'] . ' - ' . (int) $ba_bec_match['scoreAway'];
                     }
                     ?>
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12">
                         <article class="match-card">
                             <header class="match-card__header">
                                 <div>
