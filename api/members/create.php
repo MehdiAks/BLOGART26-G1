@@ -30,9 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $ba_bec_pseudoMemb = null;
         }
     }
-    if (!$ba_bec_numStat) {
-        echo "dgegfhbfhbeh" ; 
-    }
+
     // Vérification mot de passe
     if (!preg_match('/[A-Z]/', $ba_bec_passMemb) || !preg_match('/[a-z]/', $ba_bec_passMemb) || !preg_match('/[0-9]/', $ba_bec_passMemb)) {
         $ba_bec_errors[] = "Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre.";

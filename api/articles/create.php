@@ -6,17 +6,18 @@ require_once '../../functions/ctrlSaisies.php';
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+$ba_bec_nom_image = null;
 
-$ba_bec_libTitrArt = ctrlSaisies($_POST['libTitrArt']);
-$ba_bec_libChapoArt = ctrlSaisies($_POST['libChapoArt']);
-$ba_bec_libAccrochArt = ctrlSaisies($_POST['libAccrochArt']);
-$ba_bec_parag1Art = ctrlSaisies($_POST['parag1Art']);
-$ba_bec_libSsTitr1Art = ctrlSaisies($_POST['libSsTitr1Art']);
-$ba_bec_parag2Art = ctrlSaisies($_POST['parag2Art']);
-$ba_bec_libSsTitr2Art = ctrlSaisies($_POST['libSsTitr2Art']);
-$ba_bec_parag3Art = ctrlSaisies($_POST['parag3Art']);
-$ba_bec_libConclArt = ctrlSaisies($_POST['libConclArt']);
-$ba_bec_numThem = ctrlSaisies($_POST['numThem']);
+$ba_bec_libTitrArt = ctrlSaisies($_POST['libTitrArt'] ?? '');
+$ba_bec_libChapoArt = ctrlSaisies($_POST['libChapoArt'] ?? '');
+$ba_bec_libAccrochArt = ctrlSaisies($_POST['libAccrochArt'] ?? '');
+$ba_bec_parag1Art = ctrlSaisies($_POST['parag1Art'] ?? '');
+$ba_bec_libSsTitr1Art = ctrlSaisies($_POST['libSsTitr1Art'] ?? '');
+$ba_bec_parag2Art = ctrlSaisies($_POST['parag2Art'] ?? '');
+$ba_bec_libSsTitr2Art = ctrlSaisies($_POST['libSsTitr2Art'] ?? '');
+$ba_bec_parag3Art = ctrlSaisies($_POST['parag3Art'] ?? '');
+$ba_bec_libConclArt = ctrlSaisies($_POST['libConclArt'] ?? '');
+$ba_bec_numThem = ctrlSaisies($_POST['numThem'] ?? '');
         
 
 if (function_exists('mb_substr')) {
@@ -26,7 +27,6 @@ if (function_exists('mb_substr')) {
 }
 
 $ba_bec_numMotCle = isset($_POST['motCle']) ? (array) $_POST['motCle'] : [];
-$ba_bec_urlPhotArt = "";
 if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
     $ba_bec_tmpName = $_FILES['urlPhotArt']['tmp_name'];
     $ba_bec_name = $_FILES['urlPhotArt']['name'];
@@ -54,12 +54,19 @@ if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
 
 }
 
+if ($ba_bec_numThem === '' || !is_numeric($ba_bec_numThem)) {
+    http_response_code(400);
+    echo "Veuillez sélectionner une thématique valide.";
+    exit;
+}
+
+$ba_bec_urlPhotValue = $ba_bec_nom_image ? "'$ba_bec_nom_image'" : "NULL";
 
 // Insertion dans la table ARTICLE
 sql_insert(
     'ARTICLE',
     'libTitrArt, libChapoArt, libAccrochArt, parag1Art, libSsTitr1Art, parag2Art, libSsTitr2Art, parag3Art, libConclArt, urlPhotArt, numThem',
-    "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', '$ba_bec_nom_image', '$ba_bec_numThem'"
+    "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', $ba_bec_urlPhotValue, '$ba_bec_numThem'"
 );
 $ba_bec_lastArt = sql_select('ARTICLE', 'numArt', null, 'numArt DESC')[0]['numArt'];
 
