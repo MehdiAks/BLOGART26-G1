@@ -36,6 +36,9 @@ $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="carousel-item active">
                     <img src="<?php echo ROOT_URL . '/src/images/background/background-actualite.jpg'; ?>" class="d-block w-100"
                         alt="Première image du carrousel">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h2 class="fw-semibold">Bienvenue au BEC</h2>
+                    </div>
                 </div>
                 <div class="carousel-item">
                     <img src="<?php echo ROOT_URL . '/src/images/background/background-article.jpg'; ?>" class="d-block w-100"
@@ -67,6 +70,33 @@ $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="d-flex gap-2">
                 <a class="btn btn-primary" href="actualites.php">Voir les actualités</a>
                 <a class="btn btn-outline-secondary" href="contact.php">Nous contacter</a>
+            </div>
+        </section>
+
+        <section class="p-4 p-md-5 bg-light border rounded-3 shadow-sm mb-5">
+            <h2 class="mb-4">Nos prochains matchs à Barbey !</h2>
+            <p class="text-body-secondary mb-4">Retrouvez nos équipes à domicile, à Barbey.</p>
+            <div class="row g-4">
+                <div class="col-12 col-lg-6">
+                    <article class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <span class="badge text-bg-primary mb-2">Équipe 1 Garçons</span>
+                            <h3 class="h5 mb-2">BEC 1 Garçons vs. Stade Bordelais</h3>
+                            <p class="mb-1"><strong>Samedi 18 mai</strong> • 20h30</p>
+                            <p class="mb-0 text-body-secondary">Gymnase Barbey</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <article class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <span class="badge text-bg-danger mb-2">Équipe 1 Filles</span>
+                            <h3 class="h5 mb-2">BEC 1 Filles vs. Lormont</h3>
+                            <p class="mb-1"><strong>Dimanche 19 mai</strong> • 17h00</p>
+                            <p class="mb-0 text-body-secondary">Gymnase Barbey</p>
+                        </div>
+                    </article>
+                </div>
             </div>
         </section>
 
