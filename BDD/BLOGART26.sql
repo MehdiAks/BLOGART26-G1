@@ -342,7 +342,7 @@ INSERT INTO `MEMBRE` (`numMemb`, `prenomMemb`, `nomMemb`, `pseudoMemb`, `passMem
 --
 
 CREATE TABLE `MOTCLE` (
-  `numMotCle` int NOT NULL,
+  `numMotCle` int NOT NULL AUTO_INCREMENT,
   `libMotCle` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
