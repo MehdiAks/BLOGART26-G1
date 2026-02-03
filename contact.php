@@ -17,9 +17,6 @@ require_once 'header.php';
                     <strong>Email :</strong> contact@bec-bordeaux.fr<br>
                     <strong>Téléphone :</strong> 06 71 94 23 80
                 </p>
-                <a href="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80">
-                    Télécharger equipe-contact.jpg
-                </a>
             </div>
         </div>
 
