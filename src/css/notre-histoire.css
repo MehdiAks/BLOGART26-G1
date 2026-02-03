@@ -1,0 +1,28 @@
+/* Styles dédiés à la page Notre Histoire */
+
+.article-content {
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.article-content h2 {
+    color: var(--bec-accent);
+    margin-bottom: 1rem;
+}
+
+.article-content p {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.article-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Centrer le titre h1 */
+h1 {
+    text-align: center;
+}
