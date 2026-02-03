@@ -239,9 +239,6 @@ $hasBackgroundVideo = $pageHasVideo ?? false;
                         <a href="<?php echo ROOT_URL . '/matches.php'; ?>">Matchs</a>
                     </li>
                     <li>
-                        <a href="<?php echo ROOT_URL . '/contact.php'; ?>">Contact</a>
-                    </li>
-                    <li>
                         <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>">Anciens et amis</a>
                     </li>
                 </ul>
