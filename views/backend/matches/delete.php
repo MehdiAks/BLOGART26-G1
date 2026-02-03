@@ -8,9 +8,19 @@ $ba_bec_tableCheckStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
 $ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
 
 $ba_bec_match = null;
-if (!$ba_bec_hasBecMatchesTable && isset($_GET['numMatch'])) {
+if (isset($_GET['numMatch'])) {
     $ba_bec_numMatch = (int) $_GET['numMatch'];
-    $ba_bec_match = sql_select('MATCH_CLUB', '*', "numMatch = $ba_bec_numMatch");
+    if ($ba_bec_hasBecMatchesTable) {
+        $ba_bec_match = sql_select(
+            'bec_matches',
+            "MatchNo AS numMatch,
+            Equipe_domicile AS teamHome,
+            Equipe_exterieure AS teamAway",
+            "MatchNo = $ba_bec_numMatch"
+        );
+    } else {
+        $ba_bec_match = sql_select('MATCH_CLUB', '*', "numMatch = $ba_bec_numMatch");
+    }
     $ba_bec_match = $ba_bec_match[0] ?? null;
 }
 ?>
@@ -21,12 +31,7 @@ if (!$ba_bec_hasBecMatchesTable && isset($_GET['numMatch'])) {
             <h1>Suppression match</h1>
         </div>
         <div class="col-md-12">
-            <?php if ($ba_bec_hasBecMatchesTable) : ?>
-                <div class="alert alert-info">
-                    La suppression des matchs est désactivée pour la table bec_matches.
-                </div>
-                <a href="list.php" class="btn btn-primary">Retour</a>
-            <?php elseif ($ba_bec_match) : ?>
+            <?php if ($ba_bec_match) : ?>
                 <form action="<?php echo ROOT_URL . '/api/matches/delete.php' ?>" method="post">
                     <div class="form-group">
                         <label for="numMatch">ID match</label>

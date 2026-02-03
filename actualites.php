@@ -3,7 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [
     ROOT_URL . '/src/css/style.css',
-    ROOT_URL . '/src/css/styleactu.css',
+    ROOT_URL . '/src/css/actualites.css',
 ];
 
 require_once 'header.php';
