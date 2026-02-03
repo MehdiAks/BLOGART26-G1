@@ -7,9 +7,10 @@ require_once 'header.php';
     <div class="mb-5">
         <h1 class="mb-3">Anciens et amis du BEC</h1>
         <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi notez que nos anciens et amis
-            partagent la même passion pour le club et continuent d'écrire son histoire. Integer nec lectus sed
-            ligula gravida commodo in sed neque.
+            Depuis plus de 125 ans, le BEC rayonne !
+        </p>
+        <p>
+            Rejoignez l’association des Anciens et Amis du Bordeaux Etudiants Club. Près de 1000 membres sont déjà inscrits, alors pourquoi pas vous ?
         </p>
     </div>
 
@@ -21,13 +22,12 @@ require_once 'header.php';
                     class="article-image mb-3"
                     alt="Ancien joueur en entraînement"
                 >
-                <h2 class="h5">Portraits d'anciens</h2>
+                <h2 class="h5">Annuaire</h2>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse potenti. Vestibulum ante
-                    ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.
+                    Retrouvez les anciens du BEC sur notre annuaire ! Vous voulez nous rejoindre ? Retrouvez les tarifs et informations sur le lien suivant :
                 </p>
-                <a href="src/images/background/background-actualite.jpg">
-                    Voir la galerie anciens-joueurs.jpg
+                <a href="https://anciensbec-bordeaux.fr/lannuaire/">
+                    Annuaire du BEC 
                 </a>
             </div>
         </div>
