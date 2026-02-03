@@ -34,8 +34,10 @@
 }
 
 .btn-more {
-    background-color: red;
+    background-color: #67081d;
+    color: #ddd;
     padding: 10px;
+    border-radius: 25px;
 }
 
 .match-card__date {
