@@ -43,10 +43,17 @@
 }
 
 .match-card__team {
-    display: flex;
-    flex-direction: column;
+    display: block;
     align-items: center;
 }
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    justify-content: center;
+}
+
 
 .match-card__location {
     padding: 20px;
