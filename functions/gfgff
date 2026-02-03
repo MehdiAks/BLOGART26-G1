@@ -1,0 +1,1 @@
+Warning: Cannot modify header information - headers already sent by (output started at /Users/phuongmy/Desktop/MMI /1A/Blog-ART-BEC/Blog-ART-BEC/header.php:17) in /Users/phuongmy/Desktop/MMI /1A/Blog-ART-BEC/Blog-ART-BEC/functions/redirec.php on line 14

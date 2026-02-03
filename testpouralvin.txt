@@ -1,0 +1,11 @@
+A copier Dans le SQL
+
+CREATE TABLE IF NOT EXISTS COOKIE_CONSENT (
+    numCon INT AUTO_INCREMENT PRIMARY KEY,
+    ipAdresse VARCHAR(45) NOT NULL,
+    choixConsent ENUM('accepted', 'rejected') NOT NULL,
+    dateCon DATETIME DEFAULT CURRENT_TIMESTAMP,
+    dateExpiration DATETIME NOT NULL,
+    INDEX idx_ip (ipAdresse),
+    INDEX idx_expiration (dateExpiration)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -1,0 +1,671 @@
+/* Commentaire: Feuille de style pour style. */
+
+
+html, body {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    font-family: "Epilogue", sans-serif !important;
+    overflow-x: hidden;
+    text-align: center !important;
+}
+.header-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+.header-right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+
+}
+.rowlog {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 50px;
+    width: 100%;
+}
+.collumnslog {
+
+    width: 30%;
+}
+dl, ol, ul {
+    margin-top: 0;
+    margin-bottom: 0rem !important;
+}
+#menu {
+    background-color: #67081D;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Epilogue", sans-serif;
+    font-weight: 400;
+    font-size: 22px !important;
+    padding: 20px 50px;
+    height: 110px;
+}
+
+#menu ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+#menu ul li a {
+    text-decoration: none;
+    color: white;
+}
+#menu .headerh2 {
+    color: white;
+    height: 100%;
+    margin: 0;
+    font-size: 35px !important;
+    font-weight: 700;
+}
+
+#menu ul li a:hover {
+    transition: 0.3s;
+    color: #bd7575;
+}
+
+#menu .bouton-connexion {
+    color: #67081D;
+    background-color: white;
+    outline: 2px solid white;
+    border-radius: 40px;
+    padding: 8px 25px;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+#menu .bouton-connexion:hover {
+    color: white;
+    background-color: transparent;
+}
+
+.logged-in {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 7px;
+}
+
+#menu .bouton-deconnexion {
+    color: white;
+    background-color: transparent;
+    outline: 2px solid white;
+    border-radius: 40px 2px 2px 40px;
+    padding: 8px 25px;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Ajout de transition pour transformer, couleur et fond */
+}
+
+#menu .bouton-deconnexion:hover {
+    background-color: white;
+    color: #67081D;
+}
+
+#menu .bouton-profil {
+    color: #67081D;
+    background-color: white;
+    outline: 2px solid white;
+    border-radius: 2px 40px 40px 2px;
+    padding: 8px 25px;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+#menu .bouton-profil:hover {
+    color: white;
+    background-color: transparent;
+    outline: 2px solid white;
+}
+
+.link {
+    text-decoration: none;
+    color: #67081D;
+}
+
+.link:hover {
+    transition: 0.3s;
+    text-decoration: underline;
+}
+
+ul {
+
+    margin-block-start: 0em;
+    margin-block-end: 0px !important;
+    padding-inline-start: 0px;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Montserrat", sans-serif;
+}
+h1 { 
+    margin: 80px;
+    text-transform: uppercase !important;
+    font-size: 90px !important;
+    text-align: center;
+    font-family: "Montserrat", sans-serif !important;
+}
+
+
+/*MISE EN FORME DU FORMULAIRE DE CONTACT*/
+h1 {
+    margin: 70px !important;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 40px 16px 80px;
+}
+
+.auth-card {
+    width: min(92vw, 620px);
+    min-height: 520px;
+    background: #ffffff;
+    border-radius: 28px;
+    padding: 40px 48px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.auth-card h1 {
+    margin: 0 0 24px !important;
+    font-size: 40px !important;
+}
+
+.auth-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.auth-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.signup-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 26px;
+    width: 100%;
+}
+
+.signup-grid .full {
+    grid-column: 1 / -1;
+}
+
+.signup-grid .offset-right {
+    grid-column: 1 / -1;
+    margin-left: 24px;
+    width: calc(100% - 24px);
+}
+
+.champ {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.champ label {
+    align-self: flex-start;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.champ input {
+    width: 100%;
+    font-family: "Epilogue", sans-serif;
+    border: none;
+    border-bottom: 2px solid #cccccc; /* Ajoute uniquement une ligne en bas */
+    outline: none; /* Supprime le contour bleu par défaut */
+    
+}
+
+.auth-card .champ {
+    margin-bottom: 0;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.auth-card .champ label {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.auth-card .champ input {
+    border: 1px solid #e4dada;
+    border-radius: 16px;
+    padding: 14px 16px;
+    background: #ffffff;
+    box-shadow: 0 12px 24px rgba(103, 8, 29, 0.08);
+}
+
+.auth-card .champ input:focus {
+    border-color: #67081D;
+    box-shadow: 0 0 0 3px rgba(103, 8, 29, 0.12);
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon input {
+    padding-right: 48px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    padding: 4px;
+    cursor: pointer;
+    color: #67081D;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle .icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+    object-fit: contain;
+}
+
+.password-toggle .icon-open {
+    display: none;
+}
+
+.password-toggle.is-visible .icon-open {
+    display: block;
+}
+
+.password-toggle.is-visible .icon-closed {
+    display: none;
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid #67081D;
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+.checkbox-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 16px;
+    justify-content: center;
+}
+
+.checkbox-row label {
+    margin-bottom: 0;
+    font-size: 15px;
+}
+
+.checkbox-row input {
+    width: auto;
+}
+
+.captcha-row {
+    margin-top: 18px;
+}
+
+input:focus {
+    transition: border-color 0.3s ease;
+    border-bottom: 2px solid #67081D; 
+}
+
+.btn-se-connecter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.btn-se-connecter a {
+    font-size: 15px;
+}
+
+.btn-se-connecter button {
+    color: white;
+    background-color: #67081D;
+    border: none;
+    border-radius: 40px;
+    padding: 8px 25px;
+    cursor: pointer;
+    font-family: "Epilogue", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.btn-se-connecter button:hover {
+    transition: 0.3s;
+    background: #a3082a;
+}
+
+.h1-mdp {
+    margin-bottom: 0;
+}
+
+formp {
+    margin-bottom: 70px;
+}
+
+.btn-mdp {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    margin-bottom: 40px;
+}
+
+.btn-mdp button {
+    color: white;
+    background-color: #67081D;
+    border: none;
+    border-radius: 40px;
+    padding: 8px 25px;
+    cursor: pointer;
+    font-family: "Epilogue", sans-serif;
+    font-weight: 500;
+    font-size: 16px;  
+}
+
+.btn-mdp button:hover {
+    transition: 0.3s;
+    background: #a3082a;
+}
+
+.afficher-mdp {
+    display: flex;
+    align-self: flex-start;
+    gap: 10px;
+    cursor: pointer; 
+    white-space: nowrap; 
+}
+
+.afficher-mdp label {
+    font-size: 16px;
+    font-weight:300;
+}
+
+@media (max-width: 768px) {
+    .auth-card {
+        padding: 32px 24px;
+    }
+
+    .auth-card h1 {
+        font-size: 30px !important;
+    }
+
+    .signup-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .signup-grid .offset-right {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+/* Style général du pop-up */
+.cookie-popup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    display: none; /* Initialement masqué */
+    z-index: 1000;
+    box-shadow: 0px -2px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Contenu du pop-up */
+.cookie-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Titre */
+.cookie-content h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+/* Paragraphe du message */
+.cookie-content p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Boutons */
+.cookie-buttons {
+    margin-top: 20px;
+}
+
+.cookie-buttons button {
+    background-color: #4CAF50; /* Vert */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.cookie-buttons button:hover {
+    background-color: #45a049; /* Vert foncé au survol */
+}
+
+.cookie-buttons #reject-cookies {
+    background-color: #f44336; /* Rouge */
+}
+
+.cookie-buttons #reject-cookies:hover {
+    background-color: #e53935; /* Rouge foncé */
+}
+
+/* Section responsive (pour les petits écrans) */
+@media (max-width: 600px) {
+    .cookie-popup {
+        font-size: 14px;
+        padding: 15px;
+    }
+
+    .cookie-buttons button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+@media (max-width: 768px) {
+    #menu {
+        flex-direction: column; /* Stack items vertically */
+        padding: 15px 30px; /* Reduce padding */
+        height: auto; /* Remove fixed height */
+    }
+
+    #menu ul {
+        flex-direction: column; /* Stack the links vertically */
+        gap: 20px; /* Add some space between items */
+        text-align: center; /* Center-align the text */
+    }
+
+    .header-left, .header-right {
+        width: 100%;
+        justify-content: center; /* Center the elements */
+    }
+
+    .logo-header {
+        margin-bottom: 10px; /* Add some space at the bottom for mobile */
+    }
+
+    .headerh2 {
+        font-size: 25px; /* Reduce font size for smaller screens */
+    }
+
+    .logged-in, .bouton-connexion, .bouton-deconnexion, .bouton-profil {
+        width: 100%;
+        text-align: center; /* Center the buttons */
+        padding: 10px;
+    }
+
+    /* Style for the navbar menu button for smaller screens (Hamburger menu) */
+    .navbar-toggler {
+        display: block; /* Show the toggle button */
+    }
+
+    .navbar-nav {
+        display: none; /* Hide menu items by default */
+    }
+
+    .navbar-toggler.collapsed + .navbar-nav {
+        display: block; /* Show menu items when toggle is clicked */
+    }
+
+    /* Adjust button sizes */
+    .bouton-connexion, .bouton-deconnexion, .bouton-profil {
+        padding: 8px 20px;
+        font-size: 16px;
+    }
+
+    /* Responsive design for the cookie popup */
+    .cookie-popup {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+    .cookie-buttons button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+.cookie-popup {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    padding: 30px;
+    z-index: 9999;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.cookie-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cookie-content h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.cookie-content p {
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.cookie-buttons button {
+    padding: 12px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#reject-cookies {
+    background: #666;
+    color: white;
+}
+
+#reject-cookies:hover {
+    background: #555;
+}
+
+#accept-cookies {
+    background: #4CAF50;
+    color: white;
+}
+
+#accept-cookies:hover {
+    background: #45a049;
+}
+
+@media (max-width: 768px) {
+    .cookie-buttons {
+        flex-direction: column;
+    }
+    
+    .cookie-buttons button {
+        width: 100%;
+    }
+}
+
+/* Styles importés depuis Romain/assets/css/style.css */
+/* Commentaire: Feuille de style pour style. */
+body{
+    background-color: var(--bg-color);
+}
+
+.article-content {
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+}
+
+.article-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: 12px;
+}
