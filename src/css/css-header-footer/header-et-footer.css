@@ -70,6 +70,7 @@
             border-bottom: none;
             position: relative;
             z-index: 1;
+            font-family: "Epilogue", sans-serif;
         }
 
         .site-header .navbar-brand span {
@@ -94,7 +95,7 @@
             color: var(--bec-dark);
             text-decoration: none;
             font-weight: 500;
-            font-family: "Montserrat", sans-serif;
+            font-family: "Epilogue", sans-serif;
         }
 
         .site-header .header-nav a:hover,
