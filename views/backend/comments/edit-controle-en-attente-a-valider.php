@@ -3,20 +3,20 @@ include '../../../header.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirecmodo.php';
 
 if(isset($_GET['numCom'])){
-    $numCom = $_GET['numCom'];
-    $dtCreaCom = sql_select("comment", "dtCreaCom", "numCom = $numCom")[0]['dtCreaCom'];
-    $libCom = sql_select("comment", "libCom", "numCom = $numCom")[0]['libCom'];
-    $dtModCom = sql_select("comment", "dtModCom", "numCom = $numCom")[0]['dtModCom'];
-    $attModOK = sql_select("comment", "attModOK", "numCom = $numCom")[0]['attModOK'];
-    $notifComKOAff = sql_select("comment", "notifComKOAff", "numCom = $numCom")[0]['notifComKOAff'];
-    $dtDelLogCom = sql_select("comment", "dtDelLogCom", "numCom = $numCom")[0]['dtDelLogCom'];
-    $delLogiq = sql_select("comment", "delLogiq", "numCom = $numCom")[0]['delLogiq'];
-    $numArt = sql_select("comment", "numArt", "numCom = $numCom")[0]['numArt'];
-    $numMemb = sql_select("comment", "numMemb", "numCom = $numCom")[0]['numMemb'];
+    $ba_bec_numCom = $_GET['numCom'];
+    $ba_bec_dtCreaCom = sql_select("comment", "dtCreaCom", "numCom = $ba_bec_numCom")[0]['dtCreaCom'];
+    $ba_bec_libCom = sql_select("comment", "libCom", "numCom = $ba_bec_numCom")[0]['libCom'];
+    $ba_bec_dtModCom = sql_select("comment", "dtModCom", "numCom = $ba_bec_numCom")[0]['dtModCom'];
+    $ba_bec_attModOK = sql_select("comment", "attModOK", "numCom = $ba_bec_numCom")[0]['attModOK'];
+    $ba_bec_notifComKOAff = sql_select("comment", "notifComKOAff", "numCom = $ba_bec_numCom")[0]['notifComKOAff'];
+    $ba_bec_dtDelLogCom = sql_select("comment", "dtDelLogCom", "numCom = $ba_bec_numCom")[0]['dtDelLogCom'];
+    $ba_bec_delLogiq = sql_select("comment", "delLogiq", "numCom = $ba_bec_numCom")[0]['delLogiq'];
+    $ba_bec_numArt = sql_select("comment", "numArt", "numCom = $ba_bec_numCom")[0]['numArt'];
+    $ba_bec_numMemb = sql_select("comment", "numMemb", "numCom = $ba_bec_numCom")[0]['numMemb'];
 
-    $pseudoMemb = sql_select("membre", "pseudoMemb", "numMemb = $numMemb")[0]['pseudoMemb'];
-    $libTitrArt = sql_select("article", "libTitrArt", "numArt = $numArt")[0]['libTitrArt'];
-    $parag1Art = sql_select("article", "parag1Art", "numArt = $numArt")[0]['parag1Art'];
+    $ba_bec_pseudoMemb = sql_select("membre", "pseudoMemb", "numMemb = $ba_bec_numMemb")[0]['pseudoMemb'];
+    $ba_bec_libTitrArt = sql_select("article", "libTitrArt", "numArt = $ba_bec_numArt")[0]['libTitrArt'];
+    $ba_bec_parag1Art = sql_select("article", "parag1Art", "numArt = $ba_bec_numArt")[0]['parag1Art'];
 }
 ?>
 
@@ -32,40 +32,40 @@ if(isset($_GET['numCom'])){
 
                 <div class="form-group">
                     <label for="libTitrArt"><h2>Titre de l'article</h2></label>
-                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($numCom); ?>" readonly="readonly" />
-                    <input id="libTitrArt" name="libTitrArt" class="form-control" type="text" value="<?php echo ($libTitrArt); ?>" readonly="readonly"/>
+                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($ba_bec_numCom); ?>" readonly="readonly" />
+                    <input id="libTitrArt" name="libTitrArt" class="form-control" type="text" value="<?php echo ($ba_bec_libTitrArt); ?>" readonly="readonly"/>
                 </div>
                 <br>
 
                 <div class="form-group">
                     <label for="pseudoMemb" for="dtCreaCom"><h2>Information commentaire</h2></label>
                     <p><u>Nom d'utilisateur :</u></p>
-                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($numCom); ?>" readonly="readonly" />
-                    <input id="pseudoMemb" name="pseudoMemb" class="form-control" type="text" value="<?php echo ($pseudoMemb); ?>" readonly="readonly" />
+                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($ba_bec_numCom); ?>" readonly="readonly" />
+                    <input id="pseudoMemb" name="pseudoMemb" class="form-control" type="text" value="<?php echo ($ba_bec_pseudoMemb); ?>" readonly="readonly" />
                     <br>
                     <p><u>Date de création :</u></p>
-                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($numCom); ?>" readonly="readonly" />
-                    <input id="dtCreaCom" name="dtCreaCom" class="form-control" type="text" value="<?php echo ($dtCreaCom); ?>" readonly="readonly" />
+                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($ba_bec_numCom); ?>" readonly="readonly" />
+                    <input id="dtCreaCom" name="dtCreaCom" class="form-control" type="text" value="<?php echo ($ba_bec_dtCreaCom); ?>" readonly="readonly" />
                 </div>
                 <br>
 
                 <div class="form-group">
                     <label for="libCom"><h2>Contenu du commentaire</h2></label>
-                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($numCom); ?>" readonly="readonly" />
-                    <textarea id="libCom" name="libCom" class="form-control" rows="6"><?php echo ($libCom); ?></textarea>
+                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($ba_bec_numCom); ?>" readonly="readonly" />
+                    <textarea id="libCom" name="libCom" class="form-control" rows="6"><?php echo ($ba_bec_libCom); ?></textarea>
                 </div>
                 <br>
 
                 <div class="form-group"></div>
                     <label for="attModOK"><h2>Validation du commentaire</h2></label> 
-                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($numCom); ?>" readonly="readonly" />
+                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($ba_bec_numCom); ?>" readonly="readonly" />
                     <br>
                         <label>
-                                <input type="radio" name="attModOK" value="1" <?php echo ($attModOK == 1) ? 'checked' : ''; ?>> Valider le commentaire
+                                <input type="radio" name="attModOK" value="1" <?php echo ($ba_bec_attModOK == 1) ? 'checked' : ''; ?>> Valider le commentaire
                         </label>
                         <br>
                         <label>
-                                <input type="radio" name="attModOK" value="0" <?php echo ($attModOK == 0) ? 'checked' : ''; ?>> Refuser le commentaire
+                                <input type="radio" name="attModOK" value="0" <?php echo ($ba_bec_attModOK == 0) ? 'checked' : ''; ?>> Refuser le commentaire
                         </label>
                     </div>
                 </div>
@@ -74,8 +74,8 @@ if(isset($_GET['numCom'])){
                 <div class="form-group">
                     <label for="parag1Art"><h2>Raison du refus</h2></label>
                     <p>A remplir seulement si le commentaire est refusé</p>
-                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($numCom); ?>" readonly="readonly" />
-                    <textarea id="notifComKOAff" name="notifComKOAff" class="form-control" rows="10"><?php echo ($notifComKOAff); ?></textarea>
+                    <input id="numCom" name="numCom" class="form-control" style="display: none" type="text" value="<?php echo ($ba_bec_numCom); ?>" readonly="readonly" />
+                    <textarea id="notifComKOAff" name="notifComKOAff" class="form-control" rows="10"><?php echo ($ba_bec_notifComKOAff); ?></textarea>
                 </div>
                 <br>
                 <br>
