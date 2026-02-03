@@ -63,6 +63,7 @@
         .site-header .navbar-brand {
             font-weight: 700;
             color: var(--bec-dark);
+            padding-right: 60px;
         }
 
         .site-header {
@@ -87,8 +88,8 @@
             padding: 0;
             list-style: none;
             display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
+            gap: 60px;
+            justify-content: center;
         }
 
         .site-header .header-nav a {
