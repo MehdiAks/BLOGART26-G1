@@ -1,4 +1,4 @@
-.matches-hero__title{
+.matches-hero__title {
     text-align: center;
     font-size: 60px;
 }
@@ -9,7 +9,7 @@
 }
 
 .matches-hero__meta {
-margin-top: 60px;
+    margin-top: 60px;
 }
 
 .matches-list__title {
@@ -17,10 +17,42 @@ margin-top: 60px;
     margin-top: 90px;
 }
 
-.col-12{
+.match-card {
     text-align: center;
+}
+
+.match-card__competition {
+    text-align: left;
+    font-size: 45px;
+}
+
+.col-12 {
     background-color: white;
     border: 1px solid #ddd;
     margin-bottom: 20px;
     padding: 2rem;
+}
+
+.btn-more {
+    background-color: red;
+    padding: 10px;
+}
+
+.match-card__date {
+    text-align: right;
+}
+
+.match-card__team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.match-card__location {
+    padding: 20px;
+}
+
+.match-card__score {
+    font-size: 40px;
+    font-weight: bold;
 }

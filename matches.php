@@ -169,9 +169,6 @@ $renderMatchCard = static function (array $ba_bec_match): string {
                         <?php endif; ?>
                     </p>
                 </div>
-                <?php if (!empty($ba_bec_match['status'])): ?>
-                    <span class="match-card__status"><?php echo htmlspecialchars($ba_bec_match['status']); ?></span>
-                <?php endif; ?>
             </header>
             <div class="match-card__teams">
                 <div class="match-card__team">
@@ -189,6 +186,8 @@ $renderMatchCard = static function (array $ba_bec_match): string {
             <?php if (!empty($ba_bec_match['location'])): ?>
                 <p class="match-card__location">Lieu : <?php echo htmlspecialchars($ba_bec_match['location']); ?></p>
             <?php endif; ?>
+
+            <a href="article.html" class="btn-more">En savoir plus</a>
         </article>
     </div>
     <?php
