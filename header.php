@@ -72,6 +72,9 @@ $current_page = $_SERVER['SCRIPT_NAME'];
                         </span>
                     </summary>
                     <div class="header-burger-panel">
+                        <button type="button" class="header-burger-close" aria-label="Fermer le menu" onclick="this.closest('details').removeAttribute('open')">
+                            &times;
+                        </button>
                         <div class="header-burger-actions">
                             <p class="header-burger-title">Espace membre</p>
                             <?php if ($ba_bec_pseudoMemb): ?>
