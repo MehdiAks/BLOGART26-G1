@@ -17,7 +17,7 @@ $current_page = $_SERVER['SCRIPT_NAME'];
     <link href="<?php echo ROOT_URL . '/src/css/css-propre/style.css'; ?>" rel="stylesheet">
     <link href="<?php echo ROOT_URL . '/src/css/css-propre/fonts.css'; ?>" rel="stylesheet">
         <link href="<?php echo ROOT_URL . '/src/css/css-header-footer/header-et-footer.css'; ?>" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/src/images/logo.png" />
+    <link rel="icon" type="image/png" href="/src/images/logo.svg" />
     <?php if (!empty($pageStyles) && is_array($pageStyles)) : ?>
         <?php foreach ($pageStyles as $stylePath) : ?>
             <link href="<?php echo htmlspecialchars($stylePath); ?>" rel="stylesheet">

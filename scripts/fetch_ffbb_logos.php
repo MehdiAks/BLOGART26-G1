@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$defaultTeams = [
+$teams = [
     'senior-1' => 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983',
     'senior-2' => 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117',
     'senior-3-phase-reguliere' => 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647',
@@ -14,10 +14,7 @@ $defaultTeams = [
     'sf3-phase-reguliere' => 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370',
 ];
 
-$options = parse_cli_options($argv);
-$teams = $options['teams'] ?: $defaultTeams;
-$outputDir = $options['output'] ?: dirname(__DIR__) . '/src/images/ffbb-logos';
-
+$outputDir = dirname(__DIR__) . '/src/images/ffbb-logos';
 if (!is_dir($outputDir) && !mkdir($outputDir, 0775, true) && !is_dir($outputDir)) {
     fwrite(STDERR, "Impossible de créer le dossier de sortie: {$outputDir}" . PHP_EOL);
     exit(1);
@@ -95,95 +92,6 @@ function fetch_html(string $url, string $userAgent): ?string
     }
 
     return $html;
-}
-
-function parse_cli_options(array $argv): array
-{
-    $teams = [];
-    $output = null;
-
-    $args = $argv;
-    array_shift($args);
-    while ($args !== []) {
-        $arg = array_shift($args);
-        if ($arg === '--help' || $arg === '-h') {
-            print_usage();
-            exit(0);
-        }
-        if ($arg === '--output' || $arg === '-o') {
-            $output = array_shift($args);
-            continue;
-        }
-        if ($arg === '--list' || $arg === '-l') {
-            $file = array_shift($args);
-            if ($file === null || !is_file($file)) {
-                fwrite(STDERR, "Fichier de liste introuvable: {$file}" . PHP_EOL);
-                exit(1);
-            }
-            $teams = load_team_list($file);
-            continue;
-        }
-        if (str_contains($arg, '=')) {
-            [$slug, $url] = explode('=', $arg, 2);
-            if ($slug !== '' && $url !== '') {
-                $teams[$slug] = $url;
-            }
-            continue;
-        }
-        fwrite(STDERR, "Argument inconnu: {$arg}" . PHP_EOL);
-        print_usage();
-        exit(1);
-    }
-
-    return [
-        'teams' => $teams,
-        'output' => $output,
-    ];
-}
-
-function load_team_list(string $file): array
-{
-    $teams = [];
-    $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
-    foreach ($lines as $line) {
-        $line = trim($line);
-        if ($line === '' || str_starts_with($line, '#')) {
-            continue;
-        }
-        if (!str_contains($line, '=')) {
-            fwrite(STDERR, "Ligne invalide (format attendu slug=url): {$line}" . PHP_EOL);
-            continue;
-        }
-        [$slug, $url] = explode('=', $line, 2);
-        $slug = trim($slug);
-        $url = trim($url);
-        if ($slug !== '' && $url !== '') {
-            $teams[$slug] = $url;
-        }
-    }
-
-    return $teams;
-}
-
-function print_usage(): void
-{
-    $script = basename(__FILE__);
-    $message = <<<TXT
-Usage:
-  php {$script} [options] [slug=url ...]
-
-Options:
-  -h, --help           Afficher l'aide
-  -o, --output DIR     Dossier de sortie pour les logos
-  -l, --list FILE      Fichier texte (slug=url par ligne, # pour commentaire)
-
-Exemples:
-  php {$script}
-  php {$script} -o ./logos
-  php {$script} -l equipes.txt
-  php {$script} senior1=https://example.com/page
-TXT;
-    fwrite(STDOUT, $message . PHP_EOL);
 }
 
 function extract_image_urls(string $html, string $baseUrl): array
