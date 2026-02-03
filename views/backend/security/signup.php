@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+
+$pageStyles = [
+    ROOT_URL . '/src/css/signup.css',
+];
+
 include '../../../header.php';
 
 // Récupération des données de session
@@ -76,8 +83,8 @@ unset($_SESSION['errors'], $_SESSION['old']);
                             data-target="passMemb"
                             aria-label="Afficher le mot de passe"
                         >
-                            <img class="icon icon-closed" src="<?php echo ROOT_URL . '/src/images/eye-closed.png'; ?>" alt="Masquer le mot de passe">
-                            <img class="icon icon-open" src="<?php echo ROOT_URL . '/src/images/eye-open.png'; ?>" alt="Afficher le mot de passe">
+                            <span class="icon icon-closed">Masquer</span>
+                            <span class="icon icon-open">Afficher</span>
                         </button>
                     </div>
                     <small class="form-text text-muted">Au moins 8 caractères, une majuscule, une minuscule et un chiffre</small>
@@ -94,8 +101,8 @@ unset($_SESSION['errors'], $_SESSION['old']);
                             data-target="passMemb2"
                             aria-label="Afficher le mot de passe"
                         >
-                            <img class="icon icon-closed" src="<?php echo ROOT_URL . '/src/images/eye-closed.png'; ?>" alt="Masquer le mot de passe">
-                            <img class="icon icon-open" src="<?php echo ROOT_URL . '/src/images/eye-open.png'; ?>" alt="Afficher le mot de passe">
+                            <span class="icon icon-closed">Masquer</span>
+                            <span class="icon icon-open">Afficher</span>
                         </button>
                     </div>
                 </div>
