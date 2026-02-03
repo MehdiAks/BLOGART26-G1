@@ -189,6 +189,33 @@ create index COMMENT_FK on COMMENT
 
 -- ----------------------------------------------
 --
+-- Structure de la table MATCH_CLUB
+--
+/*=============================================*/
+/* Table : MATCH_CLUB                          */
+/*=============================================*/
+create table MATCH_CLUB
+(
+   numMatch int(10) not null auto_increment,
+   sourceId varchar(120) not null,
+   competition varchar(120) not null,
+   matchDate date not null,
+   matchTime time default null,
+   teamHome varchar(120) not null,
+   teamAway varchar(120) not null,
+   location varchar(160) default null,
+   status varchar(40) default null,
+   scoreHome int(5) default null,
+   scoreAway int(5) default null,
+   sourceUrl varchar(255) default null,
+   dtCreaMatch datetime default CURRENT_TIMESTAMP,
+   dtMajMatch datetime default null ON UPDATE CURRENT_TIMESTAMP,
+   primary key (numMatch),
+   unique key MATCH_SOURCE_UNIQUE (sourceId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------------------------
+--
 -- Structure de la table LIKEART   (TJ)
 --
 /*=============================================*/
