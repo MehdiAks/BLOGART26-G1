@@ -1,6 +1,6 @@
 /* Styles dédiés à la page Login */
 
-.login-card {
+.auth-card {
     background-color: #fff;
     border-radius: 0.75rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
@@ -8,27 +8,27 @@
     border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
-.login-card h1 {
+.auth-card h1 {
     color: var(--bec-accent);
     font-weight: 700;
 }
 
-.form-label {
+.champ label {
     font-weight: 500;
     color: #495057;
 }
 
-.form-control {
+.champ input {
     border-radius: 0.375rem;
     border: 1px solid #ced4da;
 }
 
-.form-control:focus {
+.champ input:focus {
     border-color: var(--bec-accent);
     box-shadow: 0 0 0 0.2rem rgba(103, 8, 29, 0.25);
 }
 
-.btn-bec-primary {
+.btn-se-connecter button {
     background-color: var(--bec-accent);
     border-color: var(--bec-accent);
     color: #fff;
@@ -36,26 +36,83 @@
     border-radius: 0.375rem;
 }
 
-.btn-bec-primary:hover {
+.btn-se-connecter button:hover {
     background-color: #8a0a27;
     border-color: #8a0a27;
 }
 
-.btn-outline-primary {
+.link {
     border-color: var(--bec-accent);
     color: var(--bec-accent);
     border-radius: 0.375rem;
 }
 
-.btn-outline-primary:hover {
+.link:hover {
     background-color: var(--bec-accent);
     border-color: var(--bec-accent);
 }
 
-.text-muted {
-    color: #6c757d !important;
+.alert {
+    padding: 0.75rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
 }
 
-.text-muted:hover {
-    color: var(--bec-accent) !important;
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.password-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+}
+
+.password-toggle .icon-closed {
+    display: inline;
+}
+
+.password-toggle .icon-open {
+    display: none;
+}
+
+.password-toggle.is-visible .icon-closed {
+    display: none;
+}
+
+.password-toggle.is-visible .icon-open {
+    display: inline;
+}
+
+.auth-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn-se-connecter {
+    margin-top: 20px;
+}
+
+p {
+    text-align: center;
+    margin-top: 20px;
+    color: #6c757d;
+}
+
+.link {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
 }
