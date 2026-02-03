@@ -58,7 +58,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<?php include '../../../header.php'; ?>
+<?php
+$pageStyles = [
+    ROOT_URL . '/src/css/login.css',
+];
+include '../../../header.php'; ?>
 
 <main class="auth-page">
     <section class="auth-card">
