@@ -33,20 +33,25 @@ $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
     <div id="carouselExampleAutoplaying" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="<?php echo ROOT_URL . '/src/images/image1.jpg'; ?>" class="d-block w-100" alt="Première image du carrousel">
+                <img src="<?php echo ROOT_URL . '/src/images/background/background-actualite.jpg'; ?>" class="d-block w-100"
+                    alt="Première image du carrousel">
             </div>
             <div class="carousel-item">
-                <img src="<?php echo ROOT_URL . '/src/images/image2.jpg'; ?>" class="d-block w-100" alt="Deuxième image du carrousel">
+                <img src="<?php echo ROOT_URL . '/src/images/background/background-article.jpg'; ?>" class="d-block w-100"
+                    alt="Deuxième image du carrousel">
             </div>
             <div class="carousel-item">
-                <img src="<?php echo ROOT_URL . '/src/images/image3.jpg'; ?>" class="d-block w-100" alt="Troisième image du carrousel">
+                <img src="<?php echo ROOT_URL . '/src/images/background/background-index.jpg'; ?>" class="d-block w-100"
+                    alt="Troisième image du carrousel">
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
@@ -89,7 +94,9 @@ $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="card mb-3 w-100" style="max-width: 540px;">
                         <div class="row g-0 h-100">
                             <div class="col-md-4">
-                                <img src="<?php echo $ba_bec_imagePath; ?>" class="img-fluid rounded-start h-100 object-fit-cover" alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
+                                <img src="<?php echo $ba_bec_imagePath; ?>"
+                                    class="img-fluid rounded-start h-100 object-fit-cover"
+                                    alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body d-flex flex-column h-100">

@@ -18,7 +18,7 @@ require_once 'header.php';
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
                 <img
-                    src="assets/images/background/background-actualite.jpg"
+                    src="src/images/background/background-actualite.jpg"
                     class="article-image mb-3"
                     alt="Ancien joueur en entraînement"
                 >
@@ -35,7 +35,7 @@ require_once 'header.php';
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
                 <img
-                    src="assets/images/background/background-article.jpg"
+                    src="src/images/background/background-article.jpg"
                     class="article-image mb-3"
                     alt="Supporters réunis"
                 >
@@ -52,7 +52,7 @@ require_once 'header.php';
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
                 <img
-                    src="assets/images/background/background-index.jpg"
+                    src="src/images/background/background-index.jpg"
                     class="article-image mb-3"
                     alt="Moment de convivialité"
                 >
