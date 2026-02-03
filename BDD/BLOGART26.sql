@@ -350,7 +350,8 @@ CREATE TABLE `MEMBRE` (
   `dtMajMemb` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `accordMemb` tinyint(1) DEFAULT '1',
   `cookieMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `numStat` int NOT NULL
+  `numStat` int NOT NULL,
+  PRIMARY KEY (`numMemb`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
@@ -452,7 +453,8 @@ INSERT INTO `STATUT` (`numStat`, `libStat`, `dtCreaStat`) VALUES
 
 CREATE TABLE `THEMATIQUE` (
   `numThem` int NOT NULL AUTO_INCREMENT,
-  `libThem` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
+  `libThem` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  PRIMARY KEY (`numThem`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
@@ -519,7 +521,6 @@ ALTER TABLE `LIKEART`
 -- Index pour la table `MEMBRE`
 --
 ALTER TABLE `MEMBRE`
-  ADD PRIMARY KEY (`numMemb`),
   ADD KEY `MEMBRE_FK` (`numMemb`),
   ADD KEY `FK_ASSOCIATION_4` (`numStat`);
 
@@ -549,7 +550,6 @@ ALTER TABLE `STATUT`
 -- Index pour la table `THEMATIQUE`
 --
 ALTER TABLE `THEMATIQUE`
-  ADD PRIMARY KEY (`numThem`),
   ADD KEY `THEMATIQUE_FK` (`numThem`);
 
 --
