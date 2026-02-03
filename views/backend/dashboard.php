@@ -98,6 +98,16 @@ include '../../header.php';
                             </td>
                             <td></td>
                         </tr>
+                        <tr>
+                            <td>Matchs</td>
+                            <td>
+                                <a href="/views/backend/matches/list.php" class="btn btn-primary">List</a>
+                                <a href="/views/backend/matches/create.php" class="btn btn-success">Create</a>
+                                <a href="/views/backend/matches/edit.php" class="btn btn-warning disabled">Edit</a>
+                                <a href="/views/backend/matches/delete.php" class="btn btn-danger disabled">Delete</a>
+                            </td>
+                            <td>Gestion des dates, horaires et résultats.</td>
+                        </tr>
                     </tbody>
             </div>
         </div>
