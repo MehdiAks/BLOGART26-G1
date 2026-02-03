@@ -7,9 +7,10 @@ require_once 'header.php';
     <div class="mb-5">
         <h1 class="mb-3">Anciens et amis du BEC</h1>
         <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi notez que nos anciens et amis
-            partagent la même passion pour le club et continuent d'écrire son histoire. Integer nec lectus sed
-            ligula gravida commodo in sed neque.
+            Depuis plus de 125 ans, le BEC rayonne !
+        </p>
+        <p>
+            Rejoignez l’association des Anciens et Amis du Bordeaux Etudiants Club. Près de 1000 membres sont déjà inscrits, alors pourquoi pas vous ?
         </p>
     </div>
 
@@ -21,13 +22,12 @@ require_once 'header.php';
                     class="article-image mb-3"
                     alt="Ancien joueur en entraînement"
                 >
-                <h2 class="h5">Portraits d'anciens</h2>
+                <h2 class="h5">Annuaire</h2>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse potenti. Vestibulum ante
-                    ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.
+                    Retrouvez les anciens du BEC sur notre annuaire ! Vous voulez nous rejoindre ? Retrouvez les tarifs et informations sur le lien suivant :
                 </p>
-                <a href="src/images/background/background-actualite.jpg">
-                    Voir la galerie anciens-joueurs.jpg
+                <a href="https://anciensbec-bordeaux.fr/lannuaire/">
+                    Annuaire du BEC 
                 </a>
             </div>
         </div>
@@ -39,13 +39,12 @@ require_once 'header.php';
                     class="article-image mb-3"
                     alt="Supporters réunis"
                 >
-                <h2 class="h5">Réseau des amis</h2>
+                <h2 class="h5">Amis et événements</h2>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent feugiat, lorem ac aliquet
-                    commodo, lorem ipsum consequat lectus, vitae commodo urna mauris nec metus.
+                    Retrouvez nos amis et événements sur Facebook 
                 </p>
-                <a href="src/images/background/background-article.jpg">
-                    Découvrir supporters-bec.jpg
+                <a href="https://www.facebook.com/becofficiel/?locale=fr_FR">
+                    Notre Facebook
                 </a>
             </div>
         </div>
@@ -57,13 +56,12 @@ require_once 'header.php';
                     class="article-image mb-3"
                     alt="Moment de convivialité"
                 >
-                <h2 class="h5">Événements & retrouvailles</h2>
+                <h2 class="h5">Retrouvailles et évenements</h2>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique, tellus id consequat
-                    sodales, nisl neque aliquet urna, ut viverra turpis leo non quam.
+                    Quand est-ce qu'on se retrouve ? 
                 </p>
                 <a href="src/images/background/background-index.jpg">
-                    Voir retrouvailles-anciens.jpg
+                    Retrouvailles
                 </a>
             </div>
         </div>
