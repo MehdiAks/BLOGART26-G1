@@ -30,8 +30,7 @@ $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <main class="site-main">
-    <div class="container-fluid px-0">
-        <div id="carouselExampleAutoplaying" class="carousel slide mb-5" data-bs-ride="carousel">
+    <div id="carouselExampleAutoplaying" class="carousel slide mb-5" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <img src="<?php echo ROOT_URL . '/src/images/background/background-actualite.jpg'; ?>" class="d-block w-100"
@@ -60,7 +59,6 @@ $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-    </div>
     <div class="container py-5">
         <section class="p-4 p-md-5 bg-white border rounded-3 shadow-sm mb-5">
             <h1 class="mb-3">Bienvenue au BEC</h1>
