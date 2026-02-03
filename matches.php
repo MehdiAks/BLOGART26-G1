@@ -9,16 +9,22 @@ require_once 'header.php';
 
 sql_connect();
 
+$tableCheckStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
+$hasBecMatchesTable = (bool) $tableCheckStmt->fetchColumn();
+$matchesTable = $hasBecMatchesTable ? 'bec_matches' : 'MATCH_CLUB';
+
 $matchesStmt = $DB->prepare(
-    'SELECT numMatch, competition, matchDate, matchTime, teamHome, teamAway, location, status, scoreHome, scoreAway
-     FROM MATCH_CLUB
+    "SELECT numMatch, competition, matchDate, matchTime, teamHome, teamAway, location, status, scoreHome, scoreAway
+     FROM {$matchesTable}
      WHERE matchDate >= CURDATE()
-     ORDER BY matchDate ASC, matchTime ASC'
+     ORDER BY matchDate ASC, matchTime ASC"
 );
 $matchesStmt->execute();
 $ba_bec_matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-$lastUpdateStmt = $DB->query('SELECT MAX(COALESCE(dtMajMatch, dtCreaMatch)) AS lastUpdate FROM MATCH_CLUB');
+$lastUpdateStmt = $DB->query(
+    "SELECT MAX(COALESCE(dtMajMatch, dtCreaMatch)) AS lastUpdate FROM {$matchesTable}"
+);
 $lastUpdateRow = $lastUpdateStmt->fetch(PDO::FETCH_ASSOC);
 $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
 ?>
