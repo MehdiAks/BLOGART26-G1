@@ -35,7 +35,7 @@ $club_pages = [
 <body class="<?php echo $hasBackgroundVideo ? 'has-site-video' : 'has-solid-bg'; ?>">
     <?php if ($hasBackgroundVideo): ?>
         <div class="site-background" aria-hidden="true">
-            <video class="site-background-video" autoplay muted loop playsinline poster="<?php echo ROOT_URL . '/src/images/background/background-index.jpg'; ?>">
+            <video class="site-background-video" autoplay muted loop playsinline poster="<?php echo ROOT_URL . '/src/images/background/background-index-1.webp'; ?>">
                 <source src="<?php echo ROOT_URL . '/src/videos/fond.mp4'; ?>" type="video/mp4">
             </video>
             <div class="site-background-overlay"></div>

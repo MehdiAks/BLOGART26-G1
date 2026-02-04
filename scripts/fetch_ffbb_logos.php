@@ -14,7 +14,7 @@ $teams = [
     'sf3-phase-reguliere' => 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370',
 ];
 
-$outputDir = dirname(__DIR__) . '/src/images/ffbb-logos';
+$outputDir = dirname(__DIR__) . '/src/images/logo/logo-recup';
 if (!is_dir($outputDir) && !mkdir($outputDir, 0775, true) && !is_dir($outputDir)) {
     fwrite(STDERR, "Impossible de créer le dossier de sortie: {$outputDir}" . PHP_EOL);
     exit(1);
