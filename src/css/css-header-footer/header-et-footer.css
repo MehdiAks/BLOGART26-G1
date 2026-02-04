@@ -75,7 +75,7 @@
         }
 
         .site-header .navbar-brand span {
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .site-header .navbar-nav .nav-link {
@@ -171,7 +171,7 @@
         }
 
         .site-logo {
-            height: 44px;
+            height: 38px;
             width: auto;
         }
 
@@ -411,6 +411,32 @@
             background: rgba(103, 8, 29, 0.06);
         }
 
+        .header-burger-group {
+            display: grid;
+            gap: 10px;
+        }
+
+        .header-burger-group-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(28, 28, 28, 0.6);
+            padding-left: 4px;
+        }
+
+        .header-burger-sublist {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .header-burger-sublist a {
+            font-weight: 500;
+            background: rgba(103, 8, 29, 0.04);
+        }
+
         .header-burger-nav a:hover,
         .header-burger-nav a:focus {
             background: rgba(103, 8, 29, 0.12);
@@ -452,4 +478,16 @@
         .header-burger-logout {
             color: var(--bec-accent);
             font-weight: 700;
+        }
+
+        @media (max-width: 992px) {
+            .site-header .header-nav {
+                display: none;
+            }
+
+            .site-header .container {
+                gap: 12px;
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+            }
         }

@@ -10,7 +10,7 @@
 }
 
 .home-carousel .carousel-item {
-    height: clamp(280px, 45vw, 480px);
+    height: clamp(240px, 40vw, 420px);
 }
 
 .home-carousel .carousel-item img {
