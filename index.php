@@ -253,17 +253,17 @@ foreach ($matches as $match) {
                     // 6) On ajoute "..." seulement si le chapo dépassait la limite.
                     $excerpt = $excerptBase . ($chapoLength > $maxLength ? '...' : '');
                     ?>
-                    <article class="card w-100">
-                        <div class="row g-0 h-100">
+                    <article class="card w-100 home-article-card">
+                        <div class="row g-3 h-100 align-items-center">
                             <div class="col-md-4">
                                 <img src="<?php echo $ba_bec_imagePath; ?>"
-                                    class="img-fluid rounded-start h-100 object-fit-cover"
+                                    class="img-fluid home-article-image"
                                     alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body d-flex flex-column h-100">
-                                    <h5 class="card-title"><?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?></h5>
-                                    <p class="card-text"><?php echo htmlspecialchars($excerpt); ?></p>
+                                    <h3 class="card-title h4 mb-2"><?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?></h3>
+                                    <p class="card-text fst-italic"><?php echo htmlspecialchars($excerpt); ?></p>
                                     <p class="card-text mt-auto">
                                         <small class="text-body-secondary">
                                             <?php echo htmlspecialchars($ba_bec_article['dtCreaArt']); ?>

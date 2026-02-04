@@ -34,3 +34,17 @@
 .home-section {
     padding: 0;
 }
+
+.home-articles .home-article-card {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.home-articles .home-article-image {
+    width: 100%;
+    height: clamp(160px, 24vw, 220px);
+    object-fit: cover;
+    border-radius: 0.75rem;
+    display: block;
+}
