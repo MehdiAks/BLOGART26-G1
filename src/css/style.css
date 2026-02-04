@@ -9,6 +9,15 @@
     overflow: hidden;
 }
 
+.home-carousel .carousel-item {
+    height: clamp(280px, 45vw, 480px);
+}
+
+.home-carousel .carousel-item img {
+    height: 100%;
+    object-fit: cover;
+}
+
 .home-carousel-title {
     position: absolute;
     inset: 0;
