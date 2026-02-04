@@ -12,9 +12,15 @@ $ba_bec_keywordsart = sql_select("MOTCLEARTICLE", "*");
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1>Création Nouvel Article</h1>
+            <h1>Créer un article</h1>
+            <p class="text-muted">
+                Cette page reprend une mise en forme proche de l’édition pour donner l’impression de modifier un
+                article déjà structuré.
+            </p>
         </div>
-        <div class="col-md-12">
+    </div>
+    <div class="row">
+        <div class="col-lg-7">
             <form action="<?php echo ROOT_URL . '/api/articles/create.php'; ?>" method="post"
                 enctype="multipart/form-data">
                 <div class="form-group">
@@ -145,12 +151,27 @@ $ba_bec_keywordsart = sql_select("MOTCLEARTICLE", "*");
                         }
                     });
                 </script>
+                <br>
+                <div class="form-group mt-2" style="margin: 32px auto 128px;">
+                    <button type="submit" class="btn btn-primary">Confirmer la création</button>
+                </div>
+            </form>
         </div>
-        <br>
-        <div class="form-group mt-2" style="margin: 32px auto 128px;">
-            <button type="submit" class="btn btn-primary ">Confirmer create ?</button>
+        <div class="col-lg-5">
+            <div class="card shadow-sm sticky-top" style="top: 24px;">
+                <img src="<?php echo ROOT_URL . '/src/images/article.png'; ?>" class="card-img-top"
+                    alt="Aperçu de l'article">
+                <div class="card-body">
+                    <p class="text-uppercase text-muted mb-1" style="letter-spacing: 0.08em;">Aperçu</p>
+                    <h2 class="h4">Titre de l’article déjà mis en forme</h2>
+                    <p class="text-muted mb-2">Publié le 12/03/2024 • Thématique : Actualité</p>
+                    <p class="fw-semibold">Un chapeau concis pour donner le ton de l’article.</p>
+                    <p class="text-muted mb-0">
+                        Ajoutez vos paragraphes, sous-titres et conclusion pour remplir cet aperçu comme si
+                        l’article existait déjà.
+                    </p>
+                </div>
+            </div>
         </div>
-        </form>
     </div>
-</div>
 </div>
