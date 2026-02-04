@@ -1,9 +1,15 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once ROOT . '/includes/libs/cookie-consent.php';
 $ba_bec_pseudoMemb = $_SESSION['pseudoMemb'] ?? null;
 $ba_bec_numStat = $_SESSION['numStat'] ?? null;
 $hasBackgroundVideo = $pageHasVideo ?? false;
 $current_page = $_SERVER['SCRIPT_NAME'];
+$ba_bec_cookieChoiceRequired = !hasUserMadeCookieChoice();
+$bodyClasses = [$hasBackgroundVideo ? 'has-site-video' : 'has-solid-bg'];
+if ($ba_bec_cookieChoiceRequired) {
+    $bodyClasses[] = 'cookie-choice-required';
+}
 $club_pages = [
     '/notre-histoire.php',
     '/organigramme-benevoles.php',
@@ -32,7 +38,21 @@ $club_pages = [
 
 </head>
 
-<body class="<?php echo $hasBackgroundVideo ? 'has-site-video' : 'has-solid-bg'; ?>">
+<body class="<?php echo implode(' ', $bodyClasses); ?>">
+    <?php if ($ba_bec_cookieChoiceRequired): ?>
+        <div class="cookie-overlay" aria-hidden="true"></div>
+        <div class="cookie-popup" role="dialog" aria-modal="true" aria-labelledby="cookie-title" aria-describedby="cookie-description">
+            <div class="cookie-content">
+                <h2 id="cookie-title">Préférences cookies</h2>
+                <p id="cookie-description">Nous utilisons des cookies pour améliorer votre expérience. Merci de choisir une option pour continuer votre navigation.</p>
+                <form method="post" class="cookie-buttons">
+                    <button type="submit" name="accept_cookies" class="btn btn-light">Accepter</button>
+                    <button type="submit" name="reject_cookies" class="btn btn-outline-light">Refuser</button>
+                </form>
+                <a href="<?php echo ROOT_URL . '/infoleg/rgpd.php'; ?>" class="text-white-50 small d-block mt-3">En savoir plus</a>
+            </div>
+        </div>
+    <?php endif; ?>
     <?php if ($hasBackgroundVideo): ?>
         <div class="site-background" aria-hidden="true">
             <video class="site-background-video" autoplay muted loop playsinline poster="<?php echo ROOT_URL . '/src/images/background/background-index-1.webp'; ?>">

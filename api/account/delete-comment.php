@@ -28,7 +28,7 @@ if (!$ba_bec_comment) {
     exit();
 }
 
-sql_delete('comment', "numCom = $ba_bec_numCom AND numMemb = $ba_bec_numMemb");
-$_SESSION['success'] = 'Votre commentaire a été supprimé.';
+sql_update('comment', "delLogiq = 1, dtDelLogCom = NOW()", "numCom = $ba_bec_numCom AND numMemb = $ba_bec_numMemb");
+$_SESSION['success'] = 'Votre commentaire a été masqué.';
 header('Location: ' . ROOT_URL . '/compte.php');
 exit();

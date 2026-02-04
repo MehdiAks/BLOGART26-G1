@@ -20,4 +20,71 @@ function curl($url, $type, $data = null, $headers = null){
     curl_close($ch);
     return $ba_bec_result;
 }
+
+function isAllowedBbcodeUrl($url) {
+    if ($url === '') {
+        return false;
+    }
+
+    if (str_starts_with($url, '#') || str_starts_with($url, '/')) {
+        return true;
+    }
+
+    $parsed = parse_url($url);
+    if ($parsed === false || empty($parsed['scheme'])) {
+        return false;
+    }
+
+    return in_array(strtolower($parsed['scheme']), ['http', 'https'], true);
+}
+
+function renderBbcode($text) {
+    $safeText = htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8');
+
+    $safeText = preg_replace_callback('/\\[url=(.*?)\\](.*?)\\[\\/url\\]/is', function ($matches) {
+        $url = trim($matches[1]);
+        $label = trim($matches[2]);
+
+        if (!isAllowedBbcodeUrl($url)) {
+            return $matches[0];
+        }
+
+        $label = $label === '' ? $url : $label;
+
+        return sprintf('<a href="%s" rel="noopener noreferrer" target="_blank">%s</a>', $url, $label);
+    }, $safeText);
+
+    $safeText = preg_replace_callback('/\\[url\\](.*?)\\[\\/url\\]/is', function ($matches) {
+        $url = trim($matches[1]);
+
+        if (!isAllowedBbcodeUrl($url)) {
+            return $matches[0];
+        }
+
+        return sprintf('<a href="%s" rel="noopener noreferrer" target="_blank">%s</a>', $url, $url);
+    }, $safeText);
+
+    $safeText = preg_replace('/\\[b\\](.*?)\\[\\/b\\]/is', '<strong>$1</strong>', $safeText);
+    $safeText = preg_replace('/\\[i\\](.*?)\\[\\/i\\]/is', '<em>$1</em>', $safeText);
+    $safeText = preg_replace('/\\[u\\](.*?)\\[\\/u\\]/is', '<span style="text-decoration: underline;">$1</span>', $safeText);
+    $safeText = preg_replace('/\\[s\\](.*?)\\[\\/s\\]/is', '<span style="text-decoration: line-through;">$1</span>', $safeText);
+    $safeText = preg_replace('/\\[quote\\](.*?)\\[\\/quote\\]/is', '<blockquote>$1</blockquote>', $safeText);
+    $safeText = preg_replace('/\\[code\\](.*?)\\[\\/code\\]/is', '<pre><code>$1</code></pre>', $safeText);
+
+    $emojiMap = [
+        'smile' => '😊',
+        'heart' => '❤️',
+        'wink' => '😉',
+        'thumbsup' => '👍',
+        'clap' => '👏',
+        'fire' => '🔥',
+    ];
+
+    $safeText = preg_replace_callback('/\\[emoji=(.*?)\\]/i', function ($matches) use ($emojiMap) {
+        $key = strtolower(trim($matches[1]));
+        return $emojiMap[$key] ?? $matches[0];
+    }, $safeText);
+
+    return nl2br($safeText);
+}
 ?>
