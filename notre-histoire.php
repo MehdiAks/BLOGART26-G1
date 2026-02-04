@@ -27,7 +27,7 @@ require_once 'header.php';
                 <p>Très tôt, le club s'impose comme référence locale pour le sport universitaire.</p>
             </div>
             <div class="col-md-6">
-                <img src="/src/images/image1.jpg" class="img-fluid img-wide rounded" alt="1897 : origines">
+                <img src="/src/images/notre-histoire/notre-histoire-4.webp" class="img-fluid img-wide rounded" alt="1897 : origines">
             </div>
         </div>
 
@@ -43,7 +43,7 @@ require_once 'header.php';
                 </div>
             </div>
             <div class="col-md-6 order-md-1">
-                <img src="/src/images/image2.jpg" class="img-fluid img-tall rounded" alt="Club omnisports">
+                <img src="/src/images/notre-histoire/notre-histoire-3.webp" class="img-fluid img-tall rounded" alt="Club omnisports">
             </div>
         </div>
 
@@ -57,7 +57,7 @@ require_once 'header.php';
 
         <!-- Banniere full-width : texte center -->
         <div class="banner my-5 banner-center">
-            <img src="/src/images/image3.jpg" class="img-fluid rounded" alt="Banniere center">
+            <img src="/src/images/notre-histoire/notre-histoire-1.webp" class="img-fluid rounded" alt="Banniere center">
             <div class="banner-text">
                 <h2>Un esprit qui perdure</h2>
             </div>
@@ -70,7 +70,7 @@ require_once 'header.php';
                 <p>Aujourd'hui, le BEC continue de former et rassembler les sportifs.</p>
             </div>
             <div class="col-md-6">
-                <img src="/src/images/image3.jpg" class="img-fluid img-square rounded" alt="Esprit inspirant">
+                <img src="/src/images/notre-histoire/notre-histoire-2.webp" class="img-fluid img-square rounded" alt="Esprit inspirant">
             </div>
         </div>
 
