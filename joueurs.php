@@ -11,12 +11,12 @@ if ($dbAvailable) {
 
     $playersStmt = $DB->prepare(
         'SELECT j.numJoueur, j.prenomJoueur, j.nomJoueur, j.urlPhotoJoueur, j.posteJoueur, j.numMaillot, j.anneeArrivee, j.clubsPrecedents,
-                j.dateNaissance, GROUP_CONCAT(e.libEquipe ORDER BY e.libEquipe SEPARATOR ", ") AS equipes
-         FROM JOUEUR j
-         LEFT JOIN EQUIPE_JOUEUR ej ON j.numJoueur = ej.numJoueur
-         LEFT JOIN EQUIPE e ON ej.numEquipe = e.numEquipe
-         GROUP BY j.numJoueur
-         ORDER BY j.nomJoueur ASC'
+            j.dateNaissance, GROUP_CONCAT(e.libEquipe ORDER BY e.libEquipe SEPARATOR ", ") AS equipes
+        FROM JOUEUR j
+        LEFT JOIN EQUIPE_JOUEUR ej ON j.numJoueur = ej.numJoueur
+        LEFT JOIN EQUIPE e ON ej.numEquipe = e.numEquipe
+        GROUP BY j.numJoueur
+        ORDER BY j.nomJoueur ASC'
     );
     $playersStmt->execute();
     $players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);

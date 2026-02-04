@@ -16,6 +16,9 @@
                     </div>
                     <ul class="list-unstyled d-flex flex-column gap-2">
                         <li>
+                            <a href="<?php echo ROOT_URL . '/contact.php'; ?>">Contact</a>
+                        </li>
+                        <li>
                             <a href="<?php echo ROOT_URL . '/infoleg/cgu.php'; ?>">Conditions d’utilisation</a>
                         </li>
                         <li>
