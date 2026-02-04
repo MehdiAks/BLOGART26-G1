@@ -16,11 +16,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($ba_bec_errors)) {
+        $ba_bec_currentMax = sql_select('PERSONNEL', 'MAX(numPersonnel) AS maxPersonnel');
+        $ba_bec_nextNumPersonnel = 1;
+        if (!empty($ba_bec_currentMax) && isset($ba_bec_currentMax[0]['maxPersonnel'])) {
+            $ba_bec_nextNumPersonnel = (int) $ba_bec_currentMax[0]['maxPersonnel'] + 1;
+        }
         $ba_bec_photoValue = $ba_bec_urlPhotoPersonnel !== '' ? "'$ba_bec_urlPhotoPersonnel'" : 'NULL';
         sql_insert(
             'PERSONNEL',
-            'prenomPersonnel, nomPersonnel, urlPhotoPersonnel',
-            "'$ba_bec_prenomPersonnel', '$ba_bec_nomPersonnel', $ba_bec_photoValue"
+            'numPersonnel, prenomPersonnel, nomPersonnel, urlPhotoPersonnel',
+            "'$ba_bec_nextNumPersonnel', '$ba_bec_prenomPersonnel', '$ba_bec_nomPersonnel', $ba_bec_photoValue"
         );
         header('Location: ../../views/backend/benevoles/list.php');
         exit();
