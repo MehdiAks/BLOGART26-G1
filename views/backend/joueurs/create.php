@@ -2,6 +2,8 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
+
+$ba_bec_equipes = sql_select('EQUIPE', 'numEquipe, libEquipe, sectionEquipe', null, null, 'libEquipe ASC');
 ?>
 
 <div class="container">
@@ -15,7 +17,7 @@ include '../../../header.php';
             <h1>Ajouter un joueur</h1>
         </div>
         <div class="col-md-12">
-            <form action="<?php echo ROOT_URL . '/api/joueurs/create.php'; ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/api/joueurs/create.php'; ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="prenomJoueur">Prénom</label>
                     <input id="prenomJoueur" name="prenomJoueur" class="form-control" type="text" required />
@@ -29,8 +31,32 @@ include '../../../header.php';
                     <input id="posteJoueur" name="posteJoueur" class="form-control" type="text" />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="urlPhotoJoueur">URL photo</label>
-                    <input id="urlPhotoJoueur" name="urlPhotoJoueur" class="form-control" type="url" />
+                    <label for="photoJoueur">Photo (upload)</label>
+                    <input id="photoJoueur" name="photoJoueur" class="form-control" type="file" accept="image/*" />
+                </div>
+                <div class="form-group mt-2">
+                    <label for="numeroMaillot">Numéro de maillot</label>
+                    <input id="numeroMaillot" name="numeroMaillot" class="form-control" type="number" min="0" max="99" />
+                </div>
+                <div class="form-group mt-2">
+                    <label for="sectionEquipe">Section</label>
+                    <select id="sectionEquipe" name="sectionEquipe" class="form-control" required>
+                        <option value="">Sélectionnez une section</option>
+                        <option value="Homme">Homme</option>
+                        <option value="Femme">Femme</option>
+                    </select>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="numEquipe">Équipe</label>
+                    <select id="numEquipe" name="numEquipe" class="form-control" required>
+                        <option value="">Sélectionnez une équipe</option>
+                        <?php foreach ($ba_bec_equipes as $ba_bec_equipe): ?>
+                            <option value="<?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?>"
+                                data-section="<?php echo htmlspecialchars($ba_bec_equipe['sectionEquipe'] ?? ''); ?>">
+                                <?php echo htmlspecialchars($ba_bec_equipe['libEquipe']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="form-group mt-2">
                     <label for="anneeArrivee">Année d'arrivée</label>
@@ -42,7 +68,12 @@ include '../../../header.php';
                 </div>
                 <div class="form-group mt-2">
                     <label for="clubsPrecedents">Clubs précédents</label>
-                    <textarea id="clubsPrecedents" name="clubsPrecedents" class="form-control" rows="3"></textarea>
+                    <div id="clubsPrecedentsList" class="d-grid gap-2">
+                        <input name="clubsPrecedents[]" class="form-control" type="text" placeholder="Nom du club" />
+                    </div>
+                    <button type="button" id="addClubButton" class="btn btn-outline-secondary btn-sm mt-2">
+                        Ajouter un club
+                    </button>
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Créer</button>
@@ -51,3 +82,53 @@ include '../../../header.php';
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const sectionSelect = document.getElementById('sectionEquipe');
+        const teamSelect = document.getElementById('numEquipe');
+        const clubList = document.getElementById('clubsPrecedentsList');
+        const addClubButton = document.getElementById('addClubButton');
+
+        const filterTeams = () => {
+            const section = sectionSelect.value;
+            const options = Array.from(teamSelect.options);
+            options.forEach((option) => {
+                if (!option.value) {
+                    option.hidden = false;
+                    return;
+                }
+                const optionSection = option.dataset.section || '';
+                option.hidden = section && optionSection !== section;
+            });
+
+            if (teamSelect.selectedOptions.length && teamSelect.selectedOptions[0].hidden) {
+                teamSelect.value = '';
+            }
+        };
+
+        const addClubField = () => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'd-flex gap-2';
+
+            const input = document.createElement('input');
+            input.name = 'clubsPrecedents[]';
+            input.className = 'form-control';
+            input.type = 'text';
+            input.placeholder = 'Nom du club';
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'btn btn-outline-danger';
+            removeButton.textContent = 'Retirer';
+            removeButton.addEventListener('click', () => wrapper.remove());
+
+            wrapper.appendChild(input);
+            wrapper.appendChild(removeButton);
+            clubList.appendChild(wrapper);
+        };
+
+        sectionSelect.addEventListener('change', filterTeams);
+        addClubButton.addEventListener('click', addClubField);
+    })();
+</script>

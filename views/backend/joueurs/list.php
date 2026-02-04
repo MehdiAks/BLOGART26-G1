@@ -21,6 +21,7 @@ $ba_bec_joueurs = sql_select('JOUEUR', '*', null, null, 'nomJoueur ASC, prenomJo
                         <th>ID</th>
                         <th>Prénom</th>
                         <th>Nom</th>
+                        <th>Numéro</th>
                         <th>Poste</th>
                         <th>Photo</th>
                         <th>Actions</th>
@@ -33,10 +34,17 @@ $ba_bec_joueurs = sql_select('JOUEUR', '*', null, null, 'nomJoueur ASC, prenomJo
                                 <td><?php echo $ba_bec_joueur['numJoueur']; ?></td>
                                 <td><?php echo $ba_bec_joueur['prenomJoueur']; ?></td>
                                 <td><?php echo $ba_bec_joueur['nomJoueur']; ?></td>
+                                <td><?php echo $ba_bec_joueur['numMaillot'] ?? '-'; ?></td>
                                 <td><?php echo $ba_bec_joueur['posteJoueur'] ?: '-'; ?></td>
                                 <td>
                                     <?php if (!empty($ba_bec_joueur['urlPhotoJoueur'])): ?>
-                                        <a href="<?php echo $ba_bec_joueur['urlPhotoJoueur']; ?>" target="_blank" rel="noopener">Voir</a>
+                                        <?php
+                                        $ba_bec_photo = $ba_bec_joueur['urlPhotoJoueur'];
+                                        $ba_bec_photoUrl = preg_match('/^(https?:\\/\\/|\\/)/', $ba_bec_photo)
+                                            ? $ba_bec_photo
+                                            : ROOT_URL . '/src/uploads/' . $ba_bec_photo;
+                                        ?>
+                                        <a href="<?php echo htmlspecialchars($ba_bec_photoUrl); ?>" target="_blank" rel="noopener">Voir</a>
                                     <?php else: ?>
                                         -
                                     <?php endif; ?>
@@ -49,7 +57,7 @@ $ba_bec_joueurs = sql_select('JOUEUR', '*', null, null, 'nomJoueur ASC, prenomJo
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6">Aucun joueur trouvé</td>
+                            <td colspan="7">Aucun joueur trouvé</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
