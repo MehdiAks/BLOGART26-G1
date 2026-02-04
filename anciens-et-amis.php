@@ -58,7 +58,7 @@ require_once 'header.php';
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
                 <img
-                    src="src/images/background/background-index.jpg"
+                    src="src/images/background/background-index-1.webp"
                     class="article-image mb-3"
                     alt="Moment de convivialité"
                 >

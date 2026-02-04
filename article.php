@@ -17,6 +17,13 @@ if (empty($articleData)) {
 }
 
 $ba_bec_article = $articleData[0];
+$defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
+$articleUploadPath = !empty($ba_bec_article['urlPhotArt'])
+    ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_article['urlPhotArt']
+    : '';
+$ba_bec_articleImageUrl = (!empty($ba_bec_article['urlPhotArt']) && file_exists($articleUploadPath))
+    ? ROOT_URL . '/src/uploads/' . $ba_bec_article['urlPhotArt']
+    : $defaultImagePath;
 $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
 $ba_bec_keywords = sql_select("MOTCLE", "*");
 $ba_bec_selectedKeywords = sql_select("MOTCLEARTICLE", "*", "numArt = $ba_bec_numArt");
@@ -138,7 +145,7 @@ if (isset($_SESSION['user_id'])) {
 
 <body>
     <div class="article-page">
-        <header class="article-hero" style="--hero-image: url('<?php echo ROOT_URL . '/src/uploads/' . ($ba_bec_article['urlPhotArt']); ?>')">
+        <header class="article-hero" style="--hero-image: url('<?php echo $ba_bec_articleImageUrl; ?>')">
             <div class="article-hero__overlay">
                 <p class="article-kicker">Actualités</p>
                 <h1 class="article-title">
@@ -168,7 +175,7 @@ if (isset($_SESSION['user_id'])) {
                             <?php echo ($ba_bec_article['parag1Art']); ?> 
                         </p>
                         <figure class="article-figure">
-                            <img class="image2 img-fluid w-100" src="<?php echo ROOT_URL . '/src/uploads/' . ($ba_bec_article['urlPhotArt']); ?>" alt="Image article">
+                            <img class="image2 img-fluid w-100" src="<?php echo $ba_bec_articleImageUrl; ?>" alt="Image article">
                             <figcaption class="article-caption">
                                 © Groupe 1 Bordeaux étudiant club + Description de l’image
                             </figcaption>
@@ -235,8 +242,16 @@ if (isset($_SESSION['user_id'])) {
 
                         if (!empty($randomArticles)):
                             foreach ($randomArticles as $randomArticle): ?>
+                                <?php
+                                $randomUploadPath = !empty($randomArticle['urlPhotArt'])
+                                    ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $randomArticle['urlPhotArt']
+                                    : '';
+                                $randomImageUrl = (!empty($randomArticle['urlPhotArt']) && file_exists($randomUploadPath))
+                                    ? ROOT_URL . '/src/uploads/' . $randomArticle['urlPhotArt']
+                                    : $defaultImagePath;
+                                ?>
                                 <div class="random-article">
-                                    <img class="imagedroite img-fluid w-100" src="<?php echo ROOT_URL . '/src/uploads/' . ($randomArticle['urlPhotArt']); ?>" alt="Image article">
+                                    <img class="imagedroite img-fluid w-100" src="<?php echo $randomImageUrl; ?>" alt="Image article">
                                     <h3 class="titredroite">
                                         <?php echo ($randomArticle['libTitrArt']); ?>
                                     </h3>
