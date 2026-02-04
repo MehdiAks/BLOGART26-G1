@@ -222,9 +222,9 @@
 
         .cookie-popup {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            left: auto;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: min(420px, 90vw);
             background-color: #1f1f1f;
             color: #fff;
@@ -232,7 +232,7 @@
             padding: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
             text-align: left;
-            z-index: 2000;
+            z-index: 9999;
         }
 
         .cookie-content {
@@ -256,7 +256,7 @@
             inset: 0;
             background: rgba(0, 0, 0, 0.55);
             backdrop-filter: blur(2px);
-            z-index: 1500;
+            z-index: 9998;
         }
 
         .cookie-choice-required {
@@ -264,10 +264,9 @@
         }
 
         .cookie-choice-required .cookie-popup {
-            inset: 50% auto auto 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            bottom: auto;
-            right: auto;
         }
 
         @media (max-width: 768px) {
