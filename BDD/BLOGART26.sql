@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : mar. 03 fév. 2026 à 23:30
+-- Généré le : mer. 04 fév. 2026 à 01:20
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.28
 
@@ -20,6 +20,37 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `BLOGART26`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `AFFECTATION_PERSONNEL`
+--
+
+CREATE TABLE `AFFECTATION_PERSONNEL` (
+  `numAffectation` int NOT NULL,
+  `numPersonnel` int NOT NULL,
+  `numBranche` int NOT NULL,
+  `libPoste` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `AFFECTATION_PERSONNEL`
+--
+
+INSERT INTO `AFFECTATION_PERSONNEL` (`numAffectation`, `numPersonnel`, `numBranche`, `libPoste`) VALUES
+(1, 1, 1, 'Président du club'),
+(2, 2, 1, 'Présidente adjointe'),
+(3, 3, 1, 'Trésorière'),
+(4, 4, 1, 'Secrétaire du club'),
+(5, 5, 2, 'Bénévole'),
+(6, 6, 2, 'Bénévole'),
+(7, 7, 2, 'Bénévole'),
+(8, 8, 2, 'Bénévole'),
+(12, 9, 3, 'Bénévole'),
+(13, 10, 3, 'Bénévole'),
+(14, 11, 3, 'Bénévole'),
+(15, 12, 3, 'Bénévole');
 
 -- --------------------------------------------------------
 
@@ -64,166 +95,166 @@ INSERT INTO `ARTICLE` (`numArt`, `dtCreaArt`, `dtMajArt`, `libTitrArt`, `libChap
 
 CREATE TABLE `bec_matches` (
   `id` int UNSIGNED NOT NULL,
-  `Section` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Section` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `numEquipe` int DEFAULT NULL,
-  `Equipe` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Competition` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Phase` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Journee` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Equipe` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Competition` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Phase` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Journee` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Date` date NOT NULL,
   `Heure` time NOT NULL,
-  `Domicile_Exterieur` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Adversaire` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Domicile_Exterieur` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Adversaire` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Score_BEC` int DEFAULT NULL,
   `Score_Adversaire` int DEFAULT NULL,
   `MatchNo` int NOT NULL,
-  `Source` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `opponent_club_key` varchar(180) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `Source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `opponent_club_key` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `bec_matches`
 --
 
-INSERT INTO `bec_matches` (`id`, `Section`, `Equipe`, `Competition`, `Phase`, `Journee`, `Date`, `Heure`, `Domicile_Exterieur`, `Adversaire`, `Score_BEC`, `Score_Adversaire`, `MatchNo`, `Source`, `opponent_club_key`) VALUES
-(1, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J1', '2025-09-20', '22:00:00', 'Extérieur', 'US CHARTRONS BORDEAUX', 43, 81, 6, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(2, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J1', '2025-09-20', '22:00:00', 'Extérieur', 'BORDEAUX BASTIDE BASKET', 67, 60, 811, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(3, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J1', '2025-09-20', '22:30:00', 'Domicile', 'SA GAZINET CESTAS', 64, 50, 8004, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(4, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J1', '2025-09-21', '15:00:00', 'Extérieur', 'ENTENTE SPORTIVE BLANQUEFORT - 2', 102, 48, 9004, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
-(5, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J1', '2025-09-21', '17:00:00', 'Extérieur', 'BRESSUIRE LE REVEIL', NULL, NULL, 405, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(6, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J1', '2025-09-21', '17:30:00', 'Domicile', 'ABB CORNEBARRIEU', 75, 40, 18, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(7, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J2', '2025-09-27', '20:00:00', 'Domicile', 'UNION SPORTIVE TULLE CORREZE', 69, 88, 834, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(8, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J2', '2025-09-27', '22:00:00', 'Extérieur', 'US CHARTRONS BORDEAUX', 79, 33, 8014, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(9, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J2', '2025-09-27', '22:30:00', 'Domicile', 'AYTRE BASKET BALL', 68, 52, 17, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(10, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J2', '2025-09-28', '15:00:00', 'Domicile', 'STADE BORDELAIS', 61, 60, 9014, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
-(11, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J2', '2025-09-28', '17:00:00', 'Domicile', 'AYTRE BASKET BALL', 52, 57, 416, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(12, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J2', '2025-09-28', '17:30:00', 'Extérieur', 'COTEAUX DU LUY BASKET', 72, 76, 66, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(13, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J3', '2025-10-04', '22:00:00', 'Extérieur', 'CASTELNAU MEDOC BC', 90, 105, 28, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(14, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J3', '2025-10-04', '22:00:00', 'Extérieur', 'UNION SAINT BRUNO BORDEAUX', 52, 70, 857, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(15, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J3', '2025-10-04', '22:30:00', 'Domicile', 'US TALENCE', 45, 52, 8020, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(16, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J3', '2025-10-05', '17:00:00', 'Extérieur', 'AMICALE LOISIRS CASTILLONNES BASKET', 52, 47, 427, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(17, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J3', '2025-10-05', '17:30:00', 'Domicile', 'ENTENTE PESSAC BASKET CLUB - 1', 82, 62, 114, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(18, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J3', '2025-10-05', '19:00:00', 'Extérieur', 'EN - CTC MEDOC ESTUAIRE - LUDON BASKET CLUB - 3', 72, 49, 9022, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
-(19, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J3', '2025-10-05', '19:00:00', 'Extérieur', 'B.IZON - 2', 34, 41, 28, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
-(20, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J4', '2025-10-11', '20:00:00', 'Domicile', 'AIXE BC VAL DE VIENNE', 73, 64, 880, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(21, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J4', '2025-10-11', '22:30:00', 'Domicile', 'CEP POITIERS', 57, 67, 39, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(22, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J4', '2025-10-11', '23:00:00', 'Extérieur', 'STE EULALIE BASKET BALL', 57, 60, 8028, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(23, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J4', '2025-10-12', '15:00:00', 'Extérieur', 'BC ST AVIT ST NAZAIRE', 63, 57, 42, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
-(24, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J4', '2025-10-12', '17:00:00', 'Domicile', 'LIMOGES ABC EN LIMOUSIN - 2', 49, 53, 438, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(25, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J4', '2025-10-12', '17:30:00', 'Extérieur', 'AS ST DELPHIN - 2', 74, 73, 162, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(26, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J1', '2025-10-19', '15:00:00', 'Domicile', 'COUTRAS GUITRES BASKET', 46, 49, 4, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
-(27, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J4', '2025-10-19', '17:00:00', 'Domicile', 'BASKET CLUB MARCHEPRIME', 83, 64, 9030, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
-(28, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J5', '2025-10-26', '16:30:00', 'Domicile', 'HAGETMAU MOMUY CASTAIGNOS BASKET', 69, 53, 210, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(29, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J5', '2025-11-01', '21:00:00', 'Extérieur', 'JSA BORDEAUX BASKET - 2', 72, 57, 50, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(30, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J5', '2025-11-01', '21:00:00', 'Extérieur', 'AS ST DELPHIN', 62, 75, 903, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(31, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J5', '2025-11-01', '21:30:00', 'Domicile', 'IE - CTC SMB - SAM - SA MERIGNACAIS', 54, 42, 8036, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(32, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J5', '2025-11-02', '15:00:00', 'Extérieur', 'AS MARTIGNAS - 2', 53, 31, 9039, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
-(33, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J5', '2025-11-02', '16:00:00', 'Extérieur', 'POUZIOUX VOUNEUIL/BIARD BC', 46, 76, 449, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(34, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J5', '2025-11-02', '16:00:00', 'Domicile', 'STE EULALIE BASKET BALL', 38, 58, 52, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
-(35, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J6', '2025-11-02', '16:30:00', 'Extérieur', 'IE - AUCH BASKET CLUB - 1', 75, 42, 258, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(36, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J6', '2025-11-08', '19:00:00', 'Domicile', 'ENTENTE SPORTIVE BLANQUEFORT - 2', 111, 42, 9049, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
-(37, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J6', '2025-11-08', '21:00:00', 'Domicile', 'CA BRIVE CORREZE SECTION BASKET', 79, 65, 926, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(38, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J6', '2025-11-08', '22:00:00', 'Extérieur', 'UNION SPORTIVE BREDOISE BASKET - 2', 48, 58, 8044, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(39, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J6', '2025-11-09', '14:15:00', 'Domicile', 'CA BRIVE CORREZE SECTION BASKET', 54, 45, 460, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(40, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J6', '2025-11-09', '16:00:00', 'Extérieur', 'COUTRAS GUITRES BASKET', 34, 48, 64, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
-(41, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J7', '2025-11-09', '16:30:00', 'Domicile', 'IE - CTC GRAND DAX BASKET - ADOUR DAX LANDES BASKET', 95, 43, 301, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(42, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J7', '2025-11-15', '17:00:00', 'Domicile', 'LE TAILLAN BASKET - 2', 49, 52, 8052, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(43, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J7', '2025-11-15', '19:30:00', 'Domicile', 'IE - CTC DORDOGNE SUD BASKET - US BERGERAC BASKET', 81, 55, 953, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(44, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J7', '2025-11-15', '21:30:00', 'Domicile', 'COGNAC BASKET AVENIR', 74, 66, 76, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(45, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J7', '2025-11-16', '16:00:00', 'Domicile', 'CA BEGLES', 42, 58, 475, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(46, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J7', '2025-11-16', '16:00:00', 'Extérieur', 'STADE BORDELAIS', 58, 66, 9059, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
-(47, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J8', '2025-11-16', '16:30:00', 'Extérieur', 'B. COMMINGES SALIES DU SALAT - 1', 89, 84, 351, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(48, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J8', '2025-11-27', '22:00:00', 'Domicile', 'US CENON RIVE DROITE', 77, 69, 90, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(49, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J8', '2025-11-29', '21:00:00', 'Extérieur', 'ES ST FRONT DE PRADOUX', 74, 61, 979, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(50, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J8', '2025-11-29', '21:30:00', 'Extérieur', 'SA GAZINET CESTAS', 54, 41, 8060, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(51, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J8', '2025-11-30', '14:00:00', 'Domicile', 'EN - CTC MEDOC ESTUAIRE - LUDON BASKET CLUB - 3', 75, 60, 9067, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
-(52, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J8', '2025-11-30', '16:00:00', 'Extérieur', 'CHAURAY BASKET CLUB - 2', 52, 42, 489, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(53, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J8', '2025-11-30', '16:00:00', 'Domicile', 'B.IZON - 2', 51, 28, 88, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
-(54, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J9', '2025-11-30', '16:30:00', 'Domicile', 'LE TAILLAN BASKET', 86, 40, 399, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(55, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J9', '2025-12-06', '17:00:00', 'Domicile', 'US CHARTRONS BORDEAUX', 65, 46, 8070, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(56, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J9', '2025-12-06', '19:00:00', 'Domicile', 'BEAUNE-RILHAC-BONNAC BASKET', 63, 70, 1003, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(57, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J9', '2025-12-06', '21:15:00', 'Domicile', 'BOULAZAC BASKET DORDOGNE - 2', 71, 57, 102, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(58, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J10', '2025-12-07', '14:00:00', 'Extérieur', 'FEYTIAT BASKET 87', 82, 53, 446, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(59, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J9', '2025-12-07', '14:00:00', 'Domicile', 'BC ST AVIT ST NAZAIRE', 59, 56, 102, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
-(60, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J9', '2025-12-07', '16:00:00', 'Domicile', 'UNION SPORTIVE BREDOISE BASKET', 43, 49, 501, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(61, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J9', '2025-12-07', '16:00:00', 'Extérieur', 'BASKET CLUB MARCHEPRIME', 69, 64, 9075, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
-(62, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J10', '2025-12-13', '20:00:00', 'Extérieur', 'US TALENCE', 66, 71, 8076, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(63, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J10', '2025-12-13', '20:00:00', 'Extérieur', 'STE EULALIE BASKET BALL', 48, 60, 112, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
-(64, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J10', '2025-12-13', '21:00:00', 'Extérieur', 'ASPTT LIMOGES', 85, 68, 113, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(65, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J10', '2025-12-13', '21:30:00', 'Extérieur', 'LIMOGES LANDOUGE LOISIRS BASKET', 68, 83, 1026, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(66, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J10', '2025-12-14', '16:00:00', 'Extérieur', 'ASPTT LIMOGES', 58, 79, 512, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(67, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J10', '2025-12-14', '16:00:00', 'Domicile', 'AS MARTIGNAS - 2', 68, 54, 9084, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
-(68, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J11', '2026-01-10', '21:00:00', 'Domicile', 'STE EULALIE BASKET BALL', 46, 39, 8084, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(69, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J11', '2026-01-10', '22:00:00', 'Extérieur', 'ENTENTE PESSAC BASKET CLUB', 60, 70, 126, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(70, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J11', '2026-01-10', '22:00:00', 'Extérieur', 'IE - CTC MEDOC ESTUAIRE - AS PIAN MEDOC BASKET', 62, 84, 1051, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(71, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J1', '2026-01-11', '14:00:00', 'Domicile', 'STADE BORDELAIS', 77, 71, 9000, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
-(72, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J11', '2026-01-11', '16:00:00', 'Extérieur', 'IE - CTC UBVP - VILLENEUVE BASKET CLUB', 54, 49, 525, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(73, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J1', '2026-01-11', '16:00:00', 'Domicile', 'COUTRAS GUITRES BASKET', 36, 51, 3, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
-(74, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J11', '2026-01-11', '16:30:00', 'Extérieur', 'ELAN CHALOSSAIS', 66, 70, 495, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(75, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J12', '2026-01-17', '19:00:00', 'Domicile', 'BORDEAUX BASTIDE BASKET', 65, 62, 1075, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(76, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J12', '2026-01-17', '21:15:00', 'Domicile', 'US CHARTRONS BORDEAUX', 72, 85, 138, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(77, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J12', '2026-01-17', '21:30:00', 'Extérieur', 'IE - CTC SMB - SAM - SA MERIGNACAIS', 49, 51, 8092, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(78, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J2', '2026-01-18', '14:00:00', 'Domicile', 'BOULIAC BASKET CLUB - 2', 50, 81, 9010, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
-(79, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J12', '2026-01-18', '16:00:00', 'Domicile', 'BRESSUIRE LE REVEIL', 67, 46, 537, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(80, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J2', '2026-01-18', '16:00:00', 'Extérieur', 'CA CARBON BLANC OMNISPORT', 42, 82, 15, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
-(81, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J12', '2026-01-18', '16:30:00', 'Extérieur', 'ABB CORNEBARRIEU', 85, 65, 546, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(82, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J13', '2026-01-31', '21:00:00', 'Domicile', 'UNION SPORTIVE BREDOISE BASKET - 2', 58, 54, 8100, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(83, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J13', '2026-01-31', '21:00:00', 'Extérieur', 'UNION SPORTIVE TULLE CORREZE', 68, 77, 1098, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(84, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J13', '2026-01-31', '22:00:00', 'Extérieur', 'AYTRE BASKET BALL', 56, 68, 149, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(85, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J3', '2026-02-01', '14:00:00', 'Domicile', 'ENTENTE PESSAC BASKET CLUB - 3', 72, 63, 9020, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
-(86, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J13', '2026-02-01', '16:00:00', 'Extérieur', 'AYTRE BASKET BALL', 54, 67, 548, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(87, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J3', '2026-02-01', '16:00:00', 'Extérieur', 'CA BEGLES - 3', 36, 67, 27, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
-(88, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J13', '2026-02-01', '16:30:00', 'Domicile', 'COTEAUX DU LUY BASKET', 57, 59, 594, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(89, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J14', '2026-02-07', '19:00:00', 'Domicile', 'UNION SAINT BRUNO BORDEAUX', NULL, NULL, 1121, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(90, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J14', '2026-02-07', '21:15:00', 'Domicile', 'CASTELNAU MEDOC BC', NULL, NULL, 160, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(91, 'Féminin', 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J14', '2026-02-07', '21:30:00', 'Extérieur', 'LE TAILLAN BASKET - 2', NULL, NULL, 8108, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
-(92, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J4', '2026-02-08', '14:00:00', 'Domicile', 'STE EULALIE BASKET BALL', NULL, NULL, 39, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
-(93, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J14', '2026-02-08', '16:00:00', 'Domicile', 'AMICALE LOISIRS CASTILLONNES BASKET', NULL, NULL, 559, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(94, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J4', '2026-02-08', '16:00:00', 'Extérieur', 'AGJA CAUDERAN - 2', NULL, NULL, 9027, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
-(95, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J14', '2026-02-08', '16:30:00', 'Extérieur', 'ENTENTE PESSAC BASKET CLUB - 1', NULL, NULL, 642, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(96, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J15', '2026-02-22', '16:30:00', 'Domicile', 'AS ST DELPHIN - 2', NULL, NULL, 690, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(97, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J15', '2026-02-28', '21:00:00', 'Extérieur', 'CEP POITIERS', NULL, NULL, 171, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(98, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J15', '2026-02-28', '21:00:00', 'Extérieur', 'AIXE BC VAL DE VIENNE', NULL, NULL, 1144, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(99, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J15', '2026-03-01', '16:00:00', 'Extérieur', 'LIMOGES ABC EN LIMOUSIN - 2', NULL, NULL, 570, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(100, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J5', '2026-03-01', '16:00:00', 'Domicile', 'BLEUETS ILLATS - 2', NULL, NULL, 9037, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
-(101, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J5', '2026-03-01', '16:00:00', 'Extérieur', 'CASTELNAU MEDOC BC - 3', NULL, NULL, 51, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
-(102, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J16', '2026-03-01', '16:30:00', 'Extérieur', 'HAGETMAU MOMUY CASTAIGNOS BASKET', NULL, NULL, 738, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(103, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J16', '2026-03-07', '19:00:00', 'Domicile', 'AS ST DELPHIN', NULL, NULL, 1167, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(104, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J16', '2026-03-07', '21:15:00', 'Domicile', 'JSA BORDEAUX BASKET - 2', NULL, NULL, 182, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(105, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J16', '2026-03-08', '16:00:00', 'Domicile', 'POUZIOUX VOUNEUIL/BIARD BC', NULL, NULL, 581, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(106, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J6', '2026-03-08', '16:00:00', 'Extérieur', 'STADE BORDELAIS', NULL, NULL, 9045, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
-(107, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J6', '2026-03-08', '16:00:00', 'Extérieur', 'COUTRAS GUITRES BASKET', NULL, NULL, 63, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
-(108, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J17', '2026-03-08', '16:30:00', 'Domicile', 'IE - AUCH BASKET CLUB - 1', NULL, NULL, 786, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(109, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J17', '2026-03-21', '19:00:00', 'Extérieur', 'CA BRIVE CORREZE SECTION BASKET', NULL, NULL, 592, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(110, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J17', '2026-03-21', '21:00:00', 'Extérieur', 'CA BRIVE CORREZE SECTION BASKET', NULL, NULL, 1190, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(111, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J7', '2026-03-21', '21:30:00', 'Extérieur', 'BOULIAC BASKET CLUB - 2', NULL, NULL, 9055, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
-(112, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J7', '2026-03-22', '16:00:00', 'Domicile', 'CA CARBON BLANC OMNISPORT', NULL, NULL, 75, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
-(113, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J18', '2026-03-22', '16:30:00', 'Extérieur', 'IE - CTC GRAND DAX BASKET - ADOUR DAX LANDES BASKET', NULL, NULL, 829, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(114, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J18', '2026-03-28', '21:00:00', 'Extérieur', 'COGNAC BASKET AVENIR', NULL, NULL, 208, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(115, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J18', '2026-03-28', '21:00:00', 'Extérieur', 'IE - CTC DORDOGNE SUD BASKET - US BERGERAC BASKET', NULL, NULL, 1217, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(116, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J18', '2026-03-29', '17:00:00', 'Extérieur', 'CA BEGLES', NULL, NULL, 607, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(117, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J8', '2026-03-29', '17:00:00', 'Extérieur', 'ENTENTE PESSAC BASKET CLUB - 3', NULL, NULL, 9065, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
-(118, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J8', '2026-03-29', '17:00:00', 'Domicile', 'CA BEGLES - 3', NULL, NULL, 87, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
-(119, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J19', '2026-03-29', '17:30:00', 'Domicile', 'B. COMMINGES SALIES DU SALAT - 1', NULL, NULL, 879, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(120, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J19', '2026-04-04', '20:00:00', 'Domicile', 'ES ST FRONT DE PRADOUX', NULL, NULL, 1243, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(121, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J9', '2026-04-04', '21:00:00', 'Extérieur', 'STE EULALIE BASKET BALL', NULL, NULL, 99, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
-(122, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J19', '2026-04-04', '22:15:00', 'Extérieur', 'US CENON RIVE DROITE', NULL, NULL, 222, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(123, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J19', '2026-04-05', '17:00:00', 'Domicile', 'CHAURAY BASKET CLUB - 2', NULL, NULL, 621, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(124, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J9', '2026-04-05', '17:00:00', 'Domicile', 'AGJA CAUDERAN - 2', NULL, NULL, 9072, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
-(125, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J20', '2026-04-05', '17:30:00', 'Extérieur', 'LE TAILLAN BASKET', NULL, NULL, 927, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(126, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J21', '2026-04-12', '17:30:00', 'Domicile', 'FEYTIAT BASKET 87', NULL, NULL, 974, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(127, 'Féminin', 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J22', '2026-04-19', '17:30:00', 'Domicile', 'ELAN CHALOSSAIS', NULL, NULL, 1023, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
-(128, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J20', '2026-04-25', '22:00:00', 'Extérieur', 'BOULAZAC BASKET DORDOGNE - 2', NULL, NULL, 234, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(129, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J20', '2026-04-25', '22:00:00', 'Extérieur', 'BEAUNE-RILHAC-BONNAC BASKET', NULL, NULL, 1267, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(130, 'Masculin', 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J10', '2026-04-26', '15:00:00', 'Extérieur', 'BLEUETS ILLATS - 2', NULL, NULL, 9082, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
-(131, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J20', '2026-04-26', '17:00:00', 'Extérieur', 'UNION SPORTIVE BREDOISE BASKET', NULL, NULL, 633, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(132, 'Masculin', 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J10', '2026-04-26', '17:00:00', 'Domicile', 'CASTELNAU MEDOC BC - 3', NULL, NULL, 111, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
-(133, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J21', '2026-05-02', '20:00:00', 'Domicile', 'LIMOGES LANDOUGE LOISIRS BASKET', NULL, NULL, 1290, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(134, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J21', '2026-05-02', '22:15:00', 'Domicile', 'ASPTT LIMOGES', NULL, NULL, 245, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(135, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J21', '2026-05-03', '17:00:00', 'Domicile', 'ASPTT LIMOGES', NULL, NULL, 644, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
-(136, 'Masculin', 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J22', '2026-05-09', '20:00:00', 'Domicile', 'IE - CTC MEDOC ESTUAIRE - AS PIAN MEDOC BASKET', NULL, NULL, 1315, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
-(137, 'Masculin', 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J22', '2026-05-09', '22:15:00', 'Domicile', 'ENTENTE PESSAC BASKET CLUB', NULL, NULL, 258, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
-(138, 'Féminin', 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J22', '2026-05-10', '17:00:00', 'Domicile', 'IE - CTC UBVP - VILLENEUVE BASKET CLUB', NULL, NULL, 657, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL);
+INSERT INTO `bec_matches` (`id`, `Section`, `numEquipe`, `Equipe`, `Competition`, `Phase`, `Journee`, `Date`, `Heure`, `Domicile_Exterieur`, `Adversaire`, `Score_BEC`, `Score_Adversaire`, `MatchNo`, `Source`, `opponent_club_key`) VALUES
+(1, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J1', '2025-09-20', '22:00:00', 'Extérieur', 'US CHARTRONS BORDEAUX', 43, 81, 6, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(2, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J1', '2025-09-20', '22:00:00', 'Extérieur', 'BORDEAUX BASTIDE BASKET', 67, 60, 811, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(3, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J1', '2025-09-20', '22:30:00', 'Domicile', 'SA GAZINET CESTAS', 64, 50, 8004, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(4, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J1', '2025-09-21', '15:00:00', 'Extérieur', 'ENTENTE SPORTIVE BLANQUEFORT - 2', 102, 48, 9004, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
+(5, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J1', '2025-09-21', '17:00:00', 'Extérieur', 'BRESSUIRE LE REVEIL', NULL, NULL, 405, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(6, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J1', '2025-09-21', '17:30:00', 'Domicile', 'ABB CORNEBARRIEU', 75, 40, 18, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(7, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J2', '2025-09-27', '20:00:00', 'Domicile', 'UNION SPORTIVE TULLE CORREZE', 69, 88, 834, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(8, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J2', '2025-09-27', '22:00:00', 'Extérieur', 'US CHARTRONS BORDEAUX', 79, 33, 8014, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(9, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J2', '2025-09-27', '22:30:00', 'Domicile', 'AYTRE BASKET BALL', 68, 52, 17, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(10, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J2', '2025-09-28', '15:00:00', 'Domicile', 'STADE BORDELAIS', 61, 60, 9014, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
+(11, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J2', '2025-09-28', '17:00:00', 'Domicile', 'AYTRE BASKET BALL', 52, 57, 416, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(12, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J2', '2025-09-28', '17:30:00', 'Extérieur', 'COTEAUX DU LUY BASKET', 72, 76, 66, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(13, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J3', '2025-10-04', '22:00:00', 'Extérieur', 'CASTELNAU MEDOC BC', 90, 105, 28, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(14, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J3', '2025-10-04', '22:00:00', 'Extérieur', 'UNION SAINT BRUNO BORDEAUX', 52, 70, 857, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(15, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J3', '2025-10-04', '22:30:00', 'Domicile', 'US TALENCE', 45, 52, 8020, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(16, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J3', '2025-10-05', '17:00:00', 'Extérieur', 'AMICALE LOISIRS CASTILLONNES BASKET', 52, 47, 427, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(17, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J3', '2025-10-05', '17:30:00', 'Domicile', 'ENTENTE PESSAC BASKET CLUB - 1', 82, 62, 114, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(18, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J3', '2025-10-05', '19:00:00', 'Extérieur', 'EN - CTC MEDOC ESTUAIRE - LUDON BASKET CLUB - 3', 72, 49, 9022, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
+(19, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J3', '2025-10-05', '19:00:00', 'Extérieur', 'B.IZON - 2', 34, 41, 28, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
+(20, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J4', '2025-10-11', '20:00:00', 'Domicile', 'AIXE BC VAL DE VIENNE', 73, 64, 880, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(21, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J4', '2025-10-11', '22:30:00', 'Domicile', 'CEP POITIERS', 57, 67, 39, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(22, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J4', '2025-10-11', '23:00:00', 'Extérieur', 'STE EULALIE BASKET BALL', 57, 60, 8028, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(23, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J4', '2025-10-12', '15:00:00', 'Extérieur', 'BC ST AVIT ST NAZAIRE', 63, 57, 42, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
+(24, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J4', '2025-10-12', '17:00:00', 'Domicile', 'LIMOGES ABC EN LIMOUSIN - 2', 49, 53, 438, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(25, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J4', '2025-10-12', '17:30:00', 'Extérieur', 'AS ST DELPHIN - 2', 74, 73, 162, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(26, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J1', '2025-10-19', '15:00:00', 'Domicile', 'COUTRAS GUITRES BASKET', 46, 49, 4, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
+(27, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J4', '2025-10-19', '17:00:00', 'Domicile', 'BASKET CLUB MARCHEPRIME', 83, 64, 9030, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
+(28, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J5', '2025-10-26', '16:30:00', 'Domicile', 'HAGETMAU MOMUY CASTAIGNOS BASKET', 69, 53, 210, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(29, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J5', '2025-11-01', '21:00:00', 'Extérieur', 'JSA BORDEAUX BASKET - 2', 72, 57, 50, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(30, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J5', '2025-11-01', '21:00:00', 'Extérieur', 'AS ST DELPHIN', 62, 75, 903, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(31, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J5', '2025-11-01', '21:30:00', 'Domicile', 'IE - CTC SMB - SAM - SA MERIGNACAIS', 54, 42, 8036, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(32, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J5', '2025-11-02', '15:00:00', 'Extérieur', 'AS MARTIGNAS - 2', 53, 31, 9039, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
+(33, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J5', '2025-11-02', '16:00:00', 'Extérieur', 'POUZIOUX VOUNEUIL/BIARD BC', 46, 76, 449, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(34, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J5', '2025-11-02', '16:00:00', 'Domicile', 'STE EULALIE BASKET BALL', 38, 58, 52, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
+(35, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J6', '2025-11-02', '16:30:00', 'Extérieur', 'IE - AUCH BASKET CLUB - 1', 75, 42, 258, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(36, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J6', '2025-11-08', '19:00:00', 'Domicile', 'ENTENTE SPORTIVE BLANQUEFORT - 2', 111, 42, 9049, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
+(37, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J6', '2025-11-08', '21:00:00', 'Domicile', 'CA BRIVE CORREZE SECTION BASKET', 79, 65, 926, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(38, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J6', '2025-11-08', '22:00:00', 'Extérieur', 'UNION SPORTIVE BREDOISE BASKET - 2', 48, 58, 8044, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(39, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J6', '2025-11-09', '14:15:00', 'Domicile', 'CA BRIVE CORREZE SECTION BASKET', 54, 45, 460, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(40, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J6', '2025-11-09', '16:00:00', 'Extérieur', 'COUTRAS GUITRES BASKET', 34, 48, 64, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
+(41, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J7', '2025-11-09', '16:30:00', 'Domicile', 'IE - CTC GRAND DAX BASKET - ADOUR DAX LANDES BASKET', 95, 43, 301, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(42, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J7', '2025-11-15', '17:00:00', 'Domicile', 'LE TAILLAN BASKET - 2', 49, 52, 8052, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(43, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J7', '2025-11-15', '19:30:00', 'Domicile', 'IE - CTC DORDOGNE SUD BASKET - US BERGERAC BASKET', 81, 55, 953, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(44, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J7', '2025-11-15', '21:30:00', 'Domicile', 'COGNAC BASKET AVENIR', 74, 66, 76, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(45, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J7', '2025-11-16', '16:00:00', 'Domicile', 'CA BEGLES', 42, 58, 475, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(46, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J7', '2025-11-16', '16:00:00', 'Extérieur', 'STADE BORDELAIS', 58, 66, 9059, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
+(47, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J8', '2025-11-16', '16:30:00', 'Extérieur', 'B. COMMINGES SALIES DU SALAT - 1', 89, 84, 351, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(48, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J8', '2025-11-27', '22:00:00', 'Domicile', 'US CENON RIVE DROITE', 77, 69, 90, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(49, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J8', '2025-11-29', '21:00:00', 'Extérieur', 'ES ST FRONT DE PRADOUX', 74, 61, 979, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(50, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J8', '2025-11-29', '21:30:00', 'Extérieur', 'SA GAZINET CESTAS', 54, 41, 8060, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(51, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J8', '2025-11-30', '14:00:00', 'Domicile', 'EN - CTC MEDOC ESTUAIRE - LUDON BASKET CLUB - 3', 75, 60, 9067, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
+(52, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J8', '2025-11-30', '16:00:00', 'Extérieur', 'CHAURAY BASKET CLUB - 2', 52, 42, 489, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(53, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J8', '2025-11-30', '16:00:00', 'Domicile', 'B.IZON - 2', 51, 28, 88, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
+(54, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J9', '2025-11-30', '16:30:00', 'Domicile', 'LE TAILLAN BASKET', 86, 40, 399, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(55, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J9', '2025-12-06', '17:00:00', 'Domicile', 'US CHARTRONS BORDEAUX', 65, 46, 8070, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(56, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J9', '2025-12-06', '19:00:00', 'Domicile', 'BEAUNE-RILHAC-BONNAC BASKET', 63, 70, 1003, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(57, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J9', '2025-12-06', '21:15:00', 'Domicile', 'BOULAZAC BASKET DORDOGNE - 2', 71, 57, 102, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(58, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J10', '2025-12-07', '14:00:00', 'Extérieur', 'FEYTIAT BASKET 87', 82, 53, 446, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(59, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J9', '2025-12-07', '14:00:00', 'Domicile', 'BC ST AVIT ST NAZAIRE', 59, 56, 102, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
+(60, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J9', '2025-12-07', '16:00:00', 'Domicile', 'UNION SPORTIVE BREDOISE BASKET', 43, 49, 501, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(61, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J9', '2025-12-07', '16:00:00', 'Extérieur', 'BASKET CLUB MARCHEPRIME', 69, 64, 9075, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
+(62, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J10', '2025-12-13', '20:00:00', 'Extérieur', 'US TALENCE', 66, 71, 8076, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(63, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Saison régulière', 'J10', '2025-12-13', '20:00:00', 'Extérieur', 'STE EULALIE BASKET BALL', 48, 60, 112, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778', NULL),
+(64, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J10', '2025-12-13', '21:00:00', 'Extérieur', 'ASPTT LIMOGES', 85, 68, 113, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(65, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J10', '2025-12-13', '21:30:00', 'Extérieur', 'LIMOGES LANDOUGE LOISIRS BASKET', 68, 83, 1026, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(66, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J10', '2025-12-14', '16:00:00', 'Extérieur', 'ASPTT LIMOGES', 58, 79, 512, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(67, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Saison régulière', 'J10', '2025-12-14', '16:00:00', 'Domicile', 'AS MARTIGNAS - 2', 68, 54, 9084, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647', NULL),
+(68, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J11', '2026-01-10', '21:00:00', 'Domicile', 'STE EULALIE BASKET BALL', 46, 39, 8084, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(69, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J11', '2026-01-10', '22:00:00', 'Extérieur', 'ENTENTE PESSAC BASKET CLUB', 60, 70, 126, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(70, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J11', '2026-01-10', '22:00:00', 'Extérieur', 'IE - CTC MEDOC ESTUAIRE - AS PIAN MEDOC BASKET', 62, 84, 1051, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(71, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J1', '2026-01-11', '14:00:00', 'Domicile', 'STADE BORDELAIS', 77, 71, 9000, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
+(72, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J11', '2026-01-11', '16:00:00', 'Extérieur', 'IE - CTC UBVP - VILLENEUVE BASKET CLUB', 54, 49, 525, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(73, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J1', '2026-01-11', '16:00:00', 'Domicile', 'COUTRAS GUITRES BASKET', 36, 51, 3, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
+(74, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J11', '2026-01-11', '16:30:00', 'Extérieur', 'ELAN CHALOSSAIS', 66, 70, 495, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(75, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J12', '2026-01-17', '19:00:00', 'Domicile', 'BORDEAUX BASTIDE BASKET', 65, 62, 1075, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(76, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J12', '2026-01-17', '21:15:00', 'Domicile', 'US CHARTRONS BORDEAUX', 72, 85, 138, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(77, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J12', '2026-01-17', '21:30:00', 'Extérieur', 'IE - CTC SMB - SAM - SA MERIGNACAIS', 49, 51, 8092, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(78, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J2', '2026-01-18', '14:00:00', 'Domicile', 'BOULIAC BASKET CLUB - 2', 50, 81, 9010, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
+(79, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J12', '2026-01-18', '16:00:00', 'Domicile', 'BRESSUIRE LE REVEIL', 67, 46, 537, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(80, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J2', '2026-01-18', '16:00:00', 'Extérieur', 'CA CARBON BLANC OMNISPORT', 42, 82, 15, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
+(81, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J12', '2026-01-18', '16:30:00', 'Extérieur', 'ABB CORNEBARRIEU', 85, 65, 546, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(82, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J13', '2026-01-31', '21:00:00', 'Domicile', 'UNION SPORTIVE BREDOISE BASKET - 2', 58, 54, 8100, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(83, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J13', '2026-01-31', '21:00:00', 'Extérieur', 'UNION SPORTIVE TULLE CORREZE', 68, 77, 1098, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(84, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J13', '2026-01-31', '22:00:00', 'Extérieur', 'AYTRE BASKET BALL', 56, 68, 149, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(85, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J3', '2026-02-01', '14:00:00', 'Domicile', 'ENTENTE PESSAC BASKET CLUB - 3', 72, 63, 9020, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
+(86, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J13', '2026-02-01', '16:00:00', 'Extérieur', 'AYTRE BASKET BALL', 54, 67, 548, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(87, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J3', '2026-02-01', '16:00:00', 'Extérieur', 'CA BEGLES - 3', 36, 67, 27, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
+(88, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J13', '2026-02-01', '16:30:00', 'Domicile', 'COTEAUX DU LUY BASKET', 57, 59, 594, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(89, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J14', '2026-02-07', '19:00:00', 'Domicile', 'UNION SAINT BRUNO BORDEAUX', NULL, NULL, 1121, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(90, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J14', '2026-02-07', '21:15:00', 'Domicile', 'CASTELNAU MEDOC BC', NULL, NULL, 160, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(91, 'Féminin', NULL, 'SF3 (Féminin)', 'PRF', 'Saison régulière', 'J14', '2026-02-07', '21:30:00', 'Extérieur', 'LE TAILLAN BASKET - 2', NULL, NULL, 8108, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370', NULL),
+(92, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J4', '2026-02-08', '14:00:00', 'Domicile', 'STE EULALIE BASKET BALL', NULL, NULL, 39, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
+(93, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J14', '2026-02-08', '16:00:00', 'Domicile', 'AMICALE LOISIRS CASTILLONNES BASKET', NULL, NULL, 559, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(94, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J4', '2026-02-08', '16:00:00', 'Extérieur', 'AGJA CAUDERAN - 2', NULL, NULL, 9027, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
+(95, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J14', '2026-02-08', '16:30:00', 'Extérieur', 'ENTENTE PESSAC BASKET CLUB - 1', NULL, NULL, 642, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(96, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J15', '2026-02-22', '16:30:00', 'Domicile', 'AS ST DELPHIN - 2', NULL, NULL, 690, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(97, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J15', '2026-02-28', '21:00:00', 'Extérieur', 'CEP POITIERS', NULL, NULL, 171, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(98, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J15', '2026-02-28', '21:00:00', 'Extérieur', 'AIXE BC VAL DE VIENNE', NULL, NULL, 1144, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(99, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J15', '2026-03-01', '16:00:00', 'Extérieur', 'LIMOGES ABC EN LIMOUSIN - 2', NULL, NULL, 570, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(100, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J5', '2026-03-01', '16:00:00', 'Domicile', 'BLEUETS ILLATS - 2', NULL, NULL, 9037, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
+(101, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J5', '2026-03-01', '16:00:00', 'Extérieur', 'CASTELNAU MEDOC BC - 3', NULL, NULL, 51, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
+(102, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J16', '2026-03-01', '16:30:00', 'Extérieur', 'HAGETMAU MOMUY CASTAIGNOS BASKET', NULL, NULL, 738, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(103, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J16', '2026-03-07', '19:00:00', 'Domicile', 'AS ST DELPHIN', NULL, NULL, 1167, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(104, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J16', '2026-03-07', '21:15:00', 'Domicile', 'JSA BORDEAUX BASKET - 2', NULL, NULL, 182, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(105, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J16', '2026-03-08', '16:00:00', 'Domicile', 'POUZIOUX VOUNEUIL/BIARD BC', NULL, NULL, 581, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(106, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J6', '2026-03-08', '16:00:00', 'Extérieur', 'STADE BORDELAIS', NULL, NULL, 9045, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
+(107, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J6', '2026-03-08', '16:00:00', 'Extérieur', 'COUTRAS GUITRES BASKET', NULL, NULL, 63, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
+(108, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J17', '2026-03-08', '16:30:00', 'Domicile', 'IE - AUCH BASKET CLUB - 1', NULL, NULL, 786, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(109, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J17', '2026-03-21', '19:00:00', 'Extérieur', 'CA BRIVE CORREZE SECTION BASKET', NULL, NULL, 592, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(110, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J17', '2026-03-21', '21:00:00', 'Extérieur', 'CA BRIVE CORREZE SECTION BASKET', NULL, NULL, 1190, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(111, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J7', '2026-03-21', '21:30:00', 'Extérieur', 'BOULIAC BASKET CLUB - 2', NULL, NULL, 9055, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
+(112, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J7', '2026-03-22', '16:00:00', 'Domicile', 'CA CARBON BLANC OMNISPORT', NULL, NULL, 75, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
+(113, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J18', '2026-03-22', '16:30:00', 'Extérieur', 'IE - CTC GRAND DAX BASKET - ADOUR DAX LANDES BASKET', NULL, NULL, 829, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(114, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J18', '2026-03-28', '21:00:00', 'Extérieur', 'COGNAC BASKET AVENIR', NULL, NULL, 208, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(115, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J18', '2026-03-28', '21:00:00', 'Extérieur', 'IE - CTC DORDOGNE SUD BASKET - US BERGERAC BASKET', NULL, NULL, 1217, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(116, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J18', '2026-03-29', '17:00:00', 'Extérieur', 'CA BEGLES', NULL, NULL, 607, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(117, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J8', '2026-03-29', '17:00:00', 'Extérieur', 'ENTENTE PESSAC BASKET CLUB - 3', NULL, NULL, 9065, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
+(118, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J8', '2026-03-29', '17:00:00', 'Domicile', 'CA BEGLES - 3', NULL, NULL, 87, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
+(119, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J19', '2026-03-29', '17:30:00', 'Domicile', 'B. COMMINGES SALIES DU SALAT - 1', NULL, NULL, 879, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(120, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J19', '2026-04-04', '20:00:00', 'Domicile', 'ES ST FRONT DE PRADOUX', NULL, NULL, 1243, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(121, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J9', '2026-04-04', '21:00:00', 'Extérieur', 'STE EULALIE BASKET BALL', NULL, NULL, 99, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
+(122, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J19', '2026-04-04', '22:15:00', 'Extérieur', 'US CENON RIVE DROITE', NULL, NULL, 222, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(123, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J19', '2026-04-05', '17:00:00', 'Domicile', 'CHAURAY BASKET CLUB - 2', NULL, NULL, 621, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(124, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J9', '2026-04-05', '17:00:00', 'Domicile', 'AGJA CAUDERAN - 2', NULL, NULL, 9072, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
+(125, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J20', '2026-04-05', '17:30:00', 'Extérieur', 'LE TAILLAN BASKET', NULL, NULL, 927, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(126, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J21', '2026-04-12', '17:30:00', 'Domicile', 'FEYTIAT BASKET 87', NULL, NULL, 974, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(127, 'Féminin', NULL, 'SF1 (Féminin)', 'NF3', 'Saison régulière', 'J22', '2026-04-19', '17:30:00', 'Domicile', 'ELAN CHALOSSAIS', NULL, NULL, 1023, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512', NULL),
+(128, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J20', '2026-04-25', '22:00:00', 'Extérieur', 'BOULAZAC BASKET DORDOGNE - 2', NULL, NULL, 234, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(129, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J20', '2026-04-25', '22:00:00', 'Extérieur', 'BEAUNE-RILHAC-BONNAC BASKET', NULL, NULL, 1267, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(130, 'Masculin', NULL, 'Sénior 3 (Masculin)', 'DM3', 'Phase 2 / Playoffs', 'J10', '2026-04-26', '15:00:00', 'Extérieur', 'BLEUETS ILLATS - 2', NULL, NULL, 9082, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420', NULL),
+(131, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J20', '2026-04-26', '17:00:00', 'Extérieur', 'UNION SPORTIVE BREDOISE BASKET', NULL, NULL, 633, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(132, 'Masculin', NULL, 'Sénior 4 (Masculin)', 'DM4', 'Phase 2 / Playoffs', 'J10', '2026-04-26', '17:00:00', 'Domicile', 'CASTELNAU MEDOC BC - 3', NULL, NULL, 111, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439', NULL),
+(133, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J21', '2026-05-02', '20:00:00', 'Domicile', 'LIMOGES LANDOUGE LOISIRS BASKET', NULL, NULL, 1290, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(134, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J21', '2026-05-02', '22:15:00', 'Domicile', 'ASPTT LIMOGES', NULL, NULL, 245, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(135, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J21', '2026-05-03', '17:00:00', 'Domicile', 'ASPTT LIMOGES', NULL, NULL, 644, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL),
+(136, 'Masculin', NULL, 'Sénior 2 (Masculin)', 'RM2', 'Saison régulière', 'J22', '2026-05-09', '20:00:00', 'Domicile', 'IE - CTC MEDOC ESTUAIRE - AS PIAN MEDOC BASKET', NULL, NULL, 1315, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117', NULL),
+(137, 'Masculin', NULL, 'Sénior 1 (Masculin)', 'PNM', 'Saison régulière', 'J22', '2026-05-09', '22:15:00', 'Domicile', 'ENTENTE PESSAC BASKET CLUB', NULL, NULL, 258, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983', NULL),
+(138, 'Féminin', NULL, 'SF2 (Féminin)', 'PNF', 'Saison régulière', 'J22', '2026-05-10', '17:00:00', 'Domicile', 'IE - CTC UBVP - VILLENEUVE BASKET CLUB', NULL, NULL, 657, 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159', NULL);
 
 --
 -- Déclencheurs `bec_matches`
@@ -233,7 +264,7 @@ CREATE TRIGGER `trg_bec_matches_bi` BEFORE INSERT ON `bec_matches` FOR EACH ROW 
   DECLARE club_clean VARCHAR(180);
 
   -- 1. retirer suffixes " - 2", " 2", "(2)" en fin de chaîne
-  SET club_clean = REGEXP_REPLACE(NEW.Adversaire, '([[:space:]]|-)?\(?[0-9]+\)?$', '');
+  SET club_clean = REGEXP_REPLACE(NEW.Adversaire, '([[:space:]]|-)?(?[0-9]+)?$', '');
 
   -- 2. majuscules + espaces → _
   SET club_clean = UPPER(REPLACE(TRIM(club_clean), ' ', '_'));
@@ -246,13 +277,33 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `BRANCHE_PERSONNEL`
+--
+
+CREATE TABLE `BRANCHE_PERSONNEL` (
+  `numBranche` int NOT NULL,
+  `libBranche` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `BRANCHE_PERSONNEL`
+--
+
+INSERT INTO `BRANCHE_PERSONNEL` (`numBranche`, `libBranche`) VALUES
+(1, 'Club'),
+(2, 'Pôle animation'),
+(3, 'Pôle communication');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `club_logos`
 --
 
 CREATE TABLE `club_logos` (
-  `club_key` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `club_name` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `logo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `club_key` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `club_name` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logo_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -305,6 +356,60 @@ INSERT INTO `COOKIE_CONSENT` (`numCon`, `ipAdresse`, `choixConsent`, `dateCon`, 
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `EQUIPE`
+--
+
+CREATE TABLE `EQUIPE` (
+  `numEquipe` int NOT NULL,
+  `libEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `categorieEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sectionEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `niveauEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `EQUIPE_JOUEUR`
+--
+
+CREATE TABLE `EQUIPE_JOUEUR` (
+  `numEquipe` int NOT NULL,
+  `numJoueur` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `EQUIPE_PERSONNEL`
+--
+
+CREATE TABLE `EQUIPE_PERSONNEL` (
+  `numEquipe` int NOT NULL,
+  `numPersonnel` int NOT NULL,
+  `libRoleEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `JOUEUR`
+--
+
+CREATE TABLE `JOUEUR` (
+  `numJoueur` int NOT NULL,
+  `prenomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `urlPhotoJoueur` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `posteJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `anneeArrivee` year DEFAULT NULL,
+  `clubsPrecedents` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `dateNaissance` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `LIKEART`
 --
 
@@ -337,7 +442,7 @@ INSERT INTO `LIKEART` (`numMemb`, `numArt`, `likeA`) VALUES
 --
 
 CREATE TABLE `MEMBRE` (
-  `numMemb` int NOT NULL AUTO_INCREMENT,
+  `numMemb` int NOT NULL,
   `prenomMemb` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomMemb` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `pseudoMemb` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -347,8 +452,7 @@ CREATE TABLE `MEMBRE` (
   `dtMajMemb` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `accordMemb` tinyint(1) DEFAULT '1',
   `cookieMemb` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `numStat` int NOT NULL,
-  PRIMARY KEY (`numMemb`)
+  `numStat` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -424,6 +528,37 @@ INSERT INTO `MOTCLEARTICLE` (`numArt`, `numMotCle`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `PERSONNEL`
+--
+
+CREATE TABLE `PERSONNEL` (
+  `numPersonnel` int NOT NULL,
+  `prenomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `urlPhotoPersonnel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `PERSONNEL`
+--
+
+INSERT INTO `PERSONNEL` (`numPersonnel`, `prenomPersonnel`, `nomPersonnel`, `urlPhotoPersonnel`) VALUES
+(1, 'Jean', 'Dupont', NULL),
+(2, 'Marie', 'Martin', NULL),
+(3, 'Claire', 'Petit', NULL),
+(4, 'Sophie', 'Leroy', NULL),
+(5, 'Luc', 'Bernard', NULL),
+(6, 'Emma', 'Roux', NULL),
+(7, 'Paul', 'Fournier', NULL),
+(8, 'Nina', 'Giraud', NULL),
+(9, 'Hugo', 'Lefevre', NULL),
+(10, 'Laura', 'Moreau', NULL),
+(11, 'Tom', 'Garcia', NULL),
+(12, 'Julie', 'Dubois', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `STATUT`
 --
 
@@ -449,9 +584,8 @@ INSERT INTO `STATUT` (`numStat`, `libStat`, `dtCreaStat`) VALUES
 --
 
 CREATE TABLE `THEMATIQUE` (
-  `numThem` int NOT NULL AUTO_INCREMENT,
-  `libThem` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`numThem`)
+  `numThem` int NOT NULL,
+  `libThem` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -464,108 +598,18 @@ INSERT INTO `THEMATIQUE` (`numThem`, `libThem`) VALUES
 (3, 'Le mouvement émergeant'),
 (4, 'L\'insolite / le clin d\'œil');
 
--- --------------------------------------------------------
-
---
--- Structure de la table `BRANCHE_PERSONNEL`
---
-
-CREATE TABLE `BRANCHE_PERSONNEL` (
-  `numBranche` int NOT NULL AUTO_INCREMENT,
-  `libBranche` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`numBranche`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `PERSONNEL`
---
-
-CREATE TABLE `PERSONNEL` (
-  `numPersonnel` int NOT NULL AUTO_INCREMENT,
-  `prenomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `urlPhotoPersonnel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`numPersonnel`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `AFFECTATION_PERSONNEL`
---
-
-CREATE TABLE `AFFECTATION_PERSONNEL` (
-  `numAffectation` int NOT NULL AUTO_INCREMENT,
-  `numPersonnel` int NOT NULL,
-  `numBranche` int NOT NULL,
-  `libPoste` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`numAffectation`),
-  UNIQUE KEY `uniq_personnel_branche_poste` (`numPersonnel`,`numBranche`,`libPoste`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `EQUIPE`
---
-
-CREATE TABLE `EQUIPE` (
-  `numEquipe` int NOT NULL AUTO_INCREMENT,
-  `libEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `categorieEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `sectionEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `niveauEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`numEquipe`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `JOUEUR`
---
-
-CREATE TABLE `JOUEUR` (
-  `numJoueur` int NOT NULL AUTO_INCREMENT,
-  `prenomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `urlPhotoJoueur` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `posteJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `anneeArrivee` year DEFAULT NULL,
-  `clubsPrecedents` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `dateNaissance` date DEFAULT NULL,
-  PRIMARY KEY (`numJoueur`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `EQUIPE_JOUEUR`
---
-
-CREATE TABLE `EQUIPE_JOUEUR` (
-  `numEquipe` int NOT NULL,
-  `numJoueur` int NOT NULL,
-  PRIMARY KEY (`numEquipe`,`numJoueur`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `EQUIPE_PERSONNEL`
---
-
-CREATE TABLE `EQUIPE_PERSONNEL` (
-  `numEquipe` int NOT NULL,
-  `numPersonnel` int NOT NULL,
-  `libRoleEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`numEquipe`,`numPersonnel`,`libRoleEquipe`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 --
 -- Index pour les tables déchargées
 --
+
+--
+-- Index pour la table `AFFECTATION_PERSONNEL`
+--
+ALTER TABLE `AFFECTATION_PERSONNEL`
+  ADD PRIMARY KEY (`numAffectation`),
+  ADD UNIQUE KEY `uniq_personnel_branche_poste` (`numPersonnel`,`numBranche`,`libPoste`),
+  ADD KEY `FK_AFFECTATION_PERSONNEL_PERSONNEL` (`numPersonnel`),
+  ADD KEY `FK_AFFECTATION_PERSONNEL_BRANCHE` (`numBranche`);
 
 --
 -- Index pour la table `ARTICLE`
@@ -576,19 +620,18 @@ ALTER TABLE `ARTICLE`
   ADD KEY `FK_ASSOCIATION_1` (`numThem`);
 
 --
--- Index pour la table `AFFECTATION_PERSONNEL`
---
-ALTER TABLE `AFFECTATION_PERSONNEL`
-  ADD KEY `FK_AFFECTATION_PERSONNEL_PERSONNEL` (`numPersonnel`),
-  ADD KEY `FK_AFFECTATION_PERSONNEL_BRANCHE` (`numBranche`);
-
---
 -- Index pour la table `bec_matches`
 --
 ALTER TABLE `bec_matches`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_bec_matches_numEquipe` (`numEquipe`),
   ADD KEY `idx_opponent_club_key` (`opponent_club_key`);
+
+--
+-- Index pour la table `BRANCHE_PERSONNEL`
+--
+ALTER TABLE `BRANCHE_PERSONNEL`
+  ADD PRIMARY KEY (`numBranche`);
 
 --
 -- Index pour la table `club_logos`
@@ -614,16 +657,30 @@ ALTER TABLE `COOKIE_CONSENT`
   ADD KEY `idx_expiration` (`dateExpiration`);
 
 --
+-- Index pour la table `EQUIPE`
+--
+ALTER TABLE `EQUIPE`
+  ADD PRIMARY KEY (`numEquipe`);
+
+--
 -- Index pour la table `EQUIPE_JOUEUR`
 --
 ALTER TABLE `EQUIPE_JOUEUR`
+  ADD PRIMARY KEY (`numEquipe`,`numJoueur`),
   ADD KEY `FK_EQUIPE_JOUEUR_JOUEUR` (`numJoueur`);
 
 --
 -- Index pour la table `EQUIPE_PERSONNEL`
 --
 ALTER TABLE `EQUIPE_PERSONNEL`
+  ADD PRIMARY KEY (`numEquipe`,`numPersonnel`,`libRoleEquipe`),
   ADD KEY `FK_EQUIPE_PERSONNEL_PERSONNEL` (`numPersonnel`);
+
+--
+-- Index pour la table `JOUEUR`
+--
+ALTER TABLE `JOUEUR`
+  ADD PRIMARY KEY (`numJoueur`);
 
 --
 -- Index pour la table `LIKEART`
@@ -637,6 +694,7 @@ ALTER TABLE `LIKEART`
 -- Index pour la table `MEMBRE`
 --
 ALTER TABLE `MEMBRE`
+  ADD PRIMARY KEY (`numMemb`),
   ADD KEY `MEMBRE_FK` (`numMemb`),
   ADD KEY `FK_ASSOCIATION_4` (`numStat`);
 
@@ -656,6 +714,12 @@ ALTER TABLE `MOTCLEARTICLE`
   ADD KEY `MOTCLEARTICLE2_FK` (`numMotCle`);
 
 --
+-- Index pour la table `PERSONNEL`
+--
+ALTER TABLE `PERSONNEL`
+  ADD PRIMARY KEY (`numPersonnel`);
+
+--
 -- Index pour la table `STATUT`
 --
 ALTER TABLE `STATUT`
@@ -666,11 +730,18 @@ ALTER TABLE `STATUT`
 -- Index pour la table `THEMATIQUE`
 --
 ALTER TABLE `THEMATIQUE`
+  ADD PRIMARY KEY (`numThem`),
   ADD KEY `THEMATIQUE_FK` (`numThem`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
 --
+
+--
+-- AUTO_INCREMENT pour la table `AFFECTATION_PERSONNEL`
+--
+ALTER TABLE `AFFECTATION_PERSONNEL`
+  MODIFY `numAffectation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT pour la table `ARTICLE`
@@ -685,10 +756,46 @@ ALTER TABLE `bec_matches`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
 
 --
+-- AUTO_INCREMENT pour la table `BRANCHE_PERSONNEL`
+--
+ALTER TABLE `BRANCHE_PERSONNEL`
+  MODIFY `numBranche` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT pour la table `COMMENT`
 --
 ALTER TABLE `COMMENT`
   MODIFY `numCom` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT pour la table `EQUIPE`
+--
+ALTER TABLE `EQUIPE`
+  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `JOUEUR`
+--
+ALTER TABLE `JOUEUR`
+  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `MEMBRE`
+--
+ALTER TABLE `MEMBRE`
+  MODIFY `numMemb` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT pour la table `PERSONNEL`
+--
+ALTER TABLE `PERSONNEL`
+  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT pour la table `THEMATIQUE`
+--
+ALTER TABLE `THEMATIQUE`
+  MODIFY `numThem` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Contraintes pour les tables déchargées
