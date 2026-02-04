@@ -1,6 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+$pageStyles = [ROOT_URL . '/src/css/match-create.css'];
 include '../../../header.php';
 
 sql_connect();
@@ -88,6 +89,10 @@ $ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
                     <?php endif; ?>
                 </div>
                 <?php if ($ba_bec_hasBecMatchesTable) : ?>
+                    <div class="match-create-alignment">
+                        <span>Équipe à domicile</span>
+                        <span>Équipe à l'extérieur</span>
+                    </div>
                     <div class="form-group mt-2 row align-items-end" id="teamRow">
                         <div class="col-md-6" id="teamHomeColumn">
                             <label for="teamDisplay">Bordeaux Étudiant Club</label>
@@ -119,12 +124,12 @@ $ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
                     </div>
                 <?php endif; ?>
                 <?php if ($ba_bec_hasBecMatchesTable) : ?>
-                    <div class="form-group mt-2 row">
-                        <div class="col-md-6">
+                    <div class="form-group mt-2 row match-score-row">
+                        <div class="col-md-6" id="scoreHomeColumn">
                             <label for="scoreBec">Score BEC</label>
                             <input id="scoreBec" name="scoreBec" class="form-control" type="number" min="0" />
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" id="scoreAwayColumn">
                             <label for="scoreOpponent">Score adversaire</label>
                             <input id="scoreOpponent" name="scoreOpponent" class="form-control" type="number" min="0" />
                         </div>
@@ -175,6 +180,8 @@ $ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
         const locationAway = document.getElementById('locationAway');
         const teamHomeColumn = document.getElementById('teamHomeColumn');
         const teamAwayColumn = document.getElementById('teamAwayColumn');
+        const scoreHomeColumn = document.getElementById('scoreHomeColumn');
+        const scoreAwayColumn = document.getElementById('scoreAwayColumn');
         const matchDayNumber = document.getElementById('matchDayNumber');
         const matchDayInput = document.getElementById('matchDay');
         const statusSelect = document.getElementById('status');
@@ -248,9 +255,13 @@ $ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
             if (locationAway.checked) {
                 teamHomeColumn.classList.add('order-md-2');
                 teamAwayColumn.classList.add('order-md-1');
+                scoreHomeColumn.classList.add('order-md-2');
+                scoreAwayColumn.classList.add('order-md-1');
             } else {
                 teamHomeColumn.classList.remove('order-md-2');
                 teamAwayColumn.classList.remove('order-md-1');
+                scoreHomeColumn.classList.remove('order-md-2');
+                scoreAwayColumn.classList.remove('order-md-1');
             }
         };
 
