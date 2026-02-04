@@ -3,7 +3,17 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_table'])) {
+    $ba_bec_table = strtoupper(trim($_POST['create_table']));
+    if ($ba_bec_table === 'PERSONNEL' && sql_create_table($ba_bec_table)) {
+        header('Location: list.php?table_created=PERSONNEL');
+        exit;
+    }
+    $ba_bec_table_error = 'La création de la table a échoué. Vérifiez la connexion à la base de données.';
+}
+
 $ba_bec_benevoles = sql_select('PERSONNEL', '*', null, null, 'nomPersonnel ASC, prenomPersonnel ASC');
+$ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
 ?>
 
 <div class="container">
@@ -15,6 +25,20 @@ $ba_bec_benevoles = sql_select('PERSONNEL', '*', null, null, 'nomPersonnel ASC, 
                 </a>
             </div>
             <h1>Bénévoles</h1>
+            <?php if (!empty($_GET['table_created'])): ?>
+                <div class="alert alert-success">La table a été créée.</div>
+            <?php endif; ?>
+            <?php if (!empty($ba_bec_table_error)): ?>
+                <div class="alert alert-danger"><?php echo htmlspecialchars($ba_bec_table_error); ?></div>
+            <?php endif; ?>
+            <?php if ($ba_bec_is_missing_table): ?>
+                <div class="alert alert-warning d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                    <div>La table PERSONNEL est manquante. Vous pouvez la créer pour continuer.</div>
+                    <form method="post" class="mb-0">
+                        <button type="submit" name="create_table" value="PERSONNEL" class="btn btn-warning">Créer la table</button>
+                    </form>
+                </div>
+            <?php endif; ?>
             <table class="table table-striped">
                 <thead>
                     <tr>
