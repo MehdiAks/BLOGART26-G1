@@ -1,7 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
-include '../../../header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_table'])) {
     $ba_bec_table = strtoupper(trim($_POST['create_table']));
@@ -100,6 +99,8 @@ $ba_bec_missing_labels = [
     'EQUIPE_JOUEUR' => 'EQUIPE_JOUEUR',
 ];
 ?>
+
+<?php include '../../../header.php'; ?>
 
 <div class="container">
     <div class="row">
