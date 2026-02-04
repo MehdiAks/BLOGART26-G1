@@ -8,10 +8,10 @@
                     <p class="mb-3">06 71 94 23 80 - 05 56 91 83 50</p>
                     <div class="d-flex align-items-center gap-3 mb-4">
                         <a href="https://www.instagram.com/becfootballclub/?hl=fr" class="social-icon">
-                            <img src="<?php echo ROOT_URL . '/src/images/instagram-logo.png'; ?>" alt="Instagram">
+                            <img src="<?php echo ROOT_URL . '/src/images/logo/instagram.png'; ?>" alt="Instagram">
                         </a>
                         <a href="https://www.facebook.com/becofficiel/?locale=fr_FR" class="social-icon">
-                            <img src="<?php echo ROOT_URL . '/src/images/facebook-logo.png'; ?>" alt="Facebook">
+                            <img src="<?php echo ROOT_URL . '/src/images/logo/facebook.png'; ?>" alt="Facebook">
                         </a>
                     </div>
                     <ul class="list-unstyled d-flex flex-column gap-2">
