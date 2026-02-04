@@ -1,6 +1,8 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+$pageStyles = [ROOT_URL . '/src/css/contact.css'];
 require_once 'header.php';
+
 ?>
 
 <main class="container py-5">
@@ -22,20 +24,20 @@ require_once 'header.php';
 
         <div class="col-lg-6">
             <form>
-        <div class="form-group">
-            <label for="exampleInputEmail1">Adresse Mail</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <div class="form-group , champ">
+            <input type="text" placeholder="Email">
         </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1">Numéro de téléphone</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
-        </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1">Votre message</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+        <br>
+        <div class="form-group , champ">
+            <input type="text" placeholder="Numéro de Téléphone">
             <small>Ces informations ne seront pas communiquées à des tiers .</small>
         </div>
-        <button type="submit" class="btn btn-primary">Envoyer</button>
+        <br>
+        <div class="form-group , champ">
+            <input type="text" class="msg" placeholder="Votre message">
+        </div>
+        <br>
+        <button type="submit" class="btn_envoyer">Envoyer</button>
     </form>
     </div>
 </main>
