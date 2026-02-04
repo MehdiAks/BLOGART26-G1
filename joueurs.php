@@ -2,24 +2,41 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
-require_once 'header.php';
+
+function render_missing_table_page(PDOException $exception): void
+{
+    $errorInfo = $exception->errorInfo ?? [];
+    $isMissingTable = $exception->getCode() === '42S02'
+        || (isset($errorInfo[1]) && (int) $errorInfo[1] === 1146);
+
+    if ($isMissingTable) {
+        http_response_code(404);
+        require_once 'erreur404.php';
+        exit;
+    }
+}
 
 $dbAvailable = getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_DATABASE');
 
 if ($dbAvailable) {
-    sql_connect();
+    try {
+        sql_connect();
 
-    $playersStmt = $DB->prepare(
-        'SELECT j.numJoueur, j.prenomJoueur, j.nomJoueur, j.urlPhotoJoueur, j.posteJoueur, j.numMaillot, j.anneeArrivee, j.clubsPrecedents,
-            j.dateNaissance, GROUP_CONCAT(e.libEquipe ORDER BY e.libEquipe SEPARATOR ", ") AS equipes
-        FROM JOUEUR j
-        LEFT JOIN EQUIPE_JOUEUR ej ON j.numJoueur = ej.numJoueur
-        LEFT JOIN EQUIPE e ON ej.numEquipe = e.numEquipe
-        GROUP BY j.numJoueur
-        ORDER BY j.nomJoueur ASC'
-    );
-    $playersStmt->execute();
-    $players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);
+        $playersStmt = $DB->prepare(
+            'SELECT j.numJoueur, j.prenomJoueur, j.nomJoueur, j.urlPhotoJoueur, j.posteJoueur, j.numMaillot, j.anneeArrivee, j.clubsPrecedents,
+                j.dateNaissance, GROUP_CONCAT(e.libEquipe ORDER BY e.libEquipe SEPARATOR ", ") AS equipes
+            FROM JOUEUR j
+            LEFT JOIN EQUIPE_JOUEUR ej ON j.numJoueur = ej.numJoueur
+            LEFT JOIN EQUIPE e ON ej.numEquipe = e.numEquipe
+            GROUP BY j.numJoueur
+            ORDER BY j.nomJoueur ASC'
+        );
+        $playersStmt->execute();
+        $players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $exception) {
+        render_missing_table_page($exception);
+        throw $exception;
+    }
 } else {
     $players = [];
 }
@@ -58,6 +75,8 @@ function player_photo_url(?string $photo, string $defaultPhoto): string
     return ROOT_URL . '/src/uploads/' . $photo;
 }
 ?>
+
+<?php require_once 'header.php'; ?>
 
 <section class="club-page">
     <header class="club-header">
