@@ -55,8 +55,10 @@ $club_pages = [
                     </li>
                     <li>
                         <div class="header-submenu">
-                            <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if (in_array($current_page, $club_pages, true)) echo 'class="current"'; ?> aria-haspopup="true" aria-expanded="false">Le club</a>
-                            <ul class="submenu-list" aria-label="Le club">
+                            <button type="button" class="submenu-toggle<?php if (in_array($current_page, $club_pages, true)) echo ' current'; ?>" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-club">
+                                Le club
+                            </button>
+                            <ul class="submenu-list" id="submenu-club" aria-label="Le club">
                                 <li>
                                     <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
                                 </li>

@@ -40,6 +40,55 @@
             </div>
         </div>
     </footer>
+    <script>
+        document.querySelectorAll('.header-submenu').forEach((submenu) => {
+            const toggle = submenu.querySelector('.submenu-toggle');
+            const closeSubmenu = () => {
+                submenu.classList.remove('is-open');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            };
+
+            if (!toggle) {
+                return;
+            }
+
+            toggle.addEventListener('click', (event) => {
+                event.preventDefault();
+                const isOpen = submenu.classList.contains('is-open');
+
+                document.querySelectorAll('.header-submenu.is-open').forEach((openSubmenu) => {
+                    if (openSubmenu !== submenu) {
+                        const openToggle = openSubmenu.querySelector('.submenu-toggle');
+                        openSubmenu.classList.remove('is-open');
+                        if (openToggle) {
+                            openToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+
+                if (isOpen) {
+                    closeSubmenu();
+                } else {
+                    submenu.classList.add('is-open');
+                    toggle.setAttribute('aria-expanded', 'true');
+                }
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!submenu.contains(event.target)) {
+                    closeSubmenu();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeSubmenu();
+                }
+            });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
