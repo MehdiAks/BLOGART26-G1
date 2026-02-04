@@ -134,5 +134,49 @@ include '../../header.php';
                 </div>
             </div>
         </div>
+        <div class="row g-4 mt-1">
+            <div class="col-12 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Joueurs</h5>
+                        <p class="card-text">Ajoutez, modifiez ou retirez des joueurs.</p>
+                        <div class="admin-actions d-flex flex-wrap gap-2">
+                            <a href="/views/backend/joueurs/list.php" class="btn btn-primary">Liste</a>
+                            <a href="/views/backend/joueurs/create.php" class="btn btn-success">Créer</a>
+                            <a href="/views/backend/joueurs/edit.php" class="btn btn-warning disabled">Modifier</a>
+                            <a href="/views/backend/joueurs/delete.php" class="btn btn-danger disabled">Supprimer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Bénévoles</h5>
+                        <p class="card-text">Gérez l’équipe de bénévoles et leurs profils.</p>
+                        <div class="admin-actions d-flex flex-wrap gap-2">
+                            <a href="/views/backend/benevoles/list.php" class="btn btn-primary">Liste</a>
+                            <a href="/views/backend/benevoles/create.php" class="btn btn-success">Créer</a>
+                            <a href="/views/backend/benevoles/edit.php" class="btn btn-warning disabled">Modifier</a>
+                            <a href="/views/backend/benevoles/delete.php" class="btn btn-danger disabled">Supprimer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Équipes</h5>
+                        <p class="card-text">Structurez et mettez à jour les équipes.</p>
+                        <div class="admin-actions d-flex flex-wrap gap-2">
+                            <a href="/views/backend/equipes/list.php" class="btn btn-primary">Liste</a>
+                            <a href="/views/backend/equipes/create.php" class="btn btn-success">Créer</a>
+                            <a href="/views/backend/equipes/edit.php" class="btn btn-warning disabled">Modifier</a>
+                            <a href="/views/backend/equipes/delete.php" class="btn btn-danger disabled">Supprimer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
