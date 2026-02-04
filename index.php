@@ -27,6 +27,115 @@ $articleStmt = $DB->prepare(
 $articleStmt->execute();
 // On récupère les résultats sous forme de tableau associatif.
 $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// On récupère les prochains matchs à domicile (Barbey) pour les équipes 1 garçons et filles.
+$matchesTableStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
+$hasBecMatchesTable = (bool) $matchesTableStmt->fetchColumn();
+$nextMatches = [
+    'SG1' => null,
+    'SF1' => null,
+];
+
+$formatMatchDate = static function (string $matchDate): string {
+    $date = DateTime::createFromFormat('Y-m-d', $matchDate);
+    if (!$date) {
+        return $matchDate;
+    }
+
+    if (class_exists('IntlDateFormatter')) {
+        $formatter = new IntlDateFormatter(
+            'fr_FR',
+            IntlDateFormatter::FULL,
+            IntlDateFormatter::NONE,
+            $date->getTimezone()->getName(),
+            IntlDateFormatter::GREGORIAN,
+            'EEEE d MMMM'
+        );
+        $formatted = $formatter->format($date);
+        if ($formatted !== false) {
+            return $formatted;
+        }
+    }
+
+    return $date->format('d/m/Y');
+};
+
+$formatMatchTime = static function (?string $matchTime): string {
+    if (empty($matchTime)) {
+        return '';
+    }
+    $time = DateTime::createFromFormat('H:i:s', $matchTime) ?: DateTime::createFromFormat('H:i', $matchTime);
+    return $time ? $time->format('H\hi') : $matchTime;
+};
+
+if ($hasBecMatchesTable) {
+    $matchesStmt = $DB->prepare(
+        "SELECT Section AS section,
+            Date AS matchDate,
+            Heure AS matchTime,
+            Domicile_Exterieur AS location,
+            Equipe AS team,
+            Adversaire AS opponent
+        FROM bec_matches
+        WHERE Section IN ('SG1', 'SF1')
+            AND Date >= CURDATE()
+        ORDER BY Date ASC, Heure ASC"
+    );
+    $matchesStmt->execute();
+    $matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($matches as $match) {
+        $section = (string) ($match['section'] ?? '');
+        if (!array_key_exists($section, $nextMatches) || $nextMatches[$section] !== null) {
+            continue;
+        }
+        $location = strtolower(trim((string) ($match['location'] ?? '')));
+        if ($location !== '' && !str_contains($location, 'domicile')) {
+            continue;
+        }
+
+        $nextMatches[$section] = [
+            'label' => $section === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
+            'teamHome' => $match['team'] ?? 'BEC',
+            'teamAway' => $match['opponent'] ?? '',
+            'matchDate' => $match['matchDate'],
+            'matchTime' => $match['matchTime'] ?? '',
+            'location' => 'Gymnase Barbey',
+        ];
+    }
+} else {
+    $matchesStmt = $DB->prepare(
+        "SELECT matchDate, matchTime, teamHome, teamAway, location
+        FROM MATCH_CLUB
+        WHERE matchDate >= CURDATE()
+            AND location LIKE '%Barbey%'
+        ORDER BY matchDate ASC, matchTime ASC"
+    );
+    $matchesStmt->execute();
+    $matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($matches as $match) {
+        $haystack = strtolower(
+            ($match['teamHome'] ?? '') . ' ' . ($match['teamAway'] ?? '')
+        );
+        $isGirls = str_contains($haystack, 'fille');
+        $isBoys = str_contains($haystack, 'garçon') || str_contains($haystack, 'garcon');
+        $key = $isGirls ? 'SF1' : ($isBoys ? 'SG1' : null);
+
+        if ($key === null || $nextMatches[$key] !== null) {
+            continue;
+        }
+
+        $nextMatches[$key] = [
+            'label' => $key === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
+            'teamHome' => $match['teamHome'] ?? '',
+            'teamAway' => $match['teamAway'] ?? '',
+            'matchDate' => $match['matchDate'],
+            'matchTime' => $match['matchTime'] ?? '',
+            'location' => $match['location'] ?? 'Gymnase Barbey',
+        ];
+    }
+}
 ?>
 
 <div id="carouselExampleAutoplaying" class="carousel slide home-carousel full-bleed mb-5" data-bs-ride="carousel">
@@ -104,26 +213,39 @@ $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
         <h2 class="mb-4">Nos prochains matchs à Barbey !</h2>
         <p class="text-body-secondary mb-4">Retrouvez nos équipes à domicile, à Barbey.</p>
         <div class="row g-4">
-            <div class="col-12 col-lg-6">
-                <article class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <span class="badge text-bg-primary mb-2">Équipe 1 Garçons</span>
-                        <h3 class="h5 mb-2">BEC 1 Garçons vs. Stade Bordelais</h3>
-                        <p class="mb-1"><strong>Samedi 18 mai</strong> • 20h30</p>
-                        <p class="mb-0 text-body-secondary">Gymnase Barbey</p>
-                    </div>
-                </article>
-            </div>
-            <div class="col-12 col-lg-6">
-                <article class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <span class="badge text-bg-danger mb-2">Équipe 1 Filles</span>
-                        <h3 class="h5 mb-2">BEC 1 Filles vs. Lormont</h3>
-                        <p class="mb-1"><strong>Dimanche 19 mai</strong> • 17h00</p>
-                        <p class="mb-0 text-body-secondary">Gymnase Barbey</p>
-                    </div>
-                </article>
-            </div>
+            <?php
+            $matchCards = [
+                $nextMatches['SG1'] ? array_merge($nextMatches['SG1'], ['badge' => 'text-bg-primary']) : null,
+                $nextMatches['SF1'] ? array_merge($nextMatches['SF1'], ['badge' => 'text-bg-danger']) : null,
+            ];
+            ?>
+            <?php foreach ($matchCards as $match): ?>
+                <div class="col-12 col-lg-6">
+                    <article class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <?php if ($match): ?>
+                                <span class="badge <?php echo $match['badge']; ?> mb-2">
+                                    <?php echo htmlspecialchars($match['label']); ?>
+                                </span>
+                                <h3 class="h5 mb-2">
+                                    <?php echo htmlspecialchars($match['teamHome']); ?> vs. <?php echo htmlspecialchars($match['teamAway']); ?>
+                                </h3>
+                                <p class="mb-1">
+                                    <strong><?php echo htmlspecialchars($formatMatchDate($match['matchDate'])); ?></strong>
+                                    <?php if ($formatMatchTime($match['matchTime']) !== ''): ?>
+                                        • <?php echo htmlspecialchars($formatMatchTime($match['matchTime'])); ?>
+                                    <?php endif; ?>
+                                </p>
+                                <p class="mb-0 text-body-secondary"><?php echo htmlspecialchars($match['location']); ?></p>
+                            <?php else: ?>
+                                <span class="badge text-bg-secondary mb-2">Match à venir</span>
+                                <h3 class="h5 mb-2">Planning en cours</h3>
+                                <p class="mb-1 text-body-secondary">Nous publierons bientôt les prochains matchs à Barbey.</p>
+                            <?php endif; ?>
+                        </div>
+                    </article>
+                </div>
+            <?php endforeach; ?>
         </div>
     </section>
 
