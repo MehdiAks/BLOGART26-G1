@@ -1,6 +1,12 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+
+$pageStyles = [
+    ROOT_URL . '/src/css/stylearticle.css',
+    ROOT_URL . '/src/css/article-editor.css',
+];
+
 include '../../../header.php';
 
 // Récupération des thématiques et mots-clés disponibles
@@ -9,169 +15,239 @@ $ba_bec_keywords = sql_select("MOTCLE", "*");
 $ba_bec_keywordsart = sql_select("MOTCLEARTICLE", "*");
 ?>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
+<div class="article-editor-page">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
             <h1>Créer un article</h1>
-            <p class="text-muted">
-                Cette page reprend une mise en forme proche de l’édition pour donner l’impression de modifier un
-                article déjà structuré.
+            <p class="text-muted mb-0">
+                Rédigez directement dans la mise en page finale : les champs restent invisibles pendant que
+                l’article se met en forme au fur et à mesure.
             </p>
         </div>
+        <button type="submit" form="article-create-form" class="btn btn-primary">Confirmer la création</button>
     </div>
-    <div class="row">
-        <div class="col-lg-7">
-            <form action="<?php echo ROOT_URL . '/api/articles/create.php'; ?>" method="post"
-                enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="libTitrArt">Titre</label>
-                    <input id="libTitrArt" name="libTitrArt" class="form-control" type="text"
-                        placeholder="100 caractères max" maxlength="100" required />
-                </div>
 
-                <div class="form-group">
-                    <label for="dtCreaArt">Date de création</label>
-                    <input id="dtCreaArt" name="dtCreaArt" class="form-control" type="datetime-local" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="libChapoArt">Chapeau</label>
-                    <textarea id="libChapoArt" name="libChapoArt" class="form-control" maxlength="500"
-                        placeholder="500 caractères max" style='height: 70px;' required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="libAccrochArt">Accroche</label>
-                    <input id="libAccrochArt" name="libAccrochArt" class="form-control" type="text"
-                        placeholder="100 caractères max" maxlength="100" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="parag1Art">Paragraphe 1</label>
-                    <textarea id="parag1Art" name="parag1Art" class="form-control" placeholder="1200 caractères max"
-                        style='height: 300px;' maxlength="1200" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="libSsTitr1Art">Sous-titre 1</label>
-                    <input id="libSsTitr1Art" name="libSsTitr1Art" class="form-control" type="text"
-                        placeholder="100 caractères max" maxlength="100" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="parag2Art">Paragraphe 2</label>
-                    <textarea id="parag2Art" name="parag2Art" class="form-control" placeholder="1200 caractères max"
-                        style='height: 300px;' maxlength="1200" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="libSsTitr2Art">Sous-titre 2 </label>
-                    <input id="libSsTitr2Art" name="libSsTitr2Art" class="form-control" type="text"
-                        placeholder="100 caractères max" maxlength="100" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="parag3Art">Paragraphe 3</label>
-                    <textarea id="parag3Art" name="parag3Art" class="form-control" placeholder="1200 caractères max"
-                        style='height: 300px;' maxlength="1200" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="libConclArt">Conclusion</label>
-                    <textarea id="libConclArt" name="libConclArt" class="form-control" placeholder="800 caractères max"
-                        style='height: 200px;' maxlength="800" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="urlPhotArt">Choisir une image :</label>
-                    <input type="file" id="urlPhotArt" name="urlPhotArt" class="form-control"
-                        accept=".jpg, .jpeg, .png, .gif" maxlength="80000" width="80000" height="80000"
-                        size="200000000000">
-
-                    <p>>> Extension des images acceptées : .jpg, .gif, .png, .jpeg (lageur, hauteur, taille max :
-                        80000px, 80000px, 200 000 Go)</p>
-                </div>
-
-                <div class="form-group">
-                    <label for="numThem">Thématique</label>
-                    <select id="numThem" name="numThem" class="form-control" required>
-                        <option value="">-- Choisissez une thématique --</option>
-                        <?php foreach ($ba_bec_thematiques as $ba_bec_thematique) { ?>
-                            <option value="<?= $ba_bec_thematique['numThem'] ?>"><?= $ba_bec_thematique['libThem'] ?></option>
-                        <?php } ?>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Choisissez les mots-clés liés à l'article :</label>
-                    <div class="row">
-                        <div class="col-md-5">
-                            <select name="addMotCle" id="addMotCle" class="form-control" size="5">
-                                <?php
-                                $ba_bec_result = sql_select('MOTCLE');
-                                foreach ($ba_bec_result as $ba_bec_req) {
-                                    echo '<option id="mot" value="' . $ba_bec_req['numMotCle'] . '">' . $ba_bec_req['libMotCle'] . '</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-md-5">
-                            <select id="newMotCle" name="motCle[]" class="form-control" size="5" multiple>
-                            </select>
-                        </div>
+    <form id="article-create-form" action="<?php echo ROOT_URL . '/api/articles/create.php'; ?>" method="post"
+        enctype="multipart/form-data">
+        <section class="article-page article-editor">
+            <header class="article-hero" style="--hero-image: url('<?php echo ROOT_URL . '/src/images/article.png'; ?>')">
+                <div class="article-hero__overlay">
+                    <p class="article-kicker">Actualités</p>
+                    <div class="article-editor-field article-editor-field--light">
+                        <h1 id="preview-title" class="article-title article-editor-display article-editor-display--title"
+                            data-placeholder="Titre de l’article"></h1>
+                        <input id="libTitrArt" name="libTitrArt" class="article-editor-input article-editor-input--light"
+                            type="text" maxlength="100" required data-preview-target="preview-title" />
+                    </div>
+                    <div class="article-meta">
+                        <span>Publié le</span>
+                        <span class="article-editor-field article-editor-field--light article-editor-field--inline">
+                            <span id="preview-date" class="article-editor-display article-editor-display--meta"
+                                data-placeholder="Date de publication"></span>
+                            <input id="dtCreaArt" name="dtCreaArt"
+                                class="article-editor-input article-editor-input--light" type="datetime-local" required
+                                data-preview-target="preview-date" />
+                        </span>
+                        <span class="article-meta__dot">•</span>
+                        <span>Lecture 2 min</span>
                     </div>
                 </div>
-                </select>
-                <script>
-                    const addMotCle = document.getElementById('addMotCle');
-                    const newMotCle = document.getElementById('newMotCle');
-                    const options = addMotCle.options;
-                    const newOptions = newMotCle.options;
+            </header>
 
-                    addMotCle.addEventListener('click', (e) => {
-                        if (e.target.tagName !== "OPTION") {
-                            return;
-                        }
-                        e.target.setAttribute('selected', true); +
+            <section class="article-body">
+                <div class="container">
+                    <div class="article-editor-field">
+                        <p id="preview-chapo" class="article-lead article-editor-display article-editor-display--lead"
+                            data-placeholder="Ajoutez le chapeau de l’article pour donner le ton."></p>
+                        <textarea id="libChapoArt" name="libChapoArt" class="article-editor-input" maxlength="500"
+                            required data-preview-target="preview-chapo"></textarea>
+                    </div>
 
-                            newMotCle.appendChild(e.target);
-                    })
-                    newMotCle.addEventListener('click', (e) => {
-                        console.log(newOptions);
-                        if (e.target.tagName !== "OPTION") {
-                            return;
-                        }
-                        e.stopPropagation();
-                        e.preventDefault();
-                        e.stopImmediatePropagation();
-                        e.target.setAttribute('selected', false);
-                        addMotCle.appendChild(e.target);
-                        for (let option of newMotCle.children) {
-                            option.setAttribute('selected', true);
-                            console.log(option);
-                        }
-                    });
-                </script>
-                <br>
-                <div class="form-group mt-2" style="margin: 32px auto 128px;">
-                    <button type="submit" class="btn btn-primary">Confirmer la création</button>
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-8">
+                            <article class="bg-white">
+                                <div class="article-editor-field">
+                                    <h2 id="preview-accroche"
+                                        class="phraseaccroche article-editor-display article-editor-display--accroche"
+                                        data-placeholder="Ajoutez l’accroche principale."></h2>
+                                    <input id="libAccrochArt" name="libAccrochArt" class="article-editor-input"
+                                        type="text" maxlength="100" required data-preview-target="preview-accroche" />
+                                </div>
+
+                                <div class="article-editor-field">
+                                    <p id="preview-parag1"
+                                        class="paragraphe article-editor-display article-editor-display--paragraph"
+                                        data-placeholder="Premier paragraphe : racontez l’essentiel ici."></p>
+                                    <textarea id="parag1Art" name="parag1Art" class="article-editor-input"
+                                        maxlength="1200" required data-preview-target="preview-parag1"></textarea>
+                                </div>
+
+                                <figure class="article-figure article-editor-figure">
+                                    <img class="image2 img-fluid w-100"
+                                        src="<?php echo ROOT_URL . '/src/images/article.png'; ?>"
+                                        alt="Image de l'article">
+                                    <figcaption class="article-caption">
+                                        © Groupe 1 Bordeaux étudiant club + Description de l’image
+                                    </figcaption>
+                                </figure>
+
+                                <div class="article-editor-field">
+                                    <div id="preview-subtitle1"
+                                        class="text-with-line article-editor-display article-editor-display--subtitle"
+                                        data-placeholder="Sous-titre 1"></div>
+                                    <input id="libSsTitr1Art" name="libSsTitr1Art" class="article-editor-input"
+                                        type="text" maxlength="100" required data-preview-target="preview-subtitle1" />
+                                </div>
+
+                                <div class="article-editor-field">
+                                    <p id="preview-parag2"
+                                        class="paragraphe2 article-editor-display article-editor-display--paragraph"
+                                        data-placeholder="Deuxième paragraphe : développez votre idée."></p>
+                                    <textarea id="parag2Art" name="parag2Art" class="article-editor-input"
+                                        maxlength="1200" required data-preview-target="preview-parag2"></textarea>
+                                </div>
+
+                                <div class="article-editor-field">
+                                    <div id="preview-subtitle2"
+                                        class="text-with-line article-editor-display article-editor-display--subtitle"
+                                        data-placeholder="Sous-titre 2"></div>
+                                    <input id="libSsTitr2Art" name="libSsTitr2Art" class="article-editor-input"
+                                        type="text" maxlength="100" required data-preview-target="preview-subtitle2" />
+                                </div>
+
+                                <div class="article-editor-field">
+                                    <p id="preview-parag3"
+                                        class="paragraphe3 article-editor-display article-editor-display--paragraph"
+                                        data-placeholder="Troisième paragraphe : concluez votre développement."></p>
+                                    <textarea id="parag3Art" name="parag3Art" class="article-editor-input"
+                                        maxlength="1200" required data-preview-target="preview-parag3"></textarea>
+                                </div>
+
+                                <div class="article-editor-field">
+                                    <p id="preview-concl"
+                                        class="conclusion article-editor-display article-editor-display--conclusion"
+                                        data-placeholder="Conclusion : terminez sur une note forte."></p>
+                                    <textarea id="libConclArt" name="libConclArt" class="article-editor-input"
+                                        maxlength="800" required data-preview-target="preview-concl"></textarea>
+                                </div>
+                            </article>
+                        </div>
+
+                        <aside class="col-12 col-lg-4 article-editor__panel">
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-body">
+                                    <h2 class="h5 mb-3">Paramètres de publication</h2>
+                                    <div class="mb-3">
+                                        <label for="urlPhotArt" class="form-label">Choisir une image</label>
+                                        <input type="file" id="urlPhotArt" name="urlPhotArt" class="form-control"
+                                            accept=".jpg, .jpeg, .png, .gif" maxlength="80000" width="80000"
+                                            height="80000" size="200000000000">
+                                        <p class="form-text">Extensions acceptées : .jpg, .gif, .png, .jpeg.</p>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="numThem" class="form-label">Thématique</label>
+                                        <select id="numThem" name="numThem" class="form-select" required>
+                                            <option value="">-- Choisissez une thématique --</option>
+                                            <?php foreach ($ba_bec_thematiques as $ba_bec_thematique) { ?>
+                                                <option value="<?= $ba_bec_thematique['numThem'] ?>">
+                                                    <?= $ba_bec_thematique['libThem'] ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Mots-clés liés à l'article</label>
+                                        <div class="row g-2">
+                                            <div class="col-12">
+                                                <select name="addMotCle" id="addMotCle" class="form-select" size="5">
+                                                    <?php
+                                                    $ba_bec_result = sql_select('MOTCLE');
+                                                    foreach ($ba_bec_result as $ba_bec_req) {
+                                                        echo '<option id="mot" value="' . $ba_bec_req['numMotCle'] . '">' . $ba_bec_req['libMotCle'] . '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <select id="newMotCle" name="motCle[]" class="form-select" size="5"
+                                                    multiple></select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary w-100">Confirmer la création</button>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
                 </div>
-            </form>
-        </div>
-        <div class="col-lg-5">
-            <div class="card shadow-sm sticky-top" style="top: 24px;">
-                <img src="<?php echo ROOT_URL . '/src/images/article.png'; ?>" class="card-img-top"
-                    alt="Aperçu de l'article">
-                <div class="card-body">
-                    <p class="text-uppercase text-muted mb-1" style="letter-spacing: 0.08em;">Aperçu</p>
-                    <h2 class="h4">Titre de l’article déjà mis en forme</h2>
-                    <p class="text-muted mb-2">Publié le 12/03/2024 • Thématique : Actualité</p>
-                    <p class="fw-semibold">Un chapeau concis pour donner le ton de l’article.</p>
-                    <p class="text-muted mb-0">
-                        Ajoutez vos paragraphes, sous-titres et conclusion pour remplir cet aperçu comme si
-                        l’article existait déjà.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+            </section>
+        </section>
+    </form>
 </div>
+
+<script>
+    const addMotCle = document.getElementById('addMotCle');
+    const newMotCle = document.getElementById('newMotCle');
+    const newOptions = newMotCle?.options;
+
+    if (addMotCle && newMotCle) {
+        addMotCle.addEventListener('click', (e) => {
+            if (e.target.tagName !== "OPTION") {
+                return;
+            }
+            e.target.setAttribute('selected', true);
+            newMotCle.appendChild(e.target);
+        });
+
+        newMotCle.addEventListener('click', (e) => {
+            if (e.target.tagName !== "OPTION") {
+                return;
+            }
+            e.stopPropagation();
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            e.target.setAttribute('selected', false);
+            addMotCle.appendChild(e.target);
+            for (let option of newMotCle.children) {
+                option.setAttribute('selected', true);
+            }
+        });
+    }
+
+    const formatDateTime = (value) => {
+        if (!value) {
+            return '';
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+            return value;
+        }
+        const datePart = date.toLocaleDateString('fr-FR');
+        const timePart = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        return `${datePart} ${timePart}`;
+    };
+
+    const updatePreview = (input, target) => {
+        const placeholder = target.dataset.placeholder || '';
+        const rawValue = input.value.trim();
+        const formattedValue = input.type === 'datetime-local' ? formatDateTime(rawValue) : rawValue;
+        const nextValue = formattedValue || placeholder;
+
+        target.textContent = nextValue;
+        target.classList.toggle('is-placeholder', !formattedValue);
+    };
+
+    document.querySelectorAll('[data-preview-target]').forEach((input) => {
+        const target = document.getElementById(input.dataset.previewTarget);
+        if (!target) {
+            return;
+        }
+        const handler = () => updatePreview(input, target);
+        input.addEventListener('input', handler);
+        input.addEventListener('change', handler);
+        handler();
+    });
+</script>
