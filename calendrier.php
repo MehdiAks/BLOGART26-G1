@@ -9,72 +9,55 @@ require_once 'header.php';
 
 sql_connect();
 
-$tableCheckStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
-$hasBecMatchesTable = (bool) $tableCheckStmt->fetchColumn();
-$matchesTable = $hasBecMatchesTable ? 'bec_matches' : 'MATCH_CLUB';
-
-$matchesQuery = '';
-$lastUpdateQuery = '';
-
-if ($matchesTable === 'bec_matches') {
-    $matchesQuery = "SELECT MatchNo AS numMatch,
-            Competition AS competition,
-            Date AS matchDate,
-            Heure AS matchTime,
-            Domicile_Exterieur AS location,
-            Phase AS status,
-            Equipe AS team,
-            Adversaire AS opponent,
-            Score_BEC AS scoreBec,
-            Score_Adversaire AS scoreOpponent,
-            Source AS sourceUrl
-        FROM {$matchesTable}
-        WHERE Date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
-        ORDER BY Date ASC, Heure ASC";
-    $lastUpdateQuery = "SELECT MAX(Date) AS lastUpdate FROM {$matchesTable}";
-} else {
-    $matchesQuery = "SELECT numMatch, competition, matchDate, matchTime, teamHome, teamAway, location, status, scoreHome, scoreAway, sourceUrl
-        FROM {$matchesTable}
-        WHERE matchDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
-        ORDER BY matchDate ASC, matchTime ASC";
-    $lastUpdateQuery = "SELECT MAX(COALESCE(dtMajMatch, dtCreaMatch)) AS lastUpdate FROM {$matchesTable}";
-}
+$matchesQuery = "SELECT MatchNo AS numMatch,
+        Competition AS competition,
+        Date AS matchDate,
+        Heure AS matchTime,
+        Domicile_Exterieur AS location,
+        Phase AS status,
+        Equipe AS team,
+        Adversaire AS opponent,
+        Score_BEC AS scoreBec,
+        Score_Adversaire AS scoreOpponent,
+        Source AS sourceUrl
+    FROM bec_matches
+    WHERE Date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
+    ORDER BY Date ASC, Heure ASC";
+$lastUpdateQuery = "SELECT MAX(Date) AS lastUpdate FROM bec_matches";
 
 $matchesStmt = $DB->prepare($matchesQuery);
 $matchesStmt->execute();
 $allMatches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
-if ($matchesTable === 'bec_matches') {
-    $allMatches = array_map(
-        static function (array $match): array {
-            $location = strtolower(trim((string) ($match['location'] ?? '')));
-            $isHome = str_contains($location, 'domicile');
-            $isAway = str_contains($location, 'extérieur') || str_contains($location, 'exterieur');
-            $team = (string) ($match['team'] ?? '');
-            $opponent = (string) ($match['opponent'] ?? '');
+$allMatches = array_map(
+    static function (array $match): array {
+        $location = strtolower(trim((string) ($match['location'] ?? '')));
+        $isHome = str_contains($location, 'domicile');
+        $isAway = str_contains($location, 'extérieur') || str_contains($location, 'exterieur');
+        $team = (string) ($match['team'] ?? '');
+        $opponent = (string) ($match['opponent'] ?? '');
 
-            $teamHome = $isAway ? $opponent : $team;
-            $teamAway = $isAway ? $team : $opponent;
-            $scoreHome = $match['scoreBec'];
-            $scoreAway = $match['scoreOpponent'];
+        $teamHome = $isAway ? $opponent : $team;
+        $teamAway = $isAway ? $team : $opponent;
+        $scoreHome = $match['scoreBec'];
+        $scoreAway = $match['scoreOpponent'];
 
-            if ($isAway) {
-                $scoreHome = $match['scoreOpponent'];
-                $scoreAway = $match['scoreBec'];
-            }
+        if ($isAway) {
+            $scoreHome = $match['scoreOpponent'];
+            $scoreAway = $match['scoreBec'];
+        }
 
-            return array_merge(
-                $match,
-                [
-                    'teamHome' => $teamHome,
-                    'teamAway' => $teamAway,
-                    'scoreHome' => $scoreHome,
-                    'scoreAway' => $scoreAway,
-                ]
-            );
-        },
-        $allMatches
-    );
-}
+        return array_merge(
+            $match,
+            [
+                'teamHome' => $teamHome,
+                'teamAway' => $teamAway,
+                'scoreHome' => $scoreHome,
+                'scoreAway' => $scoreAway,
+            ]
+        );
+    },
+    $allMatches
+);
 
 $seniorKeywords = [
     'senior',

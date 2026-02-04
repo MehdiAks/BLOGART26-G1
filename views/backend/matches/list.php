@@ -4,8 +4,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
 sql_connect();
-$ba_bec_tableCheckStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
-$ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
 
 $ba_bec_showAll = ($_GET['show'] ?? '') === 'all';
 $ba_bec_perPage = (int) ($_GET['per_page'] ?? 10);
@@ -16,50 +14,42 @@ if (!in_array($ba_bec_perPage, $ba_bec_allowedPerPage, true)) {
 $ba_bec_page = max(1, (int) ($_GET['page'] ?? 1));
 $ba_bec_offset = ($ba_bec_page - 1) * $ba_bec_perPage;
 
-$ba_bec_where = $ba_bec_showAll ? null : '(scoreHome IS NULL OR scoreAway IS NULL)';
-$ba_bec_order = 'matchDate ASC, matchTime ASC';
+$ba_bec_where = $ba_bec_showAll ? null : '(Score_BEC IS NULL OR Score_Adversaire IS NULL)';
+$ba_bec_order = 'Date ASC, Heure ASC';
 $ba_bec_limit = $ba_bec_offset . ', ' . $ba_bec_perPage;
 
-$ba_bec_select = '*';
-$ba_bec_table = 'MATCH_CLUB';
-if ($ba_bec_hasBecMatchesTable) {
-    $ba_bec_table = 'bec_matches';
-    $ba_bec_select = "MatchNo AS numMatch, Competition AS competition, Date AS matchDate, Heure AS matchTime, Domicile_Exterieur AS location, Phase AS status, Equipe AS team, Adversaire AS opponent, Score_BEC AS scoreBec, Score_Adversaire AS scoreOpponent";
-    $ba_bec_where = $ba_bec_showAll ? null : '(Score_BEC IS NULL OR Score_Adversaire IS NULL)';
-    $ba_bec_order = 'Date ASC, Heure ASC';
-}
+$ba_bec_select = "MatchNo AS numMatch, Competition AS competition, Date AS matchDate, Heure AS matchTime, Domicile_Exterieur AS location, Phase AS status, Equipe AS team, Adversaire AS opponent, Score_BEC AS scoreBec, Score_Adversaire AS scoreOpponent";
+$ba_bec_table = 'bec_matches';
 
 $ba_bec_matches = sql_select($ba_bec_table, $ba_bec_select, $ba_bec_where, null, $ba_bec_order, $ba_bec_limit);
-if ($ba_bec_hasBecMatchesTable) {
-    $ba_bec_matches = array_map(
-        static function (array $match): array {
-            $location = strtolower(trim((string) ($match['location'] ?? '')));
-            $isAway = str_contains($location, 'extérieur') || str_contains($location, 'exterieur');
-            $team = (string) ($match['team'] ?? '');
-            $opponent = (string) ($match['opponent'] ?? '');
+$ba_bec_matches = array_map(
+    static function (array $match): array {
+        $location = strtolower(trim((string) ($match['location'] ?? '')));
+        $isAway = str_contains($location, 'extérieur') || str_contains($location, 'exterieur');
+        $team = (string) ($match['team'] ?? '');
+        $opponent = (string) ($match['opponent'] ?? '');
 
-            $teamHome = $isAway ? $opponent : $team;
-            $teamAway = $isAway ? $team : $opponent;
-            $scoreHome = $match['scoreBec'];
-            $scoreAway = $match['scoreOpponent'];
-            if ($isAway) {
-                $scoreHome = $match['scoreOpponent'];
-                $scoreAway = $match['scoreBec'];
-            }
+        $teamHome = $isAway ? $opponent : $team;
+        $teamAway = $isAway ? $team : $opponent;
+        $scoreHome = $match['scoreBec'];
+        $scoreAway = $match['scoreOpponent'];
+        if ($isAway) {
+            $scoreHome = $match['scoreOpponent'];
+            $scoreAway = $match['scoreBec'];
+        }
 
-            return array_merge(
-                $match,
-                [
-                    'teamHome' => $teamHome,
-                    'teamAway' => $teamAway,
-                    'scoreHome' => $scoreHome,
-                    'scoreAway' => $scoreAway,
-                ]
-            );
-        },
-        $ba_bec_matches
-    );
-}
+        return array_merge(
+            $match,
+            [
+                'teamHome' => $teamHome,
+                'teamAway' => $teamAway,
+                'scoreHome' => $scoreHome,
+                'scoreAway' => $scoreAway,
+            ]
+        );
+    },
+    $ba_bec_matches
+);
 $ba_bec_totalRow = sql_select($ba_bec_table, 'COUNT(*) AS total', $ba_bec_where);
 $ba_bec_total = $ba_bec_totalRow[0]['total'] ?? 0;
 $ba_bec_hasNextPage = ($ba_bec_offset + $ba_bec_perPage) < $ba_bec_total;
