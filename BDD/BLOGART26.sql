@@ -558,7 +558,7 @@ CREATE TABLE `EQUIPE_JOUEUR` (
 CREATE TABLE `EQUIPE_PERSONNEL` (
   `numEquipe` int NOT NULL,
   `numPersonnel` int NOT NULL,
-  `libRoleEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `libRoleEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`numEquipe`,`numPersonnel`,`libRoleEquipe`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
