@@ -1,28 +1,104 @@
-/* Styles dédiés à la page Notre Histoire */
-
-.article-content {
-    padding: 1.5rem;
-    background-color: #fff;
-    border-radius: 0.5rem;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    border: 1px solid rgba(0, 0, 0, 0.125);
+#notre-histoire {
+    background-color: #F6F1EA;
+    padding: 6rem 1rem;
+    position: relative;
 }
 
-.article-content h2 {
-    color: var(--bec-accent);
+
+/* Hero */
+#notre-histoire h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1C1C1C;
     margin-bottom: 1rem;
 }
 
-.article-content p {
+#notre-histoire .lead {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #212529;
+}
+
+/* Articles */
+.article-horizontal {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 0;
+}
+
+.article-horizontal h2 {
+    color: #67081D;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.article-horizontal p {
+    font-size: 16px;
     line-height: 1.6;
+    color: #1C1C1C;
     margin-bottom: 1rem;
 }
 
-.article-content p:last-child {
+.article-horizontal p:last-child {
     margin-bottom: 0;
 }
 
-/* Centrer le titre h1 */
-h1 {
+/* Images */
+.article-horizontal img {
+    width: 100%;
+    border-radius: 0.5rem;
+    filter: grayscale(30%);
+    transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+.article-horizontal img:hover {
+    transform: scale(1.03);
+    filter: grayscale(0%);
+}
+
+/* Alternance automatique gauche/droite via classes has-image */
+.article-horizontal.has-image:nth-child(even) .col-md-6:first-child {
+    order: 2;
+}
+
+.article-horizontal.has-image:nth-child(even) .col-md-6:last-child {
+    order: 1;
+}
+
+/* Articles sans image : texte full-width */
+.article-horizontal.no-image .col-12 {
     text-align: center;
+}
+
+/* Animation apparition */
+@media (prefers-reduced-motion: no-preference) {
+    .article-horizontal {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeUp 0.6s ease forwards;
+    }
+
+    .article-horizontal:nth-child(1) { animation-delay: 0.1s; }
+    .article-horizontal:nth-child(2) { animation-delay: 0.2s; }
+    .article-horizontal:nth-child(3) { animation-delay: 0.3s; }
+    .article-horizontal:nth-child(4) { animation-delay: 0.4s; }
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive : mobile empile texte / image */
+@media (max-width: 768px) {
+    .article-horizontal .col-md-6 {
+        order: unset !important;
+        margin-bottom: 1.5rem;
+    }
+
+    .timeline-horizontal::before {
+        left: 8px;
+    }
 }
