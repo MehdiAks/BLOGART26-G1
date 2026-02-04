@@ -7,48 +7,47 @@ require_once 'header.php';
 <main class="container py-5" id="notre-histoire">
 
     <!-- Hero / Intro -->
-    <section class="text-center mb-5">
+    <section class="text-center mb-5 hero-section">
+        <img src="/src/images/logo.png" alt="Logo BEC" class="hero-logo mb-3">
         <h1 class="display-4 fw-bold mb-3">Notre histoire</h1>
         <p class="lead mx-auto" style="max-width: 800px; color: #212529;">
             Depuis la fin du XIXᵉ siècle, le Bordeaux Étudiants Club (BEC) rassemble les passionnés de sport
             dans un esprit de partage, d’effort et de convivialité, fidèle à ses racines universitaires.
         </p>
+        <img src="/src/images/fleche-bas.svg" class="scroll-down" alt="Scroll down">
     </section>
 
     <section class="storyline">
 
-        <!-- Article classique : texte gauche / image droite -->
+        <!-- Article 1 : texte gauche / image droite -->
         <div class="article-horizontal row align-items-center my-5 has-image">
             <div class="col-md-6">
-                <h2>1897 : des origines étudiantes</h2>
+                <h2>1897 : des origines étudiantes <img src="/src/images/article.png" class="decorative" alt="Décor"></h2>
                 <p>Fondé en 1897, le BEC s'est construit autour des étudiants de Bordeaux.</p>
+                <p>Très tôt, le club s'impose comme référence locale pour le sport universitaire.</p>
             </div>
             <div class="col-md-6">
                 <img src="/src/images/image1.jpg" class="img-fluid img-wide rounded" alt="1897 : origines">
             </div>
         </div>
 
-        <!-- Article classique : texte droite / image gauche -->
+        <!-- Article 2 : texte droite / image gauche -->
         <div class="article-horizontal row align-items-center my-5 has-image">
             <div class="col-md-6 order-md-2">
                 <h2>Un club omnisports</h2>
                 <p>Le BEC fédère plusieurs disciplines et rassemble des générations de sportifs.</p>
+                <div class="interactive-icons">
+                    <img src="/src/images/eye-open.png" class="icon-eye" alt="Voir">
+                    <img src="/src/images/pnglike.png" class="icon-like" alt="Like">
+                    <img src="/src/images/pngdislike.png" class="icon-dislike" alt="Dislike">
+                </div>
             </div>
             <div class="col-md-6 order-md-1">
                 <img src="/src/images/image2.jpg" class="img-fluid img-tall rounded" alt="Club omnisports">
             </div>
         </div>
 
-        <!-- Banniere full-width : texte top -->
-        <div class="banner my-5 banner-top">
-            <img src="/src/images/banner1.jpg" class="img-fluid rounded" alt="Banniere top">
-            <div class="banner-text">
-                <h2>Des moments historiques</h2>
-                <p>Le BEC a marqué l’histoire du sport bordelais.</p>
-            </div>
-        </div>
-
-        <!-- Article classique sans image -->
+        <!-- Article texte seul -->
         <div class="article-horizontal row align-items-center my-5 no-image">
             <div class="col-12">
                 <h2>Des pages marquantes</h2>
@@ -58,13 +57,13 @@ require_once 'header.php';
 
         <!-- Banniere full-width : texte center -->
         <div class="banner my-5 banner-center">
-            <img src="/src/images/banner2.jpg" class="img-fluid rounded" alt="Banniere center">
+            <img src="/src/images/image3.jpg" class="img-fluid rounded" alt="Banniere center">
             <div class="banner-text">
                 <h2>Un esprit qui perdure</h2>
             </div>
         </div>
 
-        <!-- Article classique : texte gauche / image droite carré -->
+        <!-- Article 3 : texte gauche / image droite carré -->
         <div class="article-horizontal row align-items-center my-5 has-image">
             <div class="col-md-6">
                 <h2>Ouverture vers l'avenir</h2>
@@ -75,17 +74,11 @@ require_once 'header.php';
             </div>
         </div>
 
-        <!-- Banniere full-width : texte bottom -->
-        <div class="banner my-5 banner-bottom">
-            <img src="/src/images/banner3.jpg" class="img-fluid rounded" alt="Banniere bottom">
-            <div class="banner-text">
-                <h2>Une histoire vivante</h2>
-                <p>Chaque saison ajoute un chapitre à cette grande aventure.</p>
-            </div>
-        </div>
 
     </section>
 </main>
+
+
 
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
