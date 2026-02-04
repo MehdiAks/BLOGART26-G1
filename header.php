@@ -63,7 +63,7 @@ $club_pages = [
                                     <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo ROOT_URL . '/organigramme-benevoles.php'; ?>" <?php if ($current_page == '/organigramme-benevoles.php') echo 'class="current"'; ?>>Organigramme &amp; bénévoles</a>
+                                    <a href="<?php echo ROOT_URL . '/organigramme-benevoles.php'; ?>" <?php if ($current_page == '/organigramme-benevoles.php') echo 'class="current"'; ?>>Bénévoles</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo ROOT_URL . '/joueurs.php'; ?>" <?php if ($current_page == '/joueurs.php') echo 'class="current"'; ?>>Joueurs</a>
