@@ -253,14 +253,21 @@ foreach ($matches as $match) {
                     // 6) On ajoute "..." seulement si le chapo dépassait la limite.
                     $excerpt = $excerptBase . ($chapoLength > $maxLength ? '...' : '');
                     ?>
+                    <?php
+                    $isMiddleArticle = $index === 1;
+                    $imageOrderClass = $isMiddleArticle ? 'order-md-2' : 'order-md-1';
+                    $contentOrderClass = $isMiddleArticle ? 'order-md-1' : 'order-md-2';
+                    ?>
                     <article class="card w-100 home-article-card">
                         <div class="row g-3 h-100 align-items-center">
-                            <div class="col-md-4">
-                                <img src="<?php echo $ba_bec_imagePath; ?>"
-                                    class="img-fluid home-article-image"
-                                    alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
+                            <div class="col-md-4 <?php echo $imageOrderClass; ?>">
+                                <div class="ratio ratio-9x16">
+                                    <img src="<?php echo $ba_bec_imagePath; ?>"
+                                        class="img-fluid object-fit-cover w-100 h-100 home-article-image"
+                                        alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
+                                </div>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-8 <?php echo $contentOrderClass; ?>">
                                 <div class="card-body d-flex flex-column h-100">
                                     <h3 class="card-title h4 mb-2"><?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?></h3>
                                     <p class="card-text fst-italic"><?php echo htmlspecialchars($excerpt); ?></p>
