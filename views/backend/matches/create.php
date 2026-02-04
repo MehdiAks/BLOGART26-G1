@@ -52,28 +52,40 @@ $ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
                     <label for="matchTime">Heure</label>
                     <input id="matchTime" name="matchTime" class="form-control" type="time" <?php echo $ba_bec_hasBecMatchesTable ? 'required' : ''; ?> />
                 </div>
-                <div class="form-group mt-2">
-                    <label for="teamHome">Équipe domicile</label>
-                    <input id="teamHome" name="teamHome" class="form-control" type="text" required />
-                </div>
-                <div class="form-group mt-2">
-                    <label for="teamAway">Équipe extérieur</label>
-                    <input id="teamAway" name="teamAway" class="form-control" type="text" required />
-                </div>
                 <?php if ($ba_bec_hasBecMatchesTable) : ?>
                     <div class="form-group mt-2">
                         <label for="opponent">Adversaire</label>
                         <input id="opponent" name="opponent" class="form-control" type="text" required />
                     </div>
+                <?php else : ?>
+                    <div class="form-group mt-2">
+                        <label for="teamHome">Équipe domicile</label>
+                        <input id="teamHome" name="teamHome" class="form-control" type="text" required />
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="teamAway">Équipe extérieur</label>
+                        <input id="teamAway" name="teamAway" class="form-control" type="text" required />
+                    </div>
                 <?php endif; ?>
-                <div class="form-group mt-2">
-                    <label for="scoreHome">Score domicile</label>
-                    <input id="scoreHome" name="scoreHome" class="form-control" type="number" min="0" />
-                </div>
-                <div class="form-group mt-2">
-                    <label for="scoreAway">Score extérieur</label>
-                    <input id="scoreAway" name="scoreAway" class="form-control" type="number" min="0" />
-                </div>
+                <?php if ($ba_bec_hasBecMatchesTable) : ?>
+                    <div class="form-group mt-2">
+                        <label for="scoreBec">Score BEC</label>
+                        <input id="scoreBec" name="scoreBec" class="form-control" type="number" min="0" />
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="scoreOpponent">Score adversaire</label>
+                        <input id="scoreOpponent" name="scoreOpponent" class="form-control" type="number" min="0" />
+                    </div>
+                <?php else : ?>
+                    <div class="form-group mt-2">
+                        <label for="scoreHome">Score domicile</label>
+                        <input id="scoreHome" name="scoreHome" class="form-control" type="number" min="0" />
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="scoreAway">Score extérieur</label>
+                        <input id="scoreAway" name="scoreAway" class="form-control" type="number" min="0" />
+                    </div>
+                <?php endif; ?>
                 <div class="form-group mt-2">
                     <label for="location">Lieu</label>
                     <input id="location" name="location" class="form-control" type="text" <?php echo $ba_bec_hasBecMatchesTable ? 'required' : ''; ?> />
