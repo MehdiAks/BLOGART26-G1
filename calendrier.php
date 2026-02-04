@@ -26,13 +26,14 @@ if ($matchesTable === 'bec_matches') {
             Equipe AS team,
             Adversaire AS opponent,
             Score_BEC AS scoreBec,
-            Score_Adversaire AS scoreOpponent
+            Score_Adversaire AS scoreOpponent,
+            Source AS sourceUrl
         FROM {$matchesTable}
         WHERE Date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
         ORDER BY Date ASC, Heure ASC";
     $lastUpdateQuery = "SELECT MAX(Date) AS lastUpdate FROM {$matchesTable}";
 } else {
-    $matchesQuery = "SELECT numMatch, competition, matchDate, matchTime, teamHome, teamAway, location, status, scoreHome, scoreAway
+    $matchesQuery = "SELECT numMatch, competition, matchDate, matchTime, teamHome, teamAway, location, status, scoreHome, scoreAway, sourceUrl
         FROM {$matchesTable}
         WHERE matchDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
         ORDER BY matchDate ASC, matchTime ASC";
@@ -219,7 +220,11 @@ $renderMatchCard = static function (array $ba_bec_match): string {
                 <p class="match-card__location">Lieu : <?php echo htmlspecialchars($ba_bec_match['location']); ?></p>
             <?php endif; ?>
 
-            <a href="erreur404.php" class="btn-more">En savoir plus</a>
+            <?php if (!empty($ba_bec_match['sourceUrl'])): ?>
+                <a href="<?php echo htmlspecialchars($ba_bec_match['sourceUrl']); ?>" class="btn-more" target="_blank" rel="noopener noreferrer">En savoir plus</a>
+            <?php else: ?>
+                <span class="btn-more disabled" aria-disabled="true">En savoir plus</span>
+            <?php endif; ?>
         </article>
     </div>
     <?php

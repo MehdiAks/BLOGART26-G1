@@ -54,7 +54,7 @@ $current_page = $_SERVER['SCRIPT_NAME'];
                         <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
                     </li>
                     <li>
-                        <a href="<?php echo ROOT_URL . '/matches.php'; ?>" <?php if ($current_page == '/matches.php') echo 'class="current"'; ?>>Matchs</a>
+                        <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
                     </li>
                     <li>
                         <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
