@@ -24,12 +24,42 @@ $ba_bec_select = '*';
 $ba_bec_table = 'MATCH_CLUB';
 if ($ba_bec_hasBecMatchesTable) {
     $ba_bec_table = 'bec_matches';
-    $ba_bec_select = "MatchNo AS numMatch, Competition AS competition, Date AS matchDate, Heure AS matchTime, Equipe_domicile AS teamHome, Equipe_exterieure AS teamAway, Domicile_Exterieur AS location, Phase AS status, Score_domicile AS scoreHome, Score_exterieur AS scoreAway";
-    $ba_bec_where = $ba_bec_showAll ? null : '(Score_domicile IS NULL OR Score_exterieur IS NULL)';
+    $ba_bec_select = "MatchNo AS numMatch, Competition AS competition, Date AS matchDate, Heure AS matchTime, Domicile_Exterieur AS location, Phase AS status, Equipe AS team, Adversaire AS opponent, Score_BEC AS scoreBec, Score_Adversaire AS scoreOpponent";
+    $ba_bec_where = $ba_bec_showAll ? null : '(Score_BEC IS NULL OR Score_Adversaire IS NULL)';
     $ba_bec_order = 'Date ASC, Heure ASC';
 }
 
 $ba_bec_matches = sql_select($ba_bec_table, $ba_bec_select, $ba_bec_where, null, $ba_bec_order, $ba_bec_limit);
+if ($ba_bec_hasBecMatchesTable) {
+    $ba_bec_matches = array_map(
+        static function (array $match): array {
+            $location = strtolower(trim((string) ($match['location'] ?? '')));
+            $isAway = str_contains($location, 'extérieur') || str_contains($location, 'exterieur');
+            $team = (string) ($match['team'] ?? '');
+            $opponent = (string) ($match['opponent'] ?? '');
+
+            $teamHome = $isAway ? $opponent : $team;
+            $teamAway = $isAway ? $team : $opponent;
+            $scoreHome = $match['scoreBec'];
+            $scoreAway = $match['scoreOpponent'];
+            if ($isAway) {
+                $scoreHome = $match['scoreOpponent'];
+                $scoreAway = $match['scoreBec'];
+            }
+
+            return array_merge(
+                $match,
+                [
+                    'teamHome' => $teamHome,
+                    'teamAway' => $teamAway,
+                    'scoreHome' => $scoreHome,
+                    'scoreAway' => $scoreAway,
+                ]
+            );
+        },
+        $ba_bec_matches
+    );
+}
 $ba_bec_totalRow = sql_select($ba_bec_table, 'COUNT(*) AS total', $ba_bec_where);
 $ba_bec_total = $ba_bec_totalRow[0]['total'] ?? 0;
 $ba_bec_hasNextPage = ($ba_bec_offset + $ba_bec_perPage) < $ba_bec_total;
@@ -56,6 +86,11 @@ $ba_bec_formatTime = static function ($time): string {
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            <div class="mb-3">
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
+                    Retour au panneau admin
+                </a>
+            </div>
             <h1><?php echo $ba_bec_pendingLabel; ?></h1>
             <p>Affichage : <?php echo (int) $ba_bec_total; ?> match(s) au total.</p>
             <div class="mb-3">

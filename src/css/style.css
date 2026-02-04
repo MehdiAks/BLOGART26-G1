@@ -1,0 +1,36 @@
+.full-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+}
+
+.home-carousel {
+    position: relative;
+    overflow: hidden;
+}
+
+.home-carousel .carousel-item {
+    height: clamp(280px, 45vw, 480px);
+}
+
+.home-carousel .carousel-item img {
+    height: 100%;
+    object-fit: cover;
+}
+
+.home-carousel-title {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.home-section {
+    padding: 0;
+}

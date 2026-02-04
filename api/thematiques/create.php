@@ -2,7 +2,13 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
-$ba_bec_libThem = ctrlSaisies($_POST['libThem']);
+$ba_bec_libThem = ctrlSaisies($_POST['libThem'] ?? '');
+
+if ($ba_bec_libThem === '') {
+    http_response_code(400);
+    echo "Le libellé de la thématique est requis.";
+    exit;
+}
 
 sql_insert('THEMATIQUE', 'libThem', "'$ba_bec_libThem'");
 

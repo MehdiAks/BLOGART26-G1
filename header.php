@@ -4,6 +4,12 @@ $ba_bec_pseudoMemb = $_SESSION['pseudoMemb'] ?? null;
 $ba_bec_numStat = $_SESSION['numStat'] ?? null;
 $hasBackgroundVideo = $pageHasVideo ?? false;
 $current_page = $_SERVER['SCRIPT_NAME'];
+$club_pages = [
+    '/notre-histoire.php',
+    '/organigramme-benevoles.php',
+    '/equipes.php',
+    '/joueurs.php',
+];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -48,13 +54,31 @@ $current_page = $_SERVER['SCRIPT_NAME'];
                         <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
                     </li>
                     <li>
-                        <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
+                        <div class="header-submenu">
+                            <button type="button" class="submenu-toggle<?php if (in_array($current_page, $club_pages, true)) echo ' current'; ?>" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-club">
+                                Le club
+                            </button>
+                            <ul class="submenu-list" id="submenu-club" aria-label="Le club">
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/organigramme-benevoles.php'; ?>" <?php if ($current_page == '/organigramme-benevoles.php') echo 'class="current"'; ?>>Organigramme &amp; bénévoles</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/joueurs.php'; ?>" <?php if ($current_page == '/joueurs.php') echo 'class="current"'; ?>>Joueurs</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/equipes.php'; ?>" <?php if ($current_page == '/equipes.php') echo 'class="current"'; ?>>Équipes</a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                     <li>
                         <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
                     </li>
                     <li>
-                        <a href="<?php echo ROOT_URL . '/matches.php'; ?>" <?php if ($current_page == '/matches.php') echo 'class="current"'; ?>>Matchs</a>
+                        <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
                     </li>
                     <li>
                         <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
