@@ -215,6 +215,10 @@
             color: var(--bec-dark);
         }
 
+        .site-footer a {
+            text-decoration: none;
+        }
+
         .mb-1 {
             padding-top: 50px;
         }
