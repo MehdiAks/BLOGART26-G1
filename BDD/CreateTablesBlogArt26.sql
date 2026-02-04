@@ -187,36 +187,6 @@ create index COMMENT_FK on COMMENT
    numCom
 );
 
--- ----------------------------------------------
---
--- Structure de la table BEC_MATCHES
---
-/*=============================================*/
-/* Table : BEC_MATCHES                          */
-/*=============================================*/
-create table bec_matches
-(
-   id int unsigned not null auto_increment,
-   Section varchar(32) not null,
-   numEquipe int default null,
-   Equipe varchar(128) not null,
-   Competition varchar(32) not null,
-   Phase varchar(64) not null,
-   Journee varchar(8) not null,
-   Date date not null,
-   Heure time not null,
-   Domicile_Exterieur varchar(16) not null,
-   Adversaire varchar(128) not null,
-   Score_BEC int default null,
-   Score_Adversaire int default null,
-   MatchNo int not null,
-   Source varchar(255) not null,
-   opponent_club_key varchar(180) default null,
-   primary key (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------------------------
---
 -- Structure de la table LIKEART   (TJ)
 --
 /*=============================================*/
