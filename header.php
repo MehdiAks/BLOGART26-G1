@@ -59,6 +59,15 @@ $current_page = $_SERVER['SCRIPT_NAME'];
                     <li>
                         <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
                     </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/organigramme-benevoles.php'; ?>" <?php if ($current_page == '/organigramme-benevoles.php') echo 'class="current"'; ?>>Organigramme &amp; bénévoles</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/joueurs.php'; ?>" <?php if ($current_page == '/joueurs.php') echo 'class="current"'; ?>>Joueurs</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/equipes.php'; ?>" <?php if ($current_page == '/equipes.php') echo 'class="current"'; ?>>Équipes</a>
+                    </li>
                 </ul>
             </nav>
 

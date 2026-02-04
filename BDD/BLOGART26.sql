@@ -463,6 +463,105 @@ INSERT INTO `THEMATIQUE` (`numThem`, `libThem`) VALUES
 (3, 'Le mouvement émergeant'),
 (4, 'L\'insolite / le clin d\'œil');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `BRANCHE_PERSONNEL`
+--
+
+CREATE TABLE `BRANCHE_PERSONNEL` (
+  `numBranche` int NOT NULL AUTO_INCREMENT,
+  `libBranche` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`numBranche`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `PERSONNEL`
+--
+
+CREATE TABLE `PERSONNEL` (
+  `numPersonnel` int NOT NULL AUTO_INCREMENT,
+  `prenomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `urlPhotoPersonnel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`numPersonnel`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `AFFECTATION_PERSONNEL`
+--
+
+CREATE TABLE `AFFECTATION_PERSONNEL` (
+  `numAffectation` int NOT NULL AUTO_INCREMENT,
+  `numPersonnel` int NOT NULL,
+  `numBranche` int NOT NULL,
+  `libPoste` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`numAffectation`),
+  UNIQUE KEY `uniq_personnel_branche_poste` (`numPersonnel`,`numBranche`,`libPoste`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `EQUIPE`
+--
+
+CREATE TABLE `EQUIPE` (
+  `numEquipe` int NOT NULL AUTO_INCREMENT,
+  `libEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `categorieEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sectionEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `niveauEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`numEquipe`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `JOUEUR`
+--
+
+CREATE TABLE `JOUEUR` (
+  `numJoueur` int NOT NULL AUTO_INCREMENT,
+  `prenomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `urlPhotoJoueur` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `posteJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `anneeArrivee` year DEFAULT NULL,
+  `clubsPrecedents` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `dateNaissance` date DEFAULT NULL,
+  PRIMARY KEY (`numJoueur`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `EQUIPE_JOUEUR`
+--
+
+CREATE TABLE `EQUIPE_JOUEUR` (
+  `numEquipe` int NOT NULL,
+  `numJoueur` int NOT NULL,
+  PRIMARY KEY (`numEquipe`,`numJoueur`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `EQUIPE_PERSONNEL`
+--
+
+CREATE TABLE `EQUIPE_PERSONNEL` (
+  `numEquipe` int NOT NULL,
+  `numPersonnel` int NOT NULL,
+  `libRoleEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`numEquipe`,`numPersonnel`,`libRoleEquipe`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Index pour les tables déchargées
 --
@@ -474,6 +573,13 @@ ALTER TABLE `ARTICLE`
   ADD PRIMARY KEY (`numArt`),
   ADD KEY `ARTICLE_FK` (`numArt`),
   ADD KEY `FK_ASSOCIATION_1` (`numThem`);
+
+--
+-- Index pour la table `AFFECTATION_PERSONNEL`
+--
+ALTER TABLE `AFFECTATION_PERSONNEL`
+  ADD KEY `FK_AFFECTATION_PERSONNEL_PERSONNEL` (`numPersonnel`),
+  ADD KEY `FK_AFFECTATION_PERSONNEL_BRANCHE` (`numBranche`);
 
 --
 -- Index pour la table `bec_matches`
@@ -504,6 +610,18 @@ ALTER TABLE `COOKIE_CONSENT`
   ADD PRIMARY KEY (`numCon`),
   ADD KEY `idx_ip` (`ipAdresse`),
   ADD KEY `idx_expiration` (`dateExpiration`);
+
+--
+-- Index pour la table `EQUIPE_JOUEUR`
+--
+ALTER TABLE `EQUIPE_JOUEUR`
+  ADD KEY `FK_EQUIPE_JOUEUR_JOUEUR` (`numJoueur`);
+
+--
+-- Index pour la table `EQUIPE_PERSONNEL`
+--
+ALTER TABLE `EQUIPE_PERSONNEL`
+  ADD KEY `FK_EQUIPE_PERSONNEL_PERSONNEL` (`numPersonnel`);
 
 --
 -- Index pour la table `LIKEART`
@@ -575,10 +693,31 @@ ALTER TABLE `COMMENT`
 --
 
 --
+-- Contraintes pour la table `AFFECTATION_PERSONNEL`
+--
+ALTER TABLE `AFFECTATION_PERSONNEL`
+  ADD CONSTRAINT `fk_affectation_personnel_branche` FOREIGN KEY (`numBranche`) REFERENCES `BRANCHE_PERSONNEL` (`numBranche`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_affectation_personnel_personnel` FOREIGN KEY (`numPersonnel`) REFERENCES `PERSONNEL` (`numPersonnel`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Contraintes pour la table `bec_matches`
 --
 ALTER TABLE `bec_matches`
   ADD CONSTRAINT `fk_bec_matches_opponent_club` FOREIGN KEY (`opponent_club_key`) REFERENCES `club_logos` (`club_key`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `EQUIPE_JOUEUR`
+--
+ALTER TABLE `EQUIPE_JOUEUR`
+  ADD CONSTRAINT `fk_equipe_joueur_equipe` FOREIGN KEY (`numEquipe`) REFERENCES `EQUIPE` (`numEquipe`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_equipe_joueur_joueur` FOREIGN KEY (`numJoueur`) REFERENCES `JOUEUR` (`numJoueur`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `EQUIPE_PERSONNEL`
+--
+ALTER TABLE `EQUIPE_PERSONNEL`
+  ADD CONSTRAINT `fk_equipe_personnel_equipe` FOREIGN KEY (`numEquipe`) REFERENCES `EQUIPE` (`numEquipe`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_equipe_personnel_personnel` FOREIGN KEY (`numPersonnel`) REFERENCES `PERSONNEL` (`numPersonnel`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
