@@ -176,7 +176,7 @@ foreach ($matches as $match) {
     <section class="home-section mb-5">
         <h1 class="mb-3">Bienvenue au BEC</h1>
         <p class="lead mb-4">
-            Une page d'accueil simple, construite uniquement avec Bootstrap.
+            Description du site.
         </p>
         <div class="d-flex gap-2">
             <a class="btn btn-primary" href="actualites.php">Voir les actualités</a>
