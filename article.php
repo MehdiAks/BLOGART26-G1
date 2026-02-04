@@ -45,7 +45,7 @@ $dislikeCount = sql_select("LIKEART", "COUNT(*) as count", "numArt = $ba_bec_num
 
 // Vérification du vote de l'utilisateur
 $userVote = null;
-$ba_bec_libCom = isset($_POST['libCom']) ? ($_POST['libCom']) : null;
+$ba_bec_libCom = isset($_POST['libCom']) ? ctrlSaisies($_POST['libCom']) : null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Vérifier si l'utilisateur est connecté
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['libCom'])) {
         // Récupérer l'ID du membre connecté et les autres données
         $ba_bec_numMemb = $_SESSION['user_id'];
-        $ba_bec_libCom = ($_POST['libCom']);
+        $ba_bec_libCom = ctrlSaisies($_POST['libCom']);
         $ba_bec_numArt = (int)$_POST['numArt'];
         if (!empty($ba_bec_libCom) && !empty($ba_bec_numArt) && !empty($ba_bec_numMemb)) {
             sql_insert('comment', 'libCom, numArt, numMemb', "'$ba_bec_libCom', '$ba_bec_numArt', '$ba_bec_numMemb'");
@@ -94,18 +94,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 // Récupérer l'article actuel avec ses commentaires
-$ba_bec_numArt = $_GET['numArt']; // Assure-toi d'avoir l'ID de l'article dans l'URL
-$comments = sql_select("comment c 
-                        INNER JOIN membre m ON c.numMemb = m.numMemb 
-                        WHERE c.numArt = $ba_bec_numArt 
-                        AND c.delLogiq = 0", 
-                        "c.libCom, c.dtCreaCom, m.pseudoMemb");
-$comments = sql_select("comment c 
-                        INNER JOIN membre m ON c.numMemb = m.numMemb 
-                        WHERE c.numArt = $ba_bec_numArt 
-                        AND c.delLogiq = 0
-                        AND c.attModOK = 1", 
-                        "c.libCom, c.dtCreaCom, m.pseudoMemb");
+$ba_bec_numArt = (int) $_GET['numArt']; // Assure-toi d'avoir l'ID de l'article dans l'URL
+$comments = sql_select(
+    "comment c 
+    INNER JOIN membre m ON c.numMemb = m.numMemb 
+    WHERE c.numArt = $ba_bec_numArt 
+    AND c.delLogiq = 0
+    AND c.attModOK = 1",
+    "c.libCom, c.dtCreaCom, m.pseudoMemb"
+);
 // Afficher l'article et ses commentaires
 $ba_bec_article = sql_select("article", "*", "numArt = $ba_bec_numArt")[0];
 
@@ -207,6 +204,10 @@ if (isset($_SESSION['user_id'])) {
                         <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post" class="comment-form">
                             <div class="champ">
                                 <textarea id="libCom" name="libCom" class="form-control" type="text" required></textarea>
+                                <small class="form-text text-muted d-block mt-2">
+                                    BBCode autorisé : [b]gras[/b], [i]italique[/i], [u]souligné[/u], [url=https://exemple.com]lien[/url],
+                                    [url]https://exemple.com[/url], [emoji=smile].
+                                </small>
                             </div>
                             <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>" />
                             <div class="btn-se-connecter">
@@ -222,10 +223,10 @@ if (isset($_SESSION['user_id'])) {
                                 <?php foreach ($comments as $ba_bec_comment): ?>
                                     <li class="commentairesaf">
                                         <div class="comment-meta">
-                                            <span class="username"><?php echo ($ba_bec_comment['pseudoMemb']); ?></span> 
-                                            <span class="date"><?php echo ($ba_bec_comment['dtCreaCom']); ?></span>
+                                            <span class="username"><?php echo htmlspecialchars($ba_bec_comment['pseudoMemb']); ?></span> 
+                                            <span class="date"><?php echo htmlspecialchars($ba_bec_comment['dtCreaCom']); ?></span>
                                         </div>
-                                        <p class="commentaire"><?php echo nl2br(($ba_bec_comment['libCom'])); ?></p>
+                                        <p class="commentaire"><?php echo renderBbcode($ba_bec_comment['libCom']); ?></p>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>

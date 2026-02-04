@@ -13,6 +13,9 @@ $memberData = sql_select(
     "MEMBRE.numMemb = $ba_bec_numMemb"
 )[0] ?? [];
 
+$ba_bec_recaptchaSiteKey = getenv('RECAPTCHA_SITE_KEY');
+$ba_bec_recaptchaSiteKeyEscaped = htmlspecialchars($ba_bec_recaptchaSiteKey ?? '', ENT_QUOTES, 'UTF-8');
+
 $ba_bec_success = $_SESSION['success'] ?? null;
 $ba_bec_error = $_SESSION['error'] ?? null;
 unset($_SESSION['success'], $_SESSION['error']);
@@ -179,7 +182,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
         <div class="card-body">
             <h2 class="h5 mb-3 text-danger">Supprimer mon compte</h2>
             <p class="mb-3">La suppression est définitive et effacera vos likes et commentaires.</p>
-            <form action="<?php echo ROOT_URL . '/api/account/delete.php'; ?>" method="post" onsubmit="return confirm('Confirmer la suppression définitive de votre compte ?');">
+            <form action="<?php echo ROOT_URL . '/api/account/delete.php'; ?>" method="post" id="delete-account-form" onsubmit="return confirm('Confirmer la suppression définitive de votre compte ?');">
+                <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-delete-account">
                 <div class="form-check mb-3">
                     <input class="form-check-input" type="checkbox" id="confirmDeleteAccount" name="confirmDeleteAccount" value="1" required>
                     <label class="form-check-label" for="confirmDeleteAccount">Je confirme vouloir supprimer mon compte.</label>
@@ -189,5 +193,39 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
         </div>
     </div>
 </main>
+
+<?php if (!empty($ba_bec_recaptchaSiteKey)): ?>
+<script src="https://www.google.com/recaptcha/api.js?render=<?php echo $ba_bec_recaptchaSiteKeyEscaped; ?>"></script>
+<script>
+    (function () {
+        var form = document.getElementById('delete-account-form');
+        var tokenInput = document.getElementById('g-recaptcha-response-delete-account');
+        var siteKey = '<?php echo $ba_bec_recaptchaSiteKeyEscaped; ?>';
+
+        if (!form || !tokenInput || !siteKey || typeof grecaptcha === 'undefined') {
+            return;
+        }
+
+        form.addEventListener('submit', function (event) {
+            if (tokenInput.value) {
+                return;
+            }
+
+            event.preventDefault();
+
+            grecaptcha.ready(function () {
+                grecaptcha.execute(siteKey, {action: 'delete-account'})
+                    .then(function (token) {
+                        tokenInput.value = token;
+                        form.submit();
+                    })
+                    .catch(function () {
+                        form.submit();
+                    });
+            });
+        });
+    })();
+</script>
+<?php endif; ?>
 
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php'; ?>

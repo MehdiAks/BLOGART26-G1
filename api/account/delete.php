@@ -21,6 +21,13 @@ if ($ba_bec_confirm !== 1) {
     exit();
 }
 
+$ba_bec_recaptcha = verifyRecaptcha($_POST['g-recaptcha-response'] ?? '', 'delete-account');
+if (!$ba_bec_recaptcha['valid']) {
+    $_SESSION['error'] = $ba_bec_recaptcha['message'] ?: 'Échec de la vérification reCAPTCHA.';
+    header('Location: ' . ROOT_URL . '/compte.php');
+    exit();
+}
+
 $ba_bec_member = sql_select('MEMBRE', 'numMemb', "numMemb = $ba_bec_numMemb")[0] ?? null;
 if (!$ba_bec_member) {
     $_SESSION['error'] = 'Compte introuvable.';
