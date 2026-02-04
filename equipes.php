@@ -9,7 +9,12 @@ $dbAvailable = getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_DATABASE');
 if ($dbAvailable) {
     sql_connect();
 
-    $teamsStmt = $DB->prepare('SELECT numEquipe, libEquipe, categorieEquipe, sectionEquipe, niveauEquipe FROM EQUIPE ORDER BY libEquipe ASC');
+    $teamsStmt = $DB->prepare(
+        'SELECT numEquipe, libEquipe, categorieEquipe, sectionEquipe, niveauEquipe,
+                pointsMarquesDomicile, pointsEncaissesDomicile, pointsMarquesExterieur, pointsEncaissesExterieur
+         FROM EQUIPE
+         ORDER BY libEquipe ASC'
+    );
     $teamsStmt->execute();
     $teams = $teamsStmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -109,6 +114,28 @@ foreach ($coaches as $coach) {
                                     <?php endforeach; ?>
                                 </ul>
                             <?php endif; ?>
+                        </div>
+
+                        <div>
+                            <h3>Statistiques</h3>
+                            <ul class="team-list">
+                                <li>
+                                    Points marqués à domicile :
+                                    <?php echo htmlspecialchars((string) ($team['pointsMarquesDomicile'] ?? 0)); ?>
+                                </li>
+                                <li>
+                                    Points encaissés à domicile :
+                                    <?php echo htmlspecialchars((string) ($team['pointsEncaissesDomicile'] ?? 0)); ?>
+                                </li>
+                                <li>
+                                    Points marqués à l'extérieur :
+                                    <?php echo htmlspecialchars((string) ($team['pointsMarquesExterieur'] ?? 0)); ?>
+                                </li>
+                                <li>
+                                    Points encaissés à l'extérieur :
+                                    <?php echo htmlspecialchars((string) ($team['pointsEncaissesExterieur'] ?? 0)); ?>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </article>
