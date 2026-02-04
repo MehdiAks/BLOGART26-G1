@@ -1,5 +1,4 @@
 <?php
-require_once 'header.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/ctrlSaisies.php';
 
@@ -91,8 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
-
 // Récupérer l'article actuel avec ses commentaires
 $ba_bec_numArt = (int) $_GET['numArt']; // Assure-toi d'avoir l'ID de l'article dans l'URL
 $comments = sql_select(
@@ -117,30 +114,13 @@ if (isset($_SESSION['user_id'])) {
     $userVoteData = sql_select("LIKEART", "likeA", "numArt = $ba_bec_numArt AND numMemb = $ba_bec_numMemb");
     $userVote = !empty($userVoteData) ? $userVoteData[0]['likeA'] : null;
 }
+
+$pageStyles = [
+    ROOT_URL . '/src/css/css-propre/fonts.css',
+    ROOT_URL . '/src/css/stylearticle.css',
+];
+require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 ?>
-
-
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="<?php echo ROOT_URL; ?>/src/css/css-propre/fonts.css" rel="stylesheet"/>
-    <link href="<?php echo ROOT_URL; ?>/src/css/stylearticle.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            overflow-x: hidden;
-        }
-    </style>
-</head>
-
-<body>
     <div class="article-page">
         <header class="article-hero" style="--hero-image: url('<?php echo $ba_bec_articleImageUrl; ?>')">
             <div class="article-hero__overlay">
@@ -292,8 +272,6 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </section>
     </div>
-</body>
-</html>
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
 ?>
