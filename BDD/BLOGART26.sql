@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : mer. 04 fév. 2026 à 09:53
+-- Généré le : mer. 04 fév. 2026 à 10:36
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.28
 
@@ -268,20 +268,42 @@ INSERT INTO `bec_matches` (`id`, `Section`, `numEquipe`, `Equipe`, `Competition`
 -- Déclencheurs `bec_matches`
 --
 DELIMITER $$
-CREATE TRIGGER `trg_bec_matches_bi` BEFORE INSERT ON `bec_matches` FOR EACH ROW BEGIN
-  DECLARE club_clean VARCHAR(180);
-
-  -- 1. retirer suffixes " - 2", " 2", "(2)" en fin de chaîne
-  SET club_clean = REGEXP_REPLACE(NEW.Adversaire, '([[:space:]]|-)?(?[0-9]+)?$', '');
-
-  -- 2. majuscules + espaces → _
-  SET club_clean = UPPER(REPLACE(TRIM(club_clean), ' ', '_'));
-
-  SET NEW.opponent_club_key = club_clean;
+CREATE TRIGGER `trg_bec_matches_ad` AFTER DELETE ON `bec_matches` FOR EACH ROW BEGIN
+  IF OLD.numEquipe IS NOT NULL THEN
+    UPDATE EQUIPE e
+    SET pointsMarquesDomicile = (
+          SELECT COALESCE(SUM(Score_BEC), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe
+            AND m.Competition = e.niveauEquipe
+            AND m.Domicile_Exterieur = 'Domicile'
+        ),
+        pointsEncaissesDomicile = (
+          SELECT COALESCE(SUM(Score_Adversaire), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe
+            AND m.Competition = e.niveauEquipe
+            AND m.Domicile_Exterieur = 'Domicile'
+        ),
+        pointsMarquesExterieur = (
+          SELECT COALESCE(SUM(Score_BEC), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe
+            AND m.Competition = e.niveauEquipe
+            AND m.Domicile_Exterieur = 'Extérieur'
+        ),
+        pointsEncaissesExterieur = (
+          SELECT COALESCE(SUM(Score_Adversaire), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe
+            AND m.Competition = e.niveauEquipe
+            AND m.Domicile_Exterieur = 'Extérieur'
+        )
+    WHERE e.numEquipe = OLD.numEquipe;
+  END IF;
 END
 $$
 DELIMITER ;
-
 DELIMITER $$
 CREATE TRIGGER `trg_bec_matches_ai` AFTER INSERT ON `bec_matches` FOR EACH ROW BEGIN
   IF NEW.numEquipe IS NOT NULL THEN
@@ -319,7 +341,6 @@ CREATE TRIGGER `trg_bec_matches_ai` AFTER INSERT ON `bec_matches` FOR EACH ROW B
 END
 $$
 DELIMITER ;
-
 DELIMITER $$
 CREATE TRIGGER `trg_bec_matches_au` AFTER UPDATE ON `bec_matches` FOR EACH ROW BEGIN
   IF OLD.numEquipe IS NOT NULL AND (NEW.numEquipe IS NULL OR OLD.numEquipe <> NEW.numEquipe) THEN
@@ -390,41 +411,17 @@ CREATE TRIGGER `trg_bec_matches_au` AFTER UPDATE ON `bec_matches` FOR EACH ROW B
 END
 $$
 DELIMITER ;
-
 DELIMITER $$
-CREATE TRIGGER `trg_bec_matches_ad` AFTER DELETE ON `bec_matches` FOR EACH ROW BEGIN
-  IF OLD.numEquipe IS NOT NULL THEN
-    UPDATE EQUIPE e
-    SET pointsMarquesDomicile = (
-          SELECT COALESCE(SUM(Score_BEC), 0)
-          FROM bec_matches m
-          WHERE m.numEquipe = e.numEquipe
-            AND m.Competition = e.niveauEquipe
-            AND m.Domicile_Exterieur = 'Domicile'
-        ),
-        pointsEncaissesDomicile = (
-          SELECT COALESCE(SUM(Score_Adversaire), 0)
-          FROM bec_matches m
-          WHERE m.numEquipe = e.numEquipe
-            AND m.Competition = e.niveauEquipe
-            AND m.Domicile_Exterieur = 'Domicile'
-        ),
-        pointsMarquesExterieur = (
-          SELECT COALESCE(SUM(Score_BEC), 0)
-          FROM bec_matches m
-          WHERE m.numEquipe = e.numEquipe
-            AND m.Competition = e.niveauEquipe
-            AND m.Domicile_Exterieur = 'Extérieur'
-        ),
-        pointsEncaissesExterieur = (
-          SELECT COALESCE(SUM(Score_Adversaire), 0)
-          FROM bec_matches m
-          WHERE m.numEquipe = e.numEquipe
-            AND m.Competition = e.niveauEquipe
-            AND m.Domicile_Exterieur = 'Extérieur'
-        )
-    WHERE e.numEquipe = OLD.numEquipe;
-  END IF;
+CREATE TRIGGER `trg_bec_matches_bi` BEFORE INSERT ON `bec_matches` FOR EACH ROW BEGIN
+  DECLARE club_clean VARCHAR(180);
+
+  -- 1. retirer suffixes " - 2", " 2", "(2)" en fin de chaîne
+  SET club_clean = REGEXP_REPLACE(NEW.Adversaire, '([[:space:]]|-)?(?[0-9]+)?$', '');
+
+  -- 2. majuscules + espaces → _
+  SET club_clean = UPPER(REPLACE(TRIM(club_clean), ' ', '_'));
+
+  SET NEW.opponent_club_key = club_clean;
 END
 $$
 DELIMITER ;
@@ -531,14 +528,14 @@ CREATE TABLE `EQUIPE` (
 -- Déchargement des données de la table `EQUIPE`
 --
 
-INSERT INTO `EQUIPE` (`numEquipe`, `libEquipe`, `categorieEquipe`, `sectionEquipe`, `niveauEquipe`) VALUES
-(1, 'Sénior 1', 'Sénior', 'Masculin', 'PNM'),
-(2, 'Sénior 2', 'Sénior', 'Masculin', 'RM2'),
-(3, 'Sénior 3', 'Sénior', 'Masculin', 'DM3'),
-(4, 'Sénior 4', 'Sénior', 'Masculin', 'DM4'),
-(5, 'SF1', 'Sénior', 'Féminin', 'NF3'),
-(6, 'SF2', 'Sénior', 'Féminin', 'PNF'),
-(7, 'SF3', 'Sénior', 'Féminin', 'PRF');
+INSERT INTO `EQUIPE` (`numEquipe`, `libEquipe`, `categorieEquipe`, `sectionEquipe`, `niveauEquipe`, `pointsMarquesDomicile`, `pointsEncaissesDomicile`, `pointsMarquesExterieur`, `pointsEncaissesExterieur`) VALUES
+(1, 'SG1', 'Sénior', 'Masculin', 'PNM', 0, 0, 0, 0),
+(2, 'SG2', 'Sénior', 'Masculin', 'RM2', 0, 0, 0, 0),
+(3, 'SG3', 'Sénior', 'Masculin', 'DM3', 0, 0, 0, 0),
+(4, 'SG4', 'Sénior', 'Masculin', 'DM4', 0, 0, 0, 0),
+(5, 'SF1', 'Sénior', 'Féminin', 'NF3', 0, 0, 0, 0),
+(6, 'SF2', 'Sénior', 'Féminin', 'PNF', 0, 0, 0, 0),
+(7, 'SF3', 'Sénior', 'Féminin', 'PRF', 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
