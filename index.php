@@ -259,7 +259,7 @@ foreach ($matches as $match) {
                     <article class="card w-100 home-article-card">
                         <div class="row g-3 h-100 align-items-center">
                             <div class="col-md-4 <?php echo $imageOrderClass; ?>">
-                                <div class="ratio ratio-9x16">
+                                <div class="ratio ratio-1x1">
                                     <img src="<?php echo $ba_bec_imagePath; ?>"
                                         class="img-fluid object-fit-cover w-100 h-100 home-article-image"
                                         alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
