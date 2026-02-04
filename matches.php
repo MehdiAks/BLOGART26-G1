@@ -21,12 +21,12 @@ if ($matchesTable === 'bec_matches') {
             Competition AS competition,
             Date AS matchDate,
             Heure AS matchTime,
-            Equipe_domicile AS teamHome,
-            Equipe_exterieure AS teamAway,
             Domicile_Exterieur AS location,
             Phase AS status,
-            Score_domicile AS scoreHome,
-            Score_exterieur AS scoreAway
+            Equipe AS team,
+            Adversaire AS opponent,
+            Score_BEC AS scoreBec,
+            Score_Adversaire AS scoreOpponent
         FROM {$matchesTable}
         WHERE Date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
         ORDER BY Date ASC, Heure ASC";
@@ -42,6 +42,38 @@ if ($matchesTable === 'bec_matches') {
 $matchesStmt = $DB->prepare($matchesQuery);
 $matchesStmt->execute();
 $allMatches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
+if ($matchesTable === 'bec_matches') {
+    $allMatches = array_map(
+        static function (array $match): array {
+            $location = strtolower(trim((string) ($match['location'] ?? '')));
+            $isHome = str_contains($location, 'domicile');
+            $isAway = str_contains($location, 'extérieur') || str_contains($location, 'exterieur');
+            $team = (string) ($match['team'] ?? '');
+            $opponent = (string) ($match['opponent'] ?? '');
+
+            $teamHome = $isAway ? $opponent : $team;
+            $teamAway = $isAway ? $team : $opponent;
+            $scoreHome = $match['scoreBec'];
+            $scoreAway = $match['scoreOpponent'];
+
+            if ($isAway) {
+                $scoreHome = $match['scoreOpponent'];
+                $scoreAway = $match['scoreBec'];
+            }
+
+            return array_merge(
+                $match,
+                [
+                    'teamHome' => $teamHome,
+                    'teamAway' => $teamAway,
+                    'scoreHome' => $scoreHome,
+                    'scoreAway' => $scoreAway,
+                ]
+            );
+        },
+        $allMatches
+    );
+}
 
 $seniorKeywords = [
     'senior',
