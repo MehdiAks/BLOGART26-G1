@@ -50,22 +50,30 @@ function ba_bec_update_equipe_points(?int $numEquipe): void
          SET pointsMarquesDomicile = (
                 SELECT COALESCE(SUM(Score_BEC), 0)
                 FROM bec_matches m
-                WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = "Domicile"
+                WHERE m.numEquipe = e.numEquipe
+                    AND m.Competition = e.niveauEquipe
+                    AND m.Domicile_Exterieur = "Domicile"
             ),
             pointsEncaissesDomicile = (
                 SELECT COALESCE(SUM(Score_Adversaire), 0)
                 FROM bec_matches m
-                WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = "Domicile"
+                WHERE m.numEquipe = e.numEquipe
+                    AND m.Competition = e.niveauEquipe
+                    AND m.Domicile_Exterieur = "Domicile"
             ),
             pointsMarquesExterieur = (
                 SELECT COALESCE(SUM(Score_BEC), 0)
                 FROM bec_matches m
-                WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = "Extérieur"
+                WHERE m.numEquipe = e.numEquipe
+                    AND m.Competition = e.niveauEquipe
+                    AND m.Domicile_Exterieur = "Extérieur"
             ),
             pointsEncaissesExterieur = (
                 SELECT COALESCE(SUM(Score_Adversaire), 0)
                 FROM bec_matches m
-                WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = "Extérieur"
+                WHERE m.numEquipe = e.numEquipe
+                    AND m.Competition = e.niveauEquipe
+                    AND m.Domicile_Exterieur = "Extérieur"
             )
          WHERE e.numEquipe = :numEquipe'
     );
