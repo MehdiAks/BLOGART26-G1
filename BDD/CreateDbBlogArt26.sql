@@ -354,30 +354,31 @@ alter table LIKEART add constraint FK_LIKEART2 foreign key (numMemb)
 
 -- ----------------------------------------------
 --
--- Structure de la table MATCH_CLUB
+-- Structure de la table BEC_MATCHES
 --
 /*=============================================*/
-/* Table : MATCH_CLUB                          */
+/* Table : BEC_MATCHES                          */
 /*=============================================*/
-create table MATCH_CLUB
+create table bec_matches
 (
-   numMatch int(10) not null auto_increment,
-   sourceId varchar(120) not null,
-   competition varchar(120) not null,
-   matchDate date not null,
-   matchTime time default null,
-   teamHome varchar(120) not null,
-   teamAway varchar(120) not null,
-   location varchar(160) default null,
-   status varchar(40) default null,
-   scoreHome int(5) default null,
-   scoreAway int(5) default null,
-   sourceUrl varchar(255) default null,
-   dtCreaMatch datetime default CURRENT_TIMESTAMP,
-   dtMajMatch datetime default null ON UPDATE CURRENT_TIMESTAMP,
-   primary key (numMatch),
-   unique key MATCH_SOURCE_UNIQUE (sourceId)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+   id int unsigned not null auto_increment,
+   Section varchar(32) not null,
+   numEquipe int default null,
+   Equipe varchar(128) not null,
+   Competition varchar(32) not null,
+   Phase varchar(64) not null,
+   Journee varchar(8) not null,
+   Date date not null,
+   Heure time not null,
+   Domicile_Exterieur varchar(16) not null,
+   Adversaire varchar(128) not null,
+   Score_BEC int default null,
+   Score_Adversaire int default null,
+   MatchNo int not null,
+   Source varchar(255) not null,
+   opponent_club_key varchar(180) default null,
+   primary key (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------------------
 

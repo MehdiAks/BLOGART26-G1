@@ -5,8 +5,6 @@ $pageStyles = [ROOT_URL . '/src/css/match-create.css'];
 include '../../../header.php';
 
 sql_connect();
-$ba_bec_tableCheckStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
-$ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
 ?>
 
 <div class="container">
@@ -16,149 +14,102 @@ $ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/matches/create.php' ?>" method="post">
-                <?php if ($ba_bec_hasBecMatchesTable) : ?>
-                    <div class="form-group">
-                        <label for="section">Catégorie</label>
-                        <select id="section" name="section" class="form-control" required>
-                            <option value="" selected disabled>Sélectionner une catégorie</option>
-                            <option value="SG1">SG1</option>
-                            <option value="SG2">SG2</option>
-                            <option value="SG3">SG3</option>
-                            <option value="SG4">SG4</option>
-                            <option value="SF1">SF1</option>
-                            <option value="SF2">SF2</option>
-                            <option value="SF3">SF3</option>
-                        </select>
-                    </div>
-                <?php else : ?>
-                    <div class="form-group">
-                        <label for="sourceId">Source ID (optionnel)</label>
-                        <input id="sourceId" name="sourceId" class="form-control" type="text" />
-                    </div>
-                <?php endif; ?>
+                <div class="form-group">
+                    <label for="section">Catégorie</label>
+                    <select id="section" name="section" class="form-control" required>
+                        <option value="" selected disabled>Sélectionner une catégorie</option>
+                        <option value="SG1">SG1</option>
+                        <option value="SG2">SG2</option>
+                        <option value="SG3">SG3</option>
+                        <option value="SG4">SG4</option>
+                        <option value="SF1">SF1</option>
+                        <option value="SF2">SF2</option>
+                        <option value="SF3">SF3</option>
+                    </select>
+                </div>
                 <div class="form-group mt-2">
                     <label for="competition">Compétition</label>
                     <input id="competition" name="competition" class="form-control" type="text" readonly required />
                     <small class="form-text text-muted">Prérempli selon la catégorie (national, régional, pré-régional, départemental).</small>
                 </div>
-                <?php if ($ba_bec_hasBecMatchesTable) : ?>
-                    <div class="form-group mt-2 d-flex align-items-center gap-2">
-                        <div class="flex-grow-1">
-                            <label class="form-label">Match de coupe</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="isCup" />
-                                <label class="form-check-label" for="isCup">Match de coupe</label>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <label for="location">Lieu</label>
-                                <div class="btn-group w-100" role="group" aria-label="Lieu du match">
-                                <input type="radio" class="btn-check" name="location" id="locationHome" value="Domicile" checked required>
-                                <label class="btn btn-outline-primary" for="locationHome">Domicile</label>
-                                <input type="radio" class="btn-check" name="location" id="locationAway" value="Extérieur">
-                                <label class="btn btn-outline-primary" for="locationAway">Extérieur</label>
-                            </div>
+                <div class="form-group mt-2 d-flex align-items-center gap-2">
+                    <div class="flex-grow-1">
+                        <label class="form-label">Match de coupe</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="isCup" />
+                            <label class="form-check-label" for="isCup">Match de coupe</label>
                         </div>
                     </div>
-                <?php endif; ?>
+                    <div class="flex-grow-1">
+                        <label for="location">Lieu</label>
+                            <div class="btn-group w-100" role="group" aria-label="Lieu du match">
+                            <input type="radio" class="btn-check" name="location" id="locationHome" value="Domicile" checked required>
+                            <label class="btn btn-outline-primary" for="locationHome">Domicile</label>
+                            <input type="radio" class="btn-check" name="location" id="locationAway" value="Extérieur">
+                            <label class="btn btn-outline-primary" for="locationAway">Extérieur</label>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group mt-2">
                     <label for="matchDayNumber">Journée</label>
                     <div class="input-group">
                         <span class="input-group-text">J</span>
-                        <input id="matchDayNumber" class="form-control" type="number" min="1" placeholder="1" <?php echo $ba_bec_hasBecMatchesTable ? 'required' : ''; ?> />
+                        <input id="matchDayNumber" class="form-control" type="number" min="1" placeholder="1" required />
                     </div>
                     <input type="hidden" id="matchDay" name="matchDay" />
                 </div>
                 <div class="form-group mt-2 row">
-                    <div class="<?php echo $ba_bec_hasBecMatchesTable ? 'col-md-4' : 'col-md-6'; ?>">
+                    <div class="col-md-4">
                         <label for="matchDate">Date</label>
                         <input id="matchDate" name="matchDate" class="form-control" type="date" required />
                     </div>
-                    <div class="<?php echo $ba_bec_hasBecMatchesTable ? 'col-md-4' : 'col-md-6'; ?>">
+                    <div class="col-md-4">
                         <label for="matchTime">Heure</label>
-                        <input id="matchTime" name="matchTime" class="form-control" type="time" <?php echo $ba_bec_hasBecMatchesTable ? 'required' : ''; ?> />
+                        <input id="matchTime" name="matchTime" class="form-control" type="time" required />
                     </div>
-                    <?php if ($ba_bec_hasBecMatchesTable) : ?>
-                        <div class="col-md-4">
-                            <label for="status">Phase</label>
-                            <select id="status" name="status" class="form-control" required>
-                                <option value="Saison régulière" selected>Saison régulière</option>
-                                <option value="Playoff">Playoff</option>
-                            </select>
-                        </div>
-                    <?php endif; ?>
+                    <div class="col-md-4">
+                        <label for="status">Phase</label>
+                        <select id="status" name="status" class="form-control" required>
+                            <option value="Saison régulière" selected>Saison régulière</option>
+                            <option value="Playoff">Playoff</option>
+                        </select>
+                    </div>
                 </div>
-                <?php if ($ba_bec_hasBecMatchesTable) : ?>
-                    <div class="match-create-alignment">
-                        <span>Équipe à domicile</span>
-                        <span>Équipe à l'extérieur</span>
+                <div class="match-create-alignment">
+                    <span>Équipe à domicile</span>
+                    <span>Équipe à l'extérieur</span>
+                </div>
+                <div class="form-group mt-2 row align-items-end" id="teamRow">
+                    <div class="col-md-6" id="teamHomeColumn">
+                        <label for="teamDisplay">Bordeaux Étudiant Club</label>
+                        <input id="teamDisplay" name="team" class="form-control" type="text" value="Bordeaux Étudiant Club" readonly />
                     </div>
-                    <div class="form-group mt-2 row align-items-end" id="teamRow">
-                        <div class="col-md-6" id="teamHomeColumn">
-                            <label for="teamDisplay">Bordeaux Étudiant Club</label>
-                            <input id="teamDisplay" name="team" class="form-control" type="text" value="Bordeaux Étudiant Club" readonly />
-                        </div>
-                        <div class="col-md-6" id="teamAwayColumn">
-                            <label for="opponent">Équipe adverse</label>
-                            <input id="opponent" name="opponent" class="form-control" type="text" placeholder="Équipe adverse" required />
-                        </div>
+                    <div class="col-md-6" id="teamAwayColumn">
+                        <label for="opponent">Équipe adverse</label>
+                        <input id="opponent" name="opponent" class="form-control" type="text" placeholder="Équipe adverse" required />
                     </div>
-                <?php else : ?>
-                    <div class="form-group mt-2">
-                        <label for="teamHome">Équipe domicile</label>
-                        <input id="teamHome" name="teamHome" class="form-control" type="text" required />
+                </div>
+                <div class="form-group mt-2 row match-score-row">
+                    <div class="col-md-6" id="scoreHomeColumn">
+                        <label for="scoreBec">Score BEC</label>
+                        <input id="scoreBec" name="scoreBec" class="form-control" type="number" min="0" />
                     </div>
-                    <div class="form-group mt-2">
-                        <label for="teamAway">Équipe extérieur</label>
-                        <input id="teamAway" name="teamAway" class="form-control" type="text" required />
+                    <div class="col-md-6" id="scoreAwayColumn">
+                        <label for="scoreOpponent">Score adversaire</label>
+                        <input id="scoreOpponent" name="scoreOpponent" class="form-control" type="number" min="0" />
                     </div>
-                <?php endif; ?>
-                <?php if (!$ba_bec_hasBecMatchesTable) : ?>
-                    <div class="form-group mt-2">
-                        <label for="location">Lieu</label>
-                        <input id="location" name="location" class="form-control" type="text" />
-                    </div>
-                    <div class="form-group mt-2">
-                        <label for="status">Statut</label>
-                        <input id="status" name="status" class="form-control" type="text" />
-                    </div>
-                <?php endif; ?>
-                <?php if ($ba_bec_hasBecMatchesTable) : ?>
-                    <div class="form-group mt-2 row match-score-row">
-                        <div class="col-md-6" id="scoreHomeColumn">
-                            <label for="scoreBec">Score BEC</label>
-                            <input id="scoreBec" name="scoreBec" class="form-control" type="number" min="0" />
-                        </div>
-                        <div class="col-md-6" id="scoreAwayColumn">
-                            <label for="scoreOpponent">Score adversaire</label>
-                            <input id="scoreOpponent" name="scoreOpponent" class="form-control" type="number" min="0" />
-                        </div>
-                        <small class="form-text text-muted">Laisser vide si le match n'a pas encore eu lieu.</small>
-                    </div>
-                <?php else : ?>
-                    <div class="form-group mt-2">
-                        <label for="scoreHome">Score domicile</label>
-                        <input id="scoreHome" name="scoreHome" class="form-control" type="number" min="0" />
-                    </div>
-                    <div class="form-group mt-2">
-                        <label for="scoreAway">Score extérieur</label>
-                        <input id="scoreAway" name="scoreAway" class="form-control" type="number" min="0" />
-                    </div>
-                <?php endif; ?>
+                    <small class="form-text text-muted">Laisser vide si le match n'a pas encore eu lieu.</small>
+                </div>
                 <div class="form-group mt-2 row">
-                    <?php if ($ba_bec_hasBecMatchesTable) : ?>
-                        <div class="col-md-4">
-                            <label for="numMatch">MatchNo</label>
-                            <input id="numMatch" name="numMatch" class="form-control" type="number" min="1" required />
-                            <small class="form-text text-muted">Récupéré sur le site FFBB.</small>
-                        </div>
-                    <?php endif; ?>
+                    <div class="col-md-4">
+                        <label for="numMatch">MatchNo</label>
+                        <input id="numMatch" name="numMatch" class="form-control" type="number" min="1" required />
+                        <small class="form-text text-muted">Récupéré sur le site FFBB.</small>
+                    </div>
                     <div class="col-md-8">
-                        <label for="sourceUrl"><?php echo $ba_bec_hasBecMatchesTable ? 'Source' : 'Lien source'; ?></label>
-                        <input id="sourceUrl" name="sourceUrl" class="form-control" type="<?php echo $ba_bec_hasBecMatchesTable ? 'text' : 'url'; ?>" <?php echo $ba_bec_hasBecMatchesTable ? 'required' : ''; ?> />
-                        <?php if ($ba_bec_hasBecMatchesTable) : ?>
-                            <small class="form-text text-muted">Prérempli selon la catégorie et la phase.</small>
-                        <?php endif; ?>
+                        <label for="sourceUrl">Source</label>
+                        <input id="sourceUrl" name="sourceUrl" class="form-control" type="text" required />
+                        <small class="form-text text-muted">Prérempli selon la catégorie et la phase.</small>
                     </div>
                 </div>
                 <br />
@@ -171,21 +122,20 @@ $ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
     </div>
 </div>
 
-<?php if ($ba_bec_hasBecMatchesTable) : ?>
-    <script>
-        const categorySelect = document.getElementById('section');
-        const competitionInput = document.getElementById('competition');
-        const cupCheckbox = document.getElementById('isCup');
-        const locationHome = document.getElementById('locationHome');
-        const locationAway = document.getElementById('locationAway');
-        const teamHomeColumn = document.getElementById('teamHomeColumn');
-        const teamAwayColumn = document.getElementById('teamAwayColumn');
-        const scoreHomeColumn = document.getElementById('scoreHomeColumn');
-        const scoreAwayColumn = document.getElementById('scoreAwayColumn');
-        const matchDayNumber = document.getElementById('matchDayNumber');
-        const matchDayInput = document.getElementById('matchDay');
-        const statusSelect = document.getElementById('status');
-        const sourceInput = document.getElementById('sourceUrl');
+<script>
+    const categorySelect = document.getElementById('section');
+    const competitionInput = document.getElementById('competition');
+    const cupCheckbox = document.getElementById('isCup');
+    const locationHome = document.getElementById('locationHome');
+    const locationAway = document.getElementById('locationAway');
+    const teamHomeColumn = document.getElementById('teamHomeColumn');
+    const teamAwayColumn = document.getElementById('teamAwayColumn');
+    const scoreHomeColumn = document.getElementById('scoreHomeColumn');
+    const scoreAwayColumn = document.getElementById('scoreAwayColumn');
+    const matchDayNumber = document.getElementById('matchDayNumber');
+    const matchDayInput = document.getElementById('matchDay');
+    const statusSelect = document.getElementById('status');
+    const sourceInput = document.getElementById('sourceUrl');
 
         const competitionLabels = {
             SF1: 'National 3 Féminine',
@@ -284,5 +234,4 @@ $ba_bec_hasBecMatchesTable = (bool) $ba_bec_tableCheckStmt->fetchColumn();
         updateSource();
         updateLocationLayout();
         updateMatchDay();
-    </script>
-<?php endif; ?>
+</script>
