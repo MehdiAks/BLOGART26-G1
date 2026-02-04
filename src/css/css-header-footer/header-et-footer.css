@@ -195,6 +195,16 @@
             background-color: rgba(103, 8, 29, 0.08);
         }
 
+        .btn-contact-footer {
+            background-color:#67081D;
+            color: white;
+            font-size: 18px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+        }
+
+
         .site-footer {
             background-color: #fff;
         }
@@ -205,6 +215,11 @@
         .site-footer p {
             color: var(--bec-dark);
         }
+
+        .mb-1 {
+            padding-top: 50px;
+        }
+
 
         .cookie-popup {
             position: fixed;

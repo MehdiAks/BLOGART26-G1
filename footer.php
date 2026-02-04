@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row gy-4 align-items-start">
                 <div class="col-lg-5">
-                    <h3 class="mb-3">Contactez-nous</h3>
+                    <a class="btn-contact-footer" href="contact.php">CONTACTEZ-NOUS!</a>
                     <p class="mb-1">secretariat@bec-bordeaux</p>
                     <p class="mb-3">06 71 94 23 80 - 05 56 91 83 50</p>
                     <div class="d-flex align-items-center gap-3 mb-4">
@@ -15,9 +15,6 @@
                         </a>
                     </div>
                     <ul class="list-unstyled d-flex flex-column gap-2">
-                        <li>
-                            <a href="<?php echo ROOT_URL . '/contact.php'; ?>">Contact</a>
-                        </li>
                         <li>
                             <a href="<?php echo ROOT_URL . '/infoleg/cgu.php'; ?>">Conditions d’utilisation</a>
                         </li>
