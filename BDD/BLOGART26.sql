@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : mer. 04 fév. 2026 à 01:20
+-- Généré le : mer. 04 fév. 2026 à 09:53
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.28
 
@@ -418,7 +418,6 @@ INSERT INTO `EQUIPE_JOUEUR` (`numEquipe`, `numJoueur`) VALUES
 (3, 11),
 (3, 12),
 (3, 13),
-(3, 14),
 (3, 15),
 (4, 16),
 (4, 17),
@@ -439,7 +438,8 @@ INSERT INTO `EQUIPE_JOUEUR` (`numEquipe`, `numJoueur`) VALUES
 (7, 32),
 (7, 33),
 (7, 34),
-(7, 35);
+(7, 35),
+(3, 37);
 
 -- --------------------------------------------------------
 
@@ -459,18 +459,18 @@ CREATE TABLE `EQUIPE_PERSONNEL` (
 
 INSERT INTO `EQUIPE_PERSONNEL` (`numEquipe`, `numPersonnel`, `libRoleEquipe`) VALUES
 (1, 13, 'Coach'),
-(1, 17, 'Assistant'),
-(2, 14, 'Coach'),
-(2, 18, 'Assistant'),
-(3, 15, 'Coach'),
-(3, 19, 'Assistant'),
-(4, 16, 'Coach'),
-(4, 20, 'Assistant'),
 (5, 13, 'Coach'),
-(5, 18, 'Assistant'),
+(2, 14, 'Coach'),
 (6, 14, 'Coach'),
-(6, 19, 'Assistant'),
+(3, 15, 'Coach'),
 (7, 15, 'Coach'),
+(4, 16, 'Coach'),
+(1, 17, 'Assistant'),
+(2, 18, 'Assistant'),
+(5, 18, 'Assistant'),
+(3, 19, 'Assistant'),
+(6, 19, 'Assistant'),
+(4, 20, 'Assistant'),
 (7, 20, 'Assistant');
 
 -- --------------------------------------------------------
@@ -496,41 +496,41 @@ CREATE TABLE `JOUEUR` (
 --
 
 INSERT INTO `JOUEUR` (`numJoueur`, `prenomJoueur`, `nomJoueur`, `urlPhotoJoueur`, `posteJoueur`, `numMaillot`, `anneeArrivee`, `clubsPrecedents`, `dateNaissance`) VALUES
-(1, 'Lucas', 'Morel', NULL, 'Poste 1 : meneur (point guard)', 4, 2022, NULL, '2001-03-12'),
-(2, 'Enzo', 'Robert', NULL, 'Poste 2 : arrière (shooting guard)', 7, 2021, NULL, '2000-06-08'),
-(3, 'Theo', 'Garnier', NULL, 'Poste 3 : ailier (small forward)', 11, 2020, NULL, '1999-09-21'),
-(4, 'Hugo', 'Marchand', NULL, 'Poste 4 : ailier fort (power forward)', 14, 2023, NULL, '2002-01-17'),
-(5, 'Maxime', 'Rousseau', NULL, 'Poste 5 : pivot (center)', 15, 2019, NULL, '1998-11-30'),
-(6, 'Quentin', 'Faure', NULL, 'Poste 1 : meneur (point guard); Poste 2 : arrière (shooting guard)', 5, 2022, NULL, '2001-05-03'),
-(7, 'Nathan', 'Perez', NULL, 'Poste 2 : arrière (shooting guard)', 8, 2021, NULL, '2000-12-14'),
-(8, 'Adrien', 'Boyer', NULL, 'Poste 3 : ailier (small forward)', 12, 2020, NULL, '1999-04-19'),
-(9, 'Julien', 'Lemaire', NULL, 'Poste 4 : ailier fort (power forward); Poste 5 : pivot (center)', 21, 2023, NULL, '2002-02-27'),
-(10, 'Thomas', 'Renault', NULL, 'Poste 5 : pivot (center)', 22, 2018, NULL, '1997-07-07'),
-(11, 'Paul', 'Noel', NULL, 'Poste 1 : meneur (point guard)', 6, 2020, NULL, '1999-10-05'),
-(12, 'Simon', 'Brun', NULL, 'Poste 2 : arrière (shooting guard); Poste 3 : ailier (small forward)', 9, 2021, NULL, '2000-08-23'),
-(13, 'Leo', 'Dupuis', NULL, 'Poste 3 : ailier (small forward)', 13, 2022, NULL, '2001-02-11'),
-(14, 'Axel', 'Barbier', NULL, 'Poste 4 : ailier fort (power forward)', 18, 2023, NULL, '2002-05-29'),
-(15, 'Mathieu', 'Colin', NULL, 'Poste 5 : pivot (center)', 24, 2019, NULL, '1998-12-02'),
-(16, 'Romain', 'Vidal', NULL, 'Poste 1 : meneur (point guard); Poste 2 : arrière (shooting guard)', 3, 2020, NULL, '1999-01-15'),
-(17, 'Vincent', 'Guerin', NULL, 'Poste 2 : arrière (shooting guard)', 10, 2021, NULL, '2000-03-09'),
-(18, 'Clement', 'Roy', NULL, 'Poste 3 : ailier (small forward)', 16, 2022, NULL, '2001-11-18'),
-(19, 'Florent', 'Henry', NULL, 'Poste 4 : ailier fort (power forward); Poste 5 : pivot (center)', 20, 2023, NULL, '2002-09-04'),
-(20, 'Fabien', 'Chevalier', NULL, 'Poste 5 : pivot (center)', 25, 2018, NULL, '1997-04-26'),
-(21, 'Clara', 'Martin', NULL, 'Poste 1 : meneur (point guard)', 4, 2021, NULL, '2001-07-13'),
-(22, 'Emma', 'Petit', NULL, 'Poste 2 : arrière (shooting guard)', 7, 2020, NULL, '2000-10-31'),
-(23, 'Lea', 'Fournier', NULL, 'Poste 3 : ailier (small forward)', 11, 2019, NULL, '1999-02-06'),
-(24, 'Manon', 'Dubois', NULL, 'Poste 4 : ailier fort (power forward)', 14, 2022, NULL, '2001-12-22'),
-(25, 'Sarah', 'Leroy', NULL, 'Poste 4 : ailier fort (power forward); Poste 5 : pivot (center)', 15, 2023, NULL, '2002-03-28'),
-(26, 'Julie', 'Bernard', NULL, 'Poste 1 : meneur (point guard); Poste 2 : arrière (shooting guard)', 5, 2021, NULL, '2000-05-16'),
-(27, 'Chloé', 'Roux', NULL, 'Poste 2 : arrière (shooting guard)', 8, 2020, NULL, '1999-09-09'),
-(28, 'Alice', 'Giraud', NULL, 'Poste 3 : ailier (small forward)', 12, 2019, NULL, '1998-11-25'),
-(29, 'Camille', 'Lefevre', NULL, 'Poste 4 : ailier fort (power forward); Poste 5 : pivot (center)', 21, 2022, NULL, '2001-01-20'),
-(30, 'Ines', 'Moreau', NULL, 'Poste 5 : pivot (center)', 22, 2023, NULL, '2002-06-30'),
-(31, 'Lola', 'Garcia', NULL, 'Poste 1 : meneur (point guard)', 6, 2020, NULL, '1999-08-12'),
-(32, 'Jade', 'Perrin', NULL, 'Poste 2 : arrière (shooting guard); Poste 3 : ailier (small forward)', 9, 2021, NULL, '2000-02-03'),
-(33, 'Nina', 'Mathis', NULL, 'Poste 3 : ailier (small forward)', 13, 2022, NULL, '2001-05-24'),
-(34, 'Eva', 'Rolland', NULL, 'Poste 4 : ailier fort (power forward)', 18, 2023, NULL, '2002-10-07'),
-(35, 'Zoé', 'Muller', NULL, 'Poste 5 : pivot (center)', 24, 2019, NULL, '1998-04-15');
+(1, 'Lucas', 'Morel', NULL, 'Poste 1 : meneur (point guard)', 4, '2022', NULL, '2001-03-12'),
+(2, 'Enzo', 'Robert', NULL, 'Poste 2 : arrière (shooting guard)', 7, '2021', NULL, '2000-06-08'),
+(3, 'Theo', 'Garnier', NULL, 'Poste 3 : ailier (small forward)', 11, '2020', NULL, '1999-09-21'),
+(4, 'Hugo', 'Marchand', NULL, 'Poste 4 : ailier fort (power forward)', 14, '2023', NULL, '2002-01-17'),
+(5, 'Maxime', 'Rousseau', NULL, 'Poste 5 : pivot (center)', 15, '2019', NULL, '1998-11-30'),
+(6, 'Quentin', 'Faure', NULL, 'Poste 1 : meneur (point guard); Poste 2 : arrière (shooting guard)', 5, '2022', NULL, '2001-05-03'),
+(7, 'Nathan', 'Perez', NULL, 'Poste 2 : arrière (shooting guard)', 8, '2021', NULL, '2000-12-14'),
+(8, 'Adrien', 'Boyer', NULL, 'Poste 3 : ailier (small forward)', 12, '2020', NULL, '1999-04-19'),
+(9, 'Julien', 'Lemaire', NULL, 'Poste 4 : ailier fort (power forward); Poste 5 : pivot (center)', 21, '2023', NULL, '2002-02-27'),
+(10, 'Thomas', 'Renault', NULL, 'Poste 5 : pivot (center)', 22, '2018', NULL, '1997-07-07'),
+(11, 'Matthieu', 'Kuevidjen', NULL, 'Poste 2 : arrière (shooting guard)', 5, '2025', NULL, '2003-03-10'),
+(12, 'Jean guillaume', 'Bidart', NULL, 'Poste 1 : meneur (point guard)', 4, '2021', NULL, '1984-04-30'),
+(13, 'Danny', 'Dramet', NULL, 'Poste 4 : ailier fort (power forward)', 11, '2023', NULL, '1993-10-01'),
+(15, 'Robin', 'Collomb', NULL, 'Poste 3 : ailier (small forward)', 8, '2025', NULL, '2005-03-22'),
+(16, 'Romain', 'Vidal', NULL, 'Poste 1 : meneur (point guard); Poste 2 : arrière (shooting guard)', 3, '2020', NULL, '1999-01-15'),
+(17, 'Vincent', 'Guerin', NULL, 'Poste 2 : arrière (shooting guard)', 10, '2021', NULL, '2000-03-09'),
+(18, 'Clement', 'Roy', NULL, 'Poste 3 : ailier (small forward)', 16, '2022', NULL, '2001-11-18'),
+(19, 'Florent', 'Henry', NULL, 'Poste 4 : ailier fort (power forward); Poste 5 : pivot (center)', 20, '2023', NULL, '2002-09-04'),
+(20, 'Fabien', 'Chevalier', NULL, 'Poste 5 : pivot (center)', 25, '2018', NULL, '1997-04-26'),
+(21, 'Clara', 'Martin', NULL, 'Poste 1 : meneur (point guard)', 4, '2021', NULL, '2001-07-13'),
+(22, 'Emma', 'Petit', NULL, 'Poste 2 : arrière (shooting guard)', 7, '2020', NULL, '2000-10-31'),
+(23, 'Lea', 'Fournier', NULL, 'Poste 3 : ailier (small forward)', 11, '2019', NULL, '1999-02-06'),
+(24, 'Manon', 'Dubois', NULL, 'Poste 4 : ailier fort (power forward)', 14, '2022', NULL, '2001-12-22'),
+(25, 'Sarah', 'Leroy', NULL, 'Poste 4 : ailier fort (power forward); Poste 5 : pivot (center)', 15, '2023', NULL, '2002-03-28'),
+(26, 'Julie', 'Bernard', NULL, 'Poste 1 : meneur (point guard); Poste 2 : arrière (shooting guard)', 5, '2021', NULL, '2000-05-16'),
+(27, 'Chloé', 'Roux', NULL, 'Poste 2 : arrière (shooting guard)', 8, '2020', NULL, '1999-09-09'),
+(28, 'Alice', 'Giraud', NULL, 'Poste 3 : ailier (small forward)', 12, '2019', NULL, '1998-11-25'),
+(29, 'Camille', 'Lefevre', NULL, 'Poste 4 : ailier fort (power forward); Poste 5 : pivot (center)', 21, '2022', NULL, '2001-01-20'),
+(30, 'Ines', 'Moreau', NULL, 'Poste 5 : pivot (center)', 22, '2023', NULL, '2002-06-30'),
+(31, 'Lola', 'Garcia', NULL, 'Poste 1 : meneur (point guard)', 6, '2020', NULL, '1999-08-12'),
+(32, 'Jade', 'Perrin', NULL, 'Poste 2 : arrière (shooting guard); Poste 3 : ailier (small forward)', 9, '2021', NULL, '2000-02-03'),
+(33, 'Nina', 'Mathis', NULL, 'Poste 3 : ailier (small forward)', 13, '2022', NULL, '2001-05-24'),
+(34, 'Eva', 'Rolland', NULL, 'Poste 4 : ailier fort (power forward)', 18, '2023', NULL, '2002-10-07'),
+(35, 'Zoé', 'Muller', NULL, 'Poste 5 : pivot (center)', 24, '2019', NULL, '1998-04-15'),
+(37, 'Mehdi', 'afankous', '1770171329_IMG_9876 (2).webp', 'Poste 5 : pivot (center)', 15, '2021', NULL, '2001-04-16');
 
 -- --------------------------------------------------------
 
@@ -708,7 +708,7 @@ CREATE TABLE `STATUT` (
 INSERT INTO `STATUT` (`numStat`, `libStat`, `dtCreaStat`) VALUES
 (1, 'Administrateur', '2023-02-19 15:15:59'),
 (2, 'Modérateur', '2023-02-19 15:19:12'),
-(3, 'Membree', '2023-02-20 08:43:24');
+(3, 'Membre', '2023-02-20 08:43:24');
 
 -- --------------------------------------------------------
 
@@ -874,7 +874,7 @@ ALTER TABLE `THEMATIQUE`
 -- AUTO_INCREMENT pour la table `AFFECTATION_PERSONNEL`
 --
 ALTER TABLE `AFFECTATION_PERSONNEL`
-  MODIFY `numAffectation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `numAffectation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT pour la table `ARTICLE`
@@ -892,7 +892,7 @@ ALTER TABLE `bec_matches`
 -- AUTO_INCREMENT pour la table `BRANCHE_PERSONNEL`
 --
 ALTER TABLE `BRANCHE_PERSONNEL`
-  MODIFY `numBranche` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `numBranche` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `COMMENT`
@@ -904,13 +904,13 @@ ALTER TABLE `COMMENT`
 -- AUTO_INCREMENT pour la table `EQUIPE`
 --
 ALTER TABLE `EQUIPE`
-  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT;
+  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT pour la table `JOUEUR`
 --
 ALTER TABLE `JOUEUR`
-  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT;
+  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT pour la table `MEMBRE`
@@ -922,7 +922,7 @@ ALTER TABLE `MEMBRE`
 -- AUTO_INCREMENT pour la table `PERSONNEL`
 --
 ALTER TABLE `PERSONNEL`
-  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT pour la table `THEMATIQUE`
