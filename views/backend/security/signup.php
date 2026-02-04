@@ -109,7 +109,7 @@ unset($_SESSION['errors'], $_SESSION['old']);
             </div>
             <!-- Accord données -->
             <div class="champ checkbox-row">
-                <label for="accordMemb">J'accepte le stockage de mes données, les CGU et toutes les obligations légales.</label>
+                <label for="accordMemb">J'accepte la conservation de mes données conformément au RGPD, aux CGU et aux obligations légales.</label>
                 <input type="checkbox" id="accordMemb" name="accordMemb" value="1" <?= isset($ba_bec_old['accordMemb']) ? 'checked' : '' ?> required>
             </div>
             <!-- Boutons -->

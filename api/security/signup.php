@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validation accord
     if ($ba_bec_accordMemb !== 1) {
-        $_SESSION['errors'][] = 'Vous devez accepter les conditions d\'utilisation';
+        $_SESSION['errors'][] = 'Vous devez accepter la conservation des données (RGPD) pour créer un compte.';
     }
 
     // Si aucune erreur

@@ -1,6 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
+require_once '../../functions/equipe_stats.php';
 
 sql_connect();
 $ba_bec_tableCheckStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
@@ -36,9 +37,13 @@ $ba_bec_scoreBecValue = $ba_bec_scoreBec !== '' ? (int) $ba_bec_scoreBec : 'NULL
 $ba_bec_scoreOpponentValue = $ba_bec_scoreOpponent !== '' ? (int) $ba_bec_scoreOpponent : 'NULL';
 
 if ($ba_bec_hasBecMatchesTable) {
-    $ba_bec_columns = 'Section, Equipe, Competition, Phase, Journee, Date, Heure, Domicile_Exterieur, Adversaire, Score_BEC, Score_Adversaire, MatchNo, Source';
-    $ba_bec_values = "'$ba_bec_section', '$ba_bec_team', '$ba_bec_competition', '$ba_bec_status', '$ba_bec_matchDay', '$ba_bec_matchDate', '$ba_bec_matchTime', '$ba_bec_location', '$ba_bec_opponent', $ba_bec_scoreBecValue, $ba_bec_scoreOpponentValue, $ba_bec_numMatch, '$ba_bec_sourceUrl'";
+    $ba_bec_numEquipe = ba_bec_resolve_equipe_id_from_section($ba_bec_section);
+    $ba_bec_numEquipeValue = $ba_bec_numEquipe !== null ? (int) $ba_bec_numEquipe : 'NULL';
+    $ba_bec_columns = 'Section, numEquipe, Equipe, Competition, Phase, Journee, Date, Heure, Domicile_Exterieur, Adversaire, Score_BEC, Score_Adversaire, MatchNo, Source';
+    $ba_bec_values = "'$ba_bec_section', $ba_bec_numEquipeValue, '$ba_bec_team', '$ba_bec_competition', '$ba_bec_status', '$ba_bec_matchDay', '$ba_bec_matchDate', '$ba_bec_matchTime', '$ba_bec_location', '$ba_bec_opponent', $ba_bec_scoreBecValue, $ba_bec_scoreOpponentValue, $ba_bec_numMatch, '$ba_bec_sourceUrl'";
     sql_insert('bec_matches', $ba_bec_columns, $ba_bec_values);
+
+    ba_bec_update_equipe_points($ba_bec_numEquipe);
 } else {
     $ba_bec_locationValue = $ba_bec_location !== '' ? "'$ba_bec_location'" : 'NULL';
     $ba_bec_statusValue = $ba_bec_status !== '' ? "'$ba_bec_status'" : 'NULL';
