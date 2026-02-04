@@ -65,6 +65,7 @@ INSERT INTO `ARTICLE` (`numArt`, `dtCreaArt`, `dtMajArt`, `libTitrArt`, `libChap
 CREATE TABLE `bec_matches` (
   `id` int UNSIGNED NOT NULL,
   `Section` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `numEquipe` int DEFAULT NULL,
   `Equipe` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Competition` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Phase` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -586,6 +587,7 @@ ALTER TABLE `AFFECTATION_PERSONNEL`
 --
 ALTER TABLE `bec_matches`
   ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_bec_matches_numEquipe` (`numEquipe`),
   ADD KEY `idx_opponent_club_key` (`opponent_club_key`);
 
 --
@@ -703,6 +705,7 @@ ALTER TABLE `AFFECTATION_PERSONNEL`
 -- Contraintes pour la table `bec_matches`
 --
 ALTER TABLE `bec_matches`
+  ADD CONSTRAINT `fk_bec_matches_equipe` FOREIGN KEY (`numEquipe`) REFERENCES `EQUIPE` (`numEquipe`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_bec_matches_opponent_club` FOREIGN KEY (`opponent_club_key`) REFERENCES `club_logos` (`club_key`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
