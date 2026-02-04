@@ -10,7 +10,7 @@ if ($dbAvailable) {
     sql_connect();
 
     $playersStmt = $DB->prepare(
-        'SELECT j.numJoueur, j.prenomJoueur, j.nomJoueur, j.urlPhotoJoueur, j.posteJoueur, j.anneeArrivee, j.clubsPrecedents,
+        'SELECT j.numJoueur, j.prenomJoueur, j.nomJoueur, j.urlPhotoJoueur, j.posteJoueur, j.numMaillot, j.anneeArrivee, j.clubsPrecedents,
                 j.dateNaissance, GROUP_CONCAT(e.libEquipe ORDER BY e.libEquipe SEPARATOR ", ") AS equipes
          FROM JOUEUR j
          LEFT JOIN EQUIPE_JOUEUR ej ON j.numJoueur = ej.numJoueur
@@ -36,6 +36,27 @@ function format_age(?string $birthDate): string
     $age = $today->diff($birth)->y;
     return $age . ' ans';
 }
+
+function format_clubs(?string $clubs): string
+{
+    if (!$clubs) {
+        return 'Non renseignés';
+    }
+    $list = preg_split('/\\r\\n|\\r|\\n|\\s*\\|\\s*/', $clubs);
+    $list = array_values(array_filter(array_map('trim', $list), 'strlen'));
+    return $list ? implode(' · ', $list) : 'Non renseignés';
+}
+
+function player_photo_url(?string $photo, string $defaultPhoto): string
+{
+    if (!$photo) {
+        return $defaultPhoto;
+    }
+    if (preg_match('/^(https?:\\/\\/|\\/)/', $photo)) {
+        return $photo;
+    }
+    return ROOT_URL . '/src/uploads/' . $photo;
+}
 ?>
 
 <section class="club-page">
@@ -54,15 +75,16 @@ function format_age(?string $birthDate): string
         <div class="club-grid">
             <?php foreach ($players as $player) : ?>
                 <article class="club-card">
-                    <img src="<?php echo htmlspecialchars($player['urlPhotoJoueur'] ?: $defaultPhoto); ?>" alt="<?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>">
+                    <img src="<?php echo htmlspecialchars(player_photo_url($player['urlPhotoJoueur'], $defaultPhoto)); ?>" alt="<?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>">
                     <div class="club-card-body">
                         <h2 class="club-card-title">
                             <?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>
                         </h2>
+                        <p class="club-card-meta">Numéro : <?php echo htmlspecialchars($player['numMaillot'] ?: 'Non renseigné'); ?></p>
                         <p class="club-card-meta">Poste : <?php echo htmlspecialchars($player['posteJoueur'] ?: 'Non renseigné'); ?></p>
                         <p class="club-card-meta">Âge : <?php echo htmlspecialchars(format_age($player['dateNaissance'])); ?></p>
                         <p class="club-card-meta">Arrivé au club : <?php echo htmlspecialchars($player['anneeArrivee'] ?: 'Non renseignée'); ?></p>
-                        <p class="club-card-meta">Clubs précédents : <?php echo htmlspecialchars($player['clubsPrecedents'] ?: 'Non renseignés'); ?></p>
+                        <p class="club-card-meta">Clubs précédents : <?php echo htmlspecialchars(format_clubs($player['clubsPrecedents'])); ?></p>
                         <?php if (!empty($player['equipes'])) : ?>
                             <p class="club-card-meta">Équipe(s) : <?php echo htmlspecialchars($player['equipes']); ?></p>
                         <?php endif; ?>

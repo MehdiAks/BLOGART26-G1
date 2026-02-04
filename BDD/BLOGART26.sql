@@ -402,6 +402,7 @@ CREATE TABLE `JOUEUR` (
   `nomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `urlPhotoJoueur` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `posteJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `numMaillot` int DEFAULT NULL,
   `anneeArrivee` year DEFAULT NULL,
   `clubsPrecedents` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `dateNaissance` date DEFAULT NULL
