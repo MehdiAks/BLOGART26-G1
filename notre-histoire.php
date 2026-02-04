@@ -5,75 +5,80 @@ require_once 'header.php';
 ?>
 
 <main class="container py-5" id="notre-histoire">
-    <div class="mb-5">
-        <h1 class="mb-3">Notre histoire</h1>
-        <p class="lead">
-            Le Bordeaux Étudiants Club (BEC) est né de l'élan des étudiants bordelais à la fin du XIXᵉ siècle.
-            Fidèle à ses racines universitaires, le club a grandi autour d'une ambition simple : réunir les
-            passionnés de sport dans un même esprit de partage, d'effort et de convivialité.
+
+    <!-- Hero / Intro -->
+    <section class="text-center mb-5 hero-section">
+        <img src="/src/images/logo.png" alt="Logo BEC" class="hero-logo mb-3">
+        <h1 class="display-4 fw-bold mb-3">Notre histoire</h1>
+        <p class="lead mx-auto" style="max-width: 800px; color: #212529;">
+            Depuis la fin du XIXᵉ siècle, le Bordeaux Étudiants Club (BEC) rassemble les passionnés de sport
+            dans un esprit de partage, d’effort et de convivialité, fidèle à ses racines universitaires.
         </p>
-    </div>
+        <img src="/src/images/fleche-bas.svg" class="scroll-down" alt="Scroll down">
+    </section>
 
-    <div class="row g-4">
-        <div class="col-lg-6">
-            <div class="article-content h-100">
-                <h2 class="h4">1897 : des origines étudiantes</h2>
-                <p>
-                    Fondé en 1897, le BEC s'est construit autour des étudiants de Bordeaux. Très tôt, le club s'impose
-                    comme une référence locale pour le sport universitaire, avec une identité forte mêlant ambition
-                    collective et attachement à la vie étudiante.
-                </p>
-                <p>
-                    Cet héritage se retrouve encore aujourd'hui dans la culture du club : former, transmettre et faire
-                    rayonner les talents issus des campus bordelais.
-                </p>
+    <section class="storyline">
+
+        <!-- Article 1 : texte gauche / image droite -->
+        <div class="article-horizontal row align-items-center my-5 has-image">
+            <div class="col-md-6">
+                <h2>1897 : des origines étudiantes <img src="/src/images/article.png" class="decorative" alt="Décor"></h2>
+                <p>Fondé en 1897, le BEC s'est construit autour des étudiants de Bordeaux.</p>
+                <p>Très tôt, le club s'impose comme référence locale pour le sport universitaire.</p>
+            </div>
+            <div class="col-md-6">
+                <img src="/src/images/image1.jpg" class="img-fluid img-wide rounded" alt="1897 : origines">
             </div>
         </div>
 
-        <div class="col-lg-6">
-            <div class="article-content h-100">
-                <h2 class="h4">Un club omnisports ancré à Bordeaux</h2>
-                <p>
-                    Au fil des décennies, le BEC s'est affirmé comme un club omnisports, fédérant plusieurs disciplines
-                    et rassemblant des générations de sportifs. Cette ouverture a permis de porter les couleurs du club
-                    bien au-delà d'un seul terrain.
-                </p>
-                <p>
-                    L'ancrage bordelais est au cœur de son identité : le BEC reste un lieu de rencontre pour toutes celles
-                    et ceux qui souhaitent pratiquer le sport dans un cadre associatif et exigeant.
-                </p>
+        <!-- Article 2 : texte droite / image gauche -->
+        <div class="article-horizontal row align-items-center my-5 has-image">
+            <div class="col-md-6 order-md-2">
+                <h2>Un club omnisports</h2>
+                <p>Le BEC fédère plusieurs disciplines et rassemble des générations de sportifs.</p>
+                <div class="interactive-icons">
+                    <img src="/src/images/eye-open.png" class="icon-eye" alt="Voir">
+                    <img src="/src/images/pnglike.png" class="icon-like" alt="Like">
+                    <img src="/src/images/pngdislike.png" class="icon-dislike" alt="Dislike">
+                </div>
+            </div>
+            <div class="col-md-6 order-md-1">
+                <img src="/src/images/image2.jpg" class="img-fluid img-tall rounded" alt="Club omnisports">
             </div>
         </div>
 
-        <div class="col-lg-6">
-            <div class="article-content h-100">
-                <h2 class="h4">Des pages marquantes</h2>
-                <p>
-                    Certaines sections du club ont marqué l'histoire locale, notamment grâce à des équipes engagées
-                    dans les compétitions nationales. Le rugby, vitrine historique du BEC, a notamment contribué à
-                    faire connaître le club sur la scène sportive française.
-                </p>
-                <p>
-                    Ce dynamisme a renforcé la réputation du BEC comme un acteur majeur du sport étudiant et amateur.
-                </p>
+        <!-- Article texte seul -->
+        <div class="article-horizontal row align-items-center my-5 no-image">
+            <div class="col-12">
+                <h2>Des pages marquantes</h2>
+                <p>Certaines sections du club ont marqué l'histoire locale grâce à des équipes engagées.</p>
             </div>
         </div>
 
-        <div class="col-lg-6">
-            <div class="article-content h-100">
-                <h2 class="h4">Un esprit qui continue d'inspirer</h2>
-                <p>
-                    Aujourd'hui, le BEC poursuit son développement en restant fidèle à ses valeurs fondatrices : l'esprit
-                    d'équipe, l'exigence sportive et l'ouverture aux nouvelles générations. Chaque saison ajoute un
-                    chapitre à cette histoire collective.
-                </p>
-                <p>
-                    Cette page est dédiée à celles et ceux qui ont fait vivre le club, et à ceux qui écrivent la suite.
-                </p>
+        <!-- Banniere full-width : texte center -->
+        <div class="banner my-5 banner-center">
+            <img src="/src/images/image3.jpg" class="img-fluid rounded" alt="Banniere center">
+            <div class="banner-text">
+                <h2>Un esprit qui perdure</h2>
             </div>
         </div>
-    </div>
+
+        <!-- Article 3 : texte gauche / image droite carré -->
+        <div class="article-horizontal row align-items-center my-5 has-image">
+            <div class="col-md-6">
+                <h2>Ouverture vers l'avenir</h2>
+                <p>Aujourd'hui, le BEC continue de former et rassembler les sportifs.</p>
+            </div>
+            <div class="col-md-6">
+                <img src="/src/images/image3.jpg" class="img-fluid img-square rounded" alt="Esprit inspirant">
+            </div>
+        </div>
+
+
+    </section>
 </main>
+
+
 
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';

@@ -2,26 +2,43 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
-require_once 'header.php';
+
+function render_missing_table_page(PDOException $exception): void
+{
+    $errorInfo = $exception->errorInfo ?? [];
+    $isMissingTable = $exception->getCode() === '42S02'
+        || (isset($errorInfo[1]) && (int) $errorInfo[1] === 1146);
+
+    if ($isMissingTable) {
+        http_response_code(404);
+        require_once 'erreur404.php';
+        exit;
+    }
+}
 
 $dbAvailable = getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_DATABASE');
 
 if ($dbAvailable) {
-    sql_connect();
+    try {
+        sql_connect();
 
-    $branchesStmt = $DB->prepare('SELECT numBranche, libBranche FROM BRANCHE_PERSONNEL ORDER BY libBranche ASC');
-    $branchesStmt->execute();
-    $branches = $branchesStmt->fetchAll(PDO::FETCH_ASSOC);
+        $branchesStmt = $DB->prepare('SELECT numBranche, libBranche FROM BRANCHE_PERSONNEL ORDER BY libBranche ASC');
+        $branchesStmt->execute();
+        $branches = $branchesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $staffStmt = $DB->prepare(
-        'SELECT p.numPersonnel, p.prenomPersonnel, p.nomPersonnel, p.urlPhotoPersonnel, b.numBranche, b.libBranche, a.libPoste
-         FROM PERSONNEL p
-         INNER JOIN AFFECTATION_PERSONNEL a ON p.numPersonnel = a.numPersonnel
-         INNER JOIN BRANCHE_PERSONNEL b ON a.numBranche = b.numBranche
-         ORDER BY b.libBranche ASC, p.nomPersonnel ASC'
-    );
-    $staffStmt->execute();
-    $staff = $staffStmt->fetchAll(PDO::FETCH_ASSOC);
+        $staffStmt = $DB->prepare(
+            'SELECT p.numPersonnel, p.prenomPersonnel, p.nomPersonnel, p.urlPhotoPersonnel, b.numBranche, b.libBranche, a.libPoste
+             FROM PERSONNEL p
+             INNER JOIN AFFECTATION_PERSONNEL a ON p.numPersonnel = a.numPersonnel
+             INNER JOIN BRANCHE_PERSONNEL b ON a.numBranche = b.numBranche
+             ORDER BY b.libBranche ASC, p.nomPersonnel ASC'
+        );
+        $staffStmt->execute();
+        $staff = $staffStmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $exception) {
+        render_missing_table_page($exception);
+        throw $exception;
+    }
 } else {
     $branches = [];
     $staff = [];
@@ -61,6 +78,8 @@ function branch_id(string $label): string
     return trim($slug, '-');
 }
 ?>
+
+<?php require_once 'header.php'; ?>
 
 <section class="club-page">
     <header class="club-header">

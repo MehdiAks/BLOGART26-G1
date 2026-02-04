@@ -2,39 +2,56 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
-require_once 'header.php';
+
+function render_missing_table_page(PDOException $exception): void
+{
+    $errorInfo = $exception->errorInfo ?? [];
+    $isMissingTable = $exception->getCode() === '42S02'
+        || (isset($errorInfo[1]) && (int) $errorInfo[1] === 1146);
+
+    if ($isMissingTable) {
+        http_response_code(404);
+        require_once 'erreur404.php';
+        exit;
+    }
+}
 
 $dbAvailable = getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_DATABASE');
 
 if ($dbAvailable) {
-    sql_connect();
+    try {
+        sql_connect();
 
-    $teamsStmt = $DB->prepare(
-        'SELECT numEquipe, libEquipe, categorieEquipe, sectionEquipe, niveauEquipe,
-                pointsMarquesDomicile, pointsEncaissesDomicile, pointsMarquesExterieur, pointsEncaissesExterieur
-         FROM EQUIPE
-         ORDER BY libEquipe ASC'
-    );
-    $teamsStmt->execute();
-    $teams = $teamsStmt->fetchAll(PDO::FETCH_ASSOC);
+        $teamsStmt = $DB->prepare(
+            'SELECT numEquipe, libEquipe, categorieEquipe, sectionEquipe, niveauEquipe,
+                    pointsMarquesDomicile, pointsEncaissesDomicile, pointsMarquesExterieur, pointsEncaissesExterieur
+             FROM EQUIPE
+             ORDER BY libEquipe ASC'
+        );
+        $teamsStmt->execute();
+        $teams = $teamsStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $playersStmt = $DB->prepare(
-        'SELECT ej.numEquipe, j.prenomJoueur, j.nomJoueur, j.posteJoueur
-         FROM EQUIPE_JOUEUR ej
-         INNER JOIN JOUEUR j ON ej.numJoueur = j.numJoueur
-         ORDER BY j.nomJoueur ASC'
-    );
-    $playersStmt->execute();
-    $players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);
+        $playersStmt = $DB->prepare(
+            'SELECT ej.numEquipe, j.prenomJoueur, j.nomJoueur, j.posteJoueur
+             FROM EQUIPE_JOUEUR ej
+             INNER JOIN JOUEUR j ON ej.numJoueur = j.numJoueur
+             ORDER BY j.nomJoueur ASC'
+        );
+        $playersStmt->execute();
+        $players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $coachesStmt = $DB->prepare(
-        'SELECT ep.numEquipe, p.prenomPersonnel, p.nomPersonnel, ep.libRoleEquipe
-         FROM EQUIPE_PERSONNEL ep
-         INNER JOIN PERSONNEL p ON ep.numPersonnel = p.numPersonnel
-         ORDER BY p.nomPersonnel ASC'
-    );
-    $coachesStmt->execute();
-    $coaches = $coachesStmt->fetchAll(PDO::FETCH_ASSOC);
+        $coachesStmt = $DB->prepare(
+            'SELECT ep.numEquipe, p.prenomPersonnel, p.nomPersonnel, ep.libRoleEquipe
+             FROM EQUIPE_PERSONNEL ep
+             INNER JOIN PERSONNEL p ON ep.numPersonnel = p.numPersonnel
+             ORDER BY p.nomPersonnel ASC'
+        );
+        $coachesStmt->execute();
+        $coaches = $coachesStmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $exception) {
+        render_missing_table_page($exception);
+        throw $exception;
+    }
 } else {
     $teams = [];
     $players = [];
@@ -51,6 +68,8 @@ foreach ($coaches as $coach) {
     $coachesByTeam[$coach['numEquipe']][] = $coach;
 }
 ?>
+
+<?php require_once 'header.php'; ?>
 
 <section class="club-page">
     <header class="club-header">

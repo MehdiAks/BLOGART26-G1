@@ -29,8 +29,6 @@ $articleStmt->execute();
 $ba_bec_articles = $articleStmt->fetchAll(PDO::FETCH_ASSOC);
 
 // On récupère les prochains matchs à domicile (Barbey) pour les équipes 1 garçons et filles.
-$matchesTableStmt = $DB->query("SHOW TABLES LIKE 'bec_matches'");
-$hasBecMatchesTable = (bool) $matchesTableStmt->fetchColumn();
 $nextMatches = [
     'SG1' => null,
     'SF1' => null,
@@ -68,73 +66,50 @@ $formatMatchTime = static function (?string $matchTime): string {
     return $time ? $time->format('H\hi') : $matchTime;
 };
 
-if ($hasBecMatchesTable) {
-    $matchesStmt = $DB->prepare(
-        "SELECT Section AS section,
-            Date AS matchDate,
-            Heure AS matchTime,
-            Domicile_Exterieur AS location,
-            Equipe AS team,
-            Adversaire AS opponent
-        FROM bec_matches
-        WHERE Section IN ('SG1', 'SF1')
-            AND Date >= CURDATE()
-        ORDER BY Date ASC, Heure ASC"
-    );
-    $matchesStmt->execute();
-    $matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
+$matchesStmt = $DB->prepare(
+    "SELECT Section AS section,
+        Equipe AS teamName,
+        Date AS matchDate,
+        Heure AS matchTime,
+        Domicile_Exterieur AS location,
+        Adversaire AS opponent
+    FROM bec_matches
+    WHERE Date >= CURDATE()
+    ORDER BY Date ASC, Heure ASC"
+);
+$matchesStmt->execute();
+$matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($matches as $match) {
-        $section = (string) ($match['section'] ?? '');
-        if (!array_key_exists($section, $nextMatches) || $nextMatches[$section] !== null) {
-            continue;
+foreach ($matches as $match) {
+    $section = strtolower((string) ($match['section'] ?? ''));
+    $teamName = strtolower((string) ($match['teamName'] ?? ''));
+    $key = null;
+    if ($section === 'féminin' || $section === 'feminin') {
+        if ($teamName !== '' && (str_contains($teamName, 'sf1') || str_contains($teamName, 'sénior 1') || str_contains($teamName, 'senior 1'))) {
+            $key = 'SF1';
         }
-        $location = strtolower(trim((string) ($match['location'] ?? '')));
-        if ($location !== '' && !str_contains($location, 'domicile')) {
-            continue;
+    } elseif ($section === 'masculin') {
+        if ($teamName !== '' && (str_contains($teamName, 'sg1') || str_contains($teamName, 'sénior 1') || str_contains($teamName, 'senior 1'))) {
+            $key = 'SG1';
         }
-
-        $nextMatches[$section] = [
-            'label' => $section === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
-            'teamHome' => $match['team'] ?? 'BEC',
-            'teamAway' => $match['opponent'] ?? '',
-            'matchDate' => $match['matchDate'],
-            'matchTime' => $match['matchTime'] ?? '',
-            'location' => 'Gymnase Barbey',
-        ];
     }
-} else {
-    $matchesStmt = $DB->prepare(
-        "SELECT matchDate, matchTime, teamHome, teamAway, location
-        FROM MATCH_CLUB
-        WHERE matchDate >= CURDATE()
-            AND location LIKE '%Barbey%'
-        ORDER BY matchDate ASC, matchTime ASC"
-    );
-    $matchesStmt->execute();
-    $matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($matches as $match) {
-        $haystack = strtolower(
-            ($match['teamHome'] ?? '') . ' ' . ($match['teamAway'] ?? '')
-        );
-        $isGirls = str_contains($haystack, 'fille');
-        $isBoys = str_contains($haystack, 'garçon') || str_contains($haystack, 'garcon');
-        $key = $isGirls ? 'SF1' : ($isBoys ? 'SG1' : null);
-
-        if ($key === null || $nextMatches[$key] !== null) {
-            continue;
-        }
-
-        $nextMatches[$key] = [
-            'label' => $key === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
-            'teamHome' => $match['teamHome'] ?? '',
-            'teamAway' => $match['teamAway'] ?? '',
-            'matchDate' => $match['matchDate'],
-            'matchTime' => $match['matchTime'] ?? '',
-            'location' => $match['location'] ?? 'Gymnase Barbey',
-        ];
+    if ($key === null || $nextMatches[$key] !== null) {
+        continue;
     }
+    $location = strtolower(trim((string) ($match['location'] ?? '')));
+    if ($location !== '' && !str_contains($location, 'domicile')) {
+        continue;
+    }
+
+    $nextMatches[$key] = [
+        'label' => $key === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
+        'teamHome' => $match['teamName'] ?? 'BEC',
+        'teamAway' => $match['opponent'] ?? '',
+        'matchDate' => $match['matchDate'],
+        'matchTime' => $match['matchTime'] ?? '',
+        'location' => 'Gymnase Barbey',
+    ];
 }
 ?>
 

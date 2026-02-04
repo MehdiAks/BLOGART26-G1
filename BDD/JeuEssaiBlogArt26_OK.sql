@@ -16,7 +16,7 @@
 --
 -- Base de données: BLOGART
 --
-USE u437341779_BLOGART26;
+USE BLOGART26;
 START TRANSACTION;
 
 -- ----------------------------------------------
