@@ -249,6 +249,7 @@ foreach ($matches as $match) {
                     // 6) On ajoute "..." seulement si le chapo dépassait la limite.
                     $excerpt = $excerptBase . ($chapoLength > $maxLength ? '...' : '');
                     ?>
+
                     <article class="card w-100">
                         <div class="row g-0 h-100">
                             <div class="col-md-4">
