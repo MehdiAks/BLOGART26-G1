@@ -282,6 +282,121 @@ END
 $$
 DELIMITER ;
 
+DELIMITER $$
+CREATE TRIGGER `trg_bec_matches_ai` AFTER INSERT ON `bec_matches` FOR EACH ROW BEGIN
+  IF NEW.numEquipe IS NOT NULL THEN
+    UPDATE EQUIPE e
+    SET pointsMarquesDomicile = (
+          SELECT COALESCE(SUM(Score_BEC), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Domicile'
+        ),
+        pointsEncaissesDomicile = (
+          SELECT COALESCE(SUM(Score_Adversaire), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Domicile'
+        ),
+        pointsMarquesExterieur = (
+          SELECT COALESCE(SUM(Score_BEC), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Extérieur'
+        ),
+        pointsEncaissesExterieur = (
+          SELECT COALESCE(SUM(Score_Adversaire), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Extérieur'
+        )
+    WHERE e.numEquipe = NEW.numEquipe;
+  END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER `trg_bec_matches_au` AFTER UPDATE ON `bec_matches` FOR EACH ROW BEGIN
+  IF OLD.numEquipe IS NOT NULL AND (NEW.numEquipe IS NULL OR OLD.numEquipe <> NEW.numEquipe) THEN
+    UPDATE EQUIPE e
+    SET pointsMarquesDomicile = (
+          SELECT COALESCE(SUM(Score_BEC), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Domicile'
+        ),
+        pointsEncaissesDomicile = (
+          SELECT COALESCE(SUM(Score_Adversaire), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Domicile'
+        ),
+        pointsMarquesExterieur = (
+          SELECT COALESCE(SUM(Score_BEC), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Extérieur'
+        ),
+        pointsEncaissesExterieur = (
+          SELECT COALESCE(SUM(Score_Adversaire), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Extérieur'
+        )
+    WHERE e.numEquipe = OLD.numEquipe;
+  END IF;
+
+  IF NEW.numEquipe IS NOT NULL THEN
+    UPDATE EQUIPE e
+    SET pointsMarquesDomicile = (
+          SELECT COALESCE(SUM(Score_BEC), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Domicile'
+        ),
+        pointsEncaissesDomicile = (
+          SELECT COALESCE(SUM(Score_Adversaire), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Domicile'
+        ),
+        pointsMarquesExterieur = (
+          SELECT COALESCE(SUM(Score_BEC), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Extérieur'
+        ),
+        pointsEncaissesExterieur = (
+          SELECT COALESCE(SUM(Score_Adversaire), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Extérieur'
+        )
+    WHERE e.numEquipe = NEW.numEquipe;
+  END IF;
+END
+$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER `trg_bec_matches_ad` AFTER DELETE ON `bec_matches` FOR EACH ROW BEGIN
+  IF OLD.numEquipe IS NOT NULL THEN
+    UPDATE EQUIPE e
+    SET pointsMarquesDomicile = (
+          SELECT COALESCE(SUM(Score_BEC), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Domicile'
+        ),
+        pointsEncaissesDomicile = (
+          SELECT COALESCE(SUM(Score_Adversaire), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Domicile'
+        ),
+        pointsMarquesExterieur = (
+          SELECT COALESCE(SUM(Score_BEC), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Extérieur'
+        ),
+        pointsEncaissesExterieur = (
+          SELECT COALESCE(SUM(Score_Adversaire), 0)
+          FROM bec_matches m
+          WHERE m.numEquipe = e.numEquipe AND m.Domicile_Exterieur = 'Extérieur'
+        )
+    WHERE e.numEquipe = OLD.numEquipe;
+  END IF;
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -373,7 +488,11 @@ CREATE TABLE `EQUIPE` (
   `libEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `categorieEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sectionEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `niveauEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `niveauEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pointsMarquesDomicile` int NOT NULL DEFAULT '0',
+  `pointsEncaissesDomicile` int NOT NULL DEFAULT '0',
+  `pointsMarquesExterieur` int NOT NULL DEFAULT '0',
+  `pointsEncaissesExterieur` int NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
