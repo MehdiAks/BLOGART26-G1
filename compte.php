@@ -13,6 +13,10 @@ $memberData = sql_select(
     "MEMBRE.numMemb = $ba_bec_numMemb"
 )[0] ?? [];
 
+$ba_bec_success = $_SESSION['success'] ?? null;
+$ba_bec_error = $_SESSION['error'] ?? null;
+unset($_SESSION['success'], $_SESSION['error']);
+
 $totalComments = sql_select("comment", "COUNT(*) as total", "numMemb = $ba_bec_numMemb")[0]['total'] ?? 0;
 $pendingComments = sql_select(
     "comment",
@@ -27,10 +31,19 @@ $publishedComments = sql_select(
 
 $recentComments = sql_select(
     "comment c INNER JOIN article a ON c.numArt = a.numArt",
-    "c.libCom, c.dtCreaCom, c.attModOK, c.delLogiq, a.libTitrArt",
+    "c.numCom, c.libCom, c.dtCreaCom, c.attModOK, c.delLogiq, a.libTitrArt",
     "c.numMemb = $ba_bec_numMemb",
     null,
     "c.dtCreaCom DESC",
+    5
+);
+
+$recentLikes = sql_select(
+    "likeart l INNER JOIN article a ON l.numArt = a.numArt",
+    "l.numArt, l.likeA, a.libTitrArt",
+    "l.numMemb = $ba_bec_numMemb",
+    null,
+    "a.libTitrArt ASC",
     5
 );
 
@@ -39,6 +52,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
 <main class="container my-5">
     <h1 class="mb-4">Mon compte</h1>
+    <?php if ($ba_bec_success): ?>
+        <div class="alert alert-success"><?php echo htmlspecialchars($ba_bec_success); ?></div>
+    <?php endif; ?>
+    <?php if ($ba_bec_error): ?>
+        <div class="alert alert-danger"><?php echo htmlspecialchars($ba_bec_error); ?></div>
+    <?php endif; ?>
 
     <div class="row g-4">
         <div class="col-lg-4">
@@ -86,6 +105,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                                 <th>Commentaire</th>
                                 <th>Date</th>
                                 <th>Statut</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -103,6 +123,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                                     <td><?php echo htmlspecialchars($ba_bec_comment['libCom']); ?></td>
                                     <td><?php echo htmlspecialchars($ba_bec_comment['dtCreaCom']); ?></td>
                                     <td><?php echo htmlspecialchars($statusLabel); ?></td>
+                                    <td>
+                                        <form action="<?php echo ROOT_URL . '/api/account/delete-comment.php'; ?>" method="post" onsubmit="return confirm('Supprimer ce commentaire ?');">
+                                            <input type="hidden" name="numCom" value="<?php echo (int) $ba_bec_comment['numCom']; ?>">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -111,6 +137,55 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
             <?php else: ?>
                 <p class="mb-0">Vous n'avez pas encore publié de commentaire.</p>
             <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h2 class="h5 mb-3">Mes derniers likes</h2>
+            <?php if (!empty($recentLikes)): ?>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Article</th>
+                                <th>Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($recentLikes as $ba_bec_like): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($ba_bec_like['libTitrArt']); ?></td>
+                                    <td><?php echo ((int) $ba_bec_like['likeA'] === 1) ? 'Like' : 'Dislike'; ?></td>
+                                    <td>
+                                        <form action="<?php echo ROOT_URL . '/api/account/delete-like.php'; ?>" method="post" onsubmit="return confirm('Supprimer ce like ?');">
+                                            <input type="hidden" name="numArt" value="<?php echo (int) $ba_bec_like['numArt']; ?>">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <p class="mb-0">Vous n'avez pas encore liké d'article.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="card mt-4 border-danger">
+        <div class="card-body">
+            <h2 class="h5 mb-3 text-danger">Supprimer mon compte</h2>
+            <p class="mb-3">La suppression est définitive et effacera vos likes et commentaires.</p>
+            <form action="<?php echo ROOT_URL . '/api/account/delete.php'; ?>" method="post" onsubmit="return confirm('Confirmer la suppression définitive de votre compte ?');">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="confirmDeleteAccount" name="confirmDeleteAccount" value="1" required>
+                    <label class="form-check-label" for="confirmDeleteAccount">Je confirme vouloir supprimer mon compte.</label>
+                </div>
+                <button type="submit" class="btn btn-danger">Supprimer mon compte</button>
+            </form>
         </div>
     </div>
 </main>
