@@ -2,7 +2,14 @@
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
-include '../../header.php';
+
+$ba_bec_posteChoices = [
+    'Poste 1 : meneur (point guard)',
+    'Poste 2 : arrière (shooting guard)',
+    'Poste 3 : ailier (small forward)',
+    'Poste 4 : ailier fort (power forward)',
+    'Poste 5 : pivot (center)',
+];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_prenomJoueur = ctrlSaisies($_POST['prenomJoueur'] ?? '');
@@ -48,6 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($ba_bec_numEquipe === '' || !is_numeric($ba_bec_numEquipe)) {
         $ba_bec_errors[] = 'Veuillez sélectionner une équipe valide.';
+    }
+    if ($ba_bec_posteJoueur !== '' && !in_array($ba_bec_posteJoueur, $ba_bec_posteChoices, true)) {
+        $ba_bec_errors[] = 'Veuillez sélectionner un poste valide.';
     }
 
     if (empty($ba_bec_errors)) {

@@ -15,6 +15,23 @@ $ba_bec_equipes = sql_select('EQUIPE', 'numEquipe, libEquipe, sectionEquipe', nu
 $ba_bec_equipeJoueur = sql_select('EQUIPE_JOUEUR', 'numEquipe', "numJoueur = '$ba_bec_numJoueur'");
 $ba_bec_numEquipe = $ba_bec_equipeJoueur[0]['numEquipe'] ?? '';
 $ba_bec_sectionEquipe = '';
+$ba_bec_posteChoices = [
+    'Poste 1 : meneur (point guard)',
+    'Poste 2 : arrière (shooting guard)',
+    'Poste 3 : ailier (small forward)',
+    'Poste 4 : ailier fort (power forward)',
+    'Poste 5 : pivot (center)',
+];
+
+function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
+{
+    $label = $ba_bec_equipe['libEquipe'] ?? '';
+    $section = $ba_bec_equipe['sectionEquipe'] ?? '';
+    if ($section === 'Masculin' && preg_match('/^S[ée]nior\\s*(\\d+)/iu', $label, $matches)) {
+        return 'SG' . $matches[1];
+    }
+    return $label;
+}
 foreach ($ba_bec_equipes as $ba_bec_equipe) {
     if ($ba_bec_equipe['numEquipe'] == $ba_bec_numEquipe) {
         $ba_bec_sectionEquipe = $ba_bec_equipe['sectionEquipe'] ?? '';
@@ -52,7 +69,14 @@ if (!$ba_bec_joueur) {
                 </div>
                 <div class="form-group mt-2">
                     <label for="posteJoueur">Poste</label>
-                    <input id="posteJoueur" name="posteJoueur" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_joueur['posteJoueur'] ?? ''); ?>" />
+                    <select id="posteJoueur" name="posteJoueur" class="form-control">
+                        <option value="">Sélectionnez un poste</option>
+                        <?php foreach ($ba_bec_posteChoices as $ba_bec_posteChoice): ?>
+                            <option value="<?php echo htmlspecialchars($ba_bec_posteChoice); ?>" <?php echo ($ba_bec_joueur['posteJoueur'] ?? '') === $ba_bec_posteChoice ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($ba_bec_posteChoice); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="form-group mt-2">
                     <label for="photoJoueur">Photo (upload)</label>
@@ -75,8 +99,8 @@ if (!$ba_bec_joueur) {
                     <label for="sectionEquipe">Section</label>
                     <select id="sectionEquipe" name="sectionEquipe" class="form-control" required>
                         <option value="">Sélectionnez une section</option>
-                        <option value="Homme" <?php echo $ba_bec_sectionEquipe === 'Homme' ? 'selected' : ''; ?>>Homme</option>
-                        <option value="Femme" <?php echo $ba_bec_sectionEquipe === 'Femme' ? 'selected' : ''; ?>>Femme</option>
+                        <option value="Masculin" <?php echo $ba_bec_sectionEquipe === 'Masculin' ? 'selected' : ''; ?>>Masculin</option>
+                        <option value="Féminin" <?php echo $ba_bec_sectionEquipe === 'Féminin' ? 'selected' : ''; ?>>Féminin</option>
                     </select>
                 </div>
                 <div class="form-group mt-2">
@@ -87,7 +111,7 @@ if (!$ba_bec_joueur) {
                             <option value="<?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?>"
                                 data-section="<?php echo htmlspecialchars($ba_bec_equipe['sectionEquipe'] ?? ''); ?>"
                                 <?php echo $ba_bec_numEquipe == $ba_bec_equipe['numEquipe'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($ba_bec_equipe['libEquipe']); ?>
+                                <?php echo htmlspecialchars(ba_bec_formatEquipeLabel($ba_bec_equipe)); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
