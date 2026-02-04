@@ -71,22 +71,33 @@ $formatMatchTime = static function (?string $matchTime): string {
 if ($hasBecMatchesTable) {
     $matchesStmt = $DB->prepare(
         "SELECT Section AS section,
+            Equipe AS teamName,
             Date AS matchDate,
             Heure AS matchTime,
             Domicile_Exterieur AS location,
-            Equipe AS team,
             Adversaire AS opponent
         FROM bec_matches
-        WHERE Section IN ('SG1', 'SF1')
-            AND Date >= CURDATE()
+        WHERE Date >= CURDATE()
         ORDER BY Date ASC, Heure ASC"
     );
     $matchesStmt->execute();
     $matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($matches as $match) {
-        $section = (string) ($match['section'] ?? '');
-        if (!array_key_exists($section, $nextMatches) || $nextMatches[$section] !== null) {
+        $section = strtolower((string) ($match['section'] ?? ''));
+        $teamName = strtolower((string) ($match['teamName'] ?? ''));
+        $key = null;
+        if ($section === 'féminin' || $section === 'feminin') {
+            if ($teamName !== '' && (str_contains($teamName, 'sf1') || str_contains($teamName, 'sénior 1') || str_contains($teamName, 'senior 1'))) {
+                $key = 'SF1';
+            }
+        } elseif ($section === 'masculin') {
+            if ($teamName !== '' && (str_contains($teamName, 'sg1') || str_contains($teamName, 'sénior 1') || str_contains($teamName, 'senior 1'))) {
+                $key = 'SG1';
+            }
+        }
+
+        if ($key === null || $nextMatches[$key] !== null) {
             continue;
         }
         $location = strtolower(trim((string) ($match['location'] ?? '')));
@@ -94,9 +105,9 @@ if ($hasBecMatchesTable) {
             continue;
         }
 
-        $nextMatches[$section] = [
-            'label' => $section === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
-            'teamHome' => $match['team'] ?? 'BEC',
+        $nextMatches[$key] = [
+            'label' => $key === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
+            'teamHome' => $match['teamName'] ?? 'BEC',
             'teamAway' => $match['opponent'] ?? '',
             'matchDate' => $match['matchDate'],
             'matchTime' => $match['matchTime'] ?? '',
