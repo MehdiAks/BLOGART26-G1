@@ -23,7 +23,7 @@ Theme: Bordeaux through the Bordeaux Étudiant Club
 
 ## Scripts
 ### Télécharger les logos FFBB
-Le script `scripts/fetch_ffbb_logos.php` peut être lancé en local avec PHP CLI pour récupérer les logos des équipes FFBB. Par défaut, il utilise la liste intégrée et sauvegarde dans `src/images/ffbb-logos`.
+Le script `scripts/fetch_ffbb_logos.php` peut être lancé en local avec PHP CLI pour récupérer les logos des équipes FFBB. Par défaut, il utilise la liste intégrée et sauvegarde dans `src/images/logo/logo-recup`.
 
 Exemples :
 ```bash
