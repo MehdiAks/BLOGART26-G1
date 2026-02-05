@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : jeu. 05 fév. 2026 à 16:50
+-- Généré le : jeu. 05 fév. 2026 à 18:53
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.28
 
@@ -47,16 +47,16 @@ CREATE TABLE `ARTICLE` (
   `numArt` int NOT NULL,
   `dtCreaArt` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtMajArt` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `libTitrArt` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `libChapoArt` text COLLATE utf8mb3_unicode_ci,
-  `libAccrochArt` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `parag1Art` text COLLATE utf8mb3_unicode_ci,
-  `libSsTitr1Art` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `parag2Art` text COLLATE utf8mb3_unicode_ci,
-  `libSsTitr2Art` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `parag3Art` text COLLATE utf8mb3_unicode_ci,
-  `libConclArt` text COLLATE utf8mb3_unicode_ci,
-  `urlPhotArt` varchar(70) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `libTitrArt` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `libChapoArt` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `libAccrochArt` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `parag1Art` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `libSsTitr1Art` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `parag2Art` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `libSsTitr2Art` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `parag3Art` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `libConclArt` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `urlPhotArt` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `numThem` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -96,6 +96,13 @@ CREATE TABLE `CLUB` (
   `estClubMaison` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Déchargement des données de la table `CLUB`
+--
+
+INSERT INTO `CLUB` (`numClub`, `nomClub`, `villeClub`, `estClubMaison`) VALUES
+(1, 'Bordeaux étudiant club', NULL, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -105,10 +112,10 @@ CREATE TABLE `CLUB` (
 CREATE TABLE `COMMENT` (
   `numCom` int NOT NULL,
   `dtCreaCom` datetime DEFAULT CURRENT_TIMESTAMP,
-  `libCom` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `libCom` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `dtModCom` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `attModOK` tinyint(1) DEFAULT '0',
-  `notifComKOAff` text COLLATE utf8mb3_unicode_ci,
+  `notifComKOAff` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
   `dtDelLogCom` datetime DEFAULT NULL,
   `delLogiq` tinyint(1) DEFAULT '0',
   `numArt` int NOT NULL,
@@ -297,15 +304,15 @@ CREATE TABLE `MATCH_PARTICIPANT` (
 
 CREATE TABLE `MEMBRE` (
   `numMemb` int NOT NULL,
-  `prenomMemb` varchar(70) COLLATE utf8mb3_unicode_ci NOT NULL,
-  `nomMemb` varchar(70) COLLATE utf8mb3_unicode_ci NOT NULL,
-  `pseudoMemb` varchar(70) COLLATE utf8mb3_unicode_ci NOT NULL,
-  `passMemb` varchar(70) COLLATE utf8mb3_unicode_ci NOT NULL,
-  `eMailMemb` varchar(100) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `prenomMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `nomMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `pseudoMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `passMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `eMailMemb` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `dtCreaMemb` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtMajMemb` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `accordMemb` tinyint(1) DEFAULT '1',
-  `cookieMemb` varchar(70) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `cookieMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `numStat` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -327,7 +334,7 @@ INSERT INTO `MEMBRE` (`numMemb`, `prenomMemb`, `nomMemb`, `pseudoMemb`, `passMem
 
 CREATE TABLE `MOTCLE` (
   `numMotCle` int NOT NULL,
-  `libMotCle` varchar(60) COLLATE utf8mb3_unicode_ci NOT NULL
+  `libMotCle` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
@@ -477,7 +484,7 @@ CREATE TABLE `SECTION_EQUIPE` (
 
 CREATE TABLE `STATUT` (
   `numStat` int NOT NULL,
-  `libStat` varchar(25) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `libStat` varchar(25) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `dtCreaStat` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -498,7 +505,7 @@ INSERT INTO `STATUT` (`numStat`, `libStat`, `dtCreaStat`) VALUES
 
 CREATE TABLE `THEMATIQUE` (
   `numThem` int NOT NULL,
-  `libThem` varchar(60) COLLATE utf8mb3_unicode_ci NOT NULL
+  `libThem` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
@@ -741,7 +748,7 @@ ALTER TABLE `CATEGORIE_EQUIPE`
 -- AUTO_INCREMENT pour la table `CLUB`
 --
 ALTER TABLE `CLUB`
-  MODIFY `numClub` int NOT NULL AUTO_INCREMENT;
+  MODIFY `numClub` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `COMMENT`
