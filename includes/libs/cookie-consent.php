@@ -1,152 +1,90 @@
 <?php
-// includes/cookie-consent.php
-
-// Durée de validité en MINUTES
-define('COOKIE_CONSENT_DURATION_MINUTES', 1440); // 1 jour
-
-/**
- * Obtenir l'adresse IP de l'utilisateur
- */
-function getCookieUserIP() {
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-        return $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        return $_SERVER['HTTP_X_FORWARDED_FOR'];
-    } else {
-        return $_SERVER['REMOTE_ADDR'];
-    }
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-/**
- * Vérifier si l'utilisateur a déjà fait un choix (valide)
- */
-function hasUserMadeCookieChoice() {
-    $ip = getCookieUserIP();
+define('COOKIE_DURATION', 365 * 24 * 60 * 60); // 1 an
 
-    $ba_bec_result = sql_select(
-        "COOKIE_CONSENT",
-        "*",
-        "ipAdresse = '" . $ip . "'"
+/* =========================
+OUTILS
+========================= */
+
+function generateToken() {
+    return bin2hex(random_bytes(32));
+}
+
+function setConsentCookie($token) {
+    setcookie(
+        'cookie_consent_token',
+        $token,
+        time() + COOKIE_DURATION,
+        '/',
+        '',
+        false,
+        true
     );
-
-    if (empty($ba_bec_result)) {
-        return false;
-    }
-
-    // Vérifier manuellement si la date d'expiration n'est pas dépassée
-    $expiration = strtotime($ba_bec_result[0]['dateExpiration']);
-    $now = time();
-
-    return $expiration > $now;
 }
 
-/**
- * Vérifier si l'utilisateur a accepté les cookies
- */
-function hasAcceptedCookies() {
-    $ip = getCookieUserIP();
+/* =========================
+LECTURE CONSENTEMENT
+========================= */
 
-    $ba_bec_result = sql_select(
-        "COOKIE_CONSENT",
-        "choixConsent, dateExpiration",
-        "ipAdresse = '" . $ip . "'"
-    );
-
-    if (empty($ba_bec_result)) {
-        return false;
+function getCookieConsent($pdo) {
+    if (!$pdo instanceof PDO) {
+        return null;
     }
 
-    // Vérifier manuellement si la date d'expiration n'est pas dépassée
-    $expiration = strtotime($ba_bec_result[0]['dateExpiration']);
-    $now = time();
-
-    if ($expiration <= $now) {
-        return false;
-    }
-
-    return $ba_bec_result[0]['choixConsent'] === 'accepted';
-}
-
-/**
- * Enregistrer le choix de l'utilisateur
- */
-function saveCookieConsent($choice) {
-    global $DB;
-
-    $ip = getCookieUserIP();
-    $dateExpiration = date('Y-m-d H:i:s', strtotime('+' . COOKIE_CONSENT_DURATION_MINUTES . ' minutes'));
-
-    // Vérifier si l'IP existe déjà
-    $existing = sql_select(
-        "COOKIE_CONSENT",
-        "numCon",
-        "ipAdresse = '" . $ip . "'"
-    );
-
-    if (!empty($existing)) {
-        // Mettre à jour
-        $query = "UPDATE COOKIE_CONSENT 
-            SET choixConsent = '" . $choice . "', 
-                dateCon = NOW(), 
-                dateExpiration = '" . $dateExpiration . "' 
-                WHERE ipAdresse = '" . $ip . "'";
-        $DB->exec($query);
-    } else {
-        // Insérer
-        $query = "INSERT INTO COOKIE_CONSENT (ipAdresse, choixConsent, dateCon, dateExpiration) 
-                VALUES ('" . $ip . "', '" . $choice . "', NOW(), '" . $dateExpiration . "')";
-        $DB->exec($query);
-    }
-}
-
-/**
- * Nettoyer les consentements expirés
- */
-function cleanExpiredConsents() {
-    global $DB;
-    $query = "DELETE FROM COOKIE_CONSENT WHERE dateExpiration < NOW()";
-    $DB->exec($query);
-}
-
-// Traiter l'acceptation/refus des cookies via POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['accept_cookies'])) {
-        saveCookieConsent('accepted');
-
-        setcookie(
-            'cookieConsent',
-            'accepted',
-            time() + (COOKIE_CONSENT_DURATION_MINUTES * 60),
-            '/',
-            '',
-            false,
-            true
+    // CAS 1 : MEMBRE CONNECTÉ
+    if (!empty($_SESSION['user_id'])) {
+        $stmt = $pdo->prepare(
+            "SELECT cookieMemb FROM membre WHERE numMemb = ?"
         );
-
-        header('Location: ' . $_SERVER['REQUEST_URI']);
-        exit;
+        $stmt->execute([$_SESSION['user_id']]);
+        return $stmt->fetchColumn(); // NULL / 0 / 1
     }
 
-    if (isset($_POST['reject_cookies'])) {
-        saveCookieConsent('rejected');
-
-        setcookie(
-            'cookieConsent',
-            'rejected',
-            time() + (COOKIE_CONSENT_DURATION_MINUTES * 60),
-            '/',
-            '',
-            false,
-            true
+    // CAS 2 : VISITEUR ANONYME
+    if (!empty($_COOKIE['cookie_consent_token'])) {
+        $stmt = $pdo->prepare(
+            "SELECT consent FROM cookie_consent
+            WHERE token = ? AND expires_at > NOW()"
         );
-
-        header('Location: ' . $_SERVER['REQUEST_URI']);
-        exit;
+        $stmt->execute([$_COOKIE['cookie_consent_token']]);
+        return $stmt->fetchColumn(); // NULL / 0 / 1
     }
+
+    return null;
 }
 
-// Nettoyer les consentements expirés (1 fois sur 100)
-if (rand(1, 100) === 1) {
-    cleanExpiredConsents();
+/* =========================
+SAUVEGARDE CONSENTEMENT
+========================= */
+
+function saveCookieConsent($pdo, int $consent) {
+    if (!$pdo instanceof PDO) {
+        return;
+    }
+
+    // MEMBRE CONNECTÉ
+    if (!empty($_SESSION['user_id'])) {
+        $stmt = $pdo->prepare(
+            "UPDATE membre
+            SET cookieMemb = ?, dtMajMemb = NOW()
+            WHERE numMemb = ?"
+        );
+        $stmt->execute([$consent, $_SESSION['user_id']]);
+        return;
+    }
+
+    // VISITEUR ANONYME
+    $token = $_COOKIE['cookie_consent_token'] ?? generateToken();
+
+    $stmt = $pdo->prepare(
+        "REPLACE INTO cookie_consent
+        (token, consent, created_at, expires_at)
+        VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR))"
+    );
+    $stmt->execute([$token, $consent]);
+
+    setConsentCookie($token);
 }
-?>

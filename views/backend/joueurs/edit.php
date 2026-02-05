@@ -80,7 +80,8 @@ if (!$ba_bec_joueur) {
                 </div>
                 <div class="form-group mt-2">
                     <label for="photoJoueur">Photo (upload)</label>
-                    <input id="photoJoueur" name="photoJoueur" class="form-control" type="file" accept="image/*" />
+                    <input id="photoJoueur" name="photoJoueur" class="form-control" type="file"
+                        accept=".png, .jpeg, .jpg, .avif, .svg" />
                     <?php if (!empty($ba_bec_joueur['urlPhotoJoueur'])): ?>
                         <?php
                         $ba_bec_photo = $ba_bec_joueur['urlPhotoJoueur'];

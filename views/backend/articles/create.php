@@ -123,9 +123,9 @@
                                     <div class="mb-3">
                                         <label for="urlPhotArt" class="form-label">Choisir une image</label>
                                         <input type="file" id="urlPhotArt" name="urlPhotArt" class="form-control"
-                                            accept=".jpg, .jpeg, .png, .gif" maxlength="80000" width="80000"
+                                            accept=".png, .jpeg, .jpg, .avif, .svg" maxlength="80000" width="80000"
                                             height="80000" size="200000000000">
-                                        <p class="form-text">Extensions acceptées : .jpg, .gif, .png, .jpeg.</p>
+                                        <p class="form-text">Extensions acceptées : .png, .jpeg, .jpg, .avif, .svg.</p>
                                     </div>
 
                                     <div class="mb-3">
