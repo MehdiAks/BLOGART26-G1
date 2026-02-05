@@ -214,10 +214,39 @@ $homeStats = [
 ];
 ?>
 
+<style>
+    .typewriter-line {
+        position: relative;
+        display: inline-block;
+        white-space: nowrap;
+    }
+    .typewriter-line::after {
+        content: "";
+        display: inline-block;
+        width: 2px;
+        height: 1em;
+        background: currentColor;
+        margin-left: 6px;
+        vertical-align: -0.1em;
+        animation: caret-blink 0.9s steps(1) infinite;
+    }
+    .typewriter-line.is-done::after {
+        opacity: 0;
+        animation: none;
+    }
+    @keyframes caret-blink {
+        50% { opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .typewriter-line::after {
+            animation: none;
+        }
+    }
+</style>
 <section class="home-hero full-bleed">
     <div class="home-hero-content text-start">
-        <h2 class="fw-bold mb-0">Bordeaux étudiant club</h2>
-        <h3 class="fw-bold mb-0">Basket-ball</h3>
+        <h2 class="fw-bold mb-0 typewriter-line" data-typewriter data-text="Bordeaux étudiant club"></h2><br>
+        <h3 class="fw-bold mb-0 typewriter-line" data-typewriter data-text="Basket-ball"></h3>
     </div>
 </section>
 <div class="container py-5 home-main-surface home-main-surface--hidden">
@@ -465,6 +494,52 @@ $homeStats = [
     </section>
 </div>
 
+<script>
+    (function () {
+        const lines = Array.from(document.querySelectorAll("[data-typewriter]"));
+        if (!lines.length) {
+            return;
+        }
+
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const speedMs = 70;
+        const lineDelayMs = 350;
+
+        const typeLine = (element) =>
+            new Promise((resolve) => {
+                const text = element.dataset.text || "";
+                if (prefersReducedMotion) {
+                    element.textContent = text;
+                    element.classList.add("is-done");
+                    resolve();
+                    return;
+                }
+
+                let index = 0;
+                element.textContent = "";
+                element.classList.remove("is-done");
+
+                const tick = () => {
+                    element.textContent = text.slice(0, index);
+                    if (index >= text.length) {
+                        element.classList.add("is-done");
+                        setTimeout(resolve, lineDelayMs);
+                        return;
+                    }
+                    index += 1;
+                    setTimeout(tick, speedMs);
+                };
+
+                tick();
+            });
+
+        (async () => {
+            for (const line of lines) {
+                await typeLine(line);
+            }
+        })();
+    })();
+</script>
 <script src="<?php echo ROOT_URL . '/src/js/home-articles-hover.js'; ?>"></script>
 <script src="<?php echo ROOT_URL . '/src/js/home-scroll-reveal.js'; ?>"></script>
 <?php require_once 'footer.php'; ?>
