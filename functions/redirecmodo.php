@@ -6,7 +6,7 @@ if ($ba_bec_numStat === null) {
     exit();
 }
 
-if ((int)$ba_bec_numStat !== 1 && (int)$ba_bec_numStat !== 2) {
+if ((int)$ba_bec_numStat !== 1) {
     header("Location: " . ROOT_URL . "/views/backend/security/login.php");
     exit();
 }
