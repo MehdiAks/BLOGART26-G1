@@ -84,18 +84,28 @@
     border-radius: 18px;
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
     padding: 1.5rem;
+}
+
+.team-card-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.team-card-info {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
 }
 
-.team-card-header h2 {
-    margin: 0 0 0.35rem;
-}
-
-.team-meta {
-    color: #64748b;
+.team-card-info h2 {
     margin: 0;
+}
+
+.team-card-info h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .team-link {
@@ -119,10 +129,16 @@
     color: #ffffff;
 }
 
-.team-card-body {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
+.team-card-photo {
+    border-radius: 16px;
+    min-height: 200px;
+    background-size: cover;
+    background-position: center;
+    background-color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
 }
 
 .team-list {
@@ -137,6 +153,12 @@
 .team-role {
     color: #64748b;
     font-size: 0.9rem;
+}
+
+.team-photo-placeholder {
+    color: #475569;
+    font-weight: 600;
+    text-align: center;
 }
 /* Hover card */
 .club-card {
@@ -160,5 +182,14 @@
 @media (max-width: 575px) {
     .club-card img {
         height: 180px;
+    }
+
+    .team-card-content {
+        grid-template-columns: 1fr;
+    }
+
+    .team-card-photo {
+        min-height: 180px;
+        order: -1;
     }
 }

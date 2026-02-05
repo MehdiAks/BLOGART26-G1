@@ -33,8 +33,8 @@ if ($dbAvailable) {
         sql_connect();
 
         $teamStmt = $DB->prepare(
-            'SELECT numEquipe, libEquipe, categorieEquipe, sectionEquipe, niveauEquipe,
-                    pointsMarquesDomicile, pointsEncaissesDomicile, pointsMarquesExterieur, pointsEncaissesExterieur 
+            'SELECT numEquipe, libEquipe, libEquipeComplet, categorieEquipe, sectionEquipe, niveauEquipe,
+                    descriptionEquipe, photoStaffEquipe
                     FROM EQUIPE
                     WHERE numEquipe = :teamId'
         );
@@ -48,7 +48,7 @@ if ($dbAvailable) {
         }
 
         $playersStmt = $DB->prepare(
-            'SELECT j.prenomJoueur, j.nomJoueur, j.posteJoueur
+            'SELECT j.prenomJoueur, j.nomJoueur, j.posteJoueur, j.urlPhotoJoueur
             FROM EQUIPE_JOUEUR ej
             INNER JOIN JOUEUR j ON ej.numJoueur = j.numJoueur
             WHERE ej.numEquipe = :teamId
@@ -66,6 +66,14 @@ if ($dbAvailable) {
         );
         $coachesStmt->execute(['teamId' => $teamId]);
         $coaches = $coachesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $matchesStmt = $DB->prepare(
+            'SELECT Domicile_Exterieur, Score_BEC, Score_Adversaire, Adversaire, Date
+            FROM bec_matches
+            WHERE numEquipe = :teamId'
+        );
+        $matchesStmt->execute(['teamId' => $teamId]);
+        $teamMatches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $exception) {
         render_missing_table_page($exception);
         throw $exception;
@@ -74,13 +82,12 @@ if ($dbAvailable) {
     $team = [
         'numEquipe' => $teamId,
         'libEquipe' => 'Équipe du BEC',
+        'libEquipeComplet' => 'Seniors filles - National 3',
         'categorieEquipe' => 'Seniors',
         'sectionEquipe' => 'Championnat régional',
         'niveauEquipe' => 'Niveau 1',
-        'pointsMarquesDomicile' => 320,
-        'pointsEncaissesDomicile' => 280,
-        'pointsMarquesExterieur' => 295,
-        'pointsEncaissesExterieur' => 310,
+        'descriptionEquipe' => 'Une équipe engagée et soudée qui défend fièrement les couleurs du BEC tout au long de la saison.',
+        'photoStaffEquipe' => 'photo-staff-equipe-SF1.webp',
     ];
     $players = [
         ['prenomJoueur' => 'Léo', 'nomJoueur' => 'Martin', 'posteJoueur' => 'Meneur'],
@@ -92,10 +99,70 @@ if ($dbAvailable) {
         ['prenomPersonnel' => 'Camille', 'nomPersonnel' => 'Roche', 'libRoleEquipe' => 'Coach'],
         ['prenomPersonnel' => 'Paul', 'nomPersonnel' => 'Girard', 'libRoleEquipe' => 'Assistant'],
     ];
+    $teamMatches = [
+        ['Domicile_Exterieur' => 'Domicile', 'Score_BEC' => 82, 'Score_Adversaire' => 68, 'Adversaire' => 'US Talence', 'Date' => '2024-10-05'],
+        ['Domicile_Exterieur' => 'Extérieur', 'Score_BEC' => 74, 'Score_Adversaire' => 79, 'Adversaire' => 'Union Saint-Bruno', 'Date' => '2024-10-12'],
+        ['Domicile_Exterieur' => 'Domicile', 'Score_BEC' => 91, 'Score_Adversaire' => 62, 'Adversaire' => 'JSA Bordeaux', 'Date' => '2024-10-19'],
+    ];
 }
 
 $bannerImage = ROOT_URL . '/src/images/background/background-index-4.webp';
 $becLogo = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
+
+$teamName = $team['libEquipeComplet'] ?: $team['libEquipe'];
+$staffPhoto = $team['photoStaffEquipe'] ?? '';
+$staffPhotoUrl = '';
+if (!empty($staffPhoto)) {
+    $staffPhotoUrl = preg_match('/^(https?:\\/\\/|\\/)/', $staffPhoto)
+        ? $staffPhoto
+        : ROOT_URL . '/src/images/photos-staff-equipe/' . $staffPhoto;
+}
+
+$stats = [
+    'home' => ['matches' => 0, 'pointsFor' => 0, 'pointsAgainst' => 0],
+    'away' => ['matches' => 0, 'pointsFor' => 0, 'pointsAgainst' => 0],
+    'total' => ['matches' => 0, 'pointsFor' => 0, 'pointsAgainst' => 0],
+    'wins' => 0,
+    'bestWin' => null,
+];
+
+foreach ($teamMatches as $match) {
+    $scoreFor = $match['Score_BEC'];
+    $scoreAgainst = $match['Score_Adversaire'];
+    if ($scoreFor === null || $scoreAgainst === null) {
+        continue;
+    }
+
+    $locationRaw = mb_strtolower((string) ($match['Domicile_Exterieur'] ?? ''), 'UTF-8');
+    $locationKey = null;
+    if (str_contains($locationRaw, 'domicile')) {
+        $locationKey = 'home';
+    } elseif (str_contains($locationRaw, 'extérieur') || str_contains($locationRaw, 'exterieur')) {
+        $locationKey = 'away';
+    }
+
+    if ($locationKey) {
+        $stats[$locationKey]['matches']++;
+        $stats[$locationKey]['pointsFor'] += (int) $scoreFor;
+        $stats[$locationKey]['pointsAgainst'] += (int) $scoreAgainst;
+    }
+
+    $stats['total']['matches']++;
+    $stats['total']['pointsFor'] += (int) $scoreFor;
+    $stats['total']['pointsAgainst'] += (int) $scoreAgainst;
+
+    if ($scoreFor > $scoreAgainst) {
+        $stats['wins']++;
+        $diff = (int) $scoreFor - (int) $scoreAgainst;
+        if (!$stats['bestWin'] || $diff > $stats['bestWin']['diff']) {
+            $stats['bestWin'] = [
+                'diff' => $diff,
+                'opponent' => $match['Adversaire'] ?? '',
+                'date' => $match['Date'] ?? '',
+            ];
+        }
+    }
+}
 
 $matches = [
     [
@@ -171,7 +238,7 @@ if (!$coachLead && !empty($assistantCoaches)) {
                 <p class="team-detail-category">
                     <?php echo htmlspecialchars($team['categorieEquipe'] ?: 'Catégorie non renseignée'); ?>
                 </p>
-                <h1><?php echo htmlspecialchars($team['libEquipe']); ?></h1>
+                <h1><?php echo htmlspecialchars($teamName); ?></h1>
                 <p class="team-detail-meta">
                     <?php echo htmlspecialchars($team['sectionEquipe'] ?: 'Section non renseignée'); ?> ·
                     <?php echo htmlspecialchars($team['niveauEquipe'] ?: 'Niveau non renseigné'); ?>
@@ -181,24 +248,88 @@ if (!$coachLead && !empty($assistantCoaches)) {
     </header>
 
     <section class="team-detail-section">
-        <h2>Statistiques de l'équipe</h2>
-        <div class="team-stats-grid">
-            <article class="team-stat-card">
-                <span>Points marqués à domicile</span>
-                <strong><?php echo htmlspecialchars((string) ($team['pointsMarquesDomicile'] ?? 0)); ?></strong>
-            </article>
-            <article class="team-stat-card">
-                <span>Points encaissés à domicile</span>
-                <strong><?php echo htmlspecialchars((string) ($team['pointsEncaissesDomicile'] ?? 0)); ?></strong>
-            </article>
-            <article class="team-stat-card">
-                <span>Points marqués à l'extérieur</span>
-                <strong><?php echo htmlspecialchars((string) ($team['pointsMarquesExterieur'] ?? 0)); ?></strong>
-            </article>
-            <article class="team-stat-card">
-                <span>Points encaissés à l'extérieur</span>
-                <strong><?php echo htmlspecialchars((string) ($team['pointsEncaissesExterieur'] ?? 0)); ?></strong>
-            </article>
+        <div class="team-profile card shadow-sm">
+            <div class="row g-0 align-items-center">
+                <div class="col-md-4 team-profile-media">
+                    <?php if ($staffPhotoUrl) : ?>
+                        <img src="<?php echo htmlspecialchars($staffPhotoUrl); ?>" alt="<?php echo htmlspecialchars('Staff de ' . $teamName); ?>" loading="lazy">
+                    <?php else : ?>
+                        <div class="team-profile-placeholder">Photo du staff à venir</div>
+                    <?php endif; ?>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2>Le staff en action</h2>
+                        <p class="mb-0">
+                            <?php echo htmlspecialchars($team['descriptionEquipe'] ?: 'La description de l\'équipe sera bientôt disponible.'); ?>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-detail-section">
+        <h2>Quelques statistiques</h2>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="h6 text-uppercase text-muted">Matchs joués</h3>
+                        <p class="mb-1"><strong>Domicile :</strong> <?php echo htmlspecialchars((string) $stats['home']['matches']); ?></p>
+                        <p class="mb-1"><strong>Extérieur :</strong> <?php echo htmlspecialchars((string) $stats['away']['matches']); ?></p>
+                        <p class="mb-0"><strong>Total :</strong> <?php echo htmlspecialchars((string) $stats['total']['matches']); ?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="h6 text-uppercase text-muted">Points marqués</h3>
+                        <p class="mb-1"><strong>Domicile :</strong> <?php echo htmlspecialchars((string) $stats['home']['pointsFor']); ?></p>
+                        <p class="mb-1"><strong>Extérieur :</strong> <?php echo htmlspecialchars((string) $stats['away']['pointsFor']); ?></p>
+                        <p class="mb-0"><strong>Total :</strong> <?php echo htmlspecialchars((string) $stats['total']['pointsFor']); ?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="h6 text-uppercase text-muted">Points encaissés</h3>
+                        <p class="mb-1"><strong>Domicile :</strong> <?php echo htmlspecialchars((string) $stats['home']['pointsAgainst']); ?></p>
+                        <p class="mb-1"><strong>Extérieur :</strong> <?php echo htmlspecialchars((string) $stats['away']['pointsAgainst']); ?></p>
+                        <p class="mb-0"><strong>Total :</strong> <?php echo htmlspecialchars((string) $stats['total']['pointsAgainst']); ?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="h6 text-uppercase text-muted">Matchs gagnés</h3>
+                        <p class="display-6 mb-0"><?php echo htmlspecialchars((string) $stats['wins']); ?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="h6 text-uppercase text-muted">Meilleure différence</h3>
+                        <?php if ($stats['bestWin']) : ?>
+                            <p class="mb-1"><strong>+<?php echo htmlspecialchars((string) $stats['bestWin']['diff']); ?></strong></p>
+                            <?php if (!empty($stats['bestWin']['opponent'])) : ?>
+                                <p class="mb-0 text-muted">
+                                    <?php echo htmlspecialchars($stats['bestWin']['opponent']); ?>
+                                    <?php if (!empty($stats['bestWin']['date'])) : ?>
+                                        · <?php echo htmlspecialchars($stats['bestWin']['date']); ?>
+                                    <?php endif; ?>
+                                </p>
+                            <?php endif; ?>
+                        <?php else : ?>
+                            <p class="mb-0 text-muted">Aucune victoire enregistrée.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -288,8 +419,24 @@ if (!$coachLead && !empty($assistantCoaches)) {
         <?php else : ?>
             <div class="players-grid">
                 <?php foreach ($players as $player) : ?>
+                    <?php
+                    $playerPhoto = $player['urlPhotoJoueur'] ?? '';
+                    $playerPhotoUrl = '';
+                    if (!empty($playerPhoto)) {
+                        $playerPhotoUrl = preg_match('/^(https?:\\/\\/|\\/)/', $playerPhoto)
+                            ? $playerPhoto
+                            : ROOT_URL . '/src/uploads/' . $playerPhoto;
+                    }
+                    ?>
                     <article class="player-card">
                         <h3><?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?></h3>
+                        <div class="player-photo">
+                            <?php if ($playerPhotoUrl) : ?>
+                                <img src="<?php echo htmlspecialchars($playerPhotoUrl); ?>" alt="<?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>" loading="lazy">
+                            <?php else : ?>
+                                <span class="player-photo-placeholder">Photo à venir</span>
+                            <?php endif; ?>
+                        </div>
                         <?php if (!empty($player['posteJoueur'])) : ?>
                             <p class="text-muted"><?php echo htmlspecialchars($player['posteJoueur']); ?></p>
                         <?php endif; ?>
