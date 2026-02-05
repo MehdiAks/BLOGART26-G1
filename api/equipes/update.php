@@ -105,6 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_libEquipe = ctrlSaisies($_POST['libEquipe'] ?? '');
     $ba_bec_libEquipeComplet = ctrlSaisies($_POST['libEquipeComplet'] ?? '');
     $ba_bec_descriptionEquipe = ctrlSaisies($_POST['descriptionEquipe'] ?? '');
+    $ba_bec_urlPhotoEquipe = ctrlSaisies($_POST['urlPhotoEquipe'] ?? '');
+    $ba_bec_urlPhotoStaff = ctrlSaisies($_POST['urlPhotoStaff'] ?? '');
     $ba_bec_nomClub = ctrlSaisies($_POST['nomClub'] ?? '');
     $ba_bec_categorieEquipe = ctrlSaisies($_POST['categorieEquipe'] ?? '');
     $ba_bec_sectionEquipe = ctrlSaisies($_POST['sectionEquipe'] ?? '');

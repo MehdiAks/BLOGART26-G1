@@ -31,6 +31,25 @@ if (!$ba_bec_equipe) {
     exit;
 }
 
+$ba_bec_photoEquipe = $ba_bec_equipe['urlPhotoEquipe'] ?? '';
+$ba_bec_photoStaff = $ba_bec_equipe['urlPhotoStaff'] ?? '';
+
+function ba_bec_equipe_photo_url(?string $path): string
+{
+    if (!$path) {
+        return '';
+    }
+
+    if (preg_match('/^(https?:\/\/|\/)/', $path)) {
+        return $path;
+    }
+
+    return ROOT_URL . '/src/uploads/photos-equipes/' . ltrim($path, '/');
+}
+
+$ba_bec_photoEquipeUrl = ba_bec_equipe_photo_url($ba_bec_photoEquipe);
+$ba_bec_photoStaffUrl = ba_bec_equipe_photo_url($ba_bec_photoStaff);
+
 $ba_bec_clubs = sql_select('CLUB', 'nomClub', null, null, 'nomClub ASC');
 $ba_bec_categories = sql_select('CATEGORIE_EQUIPE', 'libCategorie', null, null, 'libCategorie ASC');
 $ba_bec_sections = sql_select('SECTION_EQUIPE', 'libSection', null, null, 'libSection ASC');
