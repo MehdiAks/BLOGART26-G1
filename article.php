@@ -126,7 +126,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
             <div class="article-hero__overlay">
                 <p class="article-kicker">Actualités</p>
                 <h1 class="article-title">
-                    <?php echo ($ba_bec_article['libTitrArt']); ?>
+                    <?php echo renderBbcode($ba_bec_article['libTitrArt']); ?>
                 </h1>
                 <div class="article-meta">
                     <span><?php echo ($ba_bec_article['dtCreaArt']); ?></span>
@@ -139,17 +139,17 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
         <section class="article-body">
             <div class="container">
                 <div class="article-lead">
-                    <?php echo ($ba_bec_article['libChapoArt']); ?> 
+                    <?php echo renderBbcode($ba_bec_article['libChapoArt']); ?> 
                 </div>
 
                 <div class="row g-4">
                     <div class="col-12 col-lg-8">
                         <article class="bg-white">
                         <h2 class="phraseaccroche">
-                            <?php echo ($ba_bec_article['libAccrochArt']); ?> 
+                            <?php echo renderBbcode($ba_bec_article['libAccrochArt']); ?> 
                         </h2>
                         <p class="paragraphe">
-                            <?php echo ($ba_bec_article['parag1Art']); ?> 
+                            <?php echo renderBbcode($ba_bec_article['parag1Art']); ?> 
                         </p>
                         <figure class="article-figure">
                             <img class="image2 img-fluid w-100" src="<?php echo $ba_bec_articleImageUrl; ?>" alt="Image article">
@@ -159,23 +159,23 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                         </figure>
 
                         <div class="text-with-line">
-                            <?php echo ($ba_bec_article['libSsTitr1Art']); ?> 
+                            <?php echo renderBbcode($ba_bec_article['libSsTitr1Art']); ?> 
                         </div>
 
                         <p class="paragraphe2">
-                            <?php echo ($ba_bec_article['parag2Art']); ?>
+                            <?php echo renderBbcode($ba_bec_article['parag2Art']); ?>
                         </p>
 
                         <div class="text-with-line">
-                            <?php echo ($ba_bec_article['libSsTitr2Art']); ?>
+                            <?php echo renderBbcode($ba_bec_article['libSsTitr2Art']); ?>
                         </div>
 
                         <p class="paragraphe3">
-                            <?php echo ($ba_bec_article['parag3Art']); ?>
+                            <?php echo renderBbcode($ba_bec_article['parag3Art']); ?>
                         </p>
 
                         <p class="conclusion">
-                            <?php echo ($ba_bec_article['libConclArt']); ?>
+                            <?php echo renderBbcode($ba_bec_article['libConclArt']); ?>
                         </p>
                     </article>
 
@@ -230,10 +230,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                                 <div class="random-article">
                                     <img class="imagedroite img-fluid w-100" src="<?php echo $randomImageUrl; ?>" alt="Image article">
                                     <h3 class="titredroite">
-                                        <?php echo ($randomArticle['libTitrArt']); ?>
+                                        <?php echo renderBbcode($randomArticle['libTitrArt']); ?>
                                     </h3>
                                     <p class="txtdroite">
-                                        <?php echo ($randomArticle['libChapoArt']); ?>
+                                        <?php echo renderBbcode($randomArticle['libChapoArt']); ?>
                                     </p>
                                     <a href="article.php?numArt=<?php echo $randomArticle['numArt']; ?>" class="btn btn-outline-primary btn-sm">Lire l'article →</a>
                                 </div>
