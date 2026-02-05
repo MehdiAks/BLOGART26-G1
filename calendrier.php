@@ -70,6 +70,40 @@ $clubIdentifiers = [
     'bordeaux',
     'etudiant',
 ];
+$defaultLogoUrl = ROOT_URL . '/src/images/image-defaut.jpeg';
+$becLogoUrl = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
+$logoDirectory = ROOT . '/src/images/logo/logo-adversaire';
+$logoBaseUrl = ROOT_URL . '/src/images/logo/logo-adversaire';
+$normalizeTeamName = static function (string $name): string {
+    $normalized = trim($name);
+    if ($normalized === '') {
+        return '';
+    }
+    $transliterated = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $normalized);
+    if ($transliterated !== false) {
+        $normalized = $transliterated;
+    }
+    $normalized = preg_replace('/[^a-zA-Z0-9]+/', '_', $normalized);
+    $normalized = preg_replace('/_+/', '_', (string) $normalized);
+    return strtoupper(trim((string) $normalized, '_'));
+};
+$logoIndex = [];
+if (is_dir($logoDirectory)) {
+    foreach (scandir($logoDirectory) as $file) {
+        if ($file === '.' || $file === '..') {
+            continue;
+        }
+        $path = $logoDirectory . '/' . $file;
+        if (!is_file($path)) {
+            continue;
+        }
+        $baseName = pathinfo($file, PATHINFO_FILENAME);
+        $normalized = $normalizeTeamName($baseName);
+        if ($normalized !== '') {
+            $logoIndex[$normalized] = $logoBaseUrl . '/' . rawurlencode($file);
+        }
+    }
+}
 $isSeniorMatch = static function (array $match) use ($seniorKeywords): bool {
     $haystack = strtolower(
         ($match['competition'] ?? '') . ' ' . ($match['teamHome'] ?? '') . ' ' . ($match['teamAway'] ?? '')
@@ -126,6 +160,39 @@ $resolveClubSide = static function (array $match) use ($clubIdentifiers): string
 
     return 'unknown';
 };
+$resolveTeamLogo = static function (string $teamName) use (
+    $clubIdentifiers,
+    $normalizeTeamName,
+    $logoIndex,
+    $defaultLogoUrl,
+    $becLogoUrl
+): string {
+    $trimmed = trim($teamName);
+    if ($trimmed === '') {
+        return $defaultLogoUrl;
+    }
+
+    foreach ($clubIdentifiers as $identifier) {
+        if ($identifier !== '' && stripos($trimmed, $identifier) !== false) {
+            return $becLogoUrl;
+        }
+    }
+
+    $normalized = $normalizeTeamName($trimmed);
+    if ($normalized !== '' && array_key_exists($normalized, $logoIndex)) {
+        return $logoIndex[$normalized];
+    }
+
+    if ($normalized !== '') {
+        foreach ($logoIndex as $key => $url) {
+            if (str_contains($normalized, $key) || str_contains($key, $normalized)) {
+                return $url;
+            }
+        }
+    }
+
+    return $defaultLogoUrl;
+};
 $seniorMatches = [];
 foreach ($allMatches as $ba_bec_match) {
     if (!$isSeniorMatch($ba_bec_match)) {
@@ -158,7 +225,7 @@ $lastUpdateStmt = $DB->query($lastUpdateQuery);
 $lastUpdateRow = $lastUpdateStmt->fetch(PDO::FETCH_ASSOC);
 $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
 
-$renderMatchCard = static function (array $ba_bec_match): string {
+$renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo): string {
     $matchDate = new DateTime($ba_bec_match['matchDate']);
     $displayDate = $matchDate->format('d/m/Y');
     $displayTime = '';
@@ -170,6 +237,8 @@ $renderMatchCard = static function (array $ba_bec_match): string {
     if ($ba_bec_match['scoreHome'] !== null && $ba_bec_match['scoreAway'] !== null) {
         $score = (int) $ba_bec_match['scoreHome'] . ' - ' . (int) $ba_bec_match['scoreAway'];
     }
+    $homeLogo = $resolveTeamLogo((string) ($ba_bec_match['teamHome'] ?? ''));
+    $awayLogo = $resolveTeamLogo((string) ($ba_bec_match['teamAway'] ?? ''));
 
     ob_start();
     ?>
@@ -189,6 +258,7 @@ $renderMatchCard = static function (array $ba_bec_match): string {
                     <div class="wrapper">
                         <div class="match-card__team">
                             <span>Domicile</span>
+                            <img class="match-card__logo" src="<?php echo htmlspecialchars($homeLogo); ?>" alt="<?php echo htmlspecialchars($ba_bec_match['teamHome']); ?>" loading="lazy">
                             <strong><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></strong>
                         </div>
                         <div class="match-card__score">
@@ -196,6 +266,7 @@ $renderMatchCard = static function (array $ba_bec_match): string {
                         </div>
                         <div class="match-card__team">
                             <span>Extérieur</span>
+                            <img class="match-card__logo" src="<?php echo htmlspecialchars($awayLogo); ?>" alt="<?php echo htmlspecialchars($ba_bec_match['teamAway']); ?>" loading="lazy">
                             <strong><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></strong>
                         </div>
                     </div>
