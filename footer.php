@@ -9,7 +9,9 @@
                             secretariat@bec-bordeaux
                         </a>
                     </p>
-                    <p class="mb-3">06 71 94 23 80 - 05 56 91 83 50</p>
+                    
+                    <p class="mb-3"><a href="tel:+33671942380">Tel : 06 71 94 23 80</a><br>
+                    <a href="tel:+33556918350">Tel : 05 56 91 83 50</a> </p>
                     <div class="d-flex align-items-center gap-3 mb-4">
                         <a href="https://www.instagram.com/becfootballclub/?hl=fr" class="social-icon">
                             <img src="<?php echo ROOT_URL . '/src/images/logo/logo-reseaux-sociaux/instagram.png'; ?>" alt="Instagram">
