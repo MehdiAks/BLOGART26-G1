@@ -2,40 +2,26 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 $pageStyles = [ROOT_URL . '/src/css/dashboard.css'];
+$adminReferrer = $_SERVER['HTTP_REFERER'] ?? '';
+$isBackendReferrer = str_contains($adminReferrer, '/views/backend/');
+$showAdminLoading = $adminReferrer !== '' && !$isBackendReferrer;
 include '../../header.php';
 
 
 ?>
 
-<div class="admin-loading" id="admin-loading" aria-hidden="true">
-    <div class="admin-loading__store" role="presentation">
-        <div class="admin-loading__floor" style="--floor-delay: 0ms;">
-            <span class="admin-loading__shutter"></span>
-            <span class="admin-loading__windows"></span>
+<?php if ($showAdminLoading) : ?>
+    <div class="admin-loading" id="admin-loading" aria-hidden="true">
+        <div class="admin-loading__content">
+            <img
+                class="admin-loading__logo"
+                src="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo.png'; ?>"
+                alt="Logo BEC"
+            >
         </div>
-        <div class="admin-loading__floor" style="--floor-delay: 180ms;">
-            <span class="admin-loading__shutter"></span>
-            <span class="admin-loading__windows"></span>
-        </div>
-        <div class="admin-loading__floor" style="--floor-delay: 360ms;">
-            <span class="admin-loading__shutter"></span>
-            <span class="admin-loading__windows"></span>
-        </div>
-        <div class="admin-loading__floor" style="--floor-delay: 540ms;">
-            <span class="admin-loading__shutter"></span>
-            <span class="admin-loading__windows"></span>
-        </div>
-        <div class="admin-loading__floor" style="--floor-delay: 720ms;">
-            <span class="admin-loading__shutter"></span>
-            <span class="admin-loading__windows"></span>
-        </div>
-        <div class="admin-loading__floor" style="--floor-delay: 900ms;">
-            <span class="admin-loading__shutter"></span>
-            <span class="admin-loading__windows"></span>
-        </div>
+        <p class="admin-loading__title">Acces au pannel admin..</p>
     </div>
-    <p class="admin-loading__title">Ouverture du store…</p>
-</div>
+<?php endif; ?>
 
 <!-- Bootstrap admin dashboard template -->
 <div class="admin-dashboard"> 
@@ -219,11 +205,10 @@ include '../../header.php';
             return;
         }
 
-        const floorCount = 6;
-        const floorDelay = 180;
-        const shutterDuration = 1400;
-        const buffer = 400;
-        const totalDuration = (floorCount - 1) * floorDelay + shutterDuration + buffer;
+        const logoDelay = 300;
+        const logoDuration = 1200;
+        const buffer = 500;
+        const totalDuration = logoDelay + logoDuration + buffer;
 
         window.setTimeout(function () {
             loading.classList.add('admin-loading--done');
