@@ -28,7 +28,7 @@ include '../../../header.php';
                 </div>
                 <br />
                 <div class="form-group mt-2">
-                    <a href="list.php" class="btn btn-primary">List</a>
+                    <a href="list.php" class="btn btn-primary">Annuler</a>
                     <button type="submit" class="btn btn-success">Confirmer create ?</button>
                 </div>
             </form>
