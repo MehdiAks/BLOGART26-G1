@@ -7,6 +7,23 @@ include '../../header.php';
 
 ?>
 
+<div class="admin-loading" id="admin-loading" aria-hidden="true">
+    <div class="admin-loading__fill"></div>
+    <div class="admin-loading__logo">
+        <video
+            class="admin-loading__video"
+            id="admin-loading-video"
+            muted
+            playsinline
+            preload="auto"
+            poster="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo.png'; ?>"
+        >
+            <source src="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo-anime-transparent.mov'; ?>" type="video/quicktime">
+            <img src="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo.png'; ?>" alt="Logo BEC">
+        </video>
+    </div>
+</div>
+
 <!-- Bootstrap admin dashboard template -->
 <div class="admin-dashboard"> 
     <hr class="my-3">
@@ -180,3 +197,45 @@ include '../../header.php';
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const loading = document.getElementById('admin-loading');
+        const video = document.getElementById('admin-loading-video');
+
+        if (!loading) {
+            return;
+        }
+
+        const fillDuration = 1600;
+        const drainDuration = 900;
+
+        const startDrain = function () {
+            loading.classList.add('admin-loading--drain');
+            window.setTimeout(function () {
+                loading.remove();
+            }, drainDuration + 200);
+        };
+
+        const startLogo = function () {
+            loading.classList.add('admin-loading--logo');
+            if (video) {
+                video.currentTime = 0;
+                const playPromise = video.play();
+                if (playPromise && typeof playPromise.catch === 'function') {
+                    playPromise.catch(function () {
+                        window.setTimeout(startDrain, 1200);
+                    });
+                }
+            } else {
+                window.setTimeout(startDrain, 1200);
+            }
+        };
+
+        if (video) {
+            video.addEventListener('ended', startDrain, { once: true });
+        }
+
+        window.setTimeout(startLogo, fillDuration + 200);
+    });
+</script>
