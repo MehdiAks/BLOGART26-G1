@@ -7,20 +7,20 @@
 }
 
 @font-face {
-    font-family: "chetta_vissto";
+    font-family: "Gotham";
     src:
-    local("chetta_vissto"),
-    url("/src/fonts/chetta_vissto/chetta_vissto.woff2") format("woff2"),
-    url("/src/fonts/chetta_vissto/chetta_vissto.woff") format("woff"),
-    url("/src/fonts/chetta_vissto/chetta_vissto.ttf") format("truetype");
+        local("Gotham"),
+        url("/src/fonts/Gotham-font-family/Gotham/Gotham-Black.otf") format("opentype");
 }
 
+body {
+    color: var(--primary-color);
+    font-size: 18px;
+    font-family: "Epilogue", sans-serif;
+}
+
+
 h1,
-h2,
-h3,
-h4,
-h5,
-h6,
 .home-carousel-title,
 .news-summary__title,
 .news-card__title,
@@ -33,56 +33,52 @@ h6,
 .club-card-title,
 .header-burger-title,
 .header-burger-group-title {
-    font-family: "chetta_vissto", "Epilogue", sans-serif;
+    font-family: "Gotham", sans-serif;
+    font-weight: 700;
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+    text-transform: lowercase;
+    color: var(--primary-color);
 }
 
 
-h1{
-    color: var(--primary-color);
+h1 {
     font-size: 60px;
     margin-top: 20px;
-    font-family:"chetta_vissto", "Epilogue", sans-serif  ;
 }
 
-h2{
-    color: var(--primary-color);
+
+h2 {
+    font-family: "Gotham", sans-serif;
     font-size: 45px;
     margin-top: 20px;
     margin-bottom: 20px;
-    font-family:"chetta_vissto", "Epilogue", sans-serif  ;
+    color: var(--primary-color);
 }
 
-h3{
-    color: var(--primary-color);
+h3 {
+    font-family: "Gotham", sans-serif;
     font-size: 30px;
     margin-top: 20px;
     margin-bottom: 10px;
-    font-family:"chetta_vissto", "Epilogue", sans-serif  ;
-    font-weight: bold;
+    font-weight: 700;
+    color: var(--primary-color);
 }
 
-h4{
-    color: var(--primary-color);
+h4 {
+    font-family: "Epilogue", sans-serif;
+    font-size: 22px;
     margin-top: 20px;
     margin-bottom: 20px;
-    font-size: 22px;
-    font-family:"chetta_vissto", "Epilogue", sans-serif  ;
+    color: var(--primary-color);
 }
 
-body{
-    color: var(--primary-color);
-    font-size: 18px;
-    font-family:"Epilogue", sans-serif  ;
-}
-
-small{
-    color: var(--primary-color);
+small {
     font-size: 16px;
-    font-family:"Epilogue", sans-serif  ;
+    font-family: "Epilogue", sans-serif;
 }
 
-.mini{
-    color: var(--primary-color);
+.mini {
     font-size: 14px;
-    font-family:"Epilogue", sans-serif  ;  
+    font-family: "Epilogue", sans-serif;
 }
