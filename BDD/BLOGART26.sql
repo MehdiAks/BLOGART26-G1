@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : mer. 04 fév. 2026 à 15:28
+-- Généré le : jeu. 05 fév. 2026 à 08:58
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.28
 
@@ -487,6 +487,24 @@ INSERT INTO `COMMENT` (`numCom`, `dtCreaCom`, `libCom`, `dtModCom`, `attModOK`, 
 
 -- --------------------------------------------------------
 
+--
+-- Structure de la table `COOKIE_CONSENT`
+--
+
+CREATE TABLE `COOKIE_CONSENT` (
+  `numCon` int NOT NULL,
+  `ipAdresse` varchar(45) NOT NULL,
+  `choixConsent` enum('accepted','rejected') NOT NULL,
+  `dateCon` datetime DEFAULT CURRENT_TIMESTAMP,
+  `dateExpiration` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `COOKIE_CONSENT`
+--
+
+INSERT INTO `COOKIE_CONSENT` (`numCon`, `ipAdresse`, `choixConsent`, `dateCon`, `dateExpiration`) VALUES
+(1, '::1', 'accepted', '2026-02-04 15:07:16', '2026-02-05 14:07:16');
 
 -- --------------------------------------------------------
 
@@ -911,6 +929,13 @@ ALTER TABLE `COMMENT`
   ADD KEY `FK_ASSOCIATION_2` (`numArt`),
   ADD KEY `FK_ASSOCIATION_3` (`numMemb`);
 
+--
+-- Index pour la table `COOKIE_CONSENT`
+--
+ALTER TABLE `COOKIE_CONSENT`
+  ADD PRIMARY KEY (`numCon`),
+  ADD KEY `idx_ip` (`ipAdresse`),
+  ADD KEY `idx_expiration` (`dateExpiration`);
 
 --
 -- Index pour la table `EQUIPE`
