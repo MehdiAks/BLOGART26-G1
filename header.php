@@ -154,10 +154,8 @@ if (function_exists('sql_connect')) {
 
                 <div class="header-compte-wrapper">
                     <details class="header-compte-menu">
-                        <summary class="header-compte-toggle" aria-label="Ouvrir le menu">
-                            <span class="header-compte-icon" aria-hidden="true">
-                                <b>Compte</b>
-                            </span>
+                        <summary class="btn-compte" aria-label="Ouvrir le menu">
+                                Compte
                         </summary>
                         
                         <div class="header-compte-panel">

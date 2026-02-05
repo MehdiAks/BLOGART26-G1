@@ -215,6 +215,7 @@
             background-color: var(--bec-accent);
             border-color: var(--bec-accent);
             color: #fff;
+
         }
 
         .btn-bec-primary:hover {
@@ -573,7 +574,7 @@
         .header-compte-toggle {
             border: none;
             background: transparent;
-            padding: 8px;
+            padding: 30px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -748,6 +749,15 @@
             font-weight: 700;
         }
 
+        .home-page .header-compte-icon,{
+            color: #fff;
+        }
+
+
+        .home-page .site-header .header-nav .submenu-list a {
+            color: var(--bec-dark);
+        }
+
         @media (max-width: 991.98px) {
             .header-compte-toggle {
                 display: none;
@@ -758,3 +768,14 @@
                 margin-left: auto;
             }
         }
+
+        .btn-compte {
+            background-color:#ddd;
+            font-size: 18px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+        }
+
