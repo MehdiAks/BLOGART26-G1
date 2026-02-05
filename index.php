@@ -36,6 +36,7 @@ $nextMatches = [
     'SG1' => null,
     'SF1' => null,
 ];
+$becMatchesAvailable = true;
 
 $formatMatchDate = static function (string $matchDate): string {
     $date = DateTime::createFromFormat('Y-m-d', $matchDate);
@@ -138,19 +139,24 @@ $resolveTeamLogo = static function (?string $teamName) use (
     return $defaultTeamLogo;
 };
 
-$matchesStmt = $DB->prepare(
-    "SELECT Section AS section,
-        Equipe AS teamName,
-        Date AS matchDate,
-        Heure AS matchTime,
-        Domicile_Exterieur AS location,
-        Adversaire AS opponent
-    FROM bec_matches
-    WHERE Date >= CURDATE()
-    ORDER BY Date ASC, Heure ASC"
-);
-$matchesStmt->execute();
-$matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
+$matches = [];
+try {
+    $matchesStmt = $DB->prepare(
+        "SELECT Section AS section,
+            Equipe AS teamName,
+            Date AS matchDate,
+            Heure AS matchTime,
+            Domicile_Exterieur AS location,
+            Adversaire AS opponent
+        FROM bec_matches
+        WHERE Date >= CURDATE()
+        ORDER BY Date ASC, Heure ASC"
+    );
+    $matchesStmt->execute();
+    $matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $exception) {
+    $becMatchesAvailable = false;
+}
 
 foreach ($matches as $match) {
     $section = strtolower((string) ($match['section'] ?? ''));
@@ -186,32 +192,47 @@ foreach ($matches as $match) {
     ];
 }
 
-$homeStatsStmt = $DB->prepare(
-    "SELECT
-        SUM(CASE
-            WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%' THEN COALESCE(Score_Bec, 0)
-            ELSE 0
-        END) AS pointsFor,
-        SUM(CASE
-            WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%' THEN COALESCE(Score_Adversaire, 0)
-            ELSE 0
-        END) AS pointsAgainst,
-        SUM(CASE
-            WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%'
-                AND Score_Bec IS NOT NULL AND Score_Bec <> ''
-                AND Score_Adversaire IS NOT NULL AND Score_Adversaire <> ''
-                THEN 1
-            ELSE 0
-        END) AS homeMatchCount
-    FROM bec_matches"
-);
-$homeStatsStmt->execute();
-$homeStats = $homeStatsStmt->fetch(PDO::FETCH_ASSOC) ?: [];
-$homeStats = [
-    'matches' => (int) ($homeStats['homeMatchCount'] ?? 0),
-    'pointsFor' => (int) ($homeStats['pointsFor'] ?? 0),
-    'pointsAgainst' => (int) ($homeStats['pointsAgainst'] ?? 0),
-];
+$homeStats = [];
+if ($becMatchesAvailable) {
+    try {
+        $homeStatsStmt = $DB->prepare(
+            "SELECT
+                SUM(CASE
+                    WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%' THEN COALESCE(Score_Bec, 0)
+                    ELSE 0
+                END) AS pointsFor,
+                SUM(CASE
+                    WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%' THEN COALESCE(Score_Adversaire, 0)
+                    ELSE 0
+                END) AS pointsAgainst,
+                SUM(CASE
+                    WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%'
+                        AND Score_Bec IS NOT NULL AND Score_Bec <> ''
+                        AND Score_Adversaire IS NOT NULL AND Score_Adversaire <> ''
+                        THEN 1
+                    ELSE 0
+                END) AS homeMatchCount
+            FROM bec_matches"
+        );
+        $homeStatsStmt->execute();
+        $homeStats = $homeStatsStmt->fetch(PDO::FETCH_ASSOC) ?: [];
+        $homeStats = [
+            'matches' => (int) ($homeStats['homeMatchCount'] ?? 0),
+            'pointsFor' => (int) ($homeStats['pointsFor'] ?? 0),
+            'pointsAgainst' => (int) ($homeStats['pointsAgainst'] ?? 0),
+        ];
+    } catch (PDOException $exception) {
+        $becMatchesAvailable = false;
+    }
+}
+
+if (!$becMatchesAvailable) {
+    $homeStats = [
+        'matches' => 'À déterminer',
+        'pointsFor' => 'beaucoup',
+        'pointsAgainst' => '0',
+    ];
+}
 ?>
 
 <section class="home-hero full-bleed">
@@ -238,48 +259,65 @@ $homeStats = [
         <h2 class="fw-bold mb-4">Nos prochains matchs à Barbey !</h2>
         <p class="text-body-secondary mb-4">Retrouvez nos équipes à domicile, à Barbey.</p>
         <div class="row g-4">
-            <?php
-            $matchCards = [
-                $nextMatches['SG1'] ? array_merge($nextMatches['SG1'], ['badge' => 'text-bg-primary']) : null,
-                $nextMatches['SF1'] ? array_merge($nextMatches['SF1'], ['badge' => 'text-bg-danger']) : null,
-            ];
-            ?>
-            <?php foreach ($matchCards as $match): ?>
-                <div class="col-12 col-lg-6">
+            <?php if (!$becMatchesAvailable): ?>
+                <div class="col-12">
                     <article class="card h-100 border-0 shadow-sm">
                         <div class="card-body">
-                            <?php if ($match): ?>
-                                <span class="badge <?php echo $match['badge']; ?> mb-2">
-                                    <?php echo htmlspecialchars($match['label']); ?>
-                                </span>
-                                <div class="home-match-logos mb-3">
-                                    <div class="home-match-logo">
-                                        <img src="<?php echo htmlspecialchars($match['logoHome']); ?>" alt="<?php echo htmlspecialchars($match['teamHome']); ?>">
-                                    </div>
-                                    <span class="home-match-vs">VS</span>
-                                    <div class="home-match-logo">
-                                        <img src="<?php echo htmlspecialchars($match['logoAway']); ?>" alt="<?php echo htmlspecialchars($match['teamAway']); ?>">
-                                    </div>
-                                </div>
-                                <h3 class="h5 mb-2">
-                                    <?php echo htmlspecialchars($match['teamHome']); ?> vs. <?php echo htmlspecialchars($match['teamAway']); ?>
-                                </h3>
-                                <p class="mb-1">
-                                    <strong><?php echo htmlspecialchars($formatMatchDate($match['matchDate'])); ?></strong>
-                                    <?php if ($formatMatchTime($match['matchTime']) !== ''): ?>
-                                        • <?php echo htmlspecialchars($formatMatchTime($match['matchTime'])); ?>
-                                    <?php endif; ?>
-                                </p>
-                                <p class="mb-0 text-body-secondary"><?php echo htmlspecialchars($match['location']); ?></p>
-                            <?php else: ?>
-                                <span class="badge text-bg-secondary mb-2">Match à venir</span>
-                                <h3 class="h5 mb-2">Planning en cours</h3>
-                                <p class="mb-1 text-body-secondary">Nous publierons bientôt les prochains matchs à Barbey.</p>
-                            <?php endif; ?>
+                            <span class="badge text-bg-secondary mb-2">Matchs à venir</span>
+                            <h3 class="h5 mb-2">Consultez le calendrier officiel</h3>
+                            <p class="mb-3 text-body-secondary">
+                                Les prochains matchs sont disponibles sur le site de la FFBB.
+                            </p>
+                            <a class="btn btn-primary" href="https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024" target="_blank" rel="noopener noreferrer">
+                                Voir le calendrier FFBB
+                            </a>
                         </div>
                     </article>
                 </div>
-            <?php endforeach; ?>
+            <?php else: ?>
+                <?php
+                $matchCards = [
+                    $nextMatches['SG1'] ? array_merge($nextMatches['SG1'], ['badge' => 'text-bg-primary']) : null,
+                    $nextMatches['SF1'] ? array_merge($nextMatches['SF1'], ['badge' => 'text-bg-danger']) : null,
+                ];
+                ?>
+                <?php foreach ($matchCards as $match): ?>
+                    <div class="col-12 col-lg-6">
+                        <article class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <?php if ($match): ?>
+                                    <span class="badge <?php echo $match['badge']; ?> mb-2">
+                                        <?php echo htmlspecialchars($match['label']); ?>
+                                    </span>
+                                    <div class="home-match-logos mb-3">
+                                        <div class="home-match-logo">
+                                            <img src="<?php echo htmlspecialchars($match['logoHome']); ?>" alt="<?php echo htmlspecialchars($match['teamHome']); ?>">
+                                        </div>
+                                        <span class="home-match-vs">VS</span>
+                                        <div class="home-match-logo">
+                                            <img src="<?php echo htmlspecialchars($match['logoAway']); ?>" alt="<?php echo htmlspecialchars($match['teamAway']); ?>">
+                                        </div>
+                                    </div>
+                                    <h3 class="h5 mb-2">
+                                        <?php echo htmlspecialchars($match['teamHome']); ?> vs. <?php echo htmlspecialchars($match['teamAway']); ?>
+                                    </h3>
+                                    <p class="mb-1">
+                                        <strong><?php echo htmlspecialchars($formatMatchDate($match['matchDate'])); ?></strong>
+                                        <?php if ($formatMatchTime($match['matchTime']) !== ''): ?>
+                                            • <?php echo htmlspecialchars($formatMatchTime($match['matchTime'])); ?>
+                                        <?php endif; ?>
+                                    </p>
+                                    <p class="mb-0 text-body-secondary"><?php echo htmlspecialchars($match['location']); ?></p>
+                                <?php else: ?>
+                                    <span class="badge text-bg-secondary mb-2">Match à venir</span>
+                                    <h3 class="h5 mb-2">Planning en cours</h3>
+                                    <p class="mb-1 text-body-secondary">Nous publierons bientôt les prochains matchs à Barbey.</p>
+                                <?php endif; ?>
+                            </div>
+                        </article>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </section>
 
@@ -295,10 +333,12 @@ $homeStats = [
                 <p class="text-uppercase text-body-secondary mb-2">Matchs joués</p>
                 <p
                 class="display-6 fw-bold mb-0"
-                data-counter
-                data-target="<?php echo number_format($homeStats['matches'], 0, ',', ' '); ?>"
+                <?php if ($becMatchesAvailable): ?>
+                    data-counter
+                    data-target="<?php echo number_format((int) $homeStats['matches'], 0, ',', ' '); ?>"
+                <?php endif; ?>
                 >
-                0
+                <?php echo $becMatchesAvailable ? '0' : htmlspecialchars((string) $homeStats['matches']); ?>
                 </p>
             </div>
             </article>
@@ -309,10 +349,12 @@ $homeStats = [
                 <p class="text-uppercase text-body-secondary mb-2">Points marqués</p>
                 <p
                 class="display-6 fw-bold mb-0"
-                data-counter
-                data-target="<?php echo number_format($homeStats['pointsFor'], 0, ',', ' '); ?>"
+                <?php if ($becMatchesAvailable): ?>
+                    data-counter
+                    data-target="<?php echo number_format((int) $homeStats['pointsFor'], 0, ',', ' '); ?>"
+                <?php endif; ?>
                 >
-                0
+                <?php echo $becMatchesAvailable ? '0' : htmlspecialchars((string) $homeStats['pointsFor']); ?>
                 </p>
             </div>
             </article>
@@ -323,10 +365,12 @@ $homeStats = [
                 <p class="text-uppercase text-body-secondary mb-2">Points encaissés</p>
                 <p
                 class="display-6 fw-bold mb-0"
-                data-counter
-                data-target="<?php echo number_format($homeStats['pointsAgainst'], 0, ',', ' '); ?>"
+                <?php if ($becMatchesAvailable): ?>
+                    data-counter
+                    data-target="<?php echo number_format((int) $homeStats['pointsAgainst'], 0, ',', ' '); ?>"
+                <?php endif; ?>
                 >
-                0
+                <?php echo $becMatchesAvailable ? '0' : htmlspecialchars((string) $homeStats['pointsAgainst']); ?>
                 </p>
             </div>
             </article>
