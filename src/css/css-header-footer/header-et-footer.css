@@ -749,11 +749,11 @@
         }
 
         @media (max-width: 991.98px) {
-            .compte .header-nav {
+            .header-compte-toggle {
                 display: none;
             }
 
-            .header-burger-wrapper {
+            .header-compte-wrapper {
                 display: block;
                 margin-left: auto;
             }
