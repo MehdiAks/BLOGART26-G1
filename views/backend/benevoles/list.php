@@ -13,6 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_table'])) {
 }
 
 $ba_bec_benevoles = sql_select('PERSONNEL', '*', null, null, 'nomPersonnel ASC, prenomPersonnel ASC');
+$ba_bec_teams = sql_select('EQUIPE', 'numEquipe, libEquipe', null, null, 'libEquipe ASC');
+$ba_bec_team_map = [];
+foreach ($ba_bec_teams as $ba_bec_team) {
+    $ba_bec_team_map[$ba_bec_team['numEquipe']] = $ba_bec_team['libEquipe'];
+}
 $ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
 ?>
 
@@ -46,6 +51,11 @@ $ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
                         <th>Prénom</th>
                         <th>Nom</th>
                         <th>Photo</th>
+                        <th>Coach</th>
+                        <th>Direction</th>
+                        <th>Commission technique</th>
+                        <th>Commission animation</th>
+                        <th>Commission communication</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -64,6 +74,19 @@ $ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
                                     <?php endif; ?>
                                 </td>
                                 <td>
+                                    <?php if (!empty($ba_bec_benevole['estCoach'])): ?>
+                                        Oui<?php if (!empty($ba_bec_benevole['numEquipeCoachee']) && !empty($ba_bec_team_map[$ba_bec_benevole['numEquipeCoachee']])): ?>
+                                            (<?php echo htmlspecialchars($ba_bec_team_map[$ba_bec_benevole['numEquipeCoachee']]); ?>)
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        Non
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo !empty($ba_bec_benevole['estDirection']) ? 'Oui' : 'Non'; ?></td>
+                                <td><?php echo !empty($ba_bec_benevole['estCommissionTechnique']) ? 'Oui' : 'Non'; ?></td>
+                                <td><?php echo !empty($ba_bec_benevole['estCommissionAnimation']) ? 'Oui' : 'Non'; ?></td>
+                                <td><?php echo !empty($ba_bec_benevole['estCommissionCommunication']) ? 'Oui' : 'Non'; ?></td>
+                                <td>
                                     <a href="edit.php?numPersonnel=<?= htmlspecialchars($ba_bec_benevole['numPersonnel']); ?>" class="btn btn-primary">Edit</a>
                                     <a href="delete.php?numPersonnel=<?= htmlspecialchars($ba_bec_benevole['numPersonnel']); ?>" class="btn btn-danger">Delete</a>
                                 </td>
@@ -71,7 +94,7 @@ $ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5">Aucun bénévole trouvé</td>
+                            <td colspan="10">Aucun bénévole trouvé</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

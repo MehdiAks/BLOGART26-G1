@@ -387,7 +387,13 @@ CREATE TABLE `PERSONNEL` (
   `nomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `urlPhotoPersonnel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailPersonnel` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telephonePersonnel` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `telephonePersonnel` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `estCoach` tinyint(1) NOT NULL DEFAULT '0',
+  `numEquipeCoachee` int DEFAULT NULL,
+  `estDirection` tinyint(1) NOT NULL DEFAULT '0',
+  `estCommissionTechnique` tinyint(1) NOT NULL DEFAULT '0',
+  `estCommissionAnimation` tinyint(1) NOT NULL DEFAULT '0',
+  `estCommissionCommunication` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
