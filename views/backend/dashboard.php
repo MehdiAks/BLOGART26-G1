@@ -53,8 +53,8 @@ include '../../header.php';
                         <h5 class="card-title">Articles</h5>
                         <p class="card-text">Créez des articles avec images et mots-clés associés.</p>
                         <div class="admin-actions d-flex flex-wrap gap-2">
-                            <a href="/views/backend/articles/list.php" class="btn btn-primary">Liste</a>
-                            <a href="/views/backend/articles/create.php" class="btn btn-success">Créer</a>
+                            <a href="/public/index.php?controller=article&action=list" class="btn btn-primary">Liste</a>
+                            <a href="/public/index.php?controller=article&action=create" class="btn btn-success">Créer</a>
                             <a href="/views/backend/articles/edit.php" class="btn btn-warning disabled">Modifier</a>
                             <a href="/views/backend/articles/delete.php" class="btn btn-danger disabled">Supprimer</a>
                         </div>
@@ -127,8 +127,8 @@ include '../../header.php';
                         <h5 class="card-title">Statuts</h5>
                         <p class="card-text">Gérez les rôles et permissions.</p>
                         <div class="admin-actions d-flex flex-wrap gap-2">
-                            <a href="/views/backend/statuts/list.php" class="btn btn-primary">Liste</a>
-                            <a href="/views/backend/statuts/create.php" class="btn btn-success">Créer</a>
+                            <a href="/public/index.php?controller=statut&action=list" class="btn btn-primary">Liste</a>
+                            <a href="/public/index.php?controller=statut&action=create" class="btn btn-success">Créer</a>
                             <a href="/views/backend/statuts/edit.php" class="btn btn-warning disabled">Modifier</a>
                             <a href="/views/backend/statuts/delete.php" class="btn btn-danger disabled">Supprimer</a>
                         </div>
