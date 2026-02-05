@@ -9,6 +9,8 @@ require_once 'header.php';
 
 sql_connect();
 
+$becMatchesAvailable = true;
+
 $matchesQuery = "SELECT MatchNo AS numMatch,
         Competition AS competition,
         Date AS matchDate,
@@ -25,9 +27,14 @@ $matchesQuery = "SELECT MatchNo AS numMatch,
     ORDER BY Date ASC, Heure ASC";
 $lastUpdateQuery = "SELECT MAX(Date) AS lastUpdate FROM bec_matches";
 
-$matchesStmt = $DB->prepare($matchesQuery);
-$matchesStmt->execute();
-$allMatches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
+$allMatches = [];
+try {
+    $matchesStmt = $DB->prepare($matchesQuery);
+    $matchesStmt->execute();
+    $allMatches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $exception) {
+    $becMatchesAvailable = false;
+}
 $allMatches = array_map(
     static function (array $match): array {
         $location = strtolower(trim((string) ($match['location'] ?? '')));
@@ -228,9 +235,16 @@ foreach ($ba_bec_matches as $ba_bec_match) {
     }
 }
 
-$lastUpdateStmt = $DB->query($lastUpdateQuery);
-$lastUpdateRow = $lastUpdateStmt->fetch(PDO::FETCH_ASSOC);
-$lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
+$lastUpdate = null;
+if ($becMatchesAvailable) {
+    try {
+        $lastUpdateStmt = $DB->query($lastUpdateQuery);
+        $lastUpdateRow = $lastUpdateStmt->fetch(PDO::FETCH_ASSOC);
+        $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
+    } catch (PDOException $exception) {
+        $becMatchesAvailable = false;
+    }
+}
 
 $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo): string {
     $matchDate = new DateTime($ba_bec_match['matchDate']);
@@ -308,14 +322,23 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
                     FFBB Nouvelle-Aquitaine
                 </a>
             </span>
-            <?php if (!empty($lastUpdate)): ?>
+            <?php if ($becMatchesAvailable && !empty($lastUpdate)): ?>
                 <span class="matches-hero__update">Dernière mise à jour : <?php echo htmlspecialchars($lastUpdate); ?></span>
             <?php endif; ?>
         </div>
     </section>
 
     <section class="matches-list" aria-live="polite">
-        <?php if (!empty($homeMatches) || !empty($awayMatches)): ?>
+        <?php if (!$becMatchesAvailable): ?>
+            <div class="alert alert-light border matches-empty" role="status">
+                Le calendrier n'est pas disponible pour le moment.
+            </div>
+            <div class="mt-3">
+                <a class="btn btn-primary" href="https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024" target="_blank" rel="noopener noreferrer">
+                    Voir le calendrier FFBB
+                </a>
+            </div>
+        <?php elseif (!empty($homeMatches) || !empty($awayMatches)): ?>
             <?php if (!empty($homeMatches)): ?>
                 <div class="mb-5">
                     <h2 class="matches-list__title">Matchs à domicile</h2>

@@ -6,91 +6,196 @@ $pageStyles = [
 ];
 
 require_once 'header.php';
+?> 
 
-$partners = [
-    [
-        'name' => 'Ville de Bordeaux',
-        'type' => 'Institutionnel',
-        'description' => 'Un soutien de proximité pour accompagner nos projets sportifs et citoyens.',
-        'website' => 'https://www.bordeaux.fr',
-    ],
-    [
-        'name' => 'Région Nouvelle-Aquitaine',
-        'type' => 'Institutionnel',
-        'description' => 'Un partenaire engagé pour le développement du sport étudiant.',
-        'website' => 'https://www.nouvelle-aquitaine.fr',
-    ],
-    [
-        'name' => 'Maison des Sports de Bordeaux',
-        'type' => 'Infrastructure',
-        'description' => 'Des infrastructures adaptées pour accueillir nos entraînements et événements.',
-        'website' => 'https://www.bordeaux.fr/o7635/maison-des-sports',
-    ],
-    [
-        'name' => 'Société Générale',
-        'type' => 'Partenaire financier',
-        'description' => 'Un accompagnement financier pour soutenir nos équipes et nos déplacements.',
-        'website' => 'https://www.societegenerale.fr',
-    ],
-    [
-        'name' => 'Intersport Campus',
-        'type' => 'Équipementier',
-        'description' => 'Des équipements performants pour nos joueurs et joueuses.',
-        'website' => 'https://www.intersport.fr',
-    ],
-    [
-        'name' => 'Groupe Ferré',
-        'type' => 'Partenaire premium',
-        'description' => 'Un soutien durable pour les actions locales et la formation.',
-        'website' => 'https://www.groupeferre.com',
-    ],
-    [
-        'name' => 'Le Bar des Étudiants',
-        'type' => 'Partenaire événementiel',
-        'description' => 'Un lieu convivial pour nos rencontres et nos soirées partenaires.',
-        'website' => 'https://www.bordeaux.fr',
-    ],
-    [
-        'name' => 'Imprimeur Aquitaine',
-        'type' => 'Communication',
-        'description' => 'La création de nos supports visuels et de nos affiches de match.',
-        'website' => 'https://www.imprimeur-aquitaine.fr',
-    ],
-];
-?>
-
-<main class="container py-5 partners-page">
-    <section class="partners-hero">
-        <p class="partners-hero__eyebrow">Nos partenaires</p>
-        <h1 class="partners-hero__title">Ils rendent possible l'aventure BEC</h1>
-        <p class="partners-hero__text">
-            Chaque saison, nous avançons aux côtés d'acteurs locaux, régionaux et nationaux qui partagent nos valeurs.
-            Retrouvez ici la liste de celles et ceux qui soutiennent nos équipes, nos événements et nos projets.
+<main class="container py-5" id="Nospartenaires">
+    <div class="mb-5">
+        <h1 class="mb-3">Nos partenaires</h1>
+        <p>
+            Nous remercions nos partenaires de nous accompagner chaque jour afin de réaliser nos projets ! Sans eux nous n'en serons pas là. 
         </p>
-    </section>
+    </div>
 
-    <section class="partners-list" aria-label="Liste des partenaires">
-        <div class="row g-4">
-            <?php foreach ($partners as $partner): ?>
-                <div class="col-12 col-md-6 col-lg-4">
-                    <article class="card partner-card h-100">
-                        <div class="card-body d-flex flex-column gap-3">
-                            <div>
-                                <span class="badge partner-card__badge"><?php echo htmlspecialchars($partner['type']); ?></span>
-                                <h2 class="partner-card__title"><?php echo htmlspecialchars($partner['name']); ?></h2>
-                                <p class="partner-card__text"><?php echo htmlspecialchars($partner['description']); ?></p>
-                            </div>
-                            <a class="partner-card__link mt-auto" href="<?php echo htmlspecialchars($partner['website']); ?>" target="_blank" rel="noopener noreferrer">
-                                Visiter le site
-                            </a>
-                        </div>
-                    </article>
-                </div>
-            <?php endforeach; ?>
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src="/src/images/Logo partenaires/Caisseepargne.png"
+                    class="partenaire-image mb-3"
+                    alt="logo caisse-epargne"
+                >
+                <h2 class="h5">Caisse d'épargne</h2>
+                <a href="https://www.caisse-epargne.fr/cepac/">
+                    Voir le site
+                </a>
+            </div>
         </div>
-    </section>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src="/src/images/Logo partenaires/Proprietepriv.png"
+                    class="partenaire-image mb-3"
+                    alt="Logo Propriétés privées"
+                >
+                <h2 class="h5">Propriétés-privées</h2>
+                
+                <a href="https://www.proprietes-privees.org/notre-offre-pro/?utm_source=instagram-naturel&utm_campaign=tea
+                sing-LP&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnY2egFcS21cq8bfs5jIrp29hLdVYYjtOoRf2hHK
+                KkpqSDN3wexmvEycSQ-yw_aem_V7aYAPOhSrivfWzRPY-drA">
+                    Voir le site
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src="/src/images/Logo partenaires/Thecockandbull.png"
+                    class="partenaire-image mb-3"
+                    alt="Logo the cock and bull"
+                >
+                <h2 class="h5">The Cock And Bull</h2>
+                
+                <a href="https://www.instagram.com/thecockandbullbordeaux/?hl=fr">
+                    Voir l'instagram
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src="/src/images/Logo partenaires/PouvoirPlus.png"
+                    class="partenaire-image mb-3"
+                    alt="Logo pouvoir plus"
+                >
+                <h2 class="h5">Pouvoir Plus</h2>
+                
+                <a href="https://pouvoirplus.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=
+                PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnvD_K-6L5A5Hb4DLu9QNqrBJ2s0MA904ybUn2syfAtEksO9
+                TMjN5zP7V3uYE_aem_kIQhyQxNfiI_5RUyk_XDNA">
+                    Voir le site
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src=""
+                    class="partenaire-image mb-3"
+                    alt="Logo DJ Jéjé"
+                >
+                <h2 class="h5">DJ Jéjé</h2>
+                
+                <a href="https://www.instagram.com/chiarottojerome/">
+                    Voir l'instagram
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src="/src/images/Logo partenaires/ALEDE_Logo_v3.png"
+                    class="partenaire-image mb-3"
+                    alt="Logo Alexia Elineau "
+                >
+                <h2 class="h5">Alexia Elineau </h2>
+                
+                <a href="https://alexiaelineau.fr/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bg
+                NhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGn8TJnPUEU8yeSdxxYjAI-FiXAXrj8BQV3P5loDUPBc8ltx-iYU8kKr3NLj8U_aem_vA
+                aTdadSPC5q2AbfF-CY-w">
+                    Voir le site
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src="/src/images/Logo partenaires/Leetchi.png"
+                    class="partenaire-image mb-3"
+                    alt="Logo Leetchi"
+                >
+                <h2 class="h5">Leetchi</h2>
+                
+                <a href="https://www.leetchi.org/?_gl=1%2Amg4176%2A_gcl_au%2AMTM2NjEwMDMzNi4xNzU5ODQzODgz&utm_source=ig&utm_medium=soc
+                ial&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnoiktTrSvy_MZqzIKAt7zc852a9MTVCl
+                sEL92BbavQ4Jv2oE699E1nkcxXM_aem_105w_THPT--GT6YnOXGCGw">
+                    Voir le site
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src="/src/images/Logo partenaires/Logobrasdroit.png"
+                    class="partenaire-image mb-3"
+                    alt="Logo Bras droit des dirigeants"
+                >
+                <h2 class="h5">Bras Droit Des Dirigeants</h2>
+                
+                <a href="https://www.brasdroitdesdirigeants.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh
+                0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGn0BVoYtCm2yVVreAvdZ57OUqAqWE8LZvOUddrFT0JlfYQ5Nf363n0s0rBYoM_aem_xFdMFFDjiin_za15WgPt5g">
+                    Voir le site
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src="/src/images/Logo partenaires/Miecaline.png"
+                    class="partenaire-image mb-3"
+                    alt="Logo La mie câline "
+                >
+                <h2 class="h5">La Mie Câline </h2>
+                
+                <a href="https://www.instagram.com/lamiecalinedebordeaux/">
+                    Voir l'instagram
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src=""
+                    class="partenaire-image mb-3"
+                    alt="Logo Château de Bayle "
+                >
+                <h2 class="h5">Château de Bayle</h2>
+                
+                <a href="https://www.chateaudebayle.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU
+                2MjgxMDQwNTU4AAGnjAMbAipVZfQ27n-OBFdL8VUCYOBTB_USkm7ye_qmo589Ak7LRQctGGhQUAA_aem_8JnhMmo1BsTRtCgvmH5ryA">
+                    Voir leur site
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="article-content h-100">
+                <img
+                    src="/src/images/Logo partenaires/lorenzo.png"
+                    class="partenaire-image mb-3"
+                    alt="Logo LR9ByLorenzo "
+                >
+                <h2 class="h5">LR9ByLorenzo</h2>
+                
+                <a href="https://www.instagram.com/lr9bylorenzo/">
+                    Voir l'instagram
+                </a>
+            </div>
+        </div> 
 </main>
+
 
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
 ?>
+
+
+
