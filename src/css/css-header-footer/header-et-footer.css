@@ -275,6 +275,10 @@
             transform: scaleX(1);
         }
 
+        .site-footer a.social-icon::after {
+            display: none;
+        }
+
         .mb-1 {
             padding-top: 50px;
         }

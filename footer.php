@@ -3,8 +3,12 @@
         <div class="container">
             <div class="row gy-4 align-items-start">
                 <div class="col-lg-5">
-                    <a class="btn-contact-footer" href="<?php echo ROOT_URL . '/contact.php'; ?>">CONTACTEZ-NOUS!</a>
-                    <p class="mb-1">secretariat@bec-bordeaux</p>
+                    <a class="btn-contact-footer" href="<?php echo ROOT_URL . '/contact.php'; ?>">Contactez-nous :)</a>
+                    <p class="mb-1">
+                        <a href="mailto:secretariat@bec-bordeaux?subject=Demande%20de%20contact%20depuis%20le%20site%20BEC%20Bordeaux">
+                            secretariat@bec-bordeaux
+                        </a>
+                    </p>
                     <p class="mb-3">06 71 94 23 80 - 05 56 91 83 50</p>
                     <div class="d-flex align-items-center gap-3 mb-4">
                         <a href="https://www.instagram.com/becfootballclub/?hl=fr" class="social-icon">
@@ -87,6 +91,41 @@
                     closeSubmenu();
                 }
             });
+        });
+    </script>
+    <script>
+        const buttonHoverTargets = document.querySelectorAll(
+            'button:not(.btn-check), input[type="button"], input[type="submit"], input[type="reset"], .btn, .btn-contact-footer, .btn-more, .btn_envoyer, .bouton'
+        );
+
+        buttonHoverTargets.forEach((button) => {
+            if (
+                button.disabled ||
+                button.classList.contains('disabled') ||
+                button.getAttribute('aria-disabled') === 'true'
+            ) {
+                return;
+            }
+
+            const lift = () => {
+                if (
+                    button.disabled ||
+                    button.classList.contains('disabled') ||
+                    button.getAttribute('aria-disabled') === 'true'
+                ) {
+                    return;
+                }
+                button.classList.add('is-lifted');
+            };
+
+            const reset = () => {
+                button.classList.remove('is-lifted');
+            };
+
+            button.addEventListener('pointerenter', lift);
+            button.addEventListener('pointerleave', reset);
+            button.addEventListener('focus', lift);
+            button.addEventListener('blur', reset);
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

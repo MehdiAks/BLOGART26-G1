@@ -69,15 +69,71 @@ $formatMatchTime = static function (?string $matchTime): string {
     return $time ? $time->format('H\hi') : $matchTime;
 };
 
-$becLogo = ROOT_URL . '/src/images/logo/logo-bec/logo.svg';
-$defaultTeamLogo = ROOT_URL . '/src/images/logo/team-default.svg';
-$resolveTeamLogo = static function (?string $teamName) use ($becLogo, $defaultTeamLogo): string {
-    if ($teamName === null || $teamName === '') {
+$becLogo = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
+$defaultTeamLogo = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
+$logoDirectory = ROOT . '/src/images/logo/logo-adversaire';
+$logoBaseUrl = ROOT_URL . '/src/images/logo/logo-adversaire';
+$clubIdentifiers = [
+    'bec',
+    'bordeaux',
+    'etudiant',
+];
+$normalizeTeamName = static function (string $name): string {
+    $normalized = trim($name);
+    if ($normalized === '') {
+        return '';
+    }
+    $transliterated = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $normalized);
+    if ($transliterated !== false) {
+        $normalized = $transliterated;
+    }
+    $normalized = preg_replace('/[^a-zA-Z0-9]+/', '_', $normalized);
+    $normalized = preg_replace('/_+/', '_', (string) $normalized);
+    return strtoupper(trim((string) $normalized, '_'));
+};
+$logoIndex = [];
+if (is_dir($logoDirectory)) {
+    foreach (scandir($logoDirectory) as $file) {
+        if ($file === '.' || $file === '..') {
+            continue;
+        }
+        $path = $logoDirectory . '/' . $file;
+        if (!is_file($path)) {
+            continue;
+        }
+        $baseName = pathinfo($file, PATHINFO_FILENAME);
+        $normalized = $normalizeTeamName($baseName);
+        if ($normalized !== '') {
+            $logoIndex[$normalized] = $logoBaseUrl . '/' . rawurlencode($file);
+        }
+    }
+}
+$resolveTeamLogo = static function (?string $teamName) use (
+    $becLogo,
+    $defaultTeamLogo,
+    $clubIdentifiers,
+    $normalizeTeamName,
+    $logoIndex
+): string {
+    $trimmed = trim((string) $teamName);
+    if ($trimmed === '') {
         return $defaultTeamLogo;
     }
-    $normalized = strtolower($teamName);
-    if (str_contains($normalized, 'bec') || str_contains($normalized, 'bordeaux')) {
-        return $becLogo;
+    foreach ($clubIdentifiers as $identifier) {
+        if ($identifier !== '' && stripos($trimmed, $identifier) !== false) {
+            return $becLogo;
+        }
+    }
+    $normalized = $normalizeTeamName($trimmed);
+    if ($normalized !== '' && array_key_exists($normalized, $logoIndex)) {
+        return $logoIndex[$normalized];
+    }
+    if ($normalized !== '') {
+        foreach ($logoIndex as $key => $url) {
+            if (str_contains($normalized, $key) || str_contains($key, $normalized)) {
+                return $url;
+            }
+        }
     }
     return $defaultTeamLogo;
 };
@@ -132,14 +188,14 @@ foreach ($matches as $match) {
 ?>
 
 <section class="home-hero full-bleed">
-    <div class="home-hero-content text-center">
-        <h2 class="fw-semibold mb-0">Bordeaux étudiant club</h2>
-        <h3 class="fw-light mb-0">Basket-ball</h3>
+    <div class="home-hero-content text-start">
+        <h2 class="fw-bold mb-0">Bordeaux étudiant club</h2>
+        <h3 class="fw-bold mb-0">Basket-ball</h3>
     </div>
 </section>
-<div class="container py-5">
+<div class="container py-5 home-main-surface">
     <section class="home-section mb-5">
-        <h1 class="mb-3">Bienvenue au BEC</h1>
+        <h1 class="fw-bold mb-3">Bienvenue au BEC</h1>
         <p class="lead mb-4">
             Bordeaux n'est pas seulement son miroir d'eau ou encore ses cannelés. C'est aussi une ville de sport et de talent ! <br>
             Ce blog permet de suivre toute l'actualité du Bordeaux Etudiant Club, les jours de matchs, les résultats, les évènements, les joueurs, ...
@@ -152,7 +208,7 @@ foreach ($matches as $match) {
     </section>
 
     <section class="home-section mb-5">
-        <h2 class="mb-4">Nos prochains matchs à Barbey !</h2>
+        <h2 class="fw-bold mb-4">Nos prochains matchs à Barbey !</h2>
         <p class="text-body-secondary mb-4">Retrouvez nos équipes à domicile, à Barbey.</p>
         <div class="row g-4">
             <?php
@@ -201,54 +257,56 @@ foreach ($matches as $match) {
     </section>
 
     <section aria-label="Dernières actualités" class="home-articles">
-        <h2 class="mb-4">Nos dernières actualités</h2>
+        <h2 class="fw-bold mb-4">Nos dernières actualités</h2>
             <p class="text-body-secondary mb-4">Retrouvez ci-dessous nos dernières actualités et articles récents.</p>
         <!-- Si on a au moins un article récupéré, on les affiche. -->
         <?php if (!empty($ba_bec_articles)): ?>
-            <div class="row g-4">
-                <!-- On parcourt les 3 articles aléatoires récupérés depuis la base. -->
-                <?php foreach ($ba_bec_articles as $ba_bec_article): ?>
-                    <?php
-                    // 1) On détermine l'image à afficher :
-                    //    - si l'article a une image, on utilise celle-ci
-                    //    - sinon on utilise l'image par défaut.
-                    $defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
-                    $uploadPath = !empty($ba_bec_article['urlPhotArt'])
-                        ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_article['urlPhotArt']
-                        : '';
-                    $ba_bec_imagePath = (!empty($ba_bec_article['urlPhotArt']) && file_exists($uploadPath))
-                        ? ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_article['urlPhotArt'])
-                        : $defaultImagePath;
-                    // 2) On récupère le chapo (texte d'accroche) ou une chaîne vide si absent.
-                    $chapo = $ba_bec_article['libChapoArt'] ?? '';
-                    // 3) On fixe la longueur max de l'extrait affiché.
-                    $maxLength = 160;
-                    // 4) On tronque le chapo proprement (multibyte si disponible).
-                    $excerptBase = function_exists('mb_substr') ? mb_substr($chapo, 0, $maxLength) : substr($chapo, 0, $maxLength);
-                    // 5) On calcule la longueur réelle du chapo.
-                    $chapoLength = function_exists('mb_strlen') ? mb_strlen($chapo) : strlen($chapo);
-                    // 6) On ajoute "..." seulement si le chapo dépassait la limite.
-                    $excerpt = $excerptBase . ($chapoLength > $maxLength ? '...' : '');
-                    ?>
-                    <div class="col-lg-4 col-md-6">
-                        <article class="home-article-card" data-hover-card>
-                            <img src="<?php echo $ba_bec_imagePath; ?>"
-                                class="home-article-image mb-3"
-                                alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
-                            <h3 class="h5 mb-2"><?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?></h3>
-                            <p class="fst-italic"><?php echo htmlspecialchars($excerpt); ?></p>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <small class="text-body-secondary">
-                                    <?php echo htmlspecialchars($ba_bec_article['dtCreaArt']); ?>
-                                </small>
-                                <a href="<?php echo ROOT_URL . '/article.php?numArt=' . (int) $ba_bec_article['numArt']; ?>" class="home-article-link">Lire la suite</a>
-                            </div>
-                        </article>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-            <div class="mt-4">
-                <a class="btn btn-primary" href="actualites.php">Voir les autres actualités</a>
+            <div class="home-articles-container">
+                <div class="row g-4">
+                    <!-- On parcourt les 3 articles aléatoires récupérés depuis la base. -->
+                    <?php foreach ($ba_bec_articles as $ba_bec_article): ?>
+                        <?php
+                        // 1) On détermine l'image à afficher :
+                        //    - si l'article a une image, on utilise celle-ci
+                        //    - sinon on utilise l'image par défaut.
+                        $defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
+                        $uploadPath = !empty($ba_bec_article['urlPhotArt'])
+                            ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_article['urlPhotArt']
+                            : '';
+                        $ba_bec_imagePath = (!empty($ba_bec_article['urlPhotArt']) && file_exists($uploadPath))
+                            ? ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_article['urlPhotArt'])
+                            : $defaultImagePath;
+                        // 2) On récupère le chapo (texte d'accroche) ou une chaîne vide si absent.
+                        $chapo = $ba_bec_article['libChapoArt'] ?? '';
+                        // 3) On fixe la longueur max de l'extrait affiché.
+                        $maxLength = 160;
+                        // 4) On tronque le chapo proprement (multibyte si disponible).
+                        $excerptBase = function_exists('mb_substr') ? mb_substr($chapo, 0, $maxLength) : substr($chapo, 0, $maxLength);
+                        // 5) On calcule la longueur réelle du chapo.
+                        $chapoLength = function_exists('mb_strlen') ? mb_strlen($chapo) : strlen($chapo);
+                        // 6) On ajoute "..." seulement si le chapo dépassait la limite.
+                        $excerpt = $excerptBase . ($chapoLength > $maxLength ? '...' : '');
+                        ?>
+                        <div class="col-lg-4 col-md-6">
+                            <article class="home-article-card" data-hover-card>
+                                <img src="<?php echo $ba_bec_imagePath; ?>"
+                                    class="home-article-image mb-3"
+                                    alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
+                                <h3 class="h5 fw-bold mb-2"><?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?></h3>
+                                <p class="fst-italic"><?php echo htmlspecialchars($excerpt); ?></p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-body-secondary">
+                                        <?php echo htmlspecialchars($ba_bec_article['dtCreaArt']); ?>
+                                    </small>
+                                    <a href="<?php echo ROOT_URL . '/article.php?numArt=' . (int) $ba_bec_article['numArt']; ?>" class="home-article-link">Lire la suite</a>
+                                </div>
+                            </article>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="mt-4">
+                    <a class="btn btn-primary" href="actualites.php">Voir les autres actualités</a>
+                </div>
             </div>
         <?php else: ?>
             <!-- Si aucun article n'est disponible, on affiche un message d'information. -->
