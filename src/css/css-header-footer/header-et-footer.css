@@ -94,7 +94,11 @@
         }
 
         .site-header .header-nav {
-            margin-left: auto;
+            margin-left: 0;
+        }
+
+        .site-header .container {
+            flex-wrap: nowrap;
         }
 
         .site-header .header-nav li {
@@ -204,6 +208,10 @@
         @media (max-width: 991.98px) {
             .site-header .header-nav {
                 display: none;
+            }
+
+            .site-header .container {
+                flex-wrap: wrap;
             }
 
             .header-burger-wrapper {
