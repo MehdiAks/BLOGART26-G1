@@ -70,88 +70,16 @@ $formatMatchTime = static function (?string $matchTime): string {
     return $time ? $time->format('H\hi') : $matchTime;
 };
 
-$becLogo = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
-$defaultTeamLogo = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
-$logoDirectory = ROOT . '/src/images/logo/logo-adversaire';
-$logoBaseUrl = ROOT_URL . '/src/images/logo/logo-adversaire';
 $clubIdentifiers = [
     'bec',
     'bordeaux',
     'etudiant',
 ];
-$normalizeTeamName = static function (string $name): string {
-    $normalized = trim($name);
-    if ($normalized === '') {
-        return '';
-    }
-    $transliterated = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $normalized);
-    if ($transliterated !== false) {
-        $normalized = $transliterated;
-    }
-    $normalized = preg_replace('/[^a-zA-Z0-9]+/', '_', $normalized);
-    $normalized = preg_replace('/_+/', '_', (string) $normalized);
-    return strtoupper(trim((string) $normalized, '_'));
-};
-$logoIndex = [];
-if (is_dir($logoDirectory)) {
-    foreach (scandir($logoDirectory) as $file) {
-        if ($file === '.' || $file === '..') {
-            continue;
-        }
-        $path = $logoDirectory . '/' . $file;
-        if (!is_file($path)) {
-            continue;
-        }
-        $baseName = pathinfo($file, PATHINFO_FILENAME);
-        $normalized = $normalizeTeamName($baseName);
-        if ($normalized !== '') {
-            $logoIndex[$normalized] = $logoBaseUrl . '/' . rawurlencode($file);
-        }
-    }
-}
-$resolveTeamLogo = static function (?string $teamName) use (
-    $becLogo,
-    $defaultTeamLogo,
-    $clubIdentifiers,
-    $normalizeTeamName,
-    $logoIndex
-): string {
-    $trimmed = trim((string) $teamName);
-    if ($trimmed === '') {
-        return $defaultTeamLogo;
-    }
-    foreach ($clubIdentifiers as $identifier) {
-        if ($identifier !== '' && stripos($trimmed, $identifier) !== false) {
-            return $becLogo;
-        }
-    }
-    $normalized = $normalizeTeamName($trimmed);
-    if ($normalized !== '' && array_key_exists($normalized, $logoIndex)) {
-        return $logoIndex[$normalized];
-    }
-    if ($normalized !== '') {
-        foreach ($logoIndex as $key => $url) {
-            if (str_contains($normalized, $key) || str_contains($key, $normalized)) {
-                return $url;
-            }
-        }
-    }
-    return $defaultTeamLogo;
-};
 
 $matches = [];
 try {
     $matchesStmt = $DB->prepare(
-        "SELECT Section AS section,
-            Equipe AS teamName,
-            Date AS matchDate,
-            Heure AS matchTime,
-            Domicile_Exterieur AS location,
-            Adversaire AS opponent
-        FROM bec_matches
-        WHERE Date >= CURDATE()
-        ORDER BY Date ASC, Heure ASC"
-    );
+        \"SELECT\n+            m.dateMatch AS matchDate,\n+            m.heureMatch AS matchTime,\n+            m.lieuMatch AS location,\n+            home_team.libEquipe AS teamHome,\n+            away_team.libEquipe AS teamAway\n+        FROM `MATCH` m\n+        LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'\n+        LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'\n+        LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe\n+        LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe\n+        WHERE m.dateMatch >= CURDATE()\n+        ORDER BY m.dateMatch ASC, m.heureMatch ASC\"\n+    );
     $matchesStmt->execute();
     $matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $exception) {
@@ -159,36 +87,30 @@ try {
 }
 
 foreach ($matches as $match) {
-    $section = strtolower((string) ($match['section'] ?? ''));
-    $teamName = strtolower((string) ($match['teamName'] ?? ''));
+    $teamHomeName = strtolower((string) ($match['teamHome'] ?? ''));
+    $teamAwayName = strtolower((string) ($match['teamAway'] ?? ''));
     $key = null;
-    if ($section === 'féminin' || $section === 'feminin') {
-        if ($teamName !== '' && (str_contains($teamName, 'sf1') || str_contains($teamName, 'sénior 1') || str_contains($teamName, 'senior 1'))) {
-            $key = 'SF1';
-        }
-    } elseif ($section === 'masculin') {
-        if ($teamName !== '' && (str_contains($teamName, 'sg1') || str_contains($teamName, 'sénior 1') || str_contains($teamName, 'senior 1'))) {
-            $key = 'SG1';
-        }
+    if ($teamHomeName !== '' && (str_contains($teamHomeName, 'sf1') || str_contains($teamHomeName, 'sénior 1') || str_contains($teamHomeName, 'senior 1'))) {
+        $key = 'SF1';
+    } elseif ($teamHomeName !== '' && (str_contains($teamHomeName, 'sg1') || str_contains($teamHomeName, 'sénior 1') || str_contains($teamHomeName, 'senior 1'))) {
+        $key = 'SG1';
     }
 
     if ($key === null || $nextMatches[$key] !== null) {
         continue;
     }
     $location = strtolower(trim((string) ($match['location'] ?? '')));
-    if ($location !== '' && !str_contains($location, 'domicile')) {
+    if ($location !== '' && !str_contains($location, 'barbey') && !str_contains($location, 'domicile')) {
         continue;
     }
 
     $nextMatches[$key] = [
         'label' => $key === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
-        'teamHome' => $match['teamName'] ?? 'BEC',
-        'teamAway' => $match['opponent'] ?? '',
-        'logoHome' => $resolveTeamLogo($match['teamName'] ?? ''),
-        'logoAway' => $resolveTeamLogo($match['opponent'] ?? ''),
+        'teamHome' => $match['teamHome'] ?? 'BEC',
+        'teamAway' => $match['teamAway'] ?? '',
         'matchDate' => $match['matchDate'],
         'matchTime' => $match['matchTime'] ?? '',
-        'location' => 'Gymnase Barbey',
+        'location' => $match['location'] ?? 'Gymnase Barbey',
     ];
 }
 
@@ -198,21 +120,20 @@ if ($becMatchesAvailable) {
         $homeStatsStmt = $DB->prepare(
             "SELECT
                 SUM(CASE
-                    WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%' THEN COALESCE(Score_Bec, 0)
+                    WHEN home_part.score IS NOT NULL THEN home_part.score
                     ELSE 0
                 END) AS pointsFor,
                 SUM(CASE
-                    WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%' THEN COALESCE(Score_Adversaire, 0)
+                    WHEN away_part.score IS NOT NULL THEN away_part.score
                     ELSE 0
                 END) AS pointsAgainst,
                 SUM(CASE
-                    WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%'
-                        AND Score_Bec IS NOT NULL AND Score_Bec <> ''
-                        AND Score_Adversaire IS NOT NULL AND Score_Adversaire <> ''
-                        THEN 1
+                    WHEN home_part.score IS NOT NULL AND away_part.score IS NOT NULL THEN 1
                     ELSE 0
                 END) AS homeMatchCount
-            FROM bec_matches"
+            FROM `MATCH` m
+            INNER JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
+            INNER JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'"
         );
         $homeStatsStmt->execute();
         $homeStats = $homeStatsStmt->fetch(PDO::FETCH_ASSOC) ?: [];
@@ -318,15 +239,6 @@ if (!$becMatchesAvailable) {
                                     <span class="badge <?php echo $match['badge']; ?> mb-2">
                                         <?php echo htmlspecialchars($match['label']); ?>
                                     </span>
-                                    <div class="home-match-logos mb-3">
-                                        <div class="home-match-logo">
-                                            <img src="<?php echo htmlspecialchars($match['logoHome']); ?>" alt="<?php echo htmlspecialchars($match['teamHome']); ?>">
-                                        </div>
-                                        <span class="home-match-vs">VS</span>
-                                        <div class="home-match-logo">
-                                            <img src="<?php echo htmlspecialchars($match['logoAway']); ?>" alt="<?php echo htmlspecialchars($match['teamAway']); ?>">
-                                        </div>
-                                    </div>
                                     <h3 class="h5 mb-2">
                                         <?php echo htmlspecialchars($match['teamHome']); ?> vs. <?php echo htmlspecialchars($match['teamAway']); ?>
                                     </h3>

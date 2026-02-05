@@ -5,16 +5,26 @@ include '../../../header.php';
 
 if (!isset($_GET['numJoueur'])) {
     header('Location: ' . ROOT_URL . '/views/backend/joueurs/list.php');
-    exit();
+    exit;
 }
 
-$ba_bec_numJoueur = $_GET['numJoueur'];
+sql_connect();
+
+$ba_bec_numJoueur = (int) $_GET['numJoueur'];
 $ba_bec_joueur = sql_select('JOUEUR', '*', "numJoueur = '$ba_bec_numJoueur'");
 $ba_bec_joueur = $ba_bec_joueur[0] ?? null;
-$ba_bec_equipes = sql_select('EQUIPE', 'numEquipe, libEquipe, sectionEquipe', null, null, 'libEquipe ASC');
-$ba_bec_equipeJoueur = sql_select('EQUIPE_JOUEUR', 'numEquipe', "numJoueur = '$ba_bec_numJoueur'");
-$ba_bec_numEquipe = $ba_bec_equipeJoueur[0]['numEquipe'] ?? '';
-$ba_bec_sectionEquipe = '';
+
+$ba_bec_affectation = null;
+if ($ba_bec_numJoueur) {
+    $affectationStmt = $DB->prepare('SELECT * FROM JOUEUR_AFFECTATION WHERE numJoueur = :numJoueur ORDER BY dateDebut DESC, numAffectation DESC LIMIT 1');
+    $affectationStmt->execute([':numJoueur' => $ba_bec_numJoueur]);
+    $ba_bec_affectation = $affectationStmt->fetch(PDO::FETCH_ASSOC) ?: null;
+}
+
+$ba_bec_equipes = sql_select('EQUIPE', 'numEquipe, libEquipe, libEquipeComplet, codeEquipe', null, null, 'libEquipe ASC');
+$ba_bec_saisons = sql_select('SAISON', 'numSaison, libSaison, estCourante', null, null, 'dateDebut DESC');
+$ba_bec_postes = sql_select('POSTE', 'numPoste, libPoste', null, null, 'libPoste ASC');
+
 $ba_bec_posteChoices = [
     'Poste 1 : meneur (point guard)',
     'Poste 2 : arrière (shooting guard)',
@@ -23,25 +33,26 @@ $ba_bec_posteChoices = [
     'Poste 5 : pivot (center)',
 ];
 
-function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
-{
-    $label = $ba_bec_equipe['libEquipe'] ?? '';
-    $section = $ba_bec_equipe['sectionEquipe'] ?? '';
-    if ($section === 'Masculin' && preg_match('/^S[ée]nior\\s*(\\d+)/iu', $label, $matches)) {
-        return 'SG' . $matches[1];
-    }
-    return $label;
-}
-foreach ($ba_bec_equipes as $ba_bec_equipe) {
-    if ($ba_bec_equipe['numEquipe'] == $ba_bec_numEquipe) {
-        $ba_bec_sectionEquipe = $ba_bec_equipe['sectionEquipe'] ?? '';
-        break;
-    }
+$ba_bec_clubs = [];
+if ($ba_bec_numJoueur) {
+    $clubsStmt = $DB->prepare('SELECT c.nomClub FROM JOUEUR_CLUB jc INNER JOIN CLUB c ON jc.numClub = c.numClub WHERE jc.numJoueur = :numJoueur');
+    $clubsStmt->execute([':numJoueur' => $ba_bec_numJoueur]);
+    $ba_bec_clubs = $clubsStmt->fetchAll(PDO::FETCH_COLUMN);
 }
 
 if (!$ba_bec_joueur) {
     header('Location: ' . ROOT_URL . '/views/backend/joueurs/list.php');
-    exit();
+    exit;
+}
+
+function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
+{
+    $label = $ba_bec_equipe['libEquipeComplet'] ?? '';
+    if ($label === '') {
+        $label = $ba_bec_equipe['libEquipe'] ?? '';
+    }
+    $code = $ba_bec_equipe['codeEquipe'] ?? '';
+    return $code !== '' ? $label . ' (' . $code . ')' : $label;
 }
 ?>
 
@@ -58,6 +69,7 @@ if (!$ba_bec_joueur) {
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/joueurs/update.php'; ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="numJoueur" value="<?php echo htmlspecialchars($ba_bec_joueur['numJoueur']); ?>" />
+                <input type="hidden" name="numAffectation" value="<?php echo htmlspecialchars($ba_bec_affectation['numAffectation'] ?? ''); ?>" />
                 <input type="hidden" name="photoActuelle" value="<?php echo htmlspecialchars($ba_bec_joueur['urlPhotoJoueur'] ?? ''); ?>" />
                 <div class="form-group">
                     <label for="prenomJoueur">Prénom</label>
@@ -71,11 +83,20 @@ if (!$ba_bec_joueur) {
                     <label for="posteJoueur">Poste</label>
                     <select id="posteJoueur" name="posteJoueur" class="form-control">
                         <option value="">Sélectionnez un poste</option>
-                        <?php foreach ($ba_bec_posteChoices as $ba_bec_posteChoice): ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_posteChoice); ?>" <?php echo ($ba_bec_joueur['posteJoueur'] ?? '') === $ba_bec_posteChoice ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($ba_bec_posteChoice); ?>
-                            </option>
-                        <?php endforeach; ?>
+                        <?php if (!empty($ba_bec_postes)): ?>
+                            <?php foreach ($ba_bec_postes as $ba_bec_poste): ?>
+                                <option value="<?php echo htmlspecialchars($ba_bec_poste['libPoste']); ?>"
+                                    <?php echo ($ba_bec_affectation && ($ba_bec_affectation['numPoste'] ?? '') == $ba_bec_poste['numPoste']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($ba_bec_poste['libPoste']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <?php foreach ($ba_bec_posteChoices as $ba_bec_posteChoice): ?>
+                                <option value="<?php echo htmlspecialchars($ba_bec_posteChoice); ?>">
+                                    <?php echo htmlspecialchars($ba_bec_posteChoice); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </select>
                 </div>
                 <div class="form-group mt-2">
@@ -85,23 +106,29 @@ if (!$ba_bec_joueur) {
                     <?php if (!empty($ba_bec_joueur['urlPhotoJoueur'])): ?>
                         <?php
                         $ba_bec_photo = $ba_bec_joueur['urlPhotoJoueur'];
-                        $ba_bec_photoUrl = preg_match('/^(https?:\\/\\/|\\/)/', $ba_bec_photo)
+                        $ba_bec_photoUrl = preg_match('/^(https?:\/\/|\/)/', $ba_bec_photo)
                             ? $ba_bec_photo
                             : ROOT_URL . '/src/uploads/' . $ba_bec_photo;
                         ?>
-                        <small class="form-text text-muted">Photo actuelle : <a href="<?php echo htmlspecialchars($ba_bec_photoUrl); ?>" target="_blank" rel="noopener">Voir</a></small>
+                        <div class="mt-2">
+                            <img src="<?php echo htmlspecialchars($ba_bec_photoUrl); ?>" alt="Photo actuelle" style="max-width: 120px;" />
+                        </div>
                     <?php endif; ?>
                 </div>
                 <div class="form-group mt-2">
-                    <label for="numeroMaillot">Numéro de maillot</label>
-                    <input id="numeroMaillot" name="numeroMaillot" class="form-control" type="number" min="0" max="99" value="<?php echo htmlspecialchars($ba_bec_joueur['numMaillot'] ?? ''); ?>" />
+                    <label for="numeroMaillot">Numéro de maillot (saison)</label>
+                    <input id="numeroMaillot" name="numeroMaillot" class="form-control" type="number" min="0" max="99" value="<?php echo htmlspecialchars($ba_bec_affectation['numMaillot'] ?? ''); ?>" />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="sectionEquipe">Section</label>
-                    <select id="sectionEquipe" name="sectionEquipe" class="form-control" required>
-                        <option value="">Sélectionnez une section</option>
-                        <option value="Masculin" <?php echo $ba_bec_sectionEquipe === 'Masculin' ? 'selected' : ''; ?>>Masculin</option>
-                        <option value="Féminin" <?php echo $ba_bec_sectionEquipe === 'Féminin' ? 'selected' : ''; ?>>Féminin</option>
+                    <label for="numSaison">Saison</label>
+                    <select id="numSaison" name="numSaison" class="form-control" required>
+                        <option value="">Sélectionnez une saison</option>
+                        <?php foreach ($ba_bec_saisons as $ba_bec_saison): ?>
+                            <option value="<?php echo htmlspecialchars($ba_bec_saison['numSaison']); ?>"
+                                <?php echo ($ba_bec_affectation && $ba_bec_affectation['numSaison'] == $ba_bec_saison['numSaison']) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($ba_bec_saison['libSaison']); ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group mt-2">
@@ -110,16 +137,15 @@ if (!$ba_bec_joueur) {
                         <option value="">Sélectionnez une équipe</option>
                         <?php foreach ($ba_bec_equipes as $ba_bec_equipe): ?>
                             <option value="<?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?>"
-                                data-section="<?php echo htmlspecialchars($ba_bec_equipe['sectionEquipe'] ?? ''); ?>"
-                                <?php echo $ba_bec_numEquipe == $ba_bec_equipe['numEquipe'] ? 'selected' : ''; ?>>
+                                <?php echo ($ba_bec_affectation && $ba_bec_affectation['numEquipe'] == $ba_bec_equipe['numEquipe']) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars(ba_bec_formatEquipeLabel($ba_bec_equipe)); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group mt-2">
-                    <label for="anneeArrivee">Année d'arrivée</label>
-                    <input id="anneeArrivee" name="anneeArrivee" class="form-control" type="number" min="1900" max="2100" value="<?php echo htmlspecialchars($ba_bec_joueur['anneeArrivee'] ?? ''); ?>" />
+                    <label for="dateDebut">Date de début d'affectation</label>
+                    <input id="dateDebut" name="dateDebut" class="form-control" type="date" value="<?php echo htmlspecialchars($ba_bec_affectation['dateDebut'] ?? ''); ?>" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="dateNaissance">Date de naissance</label>
@@ -128,9 +154,7 @@ if (!$ba_bec_joueur) {
                 <div class="form-group mt-2">
                     <label for="clubsPrecedents">Clubs précédents</label>
                     <?php
-                    $ba_bec_clubsRaw = $ba_bec_joueur['clubsPrecedents'] ?? '';
-                    $ba_bec_clubsList = preg_split('/\\r\\n|\\r|\\n|\\s*\\|\\s*/', $ba_bec_clubsRaw);
-                    $ba_bec_clubsList = array_values(array_filter(array_map('trim', $ba_bec_clubsList), 'strlen'));
+                    $ba_bec_clubsList = $ba_bec_clubs;
                     if (empty($ba_bec_clubsList)) {
                         $ba_bec_clubsList = [''];
                     }
@@ -154,27 +178,8 @@ if (!$ba_bec_joueur) {
 
 <script>
     (function () {
-        const sectionSelect = document.getElementById('sectionEquipe');
-        const teamSelect = document.getElementById('numEquipe');
         const clubList = document.getElementById('clubsPrecedentsList');
         const addClubButton = document.getElementById('addClubButton');
-
-        const filterTeams = () => {
-            const section = sectionSelect.value;
-            const options = Array.from(teamSelect.options);
-            options.forEach((option) => {
-                if (!option.value) {
-                    option.hidden = false;
-                    return;
-                }
-                const optionSection = option.dataset.section || '';
-                option.hidden = section && optionSection !== section;
-            });
-
-            if (teamSelect.selectedOptions.length && teamSelect.selectedOptions[0].hidden) {
-                teamSelect.value = '';
-            }
-        };
 
         const addClubField = () => {
             const wrapper = document.createElement('div');
@@ -197,8 +202,6 @@ if (!$ba_bec_joueur) {
             clubList.appendChild(wrapper);
         };
 
-        sectionSelect.addEventListener('change', filterTeams);
         addClubButton.addEventListener('click', addClubField);
-        filterTeams();
     })();
 </script>
