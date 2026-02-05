@@ -214,9 +214,11 @@ function sql_create_table($table){
             "CREATE TABLE IF NOT EXISTS `MATCH_PARTICIPANT` (
                 `numMatchParticipant` int NOT NULL AUTO_INCREMENT,
                 `numMatch` int NOT NULL,
-                `numEquipe` int NOT NULL,
+                `numEquipe` int DEFAULT NULL,
                 `cote` enum('domicile','exterieur') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
                 `score` int DEFAULT NULL,
+                `nomEquipeAdverse` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                `numeroEquipeAdverse` int DEFAULT NULL,
                 PRIMARY KEY (`numMatchParticipant`),
                 KEY `idx_match_participant_match` (`numMatch`),
                 KEY `idx_match_participant_equipe` (`numEquipe`),

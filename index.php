@@ -83,8 +83,8 @@ try {
             m.dateMatch AS matchDate,
             m.heureMatch AS matchTime,
             m.lieuMatch AS location,
-            home_team.libEquipe AS teamHome,
-            away_team.libEquipe AS teamAway
+            COALESCE(home_team.libEquipe, home_part.nomEquipeAdverse) AS teamHome,
+            COALESCE(away_team.libEquipe, away_part.nomEquipeAdverse) AS teamAway
         FROM `MATCH` m
         LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
         LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'

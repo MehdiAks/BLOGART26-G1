@@ -89,8 +89,8 @@ if ($dbAvailable) {
             'SELECT m.dateMatch, m.heureMatch, m.lieuMatch,
                     home_part.score AS scoreHome,
                     away_part.score AS scoreAway,
-                    home_team.libEquipe AS teamHome,
-                    away_team.libEquipe AS teamAway,
+                    COALESCE(home_team.libEquipe, home_part.nomEquipeAdverse) AS teamHome,
+                    COALESCE(away_team.libEquipe, away_part.nomEquipeAdverse) AS teamAway,
                     home_part.numEquipe AS homeEquipe,
                     away_part.numEquipe AS awayEquipe
              FROM `MATCH` m

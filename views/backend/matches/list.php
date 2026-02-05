@@ -23,8 +23,8 @@ $ba_bec_select = "SELECT
         c.libCompetition AS competition,
         m.dateMatch AS matchDate,
         m.heureMatch AS matchTime,
-        home_team.libEquipe AS teamHome,
-        away_team.libEquipe AS teamAway,
+        COALESCE(home_team.libEquipe, home_part.nomEquipeAdverse) AS teamHome,
+        COALESCE(away_team.libEquipe, away_part.nomEquipeAdverse) AS teamAway,
         home_part.score AS scoreHome,
         away_part.score AS scoreAway
     FROM `MATCH` m
