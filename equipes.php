@@ -94,6 +94,9 @@ foreach ($coaches as $coach) {
                             <?php echo htmlspecialchars($team['sectionEquipe'] ?: 'Section non renseignée'); ?> ·
                             <?php echo htmlspecialchars($team['niveauEquipe'] ?: 'Niveau non renseigné'); ?>
                         </p>
+                        <a class="team-link" href="<?php echo ROOT_URL . '/equipe.php?numEquipe=' . urlencode((string) $team['numEquipe']); ?>">
+                            Voir la page de l'équipe
+                        </a>
                     </div>
 
                     <div class="team-card-body">
