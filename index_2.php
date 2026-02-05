@@ -113,7 +113,7 @@ foreach ($matches as $match) {
 }
 ?>
 
-<div id="carouselExampleAutoplaying" class="carousel slide home-carousel full-bleed mb-5" data-bs-ride="carousel">
+<div id="carouselExampleAutoplaying" class="carousel slide home-carousel full-bleed mb-0" data-bs-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
             <img src="<?php echo ROOT_URL . '/src/images/background/background-index-1.webp'; ?>" class="d-block w-100"
@@ -154,11 +154,20 @@ foreach ($matches as $match) {
         <div class="carousel-item">
             <img src="<?php echo ROOT_URL . '/src/images/background/background-index-10.webp'; ?>" class="d-block w-100"
                 alt="dixieme image du carrousel">
-
+        </div>
     </div>
     <div class="home-carousel-title text-center">
-        <h2 class="fw-semibold mb-0">Bordeaux étudiant club</h2>
-        <h3 class="fw-light mb-0">Basket-ball</h3>
+        <div class="d-flex flex-column align-items-center gap-3 px-3">
+            <span class="home-pill bg-light text-dark">Association sportive</span>
+            <div>
+                <h2 class="fw-semibold mb-2">Bordeaux étudiant club</h2>
+                <h3 class="fw-light mb-0">Basket-ball</h3>
+            </div>
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <a class="btn btn-primary btn-lg" href="actualites.php">Voir les actualités</a>
+                <a class="btn btn-outline-light btn-lg" href="contact.php">Nous contacter</a>
+            </div>
+        </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
         data-bs-slide="prev">
@@ -171,22 +180,41 @@ foreach ($matches as $match) {
         <span class="visually-hidden">Next</span>
     </button>
 </div>
-<div class="container py-5">
-    <section class="home-section mb-5">
-        <h1 class="mb-3">Bienvenue au BEC</h1>
-        <p class="lead mb-4">
-            Description du site.
-        </p>
-        <div class="d-flex gap-2">
-            <a class="btn btn-primary" href="actualites.php">Voir les actualités</a>
-            <a class="btn btn-outline-secondary" href="contact.php">Nous contacter</a>
-        </div>
-    </section>
+<div class="bg-light">
+    <div class="container py-5">
+        <section class="home-section mb-5">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <span class="home-pill bg-white text-primary shadow-sm">Bienvenue</span>
+                    <h1 class="home-section-title mt-3 mb-3">Bienvenue au BEC</h1>
+                    <p class="lead home-section-subtitle mb-4">
+                        Description du site.
+                    </p>
+                </div>
+                <div class="col-lg-5">
+                    <div class="home-highlight-card p-4">
+                        <h2 class="h5 fw-semibold mb-3">Notre engagement</h2>
+                        <p class="mb-4 text-body-secondary">
+                            Une énergie collective, des équipes engagées et un club ouvert à toutes les passionnées et passionnés.
+                        </p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a class="btn btn-primary" href="actualites.php">Voir les actualités</a>
+                            <a class="btn btn-outline-primary" href="contact.php">Nous contacter</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <section class="home-section mb-5">
-        <h2 class="mb-4">Nos prochains matchs à Barbey !</h2>
-        <p class="text-body-secondary mb-4">Retrouvez nos équipes à domicile, à Barbey.</p>
-        <div class="row g-4">
+        <section class="home-section mb-5">
+            <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+                <div>
+                    <span class="home-pill bg-white text-primary shadow-sm">Rencontres</span>
+                    <h2 class="home-section-title mt-2">Nos prochains matchs à Barbey !</h2>
+                </div>
+                <p class="text-body-secondary mb-0">Retrouvez nos équipes à domicile, à Barbey.</p>
+            </div>
+            <div class="row g-4">
             <?php
             $matchCards = [
                 $nextMatches['SG1'] ? array_merge($nextMatches['SG1'], ['badge' => 'text-bg-primary']) : null,
@@ -196,21 +224,21 @@ foreach ($matches as $match) {
             <?php foreach ($matchCards as $match): ?>
                 <div class="col-12 col-lg-6">
                     <article class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
+                        <div class="card-body p-4">
                             <?php if ($match): ?>
-                                <span class="badge <?php echo $match['badge']; ?> mb-2">
+                                <span class="badge <?php echo $match['badge']; ?> mb-3">
                                     <?php echo htmlspecialchars($match['label']); ?>
                                 </span>
-                                <h3 class="h5 mb-2">
+                                <h3 class="h5 mb-3">
                                     <?php echo htmlspecialchars($match['teamHome']); ?> vs. <?php echo htmlspecialchars($match['teamAway']); ?>
                                 </h3>
-                                <p class="mb-1">
+                                <p class="mb-2 text-body-secondary">
                                     <strong><?php echo htmlspecialchars($formatMatchDate($match['matchDate'])); ?></strong>
                                     <?php if ($formatMatchTime($match['matchTime']) !== ''): ?>
                                         • <?php echo htmlspecialchars($formatMatchTime($match['matchTime'])); ?>
                                     <?php endif; ?>
                                 </p>
-                                <p class="mb-0 text-body-secondary"><?php echo htmlspecialchars($match['location']); ?></p>
+                                <p class="mb-0"><?php echo htmlspecialchars($match['location']); ?></p>
                             <?php else: ?>
                                 <span class="badge text-bg-secondary mb-2">Match à venir</span>
                                 <h3 class="h5 mb-2">Planning en cours</h3>
@@ -220,75 +248,81 @@ foreach ($matches as $match) {
                     </article>
                 </div>
             <?php endforeach; ?>
-        </div>
-    </section>
+            </div>
+        </section>
 
-    <section aria-label="Dernières actualités" class="home-articles">
-        <h2 class="mb-4">Nos derniers actualités</h2>
-        <!-- Si on a au moins un article récupéré, on les affiche. -->
-        <?php if (!empty($ba_bec_articles)): ?>
-            <div class="d-flex flex-column gap-4">
-                <!-- On parcourt les 3 articles aléatoires récupérés depuis la base. -->
-                <?php foreach ($ba_bec_articles as $index => $ba_bec_article): ?>
-                    <?php
-                    // 1) On détermine l'image à afficher :
-                    //    - si l'article a une image, on utilise celle-ci
-                    //    - sinon on utilise l'image par défaut.
-                    $defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
-                    $uploadPath = !empty($ba_bec_article['urlPhotArt'])
-                        ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_article['urlPhotArt']
-                        : '';
-                    $ba_bec_imagePath = (!empty($ba_bec_article['urlPhotArt']) && file_exists($uploadPath))
-                        ? ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_article['urlPhotArt'])
-                        : $defaultImagePath;
-                    // 2) On récupère le chapo (texte d'accroche) ou une chaîne vide si absent.
-                    $chapo = $ba_bec_article['libChapoArt'] ?? '';
-                    // 3) On fixe la longueur max de l'extrait affiché.
-                    $maxLength = 160;
-                    // 4) On tronque le chapo proprement (multibyte si disponible).
-                    $excerptBase = function_exists('mb_substr') ? mb_substr($chapo, 0, $maxLength) : substr($chapo, 0, $maxLength);
-                    // 5) On calcule la longueur réelle du chapo.
-                    $chapoLength = function_exists('mb_strlen') ? mb_strlen($chapo) : strlen($chapo);
-                    // 6) On ajoute "..." seulement si le chapo dépassait la limite.
-                    $excerpt = $excerptBase . ($chapoLength > $maxLength ? '...' : '');
-                    $isMiddleArticle = $index === 1;
-                    $imageOrderClass = $isMiddleArticle ? 'order-md-2' : 'order-md-1';
-                    $contentOrderClass = $isMiddleArticle ? 'order-md-1' : 'order-md-2';
-                    ?>
-                    <article class="card w-100 home-article-card">
-                        <div class="row g-3 h-100 align-items-center">
-                            <div class="col-md-4 <?php echo $imageOrderClass; ?>">
-                                <div class="ratio ratio-1x1">
-                                    <img src="<?php echo $ba_bec_imagePath; ?>"
-                                        class="img-fluid object-fit-cover w-100 h-100 home-article-image"
-                                        alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
+        <section aria-label="Dernières actualités" class="home-articles">
+            <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+                <div>
+                    <span class="home-pill bg-white text-primary shadow-sm">Actualités</span>
+                    <h2 class="home-section-title mt-2">Nos derniers actualités</h2>
+                </div>
+            </div>
+            <!-- Si on a au moins un article récupéré, on les affiche. -->
+            <?php if (!empty($ba_bec_articles)): ?>
+                <div class="d-flex flex-column gap-4">
+                    <!-- On parcourt les 3 articles aléatoires récupérés depuis la base. -->
+                    <?php foreach ($ba_bec_articles as $index => $ba_bec_article): ?>
+                        <?php
+                        // 1) On détermine l'image à afficher :
+                        //    - si l'article a une image, on utilise celle-ci
+                        //    - sinon on utilise l'image par défaut.
+                        $defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
+                        $uploadPath = !empty($ba_bec_article['urlPhotArt'])
+                            ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_article['urlPhotArt']
+                            : '';
+                        $ba_bec_imagePath = (!empty($ba_bec_article['urlPhotArt']) && file_exists($uploadPath))
+                            ? ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_article['urlPhotArt'])
+                            : $defaultImagePath;
+                        // 2) On récupère le chapo (texte d'accroche) ou une chaîne vide si absent.
+                        $chapo = $ba_bec_article['libChapoArt'] ?? '';
+                        // 3) On fixe la longueur max de l'extrait affiché.
+                        $maxLength = 160;
+                        // 4) On tronque le chapo proprement (multibyte si disponible).
+                        $excerptBase = function_exists('mb_substr') ? mb_substr($chapo, 0, $maxLength) : substr($chapo, 0, $maxLength);
+                        // 5) On calcule la longueur réelle du chapo.
+                        $chapoLength = function_exists('mb_strlen') ? mb_strlen($chapo) : strlen($chapo);
+                        // 6) On ajoute "..." seulement si le chapo dépassait la limite.
+                        $excerpt = $excerptBase . ($chapoLength > $maxLength ? '...' : '');
+                        $isMiddleArticle = $index === 1;
+                        $imageOrderClass = $isMiddleArticle ? 'order-md-2' : 'order-md-1';
+                        $contentOrderClass = $isMiddleArticle ? 'order-md-1' : 'order-md-2';
+                        ?>
+                        <article class="card w-100 home-article-card border-0">
+                            <div class="row g-0 h-100 align-items-center">
+                                <div class="col-md-4 <?php echo $imageOrderClass; ?>">
+                                    <div class="ratio ratio-1x1">
+                                        <img src="<?php echo $ba_bec_imagePath; ?>"
+                                            class="img-fluid object-fit-cover w-100 h-100 home-article-image"
+                                            alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-8 <?php echo $contentOrderClass; ?>">
+                                    <div class="card-body d-flex flex-column h-100">
+                                        <h3 class="card-title h4 mb-2"><?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?></h3>
+                                        <p class="card-text fst-italic text-body-secondary"><?php echo htmlspecialchars($excerpt); ?></p>
+                                        <p class="card-text mt-auto">
+                                            <small class="text-body-secondary">
+                                                <?php echo htmlspecialchars($ba_bec_article['dtCreaArt']); ?>
+                                            </small>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-8 <?php echo $contentOrderClass; ?>">
-                                <div class="card-body d-flex flex-column h-100">
-                                    <h3 class="card-title h4 mb-2"><?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?></h3>
-                                    <p class="card-text fst-italic"><?php echo htmlspecialchars($excerpt); ?></p>
-                                    <p class="card-text mt-auto">
-                                        <small class="text-body-secondary">
-                                            <?php echo htmlspecialchars($ba_bec_article['dtCreaArt']); ?>
-                                        </small>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-            <div class="mt-4">
-                <a class="btn btn-primary" href="actualites.php">Voir les autres actualités</a>
-            </div>
-        <?php else: ?>
-            <!-- Si aucun article n'est disponible, on affiche un message d'information. -->
-            <div class="alert alert-info mb-0" role="status">
-                Aucune actualité disponible pour le moment.
-            </div>
-        <?php endif; ?>
-    </section>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+                <div class="mt-4">
+                    <a class="btn btn-primary" href="actualites.php">Voir les autres actualités</a>
+                </div>
+            <?php else: ?>
+                <!-- Si aucun article n'est disponible, on affiche un message d'information. -->
+                <div class="alert alert-info mb-0" role="status">
+                    Aucune actualité disponible pour le moment.
+                </div>
+            <?php endif; ?>
+        </section>
+    </div>
 </div>
 
 <?php require_once 'footer.php'; ?>

@@ -35,12 +35,7 @@ require_once 'header.php';
 <br>
 <h4>Cette page est indisponible pour le moment ou est actuellement en cours de développement.</h4>
 <br>
-<div class="logo-anime-wrapper">
-    <video class="logo-anime" autoplay loop muted playsinline>
-        <source src="<?= ROOT_URL ?>/src/images/logo/logo-bec/logo-anime-transparent.mov" type="video/quicktime">
-    </video>
-</div>
-<a href="index.php"><button class="bouton">Revenir à l'accueil</button></a>
+<a href="<?php echo ROOT_URL . '/index.php'; ?>"><button class="bouton">Revenir à l'accueil</button></a>
 <br>
 
 <?php
