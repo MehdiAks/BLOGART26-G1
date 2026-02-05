@@ -22,6 +22,7 @@ function curl($url, $type, $data = null, $headers = null){
 }
 
 function isAllowedBbcodeUrl($url) {
+    $url = trim((string) $url);
     if ($url === '') {
         return false;
     }
@@ -36,6 +37,48 @@ function isAllowedBbcodeUrl($url) {
     }
 
     return in_array(strtolower($parsed['scheme']), ['http', 'https'], true);
+}
+
+function isValidBbcodeContent($text) {
+    if ($text === null || $text === '') {
+        return true;
+    }
+
+    $allowedTags = ['b', 'i', 'u', 's', 'quote', 'code', 'url', 'emoji'];
+    preg_match_all('/\\[(\\/)?([^\\]=\\s]+)(?:=([^\\]]*))?\\]/', $text, $matches, PREG_SET_ORDER);
+
+    foreach ($matches as $match) {
+        $isClosing = $match[1] === '/';
+        $tag = strtolower($match[2]);
+        $param = $match[3] ?? null;
+
+        if (!in_array($tag, $allowedTags, true)) {
+            return false;
+        }
+
+        if ($tag === 'emoji') {
+            if ($isClosing || $param === null || trim($param) === '') {
+                return false;
+            }
+            continue;
+        }
+
+        if ($tag === 'url') {
+            if ($isClosing && $param !== null && $param !== '') {
+                return false;
+            }
+            if (!$isClosing && $param !== null && trim($param) === '') {
+                return false;
+            }
+            continue;
+        }
+
+        if ($param !== null && $param !== '') {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 function renderBbcode($text) {
