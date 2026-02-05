@@ -271,9 +271,11 @@ CREATE TABLE `MATCH` (
 CREATE TABLE `MATCH_PARTICIPANT` (
   `numMatchParticipant` int NOT NULL,
   `numMatch` int NOT NULL,
-  `numEquipe` int NOT NULL,
+  `numEquipe` int DEFAULT NULL,
   `cote` enum('domicile','exterieur') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `score` int DEFAULT NULL
+  `score` int DEFAULT NULL,
+  `nomEquipeAdverse` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `numeroEquipeAdverse` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

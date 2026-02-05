@@ -11,8 +11,8 @@ if (isset($_GET['numMatch'])) {
     if ($ba_bec_numMatch > 0) {
         $stmt = $DB->prepare(
             "SELECT m.numMatch,
-                    home_team.libEquipe AS teamHome,
-                    away_team.libEquipe AS teamAway
+                    COALESCE(home_team.libEquipe, home_part.nomEquipeAdverse) AS teamHome,
+                    COALESCE(away_team.libEquipe, away_part.nomEquipeAdverse) AS teamAway
              FROM `MATCH` m
              LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
              LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
