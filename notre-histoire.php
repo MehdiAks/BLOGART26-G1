@@ -8,13 +8,13 @@ require_once 'header.php';
 
     <!-- Hero / Intro -->
     <section class="text-center mb-5 hero-section">
-        <img src="/src/images/logo.png" alt="Logo BEC" class="hero-logo mb-3">
+        <img src="/src/images/logo/logo-bec/logo.svg" alt="Logo BEC" class="hero-logo mb-3">
         <h1 class="display-4 fw-bold mb-3">Notre histoire</h1>
         <p class="lead mx-auto" style="max-width: 800px; color: #212529;">
             Depuis la fin du XIXᵉ siècle, le Bordeaux Étudiants Club (BEC) rassemble les passionnés de sport
             dans un esprit de partage, d’effort et de convivialité, fidèle à ses racines universitaires.
         </p>
-        <img src="/src/images/fleche-bas.svg" class="scroll-down" alt="Scroll down">
+        <img src="/src/images/icon/fleche-bas.svg" class="scroll-down" alt="Scroll down">
     </section>
 
     <section class="storyline">
@@ -22,7 +22,7 @@ require_once 'header.php';
         <!-- Article 1 : texte gauche / image droite -->
         <div class="article-horizontal row align-items-center my-5 has-image">
             <div class="col-md-6">
-                <h2>1897 : des origines étudiantes <img src="/src/images/article.png" class="decorative" alt="Décor"></h2>
+                <h2>1897 : des origines étudiantes</h2>
                 <p>Fondé en 1897, le BEC s'est construit autour des étudiants de Bordeaux.</p>
                 <p>Très tôt, le club s'impose comme référence locale pour le sport universitaire.</p>
             </div>
@@ -36,11 +36,6 @@ require_once 'header.php';
             <div class="col-md-6 order-md-2">
                 <h2>Un club omnisports</h2>
                 <p>Le BEC fédère plusieurs disciplines et rassemble des générations de sportifs.</p>
-                <div class="interactive-icons">
-                    <img src="/src/images/eye-open.png" class="icon-eye" alt="Voir">
-                    <img src="/src/images/pnglike.png" class="icon-like" alt="Like">
-                    <img src="/src/images/pngdislike.png" class="icon-dislike" alt="Dislike">
-                </div>
             </div>
             <div class="col-md-6 order-md-1">
                 <img src="/src/images/notre-histoire/notre-histoire-3.webp" class="img-fluid img-tall rounded" alt="Club omnisports">

@@ -27,21 +27,11 @@ if (empty($ba_bec_numMemb)) {
     exit();
 }
 
-$ba_bec_member = sql_select('MEMBRE', 'numStat', "numMemb = $ba_bec_numMemb");
-if (empty($ba_bec_member)) {
-    $_SESSION['errors'] = ['Membre introuvable.'];
-    header('Location: ' . $ba_bec_redirectUrl);
-    exit();
+$ba_bec_delete_result = sql_delete('MEMBRE', "numMemb = $ba_bec_numMemb");
+if ($ba_bec_delete_result['success']) {
+    flash_success();
+} else {
+    flash_error();
 }
-
-if ((int) $ba_bec_member[0]['numStat'] === 1) {
-    $_SESSION['errors'] = ['Un administrateur ne peut pas être supprimé.'];
-    header('Location: ' . $ba_bec_redirectUrl);
-    exit();
-}
-
-sql_delete('COMMENT', "numMemb = $ba_bec_numMemb");
-sql_delete('LIKEART', "numMemb = $ba_bec_numMemb");
-sql_delete('MEMBRE', "numMemb = $ba_bec_numMemb");
 
 header('Location: ../../views/backend/members/list.php');
