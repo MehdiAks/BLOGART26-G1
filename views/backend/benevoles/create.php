@@ -18,15 +18,18 @@ include '../../../header.php';
             <form action="<?php echo ROOT_URL . '/api/benevoles/create.php'; ?>" method="post">
                 <div class="form-group">
                     <label for="prenomPersonnel">Prénom</label>
-                    <input id="prenomPersonnel" name="prenomPersonnel" class="form-control" type="text" required />
+                    <input id="prenomPersonnel" name="prenomPersonnel" class="form-control" type="text"
+                        placeholder="Prénom (ex: Léa)" required />
                 </div>
                 <div class="form-group mt-2">
                     <label for="nomPersonnel">Nom</label>
-                    <input id="nomPersonnel" name="nomPersonnel" class="form-control" type="text" required />
+                    <input id="nomPersonnel" name="nomPersonnel" class="form-control" type="text"
+                        placeholder="Nom (ex: Martin)" required />
                 </div>
                 <div class="form-group mt-2">
                     <label for="urlPhotoPersonnel">URL photo</label>
-                    <input id="urlPhotoPersonnel" name="urlPhotoPersonnel" class="form-control" type="url" />
+                    <input id="urlPhotoPersonnel" name="urlPhotoPersonnel" class="form-control" type="url"
+                        placeholder="URL de la photo (https://...)" />
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Créer</button>

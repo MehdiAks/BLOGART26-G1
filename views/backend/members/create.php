@@ -33,14 +33,17 @@ $ba_bec_recaptchaSiteKeyEscaped = htmlspecialchars($ba_bec_recaptchaSiteKey ?? '
                     <!-- NOM D'UTILISATEUR -->
 
                     <label for="pseudoMemb">Nom d'utilisateur du membre (non modifiable)</label>
-                    <input id="pseudoMemb" name="pseudoMemb" class="form-control" type="text" autofocus="autofocus" />
+                    <input id="pseudoMemb" name="pseudoMemb" class="form-control" type="text" autofocus="autofocus"
+                        placeholder="Pseudo (ex: leo32)" />
                     <p>(entre 6 et 70 caractères)</p>
                     <!-- PRENOM -->
                     <label for="prenomMemb">Prénom du membre</label>
-                    <input id="prenomMemb" name="prenomMemb" class="form-control" type="text" autofocus="autofocus" />
+                    <input id="prenomMemb" name="prenomMemb" class="form-control" type="text" autofocus="autofocus"
+                        placeholder="Prénom (ex: Léa)" />
                     <!-- NOM -->
                     <label for="nomMemb">Nom du membre</label>
-                    <input id="nomMemb" name="nomMemb" class="form-control" type="text" autofocus="autofocus" />
+                    <input id="nomMemb" name="nomMemb" class="form-control" type="text" autofocus="autofocus"
+                        placeholder="Nom (ex: Martin)" />
                     <!-- MDP -->
                     <label for="passMemb">Mot de passe du membre</label>
                     <input id="passMemb" name="passMemb" class="form-control" type="password" autofocus="autofocus" />
@@ -55,10 +58,12 @@ $ba_bec_recaptchaSiteKeyEscaped = htmlspecialchars($ba_bec_recaptchaSiteKey ?? '
                         passe</button><br><br>
                     <!-- EMAIL -->
                     <label for="eMailMemb">Email du membre</label>
-                    <input id="eMailMemb" name="eMailMemb" class="form-control" type="email" autofocus="autofocus" />
+                    <input id="eMailMemb" name="eMailMemb" class="form-control" type="email" autofocus="autofocus"
+                        placeholder="prenom.nom@example.com" />
                     <!-- EMAIL VERIFICATION -->
                     <label for="eMailMemb2">Confirmez email du membre</label>
-                    <input id="eMailMemb2" name="eMailMemb2" class="form-control" type="email" autofocus="autofocus" />
+                    <input id="eMailMemb2" name="eMailMemb2" class="form-control" type="email" autofocus="autofocus"
+                        placeholder="prenom.nom@example.com" />
                     <!-- PARTAGE DES DONNEES -->
                     <label for="accordMemb">J'accepte que mes données soient conservées :</label>
                     <input type="radio" id="accordMemb" name="accordMemb" value="OUI" />

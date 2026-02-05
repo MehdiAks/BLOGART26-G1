@@ -22,7 +22,8 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
                     <label for="numArt">Numéro d'article</label>
                     <input id="numArt" name="numArt" class="form-control" style="display: none" type="text"
                         value="<?php echo $ba_bec_numArt; ?>" />
-                    <input id="numArt" name="numArt" class="form-control" type="text" value="<?php echo $ba_bec_numArt; ?>" />
+                    <input id="numArt" name="numArt" class="form-control" type="text" value="<?php echo $ba_bec_numArt; ?>"
+                        placeholder="ID article (ex: 42)" />
                 </div>
                 <br>
 
@@ -31,7 +32,7 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
                     <input id="numMemb" name="numMemb" class="form-control" style="display: none" type="text"
                         value="<?php echo $ba_bec_numMemb; ?>" />
                     <input id="numMemb" name="numMemb" class="form-control" type="text"
-                        value="<?php echo $ba_bec_numMemb; ?>" />
+                        value="<?php echo $ba_bec_numMemb; ?>" placeholder="ID utilisateur (ex: 7)" />
                 </div>
                 <br>
 

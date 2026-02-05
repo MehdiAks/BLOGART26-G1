@@ -92,11 +92,12 @@ function ba_bec_team_label(array $team): string
                 <div class="form-group mt-2 row">
                     <div class="col-md-4">
                         <label for="dateMatch">Date</label>
-                        <input id="dateMatch" name="dateMatch" class="form-control" type="date" required />
+                        <input id="dateMatch" name="dateMatch" class="form-control" type="date"
+                            placeholder="JJ/MM/AAAA" required />
                     </div>
                     <div class="col-md-4">
                         <label for="heureMatch">Heure</label>
-                        <input id="heureMatch" name="heureMatch" class="form-control" type="time" />
+                        <input id="heureMatch" name="heureMatch" class="form-control" type="time" placeholder="HH:MM" />
                     </div>
                     <div class="col-md-4">
                         <label for="lieuMatch">Lieu</label>
@@ -130,11 +131,13 @@ function ba_bec_team_label(array $team): string
                 <div class="form-group mt-2 row">
                     <div class="col-md-6">
                         <label for="scoreHome">Score domicile</label>
-                        <input id="scoreHome" name="scoreHome" class="form-control" type="number" min="0" />
+                        <input id="scoreHome" name="scoreHome" class="form-control" type="number" min="0"
+                            placeholder="Score (ex: 75)" />
                     </div>
                     <div class="col-md-6">
                         <label for="scoreAway">Score extérieur</label>
-                        <input id="scoreAway" name="scoreAway" class="form-control" type="number" min="0" />
+                        <input id="scoreAway" name="scoreAway" class="form-control" type="number" min="0"
+                            placeholder="Score (ex: 68)" />
                     </div>
                     <small class="form-text text-muted">Laisser vide si le match n'a pas encore eu lieu.</small>
                 </div>

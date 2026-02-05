@@ -50,11 +50,13 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
             <form action="<?php echo ROOT_URL . '/api/joueurs/create.php'; ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="prenomJoueur">Prénom</label>
-                    <input id="prenomJoueur" name="prenomJoueur" class="form-control" type="text" required />
+                    <input id="prenomJoueur" name="prenomJoueur" class="form-control" type="text"
+                        placeholder="Prénom (ex: Léa)" required />
                 </div>
                 <div class="form-group mt-2">
                     <label for="nomJoueur">Nom</label>
-                    <input id="nomJoueur" name="nomJoueur" class="form-control" type="text" required />
+                    <input id="nomJoueur" name="nomJoueur" class="form-control" type="text"
+                        placeholder="Nom (ex: Martin)" required />
                 </div>
                 <div class="form-group mt-2">
                     <label for="photoJoueur">Photo (upload)</label>
@@ -63,7 +65,8 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                 </div>
                 <div class="form-group mt-2">
                     <label for="dateNaissance">Date de naissance</label>
-                    <input id="dateNaissance" name="dateNaissance" class="form-control" type="date" />
+                    <input id="dateNaissance" name="dateNaissance" class="form-control" type="date"
+                        placeholder="JJ/MM/AAAA" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="numSaison">Saison</label>
@@ -109,16 +112,19 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                 </div>
                 <div class="form-group mt-2">
                     <label for="numeroMaillot">Numéro de maillot (saison)</label>
-                    <input id="numeroMaillot" name="numeroMaillot" class="form-control" type="number" min="0" max="99" />
+                    <input id="numeroMaillot" name="numeroMaillot" class="form-control" type="number" min="0" max="99"
+                        placeholder="Numéro (0-99)" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="dateDebut">Date de début d'affectation</label>
-                    <input id="dateDebut" name="dateDebut" class="form-control" type="date" />
+                    <input id="dateDebut" name="dateDebut" class="form-control" type="date"
+                        placeholder="JJ/MM/AAAA" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="clubsPrecedents">Clubs précédents</label>
                     <div id="clubsPrecedentsList" class="d-grid gap-2">
-                        <input name="clubsPrecedents[]" class="form-control" type="text" placeholder="Nom du club" />
+                        <input name="clubsPrecedents[]" class="form-control" type="text"
+                            placeholder="Nom du club (ex: BEC Basket)" />
                     </div>
                     <button type="button" id="addClubButton" class="btn btn-outline-secondary btn-sm mt-2">
                         Ajouter un club
@@ -145,7 +151,7 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
             input.name = 'clubsPrecedents[]';
             input.className = 'form-control';
             input.type = 'text';
-            input.placeholder = 'Nom du club';
+            input.placeholder = 'Nom du club (ex: BEC Basket)';
 
             const removeButton = document.createElement('button');
             removeButton.type = 'button';

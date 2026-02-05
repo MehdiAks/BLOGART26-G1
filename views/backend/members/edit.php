@@ -63,12 +63,12 @@ if (isset($_GET['numMemb'])) {
                     <!-- PRENOM -->
                     <label for="prenomMemb">Prénom du membre</label>
                     <input id="prenomMemb" name="prenomMemb" class="form-control" type="text"
-                        value="<?php echo htmlspecialchars($ba_bec_prenomMemb); ?>" />
+                        value="<?php echo htmlspecialchars($ba_bec_prenomMemb); ?>" placeholder="Prénom (ex: Léa)" />
 
                     <!-- NOM -->
                     <label for="nomMemb">Nom du membre</label>
                     <input id="nomMemb" name="nomMemb" class="form-control" type="text"
-                        value="<?php echo htmlspecialchars($ba_bec_nomMemb); ?>" />
+                        value="<?php echo htmlspecialchars($ba_bec_nomMemb); ?>" placeholder="Nom (ex: Martin)" />
 
                     <!-- MDP -->
                     <label for="passMemb">Mot de Passe</label>
@@ -89,12 +89,14 @@ if (isset($_GET['numMemb'])) {
                     <!-- EMAIL -->
                     <label for="eMailMemb">Email du membre</label>
                     <input id="eMailMemb" name="eMailMemb" class="form-control" type="email"
-                        value="<?php echo htmlspecialchars($ba_bec_eMailMemb); ?>" />
+                        value="<?php echo htmlspecialchars($ba_bec_eMailMemb); ?>"
+                        placeholder="prenom.nom@example.com" />
 
                     <!-- EMAIL VERIFICATION -->
                     <label for="eMailMemb2">Confirmez l'email du membre</label>
                     <input id="eMailMemb2" name="eMailMemb2" class="form-control" type="email"
-                        value="<?php echo htmlspecialchars($ba_bec_eMailMemb); ?>" />
+                        value="<?php echo htmlspecialchars($ba_bec_eMailMemb); ?>"
+                        placeholder="prenom.nom@example.com" />
                     <br><br>
 
                     <!-- STATUT -->

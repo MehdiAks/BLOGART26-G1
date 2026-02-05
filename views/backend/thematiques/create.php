@@ -15,7 +15,8 @@ include '../../../header.php';
             <form action="<?php echo ROOT_URL . '/api/thematiques/create.php' ?>" method="post">
                 <div class="form-group">
                     <label for="libThem">Nom de thematique</label>
-                    <input id="libThem" name="libThem" class="form-control" type="text" autofocus="autofocus" required />
+                    <input id="libThem" name="libThem" class="form-control" type="text" autofocus="autofocus"
+                        placeholder="Nom de la thématique..." required />
                 </div>
                 <br />
                 <div class="form-group mt-2">

@@ -20,7 +20,8 @@ if(isset($_GET['numMotCle'])){
                 <div class="form-group">
                     <label for="libMotCle">Nom du statut</label>
                     <input id="numMotCle" name="numMotCle" class="form-control" style="display: none" type="text" value="<?php echo($ba_bec_numMotCle); ?>" readonly="readonly" />
-                    <input id="libMotCle" name="libMotCle" class="form-control" type="text" value="<?php echo($ba_bec_libMotCle); ?>"/>
+                    <input id="libMotCle" name="libMotCle" class="form-control" type="text"
+                        value="<?php echo($ba_bec_libMotCle); ?>" placeholder="Nom du mot-clé..."/>
                 </div>
                 <br />
                 <div class="form-group mt-2">

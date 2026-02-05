@@ -16,11 +16,11 @@ include '../../../header.php';
             <form action="<?php echo ROOT_URL . '/api/likes/create.php' ?>" method="post">
                 <div class="form-group">
                     <label for="numArt">Article</label>
-                    <input id="numArt" name="numArt" class="form-control" type="text" required />
+                    <input id="numArt" name="numArt" class="form-control" type="text" placeholder="ID article (ex: 42)" required />
                 </div>
                 <div class="form-group">
                     <label for="numMemb">Numéro d'utilisateur</label>
-                    <input id="numMemb" name="numMemb" class="form-control" type="text" required />
+                    <input id="numMemb" name="numMemb" class="form-control" type="text" placeholder="ID utilisateur (ex: 7)" required />
                 </div>
                 <div class="form-group">
                     <label for="likeA">Like</label>

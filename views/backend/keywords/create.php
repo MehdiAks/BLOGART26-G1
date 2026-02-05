@@ -16,7 +16,8 @@ include '../../../header.php';
             <form action="<?php echo ROOT_URL . '/api/keywords/create.php' ?>" method="post">
                 <div class="form-group">
                     <label for="libMotCle">Nom du Mot-clé</label>
-                    <input id="libMotCle" name="libMotCle" class="form-control" type="text" autofocus="autofocus" required />
+                    <input id="libMotCle" name="libMotCle" class="form-control" type="text" autofocus="autofocus"
+                        placeholder="Nom du mot-clé..." required />
                 </div>
                 <br />
                 <div class="form-group mt-2">
