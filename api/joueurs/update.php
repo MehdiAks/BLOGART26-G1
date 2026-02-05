@@ -66,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     $ba_bec_photoActuelle = ctrlSaisies($_POST['photoActuelle'] ?? '');
+    $ba_bec_photoActuelleRelative = normalize_upload_path($ba_bec_photoActuelle);
     $ba_bec_numeroMaillot = ctrlSaisies($_POST['numeroMaillot'] ?? '');
     $ba_bec_numEquipe = (int) ($_POST['numEquipe'] ?? 0);
     $ba_bec_numSaison = (int) ($_POST['numSaison'] ?? 0);

@@ -161,12 +161,10 @@ class ArticleController
             exit;
         }
 
-        $ba_bec_urlPhotValue = $ba_bec_nom_image ? "'$ba_bec_nom_image'" : 'NULL';
-
         sql_insert(
             'ARTICLE',
             'libTitrArt, libChapoArt, libAccrochArt, parag1Art, libSsTitr1Art, parag2Art, libSsTitr2Art, parag3Art, libConclArt, urlPhotArt, numThem',
-            "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', $ba_bec_urlPhotValue, '$ba_bec_numThem'"
+            "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', NULL, '$ba_bec_numThem'"
         );
         $ba_bec_lastArt = sql_select('ARTICLE', 'numArt', null, null, 'numArt DESC', '1')[0]['numArt'];
 
@@ -312,6 +310,7 @@ class ArticleController
                     unlink($ba_bec_oldPath);
                 }
             }
+            $ba_bec_nom_image = $ba_bec_relativePath;
         } else {
             $ba_bec_nom_image = $ba_bec_ancienneImage;
             if ($ba_bec_nom_image && strpos($ba_bec_nom_image, 'article/') !== 0) {
@@ -395,8 +394,11 @@ numThem = '$ba_bec_numThem'";
 
         $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
 
-        if ($ba_bec_ancienneImage && file_exists($ba_bec_uploadDir . $ba_bec_ancienneImage)) {
-            unlink($ba_bec_uploadDir . $ba_bec_ancienneImage);
+        if ($ba_bec_ancienneImage) {
+            $ba_bec_oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_ancienneImage;
+            if (file_exists($ba_bec_oldPath)) {
+                unlink($ba_bec_oldPath);
+            }
         }
 
         sql_delete('MOTCLEARTICLE', "numArt = '$ba_bec_numArt'");

@@ -15,10 +15,25 @@ if (isset($_POST['create_table'])) {
 
 $ba_bec_is_missing_table = sql_is_missing_table('EQUIPE');
 $ba_bec_equipes = [];
+
+function ba_bec_equipe_photo_url(?string $path): string
+{
+    if (!$path) {
+        return '';
+    }
+
+    if (preg_match('/^(https?:\/\/|\/)/', $path)) {
+        return $path;
+    }
+
+    return ROOT_URL . '/src/uploads/photos-equipes/' . ltrim($path, '/');
+}
+
 if (!$ba_bec_is_missing_table) {
     $teamsStmt = $DB->prepare(
         'SELECT e.numEquipe, e.codeEquipe, e.libEquipe, e.libEquipeComplet,
-                c.nomClub, ce.libCategorie, se.libSection, ne.libNiveau
+                c.nomClub, ce.libCategorie, se.libSection, ne.libNiveau,
+                e.urlPhotoEquipe, e.urlPhotoStaff
          FROM EQUIPE e
          INNER JOIN CLUB c ON e.numClub = c.numClub
          INNER JOIN CATEGORIE_EQUIPE ce ON e.numCategorie = ce.numCategorie
@@ -66,11 +81,17 @@ if (!$ba_bec_is_missing_table) {
                             <th>Catégorie</th>
                             <th>Section</th>
                             <th>Niveau</th>
+                            <th>Photo équipe</th>
+                            <th>Photo staff</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($ba_bec_equipes as $ba_bec_equipe): ?>
+                            <?php
+                            $ba_bec_photoEquipeUrl = ba_bec_equipe_photo_url($ba_bec_equipe['urlPhotoEquipe'] ?? '');
+                            $ba_bec_photoStaffUrl = ba_bec_equipe_photo_url($ba_bec_equipe['urlPhotoStaff'] ?? '');
+                            ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_equipe['codeEquipe']); ?></td>
@@ -79,6 +100,22 @@ if (!$ba_bec_is_missing_table) {
                                 <td><?php echo htmlspecialchars($ba_bec_equipe['libCategorie']); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_equipe['libSection']); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_equipe['libNiveau']); ?></td>
+                                <td>
+                                    <?php if ($ba_bec_photoEquipeUrl): ?>
+                                        <img src="<?php echo htmlspecialchars($ba_bec_photoEquipeUrl); ?>" alt="Photo équipe"
+                                            style="max-width: 80px; height: auto;">
+                                    <?php else : ?>
+                                        <span class="text-muted">—</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if ($ba_bec_photoStaffUrl): ?>
+                                        <img src="<?php echo htmlspecialchars($ba_bec_photoStaffUrl); ?>" alt="Photo staff"
+                                            style="max-width: 80px; height: auto;">
+                                    <?php else : ?>
+                                        <span class="text-muted">—</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <a href="edit.php?numEquipe=<?php echo $ba_bec_equipe['numEquipe']; ?>" class="btn btn-primary">Edit</a>
                                     <a href="delete.php?numEquipe=<?php echo $ba_bec_equipe['numEquipe']; ?>" class="btn btn-danger">Delete</a>

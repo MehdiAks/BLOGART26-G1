@@ -127,13 +127,11 @@ if ($ba_bec_numThem === '' || !is_numeric($ba_bec_numThem)) {
     exit;
 }
 
-$ba_bec_urlPhotValue = $ba_bec_nom_image ? "'$ba_bec_nom_image'" : "NULL";
-
 // Insertion dans la table ARTICLE
 $ba_bec_insert_result = sql_insert(
     'ARTICLE',
     'libTitrArt, libChapoArt, libAccrochArt, parag1Art, libSsTitr1Art, parag2Art, libSsTitr2Art, parag3Art, libConclArt, urlPhotArt, numThem',
-    "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', $ba_bec_urlPhotValue, '$ba_bec_numThem'"
+    "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', NULL, '$ba_bec_numThem'"
 );
 if (!$ba_bec_insert_result['success']) {
     flash_error();

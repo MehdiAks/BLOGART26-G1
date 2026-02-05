@@ -148,6 +148,7 @@ if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
             unlink($ba_bec_oldPath);
         }
     }
+    $ba_bec_nom_image = $ba_bec_relativePath;
 
 } else {
     // Si aucune nouvelle image n'est téléchargée, conserver l'image existante

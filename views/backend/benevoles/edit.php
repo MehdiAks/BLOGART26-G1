@@ -30,7 +30,7 @@ if (!$ba_bec_benevole) {
             <h1>Modifier un bénévole</h1>
         </div>
         <div class="col-md-12">
-            <form action="<?php echo ROOT_URL . '/api/benevoles/update.php'; ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/api/benevoles/update.php'; ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="numPersonnel" value="<?php echo htmlspecialchars($ba_bec_benevole['numPersonnel']); ?>" />
                 <div class="form-group">
                     <label for="prenomPersonnel">Prénom</label>
@@ -45,10 +45,8 @@ if (!$ba_bec_benevole) {
                         placeholder="Nom (ex: Martin)" required />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="urlPhotoPersonnel">URL photo</label>
-                    <input id="urlPhotoPersonnel" name="urlPhotoPersonnel" class="form-control" type="url"
-                        value="<?php echo htmlspecialchars($ba_bec_benevole['urlPhotoPersonnel'] ?? ''); ?>"
-                        placeholder="URL de la photo (https://...)" />
+                    <label for="photoPersonnel">Photo</label>
+                    <input id="photoPersonnel" name="photoPersonnel" class="form-control" type="file" accept="image/*" />
                 </div>
                 <div class="form-group mt-3">
                     <label class="form-label d-block">Rôles</label>

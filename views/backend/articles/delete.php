@@ -21,6 +21,15 @@ if (!empty($ba_bec_articlePhoto)) {
             <form action="<?php echo ROOT_URL . '/public/index.php?controller=article&action=destroy'; ?>" method="post">
                 <!-- Champ caché pour l'ID de l'article -->
                 <input type="hidden" name="numArt" value="<?php echo $ba_bec_article['numArt']; ?>">
+                <?php
+                $ba_bec_urlPhotArt = $ba_bec_article['urlPhotArt'] ?? '';
+                $ba_bec_photoUrl = '';
+                if (!empty($ba_bec_urlPhotArt)) {
+                    $ba_bec_photoUrl = preg_match('/^(https?:\\/\\/|\\/)/', $ba_bec_urlPhotArt)
+                        ? $ba_bec_urlPhotArt
+                        : ROOT_URL . '/src/uploads/' . $ba_bec_urlPhotArt;
+                }
+                ?>
 
                 <!-- Titre de l'article -->
                 <div class="form-group">

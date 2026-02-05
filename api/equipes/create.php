@@ -91,6 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_libEquipe = ctrlSaisies($_POST['libEquipe'] ?? '');
     $ba_bec_libEquipeComplet = ctrlSaisies($_POST['libEquipeComplet'] ?? '');
     $ba_bec_descriptionEquipe = ctrlSaisies($_POST['descriptionEquipe'] ?? '');
+    $ba_bec_urlPhotoEquipe = ctrlSaisies($_POST['urlPhotoEquipe'] ?? '');
+    $ba_bec_urlPhotoStaff = ctrlSaisies($_POST['urlPhotoStaff'] ?? '');
     $ba_bec_nomClub = ctrlSaisies($_POST['nomClub'] ?? '');
     $ba_bec_categorieEquipe = ctrlSaisies($_POST['categorieEquipe'] ?? '');
     $ba_bec_sectionEquipe = ctrlSaisies($_POST['sectionEquipe'] ?? '');
@@ -103,6 +105,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($ba_bec_nomClub === '') {
         $ba_bec_errors[] = 'Le club est obligatoire.';
+    }
+
+    $ba_bec_photoEquipe = null;
+    $ba_bec_photoStaff = null;
+    if (empty($ba_bec_errors)) {
+        $ba_bec_photoEquipe = process_equipe_upload('photoEquipe', $ba_bec_codeEquipe, 'photo-equipe', $ba_bec_errors);
+        $ba_bec_photoStaff = process_equipe_upload('photoStaff', $ba_bec_codeEquipe, 'photo-staff', $ba_bec_errors);
     }
 
     if (empty($ba_bec_errors)) {
@@ -137,8 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $numNiveau = $referenceLookup('NIVEAU_EQUIPE', 'libNiveau', $ba_bec_niveauEquipe !== '' ? $ba_bec_niveauEquipe : 'Non renseigné');
 
         $insertEquipe = $DB->prepare(
-            'INSERT INTO EQUIPE (numClub, codeEquipe, libEquipe, libEquipeComplet, numCategorie, numSection, numNiveau, descriptionEquipe)
-             VALUES (:numClub, :codeEquipe, :libEquipe, :libEquipeComplet, :numCategorie, :numSection, :numNiveau, :descriptionEquipe)'
+            'INSERT INTO EQUIPE (numClub, codeEquipe, libEquipe, libEquipeComplet, numCategorie, numSection, numNiveau, descriptionEquipe, urlPhotoEquipe, urlPhotoStaff)
+             VALUES (:numClub, :codeEquipe, :libEquipe, :libEquipeComplet, :numCategorie, :numSection, :numNiveau, :descriptionEquipe, :photoEquipe, :photoStaff)'
         );
         $insertEquipe->execute([
             ':numClub' => $numClub,
@@ -149,6 +158,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':numSection' => $numSection,
             ':numNiveau' => $numNiveau,
             ':descriptionEquipe' => $ba_bec_descriptionEquipe !== '' ? $ba_bec_descriptionEquipe : null,
+            ':photoEquipe' => $ba_bec_photoEquipe,
+            ':photoStaff' => $ba_bec_photoStaff,
         ]);
         header('Location: ../../views/backend/equipes/list.php');
         exit();

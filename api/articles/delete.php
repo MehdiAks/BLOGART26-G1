@@ -26,8 +26,11 @@ $ba_bec_ancienneImage = normalize_upload_path($ba_bec_article['urlPhotArt'] ?? n
 $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
 
 // Supprimer l'image du serveur si elle existe
-if ($ba_bec_ancienneImage && file_exists($ba_bec_uploadDir . $ba_bec_ancienneImage)) {
-    unlink($ba_bec_uploadDir . $ba_bec_ancienneImage);
+if ($ba_bec_ancienneImage) {
+    $ba_bec_oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_ancienneImage;
+    if (file_exists($ba_bec_oldPath)) {
+        unlink($ba_bec_oldPath);
+    }
 }
 
 // Supprimer les mots-clés associés à l'article

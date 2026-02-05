@@ -117,6 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_libEquipe = ctrlSaisies($_POST['libEquipe'] ?? '');
     $ba_bec_libEquipeComplet = ctrlSaisies($_POST['libEquipeComplet'] ?? '');
     $ba_bec_descriptionEquipe = ctrlSaisies($_POST['descriptionEquipe'] ?? '');
+    $ba_bec_urlPhotoEquipe = ctrlSaisies($_POST['urlPhotoEquipe'] ?? '');
+    $ba_bec_urlPhotoStaff = ctrlSaisies($_POST['urlPhotoStaff'] ?? '');
     $ba_bec_nomClub = ctrlSaisies($_POST['nomClub'] ?? '');
     $ba_bec_categorieEquipe = ctrlSaisies($_POST['categorieEquipe'] ?? '');
     $ba_bec_sectionEquipe = ctrlSaisies($_POST['sectionEquipe'] ?? '');
@@ -129,6 +131,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($ba_bec_nomClub === '') {
         $ba_bec_errors[] = 'Le club est obligatoire.';
+    }
+
+    $ba_bec_existingPhotos = null;
+    if ($ba_bec_numEquipe > 0) {
+        $photoStmt = $DB->prepare('SELECT urlPhotoEquipe, urlPhotoStaff FROM EQUIPE WHERE numEquipe = :numEquipe');
+        $photoStmt->execute([':numEquipe' => $ba_bec_numEquipe]);
+        $ba_bec_existingPhotos = $photoStmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    $ba_bec_photoEquipe = $ba_bec_existingPhotos['urlPhotoEquipe'] ?? null;
+    $ba_bec_photoStaff = $ba_bec_existingPhotos['urlPhotoStaff'] ?? null;
+
+    if (empty($ba_bec_errors)) {
+        $ba_bec_photoEquipeUploaded = process_equipe_upload('photoEquipe', $ba_bec_codeEquipe, 'photo-equipe', $ba_bec_errors);
+        $ba_bec_photoStaffUploaded = process_equipe_upload('photoStaff', $ba_bec_codeEquipe, 'photo-staff', $ba_bec_errors);
+
+        if ($ba_bec_photoEquipeUploaded) {
+            $oldRelative = normalize_upload_path($ba_bec_photoEquipe);
+            if ($oldRelative) {
+                $oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $oldRelative;
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+            $ba_bec_photoEquipe = $ba_bec_photoEquipeUploaded;
+        } elseif ($ba_bec_photoEquipe) {
+            $oldRelative = normalize_upload_path($ba_bec_photoEquipe);
+            if ($oldRelative) {
+                $extension = strtolower(pathinfo($oldRelative, PATHINFO_EXTENSION));
+                if ($extension !== '') {
+                    $safeCode = sanitize_equipe_code($ba_bec_codeEquipe);
+                    $targetRelative = 'photos-equipes/' . $safeCode . '-photo-equipe.' . $extension;
+                    if ($oldRelative !== $targetRelative) {
+                        $oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $oldRelative;
+                        $newDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
+                        if (!is_dir($newDir)) {
+                            mkdir($newDir, 0755, true);
+                        }
+                        $newPath = $newDir . $safeCode . '-photo-equipe.' . $extension;
+                        if (file_exists($oldPath) && rename($oldPath, $newPath)) {
+                            $ba_bec_photoEquipe = $targetRelative;
+                        }
+                    } else {
+                        $ba_bec_photoEquipe = $oldRelative;
+                    }
+                }
+            }
+        }
+
+        if ($ba_bec_photoStaffUploaded) {
+            $oldRelative = normalize_upload_path($ba_bec_photoStaff);
+            if ($oldRelative) {
+                $oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $oldRelative;
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+            $ba_bec_photoStaff = $ba_bec_photoStaffUploaded;
+        } elseif ($ba_bec_photoStaff) {
+            $oldRelative = normalize_upload_path($ba_bec_photoStaff);
+            if ($oldRelative) {
+                $extension = strtolower(pathinfo($oldRelative, PATHINFO_EXTENSION));
+                if ($extension !== '') {
+                    $safeCode = sanitize_equipe_code($ba_bec_codeEquipe);
+                    $targetRelative = 'photos-equipes/' . $safeCode . '-photo-staff.' . $extension;
+                    if ($oldRelative !== $targetRelative) {
+                        $oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $oldRelative;
+                        $newDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
+                        if (!is_dir($newDir)) {
+                            mkdir($newDir, 0755, true);
+                        }
+                        $newPath = $newDir . $safeCode . '-photo-staff.' . $extension;
+                        if (file_exists($oldPath) && rename($oldPath, $newPath)) {
+                            $ba_bec_photoStaff = $targetRelative;
+                        }
+                    } else {
+                        $ba_bec_photoStaff = $oldRelative;
+                    }
+                }
+            }
+        }
     }
 
     if (empty($ba_bec_errors)) {
@@ -202,7 +285,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     numCategorie = :numCategorie,
                     numSection = :numSection,
                     numNiveau = :numNiveau,
-                    descriptionEquipe = :descriptionEquipe
+                    descriptionEquipe = :descriptionEquipe,
+                    urlPhotoEquipe = :photoEquipe,
+                    urlPhotoStaff = :photoStaff
              WHERE numEquipe = :numEquipe'
         );
         $updateEquipe->execute([
@@ -214,6 +299,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':numSection' => $numSection,
             ':numNiveau' => $numNiveau,
             ':descriptionEquipe' => $ba_bec_descriptionEquipe !== '' ? $ba_bec_descriptionEquipe : null,
+            ':photoEquipe' => $ba_bec_photoEquipe,
+            ':photoStaff' => $ba_bec_photoStaff,
             ':numEquipe' => $ba_bec_numEquipe,
         ]);
         header('Location: ../../views/backend/equipes/list.php');
