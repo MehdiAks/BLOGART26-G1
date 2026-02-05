@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Logo équipe">
+  <defs>
+    <linearGradient id="becShield" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#67081D"/>
+      <stop offset="100%" stop-color="#9b0d2d"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="24" fill="url(#becShield)"/>
+  <path d="M60 20L90 34V62c0 20-13 31-30 38-17-7-30-18-30-38V34L60 20z" fill="#fff" opacity="0.9"/>
+  <text x="60" y="68" text-anchor="middle" font-family="Epilogue, sans-serif" font-size="20" fill="#67081D">BEC</text>
+</svg>

@@ -5,9 +5,15 @@ require_once ROOT . '/includes/libs/cookie-consent.php';
 $ba_bec_pseudoMemb = $_SESSION['pseudoMemb'] ?? null;
 $ba_bec_numStat = $_SESSION['numStat'] ?? null;
 $hasBackgroundVideo = $pageHasVideo ?? false;
+$backgroundVideoSource = $pageBackgroundVideo ?? (ROOT_URL . '/src/video/Background_index.mp4');
+$backgroundVideoPoster = $pageBackgroundPoster ?? (ROOT_URL . '/src/images/background/background-index-1.webp');
 $current_page = $_SERVER['SCRIPT_NAME'];
 
 $bodyClasses = [$hasBackgroundVideo ? 'has-site-video' : 'has-solid-bg'];
+$isHomePage = $current_page === '/index.php';
+if ($isHomePage) {
+    $bodyClasses[] = 'home-page';
+}
 
 $club_pages = [
     '/notre-histoire.php',
@@ -52,8 +58,8 @@ if (function_exists('sql_connect')) {
     
     <?php if ($hasBackgroundVideo): ?>
         <div class="site-background" aria-hidden="true">
-            <video class="site-background-video" autoplay muted loop playsinline poster="<?php echo ROOT_URL . '/src/images/background/background-index-1.webp'; ?>">
-                <source src="<?php echo ROOT_URL . '/src/videos/fond.mp4'; ?>" type="video/mp4">
+            <video class="site-background-video" autoplay muted loop playsinline poster="<?php echo $backgroundVideoPoster; ?>">
+                <source src="<?php echo $backgroundVideoSource; ?>" type="video/mp4">
             </video>
             <div class="site-background-overlay"></div>
         </div>
@@ -119,39 +125,6 @@ if (function_exists('sql_connect')) {
                         <button type="button" class="header-burger-close" aria-label="Fermer le menu" onclick="this.closest('details').removeAttribute('open')">
                             &times;
                         </button>
-                        <nav class="header-burger-nav" aria-label="Navigation principale">
-                            <ul>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
-                                </li>
-                                <li class="header-burger-group">
-                                    <span class="header-burger-group-title">Le club</span>
-                                    <ul class="header-burger-sublist" aria-label="Le club">
-                                        <li>
-                                            <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo ROOT_URL . '/organigramme-benevoles.php'; ?>" <?php if ($current_page == '/organigramme-benevoles.php') echo 'class="current"'; ?>>Bénévoles</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo ROOT_URL . '/joueurs.php'; ?>" <?php if ($current_page == '/joueurs.php') echo 'class="current"'; ?>>Joueurs</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo ROOT_URL . '/equipes.php'; ?>" <?php if ($current_page == '/equipes.php') echo 'class="current"'; ?>>Équipes</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
-                                </li>
-                            </ul>
-                        </nav>
                         <div class="header-burger-actions">
                             <p class="header-burger-title">Espace membre</p>
                             <?php if ($ba_bec_pseudoMemb): ?>

@@ -4,19 +4,16 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 define('COOKIE_DURATION', 365 * 24 * 60 * 60);
+define('COOKIE_NAME', 'bec_cookie_consent');
 
 /* =========================
 OUTILS
 ========================= */
 
-function generateToken() {
-    return bin2hex(random_bytes(32));
-}
-
-function setConsentCookie($token) {
+function setConsentCookie(int $consent) {
     setcookie(
-        'cookie_consent_token',
-        $token,
+        COOKIE_NAME,
+        (string) $consent,
         time() + COOKIE_DURATION,
         '/',
         '',
@@ -31,6 +28,9 @@ LECTURE CONSENTEMENT
 
 function getCookieConsent($pdo) {
     if (!$pdo instanceof PDO) {
+        if (isset($_COOKIE[COOKIE_NAME])) {
+            return (int) $_COOKIE[COOKIE_NAME];
+        }
         return null;
     }
 
@@ -44,34 +44,22 @@ function getCookieConsent($pdo) {
         if ($memberConsent !== false && $memberConsent !== null && $memberConsent !== '') {
             return $memberConsent;
         }
-        if (!empty($_COOKIE['cookie_consent_token'])) {
+        if (isset($_COOKIE[COOKIE_NAME])) {
+            $cookieConsent = (int) $_COOKIE[COOKIE_NAME];
             $stmt = $pdo->prepare(
-                "SELECT consent FROM cookie_consent
-                WHERE token = ? AND expires_at > NOW()"
+                "UPDATE membre
+                SET cookieMemb = ?, dtMajMemb = NOW()
+                WHERE numMemb = ?"
             );
-            $stmt->execute([$_COOKIE['cookie_consent_token']]);
-            $tokenConsent = $stmt->fetchColumn();
-            if ($tokenConsent !== false && $tokenConsent !== null && $tokenConsent !== '') {
-                $stmt = $pdo->prepare(
-                    "UPDATE membre
-                    SET cookieMemb = ?, dtMajMemb = NOW()
-                    WHERE numMemb = ?"
-                );
-                $stmt->execute([(int) $tokenConsent, $_SESSION['user_id']]);
-                return $tokenConsent;
-            }
+            $stmt->execute([$cookieConsent, $_SESSION['user_id']]);
+            return $cookieConsent;
         }
         return null;
     }
 
     // CAS 2 : VISITEUR ANONYME
-    if (!empty($_COOKIE['cookie_consent_token'])) {
-        $stmt = $pdo->prepare(
-            "SELECT consent FROM cookie_consent
-            WHERE token = ? AND expires_at > NOW()"
-        );
-        $stmt->execute([$_COOKIE['cookie_consent_token']]);
-        return $stmt->fetchColumn();
+    if (isset($_COOKIE[COOKIE_NAME])) {
+        return (int) $_COOKIE[COOKIE_NAME];
     }
 
     return null;
@@ -94,18 +82,10 @@ function saveCookieConsent($pdo, int $consent) {
             WHERE numMemb = ?"
         );
         $stmt->execute([$consent, $_SESSION['user_id']]);
+        setConsentCookie($consent);
         return;
     }
 
     // VISITEUR ANONYME
-    $token = $_COOKIE['cookie_consent_token'] ?? generateToken();
-
-    $stmt = $pdo->prepare(
-        "REPLACE INTO cookie_consent
-        (token, consent, created_at, expires_at)
-        VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR))"
-    );
-    $stmt->execute([$token, $consent]);
-
-    setConsentCookie($token);
+    setConsentCookie($consent);
 }
