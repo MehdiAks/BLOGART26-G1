@@ -2,6 +2,26 @@
 
 class ArticleController
 {
+    private function normalizeUploadPath(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        $path = trim($path);
+        $uploadsMarker = 'src/uploads/';
+        $markerPos = strpos($path, $uploadsMarker);
+        if ($markerPos !== false) {
+            $path = substr($path, $markerPos + strlen($uploadsMarker));
+        } elseif (preg_match('/^(https?:\\/\\/|\\/)/', $path)) {
+            return null;
+        }
+
+        $path = ltrim($path, '/');
+
+        return $path !== '' ? $path : null;
+    }
+
     private function render(string $view, array $data = []): void
     {
         extract($data, EXTR_SKIP);
@@ -56,6 +76,8 @@ class ArticleController
         error_reporting(E_ALL);
 
         $ba_bec_nom_image = null;
+        $ba_bec_tmpName = null;
+        $ba_bec_extension = null;
 
         $ba_bec_libTitrArt = ctrlSaisies($_POST['libTitrArt'] ?? '');
         $ba_bec_libChapoArt = ctrlSaisies($_POST['libChapoArt'] ?? '');
@@ -123,13 +145,6 @@ class ArticleController
                 }
             }
 
-            $ba_bec_nom_image = time() . '_' . $ba_bec_name;
-            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
-            $ba_bec_destination = $ba_bec_uploadDir . $ba_bec_nom_image;
-
-            if (!move_uploaded_file($ba_bec_tmpName, $ba_bec_destination)) {
-                die("Erreur lors de l'upload de l'image.");
-            }
         }
 
         if ($ba_bec_numThem === '' || !is_numeric($ba_bec_numThem)) {
@@ -138,14 +153,29 @@ class ArticleController
             exit;
         }
 
-        $ba_bec_urlPhotValue = $ba_bec_nom_image ? "'$ba_bec_nom_image'" : 'NULL';
-
         sql_insert(
             'ARTICLE',
             'libTitrArt, libChapoArt, libAccrochArt, parag1Art, libSsTitr1Art, parag2Art, libSsTitr2Art, parag3Art, libConclArt, urlPhotArt, numThem',
-            "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', $ba_bec_urlPhotValue, '$ba_bec_numThem'"
+            "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', NULL, '$ba_bec_numThem'"
         );
         $ba_bec_lastArt = sql_select('ARTICLE', 'numArt', null, null, 'numArt DESC', '1')[0]['numArt'];
+
+        if ($ba_bec_tmpName && $ba_bec_extension) {
+            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/article/';
+            if (!is_dir($ba_bec_uploadDir)) {
+                mkdir($ba_bec_uploadDir, 0755, true);
+            }
+
+            $ba_bec_nom_image = 'article-' . $ba_bec_lastArt . '.' . $ba_bec_extension;
+            $ba_bec_destination = $ba_bec_uploadDir . $ba_bec_nom_image;
+            $ba_bec_relativePath = 'article/' . $ba_bec_nom_image;
+
+            if (!move_uploaded_file($ba_bec_tmpName, $ba_bec_destination)) {
+                die("Erreur lors de l'upload de l'image.");
+            }
+
+            sql_update('ARTICLE', "urlPhotArt = '$ba_bec_relativePath'", "numArt = '$ba_bec_lastArt'");
+        }
 
         foreach ($ba_bec_numMotCle as $ba_bec_mot) {
             sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_lastArt, $ba_bec_mot");
@@ -211,7 +241,12 @@ class ArticleController
         }
 
         $ba_bec_article = sql_select('ARTICLE', 'urlPhotArt', "numArt = '$ba_bec_numArt'")[0] ?? [];
-        $ba_bec_ancienneImage = $ba_bec_article['urlPhotArt'] ?? null;
+        $ba_bec_ancienneImageRaw = $ba_bec_article['urlPhotArt'] ?? null;
+        $ba_bec_ancienneImage = $this->normalizeUploadPath($ba_bec_ancienneImageRaw);
+        $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/article/';
+        if (!is_dir($ba_bec_uploadDir)) {
+            mkdir($ba_bec_uploadDir, 0755, true);
+        }
 
         if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
             $ba_bec_tmpName = $_FILES['urlPhotArt']['tmp_name'];
@@ -261,19 +296,40 @@ class ArticleController
                 }
             }
 
-            $ba_bec_nom_image = time() . '_' . $ba_bec_name;
-            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
+            $ba_bec_nom_image = 'article-' . $ba_bec_numArt . '.' . $ba_bec_extension;
             $ba_bec_destination = $ba_bec_uploadDir . $ba_bec_nom_image;
+            $ba_bec_relativePath = 'article/' . $ba_bec_nom_image;
 
             if (!move_uploaded_file($ba_bec_tmpName, $ba_bec_destination)) {
                 die("Erreur lors de l'upload de l'image.");
             }
 
-            if ($ba_bec_ancienneImage && file_exists($ba_bec_uploadDir . $ba_bec_ancienneImage)) {
-                unlink($ba_bec_uploadDir . $ba_bec_ancienneImage);
+            if ($ba_bec_ancienneImage && $ba_bec_ancienneImage !== $ba_bec_relativePath) {
+                $ba_bec_oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_ancienneImage;
+                if (file_exists($ba_bec_oldPath)) {
+                    unlink($ba_bec_oldPath);
+                }
             }
+            $ba_bec_nom_image = $ba_bec_relativePath;
         } else {
-            $ba_bec_nom_image = $ba_bec_ancienneImage;
+            $ba_bec_nom_image = $ba_bec_ancienneImage ?? $ba_bec_ancienneImageRaw;
+            if ($ba_bec_ancienneImage) {
+                $ba_bec_extension = strtolower(pathinfo($ba_bec_ancienneImage, PATHINFO_EXTENSION));
+                $ba_bec_targetName = 'article-' . $ba_bec_numArt . '.' . $ba_bec_extension;
+                $ba_bec_targetRelative = 'article/' . $ba_bec_targetName;
+                if ($ba_bec_ancienneImage !== $ba_bec_targetRelative) {
+                    $ba_bec_oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_ancienneImage;
+                    $ba_bec_newPath = $ba_bec_uploadDir . $ba_bec_targetName;
+                    if (file_exists($ba_bec_oldPath)) {
+                        if (!is_dir($ba_bec_uploadDir)) {
+                            mkdir($ba_bec_uploadDir, 0755, true);
+                        }
+                        if (rename($ba_bec_oldPath, $ba_bec_newPath)) {
+                            $ba_bec_nom_image = $ba_bec_targetRelative;
+                        }
+                    }
+                }
+            }
         }
 
         $ba_bec_set_art = "dtMajArt = '$ba_bec_dtMajArt',
@@ -338,12 +394,13 @@ numThem = '$ba_bec_numThem'";
         $ba_bec_numArt = ctrlSaisies($_POST['numArt'] ?? '');
 
         $ba_bec_article = sql_select('ARTICLE', 'urlPhotArt', "numArt = '$ba_bec_numArt'")[0] ?? [];
-        $ba_bec_ancienneImage = $ba_bec_article['urlPhotArt'] ?? '';
+        $ba_bec_ancienneImage = $this->normalizeUploadPath($ba_bec_article['urlPhotArt'] ?? '');
 
-        $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
-
-        if ($ba_bec_ancienneImage && file_exists($ba_bec_uploadDir . $ba_bec_ancienneImage)) {
-            unlink($ba_bec_uploadDir . $ba_bec_ancienneImage);
+        if ($ba_bec_ancienneImage) {
+            $ba_bec_oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_ancienneImage;
+            if (file_exists($ba_bec_oldPath)) {
+                unlink($ba_bec_oldPath);
+            }
         }
 
         sql_delete('MOTCLEARTICLE', "numArt = '$ba_bec_numArt'");

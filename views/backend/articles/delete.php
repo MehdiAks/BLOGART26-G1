@@ -9,6 +9,15 @@
             <form action="<?php echo ROOT_URL . '/public/index.php?controller=article&action=destroy'; ?>" method="post">
                 <!-- Champ caché pour l'ID de l'article -->
                 <input type="hidden" name="numArt" value="<?php echo $ba_bec_article['numArt']; ?>">
+                <?php
+                $ba_bec_urlPhotArt = $ba_bec_article['urlPhotArt'] ?? '';
+                $ba_bec_photoUrl = '';
+                if (!empty($ba_bec_urlPhotArt)) {
+                    $ba_bec_photoUrl = preg_match('/^(https?:\\/\\/|\\/)/', $ba_bec_urlPhotArt)
+                        ? $ba_bec_urlPhotArt
+                        : ROOT_URL . '/src/uploads/' . $ba_bec_urlPhotArt;
+                }
+                ?>
 
                 <!-- Titre de l'article -->
                 <div class="form-group">
@@ -79,7 +88,7 @@
                 <!-- Image -->
                 <div class="form-group">
                     <label for="image">Image</label>
-                    <img src="<?php echo ROOT_URL . '/src/uploads/' . $ba_bec_article['urlPhotArt']; ?>"
+                    <img src="<?php echo htmlspecialchars($ba_bec_photoUrl); ?>"
                         alt="Image de l'article" style="max-width: 200px;">
                 </div>
 

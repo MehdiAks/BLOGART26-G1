@@ -22,7 +22,7 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
             <h1>Ajouter une équipe</h1>
         </div>
         <div class="col-md-12">
-            <form action="<?php echo ROOT_URL . '/api/equipes/create.php'; ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/api/equipes/create.php'; ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="codeEquipe">Code équipe</label>
                     <input id="codeEquipe" name="codeEquipe" class="form-control" type="text"
@@ -84,14 +84,12 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
                         placeholder="Description de l'équipe..."></textarea>
                 </div>
                 <div class="form-group mt-2">
-                    <label for="urlPhotoEquipe">Photo de l'équipe (fichier)</label>
-                    <input id="urlPhotoEquipe" name="urlPhotoEquipe" class="form-control" type="text"
-                        placeholder="ex: equipe-seniors.jpg (stocké dans /src/uploads/photos-equipes/)" />
+                    <label for="photoEquipe">Photo équipe</label>
+                    <input id="photoEquipe" name="photoEquipe" class="form-control" type="file" accept=".jpg,.jpeg,.png,.avif,.svg" />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="urlPhotoStaff">Photo du staff (fichier)</label>
-                    <input id="urlPhotoStaff" name="urlPhotoStaff" class="form-control" type="text"
-                        placeholder="ex: staff-seniors.jpg (stocké dans /src/uploads/photos-equipes/)" />
+                    <label for="photoStaff">Photo staff</label>
+                    <input id="photoStaff" name="photoStaff" class="form-control" type="file" accept=".jpg,.jpeg,.png,.avif,.svg" />
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Créer</button>

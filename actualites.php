@@ -77,12 +77,15 @@ function render_news_grid(array $ba_bec_articles): string
                 <?php foreach ($ba_bec_articles as $ba_bec_article): ?>
                     <?php
                     $defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
-                    $uploadPath = !empty($ba_bec_article['urlPhotArt'])
-                        ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_article['urlPhotArt']
-                        : '';
-                    $ba_bec_imagePath = (!empty($ba_bec_article['urlPhotArt']) && file_exists($uploadPath))
-                        ? ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_article['urlPhotArt'])
-                        : $defaultImagePath;
+                    $articlePhoto = $ba_bec_article['urlPhotArt'] ?? '';
+                    if ($articlePhoto && preg_match('/^(https?:\\/\\/|\\/)/', $articlePhoto)) {
+                        $ba_bec_imagePath = $articlePhoto;
+                    } else {
+                        $uploadPath = $articlePhoto ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $articlePhoto : '';
+                        $ba_bec_imagePath = ($articlePhoto && file_exists($uploadPath))
+                            ? ROOT_URL . '/src/uploads/' . htmlspecialchars($articlePhoto)
+                            : $defaultImagePath;
+                    }
                     $chapo = $ba_bec_article['libChapoArt'] ?? '';
                     $maxLength = 140;
                     $excerptBase = function_exists('mb_substr') ? mb_substr($chapo, 0, $maxLength) : substr($chapo, 0, $maxLength);

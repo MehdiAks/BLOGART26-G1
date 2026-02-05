@@ -67,7 +67,7 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
             <h1>Modifier une équipe</h1>
         </div>
         <div class="col-md-12">
-            <form action="<?php echo ROOT_URL . '/api/equipes/update.php'; ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/api/equipes/update.php'; ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="numEquipe" value="<?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?>" />
                 <div class="form-group">
                     <label for="codeEquipe">Code équipe</label>
@@ -137,28 +137,22 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
                         placeholder="Description de l'équipe..."><?php echo htmlspecialchars($ba_bec_equipe['descriptionEquipe'] ?? ''); ?></textarea>
                 </div>
                 <div class="form-group mt-2">
-                    <label for="urlPhotoEquipe">Photo de l'équipe (fichier)</label>
-                    <input id="urlPhotoEquipe" name="urlPhotoEquipe" class="form-control" type="text"
-                        value="<?php echo htmlspecialchars($ba_bec_photoEquipe); ?>"
-                        placeholder="ex: equipe-seniors.jpg (stocké dans /src/uploads/photos-equipes/)" />
-                    <?php if ($ba_bec_photoEquipeUrl): ?>
-                        <div class="mt-2">
-                            <img src="<?php echo htmlspecialchars($ba_bec_photoEquipeUrl); ?>" alt="Photo équipe"
-                                style="max-width: 200px; height: auto;">
+                    <label for="photoEquipe">Photo équipe</label>
+                    <?php if (!empty($ba_bec_equipe['urlPhotoEquipe'])): ?>
+                        <div class="mb-2">
+                            <img src="<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_equipe['urlPhotoEquipe']); ?>" alt="Photo équipe" class="img-fluid" style="max-height: 160px;">
                         </div>
                     <?php endif; ?>
+                    <input id="photoEquipe" name="photoEquipe" class="form-control" type="file" accept=".jpg,.jpeg,.png,.avif,.svg" />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="urlPhotoStaff">Photo du staff (fichier)</label>
-                    <input id="urlPhotoStaff" name="urlPhotoStaff" class="form-control" type="text"
-                        value="<?php echo htmlspecialchars($ba_bec_photoStaff); ?>"
-                        placeholder="ex: staff-seniors.jpg (stocké dans /src/uploads/photos-equipes/)" />
-                    <?php if ($ba_bec_photoStaffUrl): ?>
-                        <div class="mt-2">
-                            <img src="<?php echo htmlspecialchars($ba_bec_photoStaffUrl); ?>" alt="Photo staff"
-                                style="max-width: 200px; height: auto;">
+                    <label for="photoStaff">Photo staff</label>
+                    <?php if (!empty($ba_bec_equipe['urlPhotoStaff'])): ?>
+                        <div class="mb-2">
+                            <img src="<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_equipe['urlPhotoStaff']); ?>" alt="Photo staff" class="img-fluid" style="max-height: 160px;">
                         </div>
                     <?php endif; ?>
+                    <input id="photoStaff" name="photoStaff" class="form-control" type="file" accept=".jpg,.jpeg,.png,.avif,.svg" />
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Enregistrer</button>

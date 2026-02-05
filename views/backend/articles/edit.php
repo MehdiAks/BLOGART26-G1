@@ -18,6 +18,12 @@ if (isset($_GET['numArt'])) {
     $ba_bec_selectedKeywordIds = array_map('intval', array_column($ba_bec_selectedKeywords, 'numMotCle'));
     $ba_bec_numArt = $_GET['numArt'];
     $ba_bec_urlPhotArt = $ba_bec_article['urlPhotArt'];
+    $ba_bec_photoUrl = '';
+    if (!empty($ba_bec_urlPhotArt)) {
+        $ba_bec_photoUrl = preg_match('/^(https?:\\/\\/|\\/)/', $ba_bec_urlPhotArt)
+            ? $ba_bec_urlPhotArt
+            : ROOT_URL . '/src/uploads/' . $ba_bec_urlPhotArt;
+    }
 }
 ?>
 
@@ -40,7 +46,7 @@ if (isset($_GET['numArt'])) {
 
         <section class="article-page article-editor">
             <header class="article-hero"
-                style="--hero-image: url('<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_urlPhotArt); ?>')">
+                style="--hero-image: url('<?php echo htmlspecialchars($ba_bec_photoUrl); ?>')">
                 <div class="article-hero__overlay">
                     <p class="article-kicker">Actualités</p>
                     <div class="article-editor-field article-editor-field--light">
@@ -100,7 +106,7 @@ if (isset($_GET['numArt'])) {
 
                                 <figure class="article-figure article-editor-figure">
                                     <img class="image2 img-fluid w-100"
-                                        src="<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_urlPhotArt); ?>"
+                                        src="<?php echo htmlspecialchars($ba_bec_photoUrl); ?>"
                                         alt="Image de l'article">
                                     <figcaption class="article-caption">
                                         © Groupe 1 Bordeaux étudiant club + Description de l’image
@@ -163,7 +169,7 @@ if (isset($_GET['numArt'])) {
                                     <div class="mb-3">
                                         <label for="urlPhotArt" class="form-label">Image actuelle</label>
                                         <img class="img-fluid rounded mb-2"
-                                            src="<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_urlPhotArt); ?>"
+                                            src="<?php echo htmlspecialchars($ba_bec_photoUrl); ?>"
                                             alt="Image de l'article">
                                         <input type="file" id="urlPhotArt" name="urlPhotArt" class="form-control"
                                             accept=".png, .jpeg, .jpg, .avif, .svg" maxlength="80000">
