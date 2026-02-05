@@ -271,7 +271,7 @@ if (!$becMatchesAvailable) {
     </div>
 </section>
 <div class="container py-5 home-main-surface home-main-surface--hidden">
-    <section class="home-section mb-5">
+    <section class="home-section">
         <h1 class="fw-bold mb-3">Bienvenue au BEC</h1>
         <p class="lead mb-4">
             Bordeaux n'est pas seulement son miroir d'eau ou encore ses cannelés. C'est aussi une ville de sport et de talent ! <br>
@@ -284,7 +284,7 @@ if (!$becMatchesAvailable) {
         </div>
     </section>
 
-    <section class="home-section mb-5">
+    <section class="home-section">
         <h2 class="fw-bold mb-4">Nos prochains matchs à Barbey !</h2>
         <p class="text-body-secondary mb-4">Retrouvez nos équipes à domicile, à Barbey.</p>
         <div class="row g-4">
@@ -350,7 +350,7 @@ if (!$becMatchesAvailable) {
         </div>
     </section>
 
-    <section class="home-section mb-5">
+    <section class="home-section">
         <h2 class="fw-bold mb-4">Cette saison à Barbey</h2>
         <p class="text-body-secondary mb-4">
         Les chiffres des matchs séniors disputés à domicile.
