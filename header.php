@@ -135,7 +135,7 @@ if (function_exists('sql_connect')) {
                             &times;
                         </button>
 
-                            <nav aria-label="Navigation principale">
+                            <nav class="header-burger-nav" aria-label="Navigation principale">
                                 <ul>
                                     <li>
                                         <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
@@ -145,7 +145,7 @@ if (function_exists('sql_connect')) {
                                             <button type="button" class="submenu-toggle<?php if (in_array($current_page, $club_pages, true)) echo ' current'; ?>" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-club">
                                                 Le club
                                             </button>
-                                            <ul class="submenu-list" id="submenu-club" aria-label="Le club">
+                                            <ul class="submenu-list header-burger-sublist" id="submenu-club" aria-label="Le club">
                                                 <li>
                                                     <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
                                                 </li>
