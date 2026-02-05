@@ -9,7 +9,7 @@
             <form action="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=store'; ?>" method="post">
                 <div class="form-group">
                     <label for="libStat">Nom du statut</label>
-                    <input id="libStat" name="libStat" class="form-control" type="text" autofocus="autofocus" />
+                    <input id="libStat" name="libStat" class="form-control" type="text" autofocus="autofocus" required />
                 </div>
                 <br />
                 <div class="form-group mt-2">
