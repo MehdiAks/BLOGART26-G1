@@ -37,7 +37,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
     color: #fff;
     position: relative;
     z-index: 1;
@@ -46,6 +45,20 @@
 .home-hero-content {
     padding: 2rem 1.5rem;
     text-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+    text-align: left;
+    font-weight: 700;
+}
+
+.home-hero-content h2,
+.home-hero-content h3 {
+    font-weight: 700;
+    color: #fff;
+}
+
+.home-main-surface {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
 }
 
 .home-section {
@@ -91,6 +104,14 @@
     gap: 0.5rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     min-height: 100%;
+}
+
+.home-articles-container {
+    border: 1px solid rgba(15, 23, 42, 0.15);
+    border-radius: 0.75rem;
+    padding: 1.75rem;
+    background: #f8f9fb;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
 }
 
 .home-articles .home-article-card.is-lifted {
