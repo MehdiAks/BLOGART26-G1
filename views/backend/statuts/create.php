@@ -15,7 +15,7 @@ include '../../../header.php';
             <form action="<?php echo ROOT_URL . '/api/statuts/create.php' ?>" method="post">
                 <div class="form-group">
                     <label for="libStat">Nom du statut</label>
-                    <input id="libStat" name="libStat" class="form-control" type="text" autofocus="autofocus" />
+                    <input id="libStat" name="libStat" class="form-control" type="text" autofocus="autofocus" required />
                 </div>
                 <br />
                 <div class="form-group mt-2">
