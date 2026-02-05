@@ -11,3 +11,4 @@ sql_insert('MOTCLE', 'numMotCle, libMotCle', "$ba_bec_numMotCle, '$ba_bec_libMot
 
 
 header('Location: ../../views/backend/keywords/list.php');
+?>
