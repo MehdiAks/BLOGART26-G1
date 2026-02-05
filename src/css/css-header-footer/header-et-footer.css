@@ -94,7 +94,11 @@
         }
 
         .site-header .header-nav {
-            margin-left: auto;
+            margin-left: 0;
+        }
+
+        .site-header .container {
+            flex-wrap: nowrap;
         }
 
         .site-header .header-nav li {
@@ -204,6 +208,10 @@
         @media (max-width: 991.98px) {
             .site-header .header-nav {
                 display: none;
+            }
+
+            .site-header .container {
+                flex-wrap: wrap;
             }
 
             .header-burger-wrapper {
@@ -389,6 +397,11 @@
             transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
+        .home-page .header-burger-icon span {
+            background-color: #ddd;
+        }
+
+
         .header-burger-menu[open] .header-burger-icon span:nth-child(1) {
             transform: translateY(8px) rotate(45deg);
         }
@@ -461,6 +474,11 @@
             gap: 12px;
         }
 
+        .header-burger-panel nav {
+            display: grid;
+            gap: 12px;
+        }
+
         .header-burger-nav a {
             display: flex;
             align-items: center;
@@ -471,6 +489,47 @@
             font-weight: 600;
             color: var(--bec-dark);
             background: rgba(103, 8, 29, 0.06);
+        }
+
+        .header-burger-panel .header-submenu {
+            display: grid;
+            gap: 8px;
+        }
+
+        .header-burger-panel .submenu-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(103, 8, 29, 0.06);
+            font-weight: 600;
+            color: var(--bec-dark);
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .header-burger-panel .submenu-toggle::after {
+            content: "▾";
+            font-size: 0.9rem;
+            color: rgba(28, 28, 28, 0.6);
+        }
+
+        .header-burger-panel .submenu-list {
+            position: static;
+            min-width: 0;
+            padding: 0;
+            margin: 0;
+            background: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+            display: grid;
+            gap: 8px;
         }
 
         .header-burger-group {
@@ -497,6 +556,11 @@
         .header-burger-sublist a {
             font-weight: 500;
             background: rgba(103, 8, 29, 0.04);
+        }
+
+        .header-burger-panel .submenu-list a {
+            text-decoration: none;
+            color: var(--bec-dark);
         }
 
         .header-burger-nav a:hover,
@@ -759,16 +823,6 @@
             color: var(--bec-dark);
         }
 
-        @media (max-width: 991.98px) {
-            .header-compte-toggle {
-                display: none;
-            }
-
-            .header-compte-wrapper {
-                display: block;
-                margin-left: auto;
-            }
-        }
 
         .btn-compte {
             background-color:#ddd;
@@ -779,3 +833,15 @@
             border-radius: 6px;
         }
 
+
+
+        @media (max-width: 991.98px) {
+            .btn-compte {
+                display: none;
+            }
+
+            .header-compte-wrapper {
+                display: block;
+                margin-left: auto;
+            }
+        }

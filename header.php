@@ -74,6 +74,51 @@ if (function_exists('sql_connect')) {
                 <span>Bordeaux Étudiant Club</span>
             </a>
 
+            <!-- navigation principale -->
+            <nav class="header-nav" aria-label="Navigation principale">
+                <ul>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
+                    </li>
+                    <li>
+                        <div class="header-submenu">
+                            <button type="button" class="submenu-toggle<?php if (in_array($current_page, $club_pages, true)) echo ' current'; ?>" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-club">
+                                Le club
+                            </button>
+                            <ul class="submenu-list" id="submenu-club" aria-label="Le club">
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/organigramme-benevoles.php'; ?>" <?php if ($current_page == '/organigramme-benevoles.php') echo 'class="current"'; ?>>Bénévoles</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/joueurs.php'; ?>" <?php if ($current_page == '/joueurs.php') echo 'class="current"'; ?>>Joueurs</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/equipes.php'; ?>" <?php if ($current_page == '/equipes.php') echo 'class="current"'; ?>>Équipes</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
+                    </li>
+                    <!--<li>
+                        <a href="<?php echo ROOT_URL . '/boutique.php'; ?>" <?php if ($current_page == '/boutique.php') echo 'class="current"'; ?>>Boutique</a>
+                    </li>-->
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
+                    </li>
+                    <!--<li>
+                        <a href="<?php echo ROOT_URL . '/nos-partenaires.php'; ?>" <?php if ($current_page == '/nos-partenaires.php') echo 'class="current"'; ?>>Nos partenaires</a>
+                    </li>-->
+                </ul>
+            </nav>
+
                 <!-- Menu burger pour le responsive -->
             <div class="header-burger-wrapper">
                 <details class="header-burger-menu">
@@ -90,7 +135,7 @@ if (function_exists('sql_connect')) {
                             &times;
                         </button>
 
-                            <nav aria-label="Navigation principale">
+                            <nav class="header-burger-nav" aria-label="Navigation principale">
                                 <ul>
                                     <li>
                                         <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
@@ -100,7 +145,7 @@ if (function_exists('sql_connect')) {
                                             <button type="button" class="submenu-toggle<?php if (in_array($current_page, $club_pages, true)) echo ' current'; ?>" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-club">
                                                 Le club
                                             </button>
-                                            <ul class="submenu-list" id="submenu-club" aria-label="Le club">
+                                            <ul class="submenu-list header-burger-sublist" id="submenu-club" aria-label="Le club">
                                                 <li>
                                                     <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
                                                 </li>
@@ -119,18 +164,16 @@ if (function_exists('sql_connect')) {
                                     <li>
                                         <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
                                     </li>
-                                    <li>
-                                        <a href="<?php echo ROOT_URL . '/boutique.php'; ?>" <?php if ($current_page == '/boutique.php') echo 'class="current"'; ?>>Boutique</a>
-                                    </li>
+                                    
                                     <li>
                                         <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
                                     </li>
                                     <li>
                                         <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
                                     </li>
-                                    <li>
+                                    <!--<li>
                                         <a href="<?php echo ROOT_URL . '/nos-partenaires.php'; ?>" <?php if ($current_page == '/nos-partenaires.php') echo 'class="current"'; ?>>Nos partenaires</a>
-                                    </li>
+                                    </li>-->
                                 </ul>
                             </nav>
                         
@@ -193,54 +236,6 @@ if (function_exists('sql_connect')) {
             </div>
 
         </div>
-
-
-<!-- navigation principale -->
-
-            <nav class="header-nav" aria-label="Navigation principale">
-                <ul>
-                    <li>
-                        <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
-                    </li>
-                    <li>
-                        <div class="header-submenu">
-                            <button type="button" class="submenu-toggle<?php if (in_array($current_page, $club_pages, true)) echo ' current'; ?>" aria-haspopup="true" aria-expanded="false" aria-controls="submenu-club">
-                                Le club
-                            </button>
-                            <ul class="submenu-list" id="submenu-club" aria-label="Le club">
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/organigramme-benevoles.php'; ?>" <?php if ($current_page == '/organigramme-benevoles.php') echo 'class="current"'; ?>>Bénévoles</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/joueurs.php'; ?>" <?php if ($current_page == '/joueurs.php') echo 'class="current"'; ?>>Joueurs</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo ROOT_URL . '/equipes.php'; ?>" <?php if ($current_page == '/equipes.php') echo 'class="current"'; ?>>Équipes</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
-                    </li>
-                    <li>
-                        <a href="<?php echo ROOT_URL . '/boutique.php'; ?>" <?php if ($current_page == '/boutique.php') echo 'class="current"'; ?>>Boutique</a>
-                    </li>
-                    <li>
-                        <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
-                    </li>
-                    <li>
-                        <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
-                    </li>
-                    <li>
-                        <a href="<?php echo ROOT_URL . '/nos-partenaires.php'; ?>" <?php if ($current_page == '/nos-partenaires.php') echo 'class="current"'; ?>>Nos partenaires</a>
-                    </li>
-                </ul>
-            </nav>
-
 
 
     </header>
