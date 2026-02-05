@@ -220,7 +220,7 @@ $homeStats = [
         <h3 class="fw-bold mb-0">Basket-ball</h3>
     </div>
 </section>
-<div class="container py-5 home-main-surface">
+<div class="container py-5 home-main-surface home-main-surface--hidden">
     <section class="home-section mb-5">
         <h1 class="fw-bold mb-3">Bienvenue au BEC</h1>
         <p class="lead mb-4">
@@ -378,6 +378,7 @@ $homeStats = [
 </div>
 
 <script src="<?php echo ROOT_URL . '/src/js/home-articles-hover.js'; ?>"></script>
+<script src="<?php echo ROOT_URL . '/src/js/home-scroll-reveal.js'; ?>"></script>
 <?php require_once 'footer.php'; ?>
 
 <p></p>
