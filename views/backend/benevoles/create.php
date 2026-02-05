@@ -17,7 +17,7 @@ $ba_bec_teams = sql_select('EQUIPE', 'numEquipe, libEquipe', null, null, 'libEqu
             <h1>Ajouter un bénévole</h1>
         </div>
         <div class="col-md-12">
-            <form action="<?php echo ROOT_URL . '/api/benevoles/create.php'; ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/api/benevoles/create.php'; ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="prenomPersonnel">Prénom</label>
                     <input id="prenomPersonnel" name="prenomPersonnel" class="form-control" type="text"
@@ -29,9 +29,8 @@ $ba_bec_teams = sql_select('EQUIPE', 'numEquipe, libEquipe', null, null, 'libEqu
                         placeholder="Nom (ex: Martin)" required />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="urlPhotoPersonnel">URL photo</label>
-                    <input id="urlPhotoPersonnel" name="urlPhotoPersonnel" class="form-control" type="url"
-                        placeholder="URL de la photo (https://...)" />
+                    <label for="photoPersonnel">Photo</label>
+                    <input id="photoPersonnel" name="photoPersonnel" class="form-control" type="file" accept="image/*" />
                 </div>
                 <div class="form-group mt-3">
                     <label class="form-label d-block">Rôles</label>
