@@ -79,7 +79,20 @@ $clubIdentifiers = [
 $matches = [];
 try {
     $matchesStmt = $DB->prepare(
-        \"SELECT\n+            m.dateMatch AS matchDate,\n+            m.heureMatch AS matchTime,\n+            m.lieuMatch AS location,\n+            home_team.libEquipe AS teamHome,\n+            away_team.libEquipe AS teamAway\n+        FROM `MATCH` m\n+        LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'\n+        LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'\n+        LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe\n+        LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe\n+        WHERE m.dateMatch >= CURDATE()\n+        ORDER BY m.dateMatch ASC, m.heureMatch ASC\"\n+    );
+        "SELECT
+            m.dateMatch AS matchDate,
+            m.heureMatch AS matchTime,
+            m.lieuMatch AS location,
+            home_team.libEquipe AS teamHome,
+            away_team.libEquipe AS teamAway
+        FROM `MATCH` m
+        LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
+        LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
+        LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe
+        LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe
+        WHERE m.dateMatch >= CURDATE()
+        ORDER BY m.dateMatch ASC, m.heureMatch ASC"
+    );
     $matchesStmt->execute();
     $matches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $exception) {
