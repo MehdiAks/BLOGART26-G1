@@ -34,9 +34,9 @@ if ($dbAvailable) {
 
         $teamStmt = $DB->prepare(
             'SELECT numEquipe, libEquipe, categorieEquipe, sectionEquipe, niveauEquipe,
-                    pointsMarquesDomicile, pointsEncaissesDomicile, pointsMarquesExterieur, pointsEncaissesExterieur
-             FROM EQUIPE
-             WHERE numEquipe = :teamId'
+                    pointsMarquesDomicile, pointsEncaissesDomicile, pointsMarquesExterieur, pointsEncaissesExterieur 
+                    FROM EQUIPE
+                    WHERE numEquipe = :teamId'
         );
         $teamStmt->execute(['teamId' => $teamId]);
         $team = $teamStmt->fetch(PDO::FETCH_ASSOC) ?: null;
@@ -49,20 +49,20 @@ if ($dbAvailable) {
 
         $playersStmt = $DB->prepare(
             'SELECT j.prenomJoueur, j.nomJoueur, j.posteJoueur
-             FROM EQUIPE_JOUEUR ej
-             INNER JOIN JOUEUR j ON ej.numJoueur = j.numJoueur
-             WHERE ej.numEquipe = :teamId
-             ORDER BY j.nomJoueur ASC'
+            FROM EQUIPE_JOUEUR ej
+            INNER JOIN JOUEUR j ON ej.numJoueur = j.numJoueur
+            WHERE ej.numEquipe = :teamId
+            ORDER BY j.nomJoueur ASC'
         );
         $playersStmt->execute(['teamId' => $teamId]);
         $players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);
 
         $coachesStmt = $DB->prepare(
             'SELECT p.prenomPersonnel, p.nomPersonnel, ep.libRoleEquipe
-             FROM EQUIPE_PERSONNEL ep
-             INNER JOIN PERSONNEL p ON ep.numPersonnel = p.numPersonnel
-             WHERE ep.numEquipe = :teamId
-             ORDER BY p.nomPersonnel ASC'
+            FROM EQUIPE_PERSONNEL ep
+            INNER JOIN PERSONNEL p ON ep.numPersonnel = p.numPersonnel
+            WHERE ep.numEquipe = :teamId
+            ORDER BY p.nomPersonnel ASC'
         );
         $coachesStmt->execute(['teamId' => $teamId]);
         $coaches = $coachesStmt->fetchAll(PDO::FETCH_ASSOC);

@@ -31,3 +31,5 @@ sql_insert('bec_matches', $ba_bec_columns, $ba_bec_values);
 ba_bec_update_equipe_points($ba_bec_numEquipe);
 
 header('Location: ../../views/backend/matches/list.php');
+
+?>

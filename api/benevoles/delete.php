@@ -13,3 +13,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: ../../views/backend/benevoles/list.php');
     exit();
 }
+
+?>

@@ -28,10 +28,10 @@ if ($dbAvailable) {
 
         $staffStmt = $DB->prepare(
             'SELECT p.numPersonnel, p.prenomPersonnel, p.nomPersonnel, p.urlPhotoPersonnel, b.numBranche, b.libBranche, a.libPoste
-             FROM PERSONNEL p
-             INNER JOIN AFFECTATION_PERSONNEL a ON p.numPersonnel = a.numPersonnel
-             INNER JOIN BRANCHE_PERSONNEL b ON a.numBranche = b.numBranche
-             ORDER BY b.libBranche ASC, p.nomPersonnel ASC'
+                    FROM PERSONNEL p
+                    INNER JOIN AFFECTATION_PERSONNEL a ON p.numPersonnel = a.numPersonnel
+                    INNER JOIN BRANCHE_PERSONNEL b ON a.numBranche = b.numBranche
+                    ORDER BY b.libBranche ASC, p.nomPersonnel ASC'
         );
         $staffStmt->execute();
         $staff = $staffStmt->fetchAll(PDO::FETCH_ASSOC);

@@ -21,4 +21,5 @@ if ($ba_bec_result['success']) {
 }
 
 header('Location: ../../views/backend/keywords/list.php');
+
 ?>

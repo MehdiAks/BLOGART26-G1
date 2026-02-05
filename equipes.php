@@ -25,26 +25,26 @@ if ($dbAvailable) {
         $teamsStmt = $DB->prepare(
             'SELECT numEquipe, libEquipe, categorieEquipe, sectionEquipe, niveauEquipe,
                     pointsMarquesDomicile, pointsEncaissesDomicile, pointsMarquesExterieur, pointsEncaissesExterieur
-             FROM EQUIPE
-             ORDER BY libEquipe ASC'
+                    FROM EQUIPE
+                    ORDER BY libEquipe ASC'
         );
         $teamsStmt->execute();
         $teams = $teamsStmt->fetchAll(PDO::FETCH_ASSOC);
 
         $playersStmt = $DB->prepare(
             'SELECT ej.numEquipe, j.prenomJoueur, j.nomJoueur, j.posteJoueur
-             FROM EQUIPE_JOUEUR ej
-             INNER JOIN JOUEUR j ON ej.numJoueur = j.numJoueur
-             ORDER BY j.nomJoueur ASC'
+                    FROM EQUIPE_JOUEUR ej
+                    INNER JOIN JOUEUR j ON ej.numJoueur = j.numJoueur
+                    ORDER BY j.nomJoueur ASC'
         );
         $playersStmt->execute();
         $players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);
 
         $coachesStmt = $DB->prepare(
             'SELECT ep.numEquipe, p.prenomPersonnel, p.nomPersonnel, ep.libRoleEquipe
-             FROM EQUIPE_PERSONNEL ep
-             INNER JOIN PERSONNEL p ON ep.numPersonnel = p.numPersonnel
-             ORDER BY p.nomPersonnel ASC'
+                    FROM EQUIPE_PERSONNEL ep
+                    INNER JOIN PERSONNEL p ON ep.numPersonnel = p.numPersonnel
+                    ORDER BY p.nomPersonnel ASC'
         );
         $coachesStmt->execute();
         $coaches = $coachesStmt->fetchAll(PDO::FETCH_ASSOC);
