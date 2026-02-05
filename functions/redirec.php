@@ -7,10 +7,6 @@ if ($ba_bec_numStat === null) {
 }
 
 if ((int)$ba_bec_numStat !== 1) {
-    if ((int)$ba_bec_numStat === 2) {
-        header("Location: " . ROOT_URL . "/views/backend/comments/list.php");
-        exit();
-    }
     header("Location: " . ROOT_URL . "/views/backend/security/login.php");
     exit();
 }

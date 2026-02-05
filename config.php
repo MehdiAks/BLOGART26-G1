@@ -9,6 +9,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Block access to API endpoints for all users
+$scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+if (strpos($scriptName, '/api/') === 0) {
+    http_response_code(403);
+    exit('Accès interdit.');
+}
+
 //Load env
 require_once ROOT . '/includes/libs/DotEnv.php';
 (new DotEnv(ROOT.'/.env'))->load();

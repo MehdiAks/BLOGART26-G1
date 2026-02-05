@@ -1,6 +1,12 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
+$ba_bec_numStat = $_SESSION['numStat'] ?? null;
+if ($ba_bec_numStat === null || (int) $ba_bec_numStat !== 1) {
+    header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
+    exit;
+}
+
 $controllerKey = $_GET['controller'] ?? '';
 $action = $_GET['action'] ?? 'list';
 
