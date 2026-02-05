@@ -7,7 +7,7 @@ $pageStyles = [
     ROOT_URL . '/src/css/article-editor.css',
 ];
 
-include '../../../header.php';
+require_once ROOT . '/header.php';
 
 if (isset($_GET['numArt'])) {
     $ba_bec_numArt = (int) $_GET['numArt'];
