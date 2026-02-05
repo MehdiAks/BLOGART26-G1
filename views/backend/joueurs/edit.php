@@ -33,6 +33,18 @@ $ba_bec_posteChoices = [
     'Poste 5 : pivot (center)',
 ];
 
+$ba_bec_selectedPostes = [];
+if (!empty($ba_bec_affectation['numAffectation'])) {
+    $postesStmt = $DB->prepare(
+        'SELECT numPoste FROM JOUEUR_AFFECTATION_POSTE WHERE numAffectation = :numAffectation'
+    );
+    $postesStmt->execute([':numAffectation' => $ba_bec_affectation['numAffectation']]);
+    $ba_bec_selectedPostes = array_map('intval', $postesStmt->fetchAll(PDO::FETCH_COLUMN));
+}
+if (empty($ba_bec_selectedPostes) && !empty($ba_bec_affectation['numPoste'])) {
+    $ba_bec_selectedPostes[] = (int) $ba_bec_affectation['numPoste'];
+}
+
 $ba_bec_clubs = [];
 if ($ba_bec_numJoueur) {
     $clubsStmt = $DB->prepare('SELECT c.nomClub FROM JOUEUR_CLUB jc INNER JOIN CLUB c ON jc.numClub = c.numClub WHERE jc.numJoueur = :numJoueur');
@@ -84,13 +96,13 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                         placeholder="Nom (ex: Martin)" required />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="posteJoueur">Poste</label>
-                    <select id="posteJoueur" name="posteJoueur" class="form-control">
-                        <option value="">Sélectionnez un poste</option>
+                    <label for="posteJoueur">Postes</label>
+                    <select id="posteJoueur" name="postesJoueur[]" class="form-control" multiple>
                         <?php if (!empty($ba_bec_postes)): ?>
                             <?php foreach ($ba_bec_postes as $ba_bec_poste): ?>
-                                <option value="<?php echo htmlspecialchars($ba_bec_poste['libPoste']); ?>"
-                                    <?php echo ($ba_bec_affectation && ($ba_bec_affectation['numPoste'] ?? '') == $ba_bec_poste['numPoste']) ? 'selected' : ''; ?>>
+                                <?php $ba_bec_posteId = (int) $ba_bec_poste['numPoste']; ?>
+                                <option value="<?php echo htmlspecialchars($ba_bec_posteId); ?>"
+                                    <?php echo in_array($ba_bec_posteId, $ba_bec_selectedPostes, true) ? 'selected' : ''; ?>>
                                     <?php echo htmlspecialchars($ba_bec_poste['libPoste']); ?>
                                 </option>
                             <?php endforeach; ?>
@@ -150,7 +162,7 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                     </select>
                 </div>
                 <div class="form-group mt-2">
-                    <label for="dateDebut">Date de début d'affectation</label>
+                    <label for="dateDebut">Date de rectrutement</label>
                     <input id="dateDebut" name="dateDebut" class="form-control" type="date"
                         value="<?php echo htmlspecialchars($ba_bec_affectation['dateDebut'] ?? ''); ?>"
                         placeholder="JJ/MM/AAAA" />

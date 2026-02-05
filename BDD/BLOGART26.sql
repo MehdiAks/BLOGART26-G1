@@ -194,6 +194,17 @@ CREATE TABLE `JOUEUR_AFFECTATION` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `JOUEUR_AFFECTATION_POSTE`
+--
+
+CREATE TABLE `JOUEUR_AFFECTATION_POSTE` (
+  `numAffectation` int NOT NULL,
+  `numPoste` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `JOUEUR_CLUB`
 --
 
@@ -387,7 +398,13 @@ CREATE TABLE `PERSONNEL` (
   `nomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `urlPhotoPersonnel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailPersonnel` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telephonePersonnel` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `telephonePersonnel` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `estCoach` tinyint(1) NOT NULL DEFAULT '0',
+  `numEquipeCoachee` int DEFAULT NULL,
+  `estDirection` tinyint(1) NOT NULL DEFAULT '0',
+  `estCommissionTechnique` tinyint(1) NOT NULL DEFAULT '0',
+  `estCommissionAnimation` tinyint(1) NOT NULL DEFAULT '0',
+  `estCommissionCommunication` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -567,6 +584,13 @@ ALTER TABLE `JOUEUR_AFFECTATION`
   ADD KEY `idx_affectation_equipe` (`numEquipe`),
   ADD KEY `idx_affectation_saison` (`numSaison`),
   ADD KEY `idx_affectation_poste` (`numPoste`);
+
+--
+-- Index pour la table `JOUEUR_AFFECTATION_POSTE`
+--
+ALTER TABLE `JOUEUR_AFFECTATION_POSTE`
+  ADD PRIMARY KEY (`numAffectation`,`numPoste`),
+  ADD KEY `idx_affectation_poste_poste` (`numPoste`);
 
 --
 -- Index pour la table `JOUEUR_CLUB`
@@ -886,6 +910,13 @@ ALTER TABLE `JOUEUR_AFFECTATION`
   ADD CONSTRAINT `fk_affectation_joueur` FOREIGN KEY (`numJoueur`) REFERENCES `JOUEUR` (`numJoueur`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_affectation_poste` FOREIGN KEY (`numPoste`) REFERENCES `POSTE` (`numPoste`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_affectation_saison` FOREIGN KEY (`numSaison`) REFERENCES `SAISON` (`numSaison`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `JOUEUR_AFFECTATION_POSTE`
+--
+ALTER TABLE `JOUEUR_AFFECTATION_POSTE`
+  ADD CONSTRAINT `fk_affectation_poste_affectation` FOREIGN KEY (`numAffectation`) REFERENCES `JOUEUR_AFFECTATION` (`numAffectation`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_affectation_poste_poste` FOREIGN KEY (`numPoste`) REFERENCES `POSTE` (`numPoste`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `JOUEUR_CLUB`

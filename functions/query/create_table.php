@@ -93,6 +93,14 @@ function sql_create_table($table){
                 CONSTRAINT `fk_affectation_saison` FOREIGN KEY (`numSaison`) REFERENCES `SAISON` (`numSaison`) ON DELETE RESTRICT ON UPDATE CASCADE,
                 CONSTRAINT `fk_affectation_poste` FOREIGN KEY (`numPoste`) REFERENCES `POSTE` (`numPoste`) ON DELETE SET NULL ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+            "CREATE TABLE IF NOT EXISTS `JOUEUR_AFFECTATION_POSTE` (
+                `numAffectation` int NOT NULL,
+                `numPoste` int NOT NULL,
+                PRIMARY KEY (`numAffectation`, `numPoste`),
+                KEY `idx_affectation_poste_poste` (`numPoste`),
+                CONSTRAINT `fk_affectation_poste_affectation` FOREIGN KEY (`numAffectation`) REFERENCES `JOUEUR_AFFECTATION` (`numAffectation`) ON DELETE CASCADE ON UPDATE CASCADE,
+                CONSTRAINT `fk_affectation_poste_poste` FOREIGN KEY (`numPoste`) REFERENCES `POSTE` (`numPoste`) ON DELETE CASCADE ON UPDATE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
             "CREATE TABLE IF NOT EXISTS `JOUEUR_CLUB` (
                 `numJoueurClub` int NOT NULL AUTO_INCREMENT,
                 `numJoueur` int NOT NULL,
@@ -105,6 +113,16 @@ function sql_create_table($table){
                 KEY `idx_joueur_club_club` (`numClub`),
                 CONSTRAINT `fk_joueur_club_joueur` FOREIGN KEY (`numJoueur`) REFERENCES `JOUEUR` (`numJoueur`) ON DELETE CASCADE ON UPDATE CASCADE,
                 CONSTRAINT `fk_joueur_club_club` FOREIGN KEY (`numClub`) REFERENCES `CLUB` (`numClub`) ON DELETE RESTRICT ON UPDATE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+        ],
+        'JOUEUR_AFFECTATION_POSTE' => [
+            "CREATE TABLE IF NOT EXISTS `JOUEUR_AFFECTATION_POSTE` (
+                `numAffectation` int NOT NULL,
+                `numPoste` int NOT NULL,
+                PRIMARY KEY (`numAffectation`, `numPoste`),
+                KEY `idx_affectation_poste_poste` (`numPoste`),
+                CONSTRAINT `fk_affectation_poste_affectation` FOREIGN KEY (`numAffectation`) REFERENCES `JOUEUR_AFFECTATION` (`numAffectation`) ON DELETE CASCADE ON UPDATE CASCADE,
+                CONSTRAINT `fk_affectation_poste_poste` FOREIGN KEY (`numPoste`) REFERENCES `POSTE` (`numPoste`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
         ],
         'PERSONNEL' => [
@@ -120,6 +138,12 @@ function sql_create_table($table){
                 `urlPhotoPersonnel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 `emailPersonnel` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 `telephonePersonnel` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                `estCoach` tinyint(1) NOT NULL DEFAULT 0,
+                `numEquipeCoachee` int DEFAULT NULL,
+                `estDirection` tinyint(1) NOT NULL DEFAULT 0,
+                `estCommissionTechnique` tinyint(1) NOT NULL DEFAULT 0,
+                `estCommissionAnimation` tinyint(1) NOT NULL DEFAULT 0,
+                `estCommissionCommunication` tinyint(1) NOT NULL DEFAULT 0,
                 PRIMARY KEY (`numPersonnel`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
             "CREATE TABLE IF NOT EXISTS `AFFECTATION_PERSONNEL_EQUIPE` (

@@ -1,19 +1,47 @@
 <?php
 include '../../../header.php'; // Contient le header et l'appel à config.php
 
-// Récupérer tous les membres et les likes
-$ba_bec_membres = sql_select("membre", "*");
-$ba_bec_likes = sql_select("likeart", "*");
+// Filtres et tri
+$ba_bec_filter_numMemb = isset($_GET['numMemb']) ? trim($_GET['numMemb']) : '';
+$ba_bec_filter_numArt = isset($_GET['numArt']) ? trim($_GET['numArt']) : '';
+$ba_bec_filter_likeA = isset($_GET['likeA']) ? trim($_GET['likeA']) : '';
 
-if (isset($_GET['numMemb'])) {
-    $ba_bec_numMemb = intval($_GET['numMemb']); // Sécuriser l'entrée
-    $ba_bec_result = sql_select("membre", "pseudoMemb", "numMemb = $ba_bec_numMemb");
-    if (!empty($ba_bec_result)) {
-        $ba_bec_pseudoMemb = $ba_bec_result[0]['pseudoMemb'];
-    } else {
-        $ba_bec_pseudoMemb = "Inconnu"; // Si aucun membre trouvé
-    }
+$ba_bec_filters = [];
+if ($ba_bec_filter_numMemb !== '' && ctype_digit($ba_bec_filter_numMemb)) {
+    $ba_bec_filters[] = 'l.numMemb = ' . intval($ba_bec_filter_numMemb);
 }
+if ($ba_bec_filter_numArt !== '' && ctype_digit($ba_bec_filter_numArt)) {
+    $ba_bec_filters[] = 'l.numArt = ' . intval($ba_bec_filter_numArt);
+}
+if (in_array($ba_bec_filter_likeA, ['0', '1'], true)) {
+    $ba_bec_filters[] = 'l.likeA = ' . intval($ba_bec_filter_likeA);
+}
+
+$ba_bec_sort_key = isset($_GET['sort']) ? $_GET['sort'] : 'user';
+$ba_bec_dir = isset($_GET['dir']) ? strtolower($_GET['dir']) : 'asc';
+$ba_bec_sort_map = [
+    'user' => 'm.pseudoMemb',
+    'article' => 'l.numArt',
+    'type' => 'l.likeA',
+];
+if (!isset($ba_bec_sort_map[$ba_bec_sort_key])) {
+    $ba_bec_sort_key = 'user';
+}
+if (!in_array($ba_bec_dir, ['asc', 'desc'], true)) {
+    $ba_bec_dir = 'asc';
+}
+
+$ba_bec_where = $ba_bec_filters ? implode(' AND ', $ba_bec_filters) : null;
+$ba_bec_order = $ba_bec_sort_map[$ba_bec_sort_key] . ' ' . $ba_bec_dir . ', l.numArt ASC';
+
+// Récupérer les likes avec jointures pour éviter les requêtes N+1
+$ba_bec_likes = sql_select(
+    'LIKEART l LEFT JOIN MEMBRE m ON l.numMemb = m.numMemb LEFT JOIN ARTICLE a ON l.numArt = a.numArt',
+    'l.numMemb, l.numArt, l.likeA, m.pseudoMemb, a.libTitrArt',
+    $ba_bec_where,
+    null,
+    $ba_bec_order
+);
 ?>
 
 <!-- Inclusion du CSS -->
@@ -28,6 +56,43 @@ if (isset($_GET['numMemb'])) {
                 </a>
             </div>
             <h1>Gestion des likes</h1>
+            <form method="get" class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <label for="numMemb" class="form-label">ID Membre</label>
+                    <input type="text" name="numMemb" id="numMemb" class="form-control" value="<?php echo htmlspecialchars($ba_bec_filter_numMemb, ENT_QUOTES, 'UTF-8'); ?>">
+                </div>
+                <div class="col-md-3">
+                    <label for="numArt" class="form-label">ID Article</label>
+                    <input type="text" name="numArt" id="numArt" class="form-control" value="<?php echo htmlspecialchars($ba_bec_filter_numArt, ENT_QUOTES, 'UTF-8'); ?>">
+                </div>
+                <div class="col-md-3">
+                    <label for="likeA" class="form-label">Type de like</label>
+                    <select name="likeA" id="likeA" class="form-select">
+                        <option value="">Tous</option>
+                        <option value="1" <?php echo $ba_bec_filter_likeA === '1' ? 'selected' : ''; ?>>Like</option>
+                        <option value="0" <?php echo $ba_bec_filter_likeA === '0' ? 'selected' : ''; ?>>Dislike</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="sort" class="form-label">Trier par</label>
+                    <select name="sort" id="sort" class="form-select">
+                        <option value="user" <?php echo $ba_bec_sort_key === 'user' ? 'selected' : ''; ?>>Utilisateur</option>
+                        <option value="article" <?php echo $ba_bec_sort_key === 'article' ? 'selected' : ''; ?>>Article</option>
+                        <option value="type" <?php echo $ba_bec_sort_key === 'type' ? 'selected' : ''; ?>>Type</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="dir" class="form-label">Direction</label>
+                    <select name="dir" id="dir" class="form-select">
+                        <option value="asc" <?php echo $ba_bec_dir === 'asc' ? 'selected' : ''; ?>>Ascendant</option>
+                        <option value="desc" <?php echo $ba_bec_dir === 'desc' ? 'selected' : ''; ?>>Descendant</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
+                    <a href="list.php" class="btn btn-secondary">Réinitialiser</a>
+                </div>
+            </form>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -38,18 +103,17 @@ if (isset($_GET['numMemb'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($ba_bec_likes as $ba_bec_like) { 
-                        // Récupérer le nom d'utilisateur du membre
-                        $ba_bec_numMemb = intval($ba_bec_like['numMemb']);
-                        $ba_bec_membreData = sql_select("membre", "pseudoMemb", "numMemb = $ba_bec_numMemb");
-                        $ba_bec_pseudoMemb = !empty($ba_bec_membreData) ? $ba_bec_membreData[0]['pseudoMemb'] : "Inconnu";
-                        
-                        // Vérification de la valeur de likeA pour afficher "Like" ou "Dislike"
-                        $ba_bec_typeLike = $ba_bec_like['likeA'] == 1 ? 'Like' : 'Dislike'; 
+                    <?php foreach ($ba_bec_likes as $ba_bec_like) {
+                        $ba_bec_pseudoMemb = $ba_bec_like['pseudoMemb'] ?? 'Inconnu';
+                        $ba_bec_libTitrArt = $ba_bec_like['libTitrArt'] ?? 'Sans titre';
+                        $ba_bec_typeLike = $ba_bec_like['likeA'] == 1 ? 'Like' : 'Dislike';
                     ?>
                         <tr>
-                            <td><?php echo ($ba_bec_pseudoMemb); ?></td>
-                            <td><?php echo ($ba_bec_like['numArt']); ?></td>
+                            <td><?php echo htmlspecialchars($ba_bec_pseudoMemb, ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td>
+                                <?php echo htmlspecialchars($ba_bec_like['numArt'], ENT_QUOTES, 'UTF-8'); ?>
+                                <span class="text-muted">- <?php echo htmlspecialchars($ba_bec_libTitrArt, ENT_QUOTES, 'UTF-8'); ?></span>
+                            </td>
                             <td><?php echo ($ba_bec_typeLike); ?></td> <!-- Affichage du type de like -->
                             <td>
                                 <a href="edit.php?numArt=<?php echo ($ba_bec_like['numArt']); ?>&numMemb=<?php echo ($ba_bec_like['numMemb']); ?>" class="btn btn-primary">Edit</a>

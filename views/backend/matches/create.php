@@ -142,7 +142,7 @@ function ba_bec_team_label(array $team): string
                     <small class="form-text text-muted">Laisser vide si le match n'a pas encore eu lieu.</small>
                 </div>
                 <div class="form-group mt-3">
-                    <a href="list.php" class="btn btn-primary">List</a>
+                    <a href="list.php" class="btn btn-primary">Annuler</a>
                     <button type="submit" class="btn btn-success">Créer le match</button>
                 </div>
             </form>

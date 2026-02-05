@@ -4,12 +4,17 @@ require_once '../../functions/ctrlSaisies.php';
 
 $ba_bec_numMemb = ctrlSaisies($_POST['numMemb']);
 $ba_bec_numArt = ctrlSaisies($_POST['numArt']);
-$ba_bec_likeA = ctrlSaisies($_POST['likeA']);
+$ba_bec_likeA = isset($_POST['likeA']) ? ctrlSaisies($_POST['likeA']) : "0";
+
+if ($ba_bec_likeA !== "1" && $ba_bec_likeA !== "0") {
+    die("Erreur : valeur de like invalide.");
+}
+$ba_bec_likeA = (int) $ba_bec_likeA;
 
 // Mise à jour du like dans la base de données
 sql_update(
     'LIKEART', 
-    'likeA = ' . $ba_bec_likeA, 
+    'likeA = ' . $ba_bec_likeA,
     'numMemb = ' . $ba_bec_numMemb . ' AND numArt = ' . $ba_bec_numArt
 );
 
@@ -17,4 +22,3 @@ sql_update(
 header('Location: ../../views/backend/likes/list.php');
 exit();
 ?>
-
