@@ -15,3 +15,4 @@ function ctrlSaisies($saisie){
     // Conversion des caractères spéciaux en entités HTML
     return $saisie;
 }
+?>

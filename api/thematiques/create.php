@@ -18,3 +18,5 @@ if ($ba_bec_result['success']) {
 }
 
 header('Location: ../../views/backend/thematiques/list.php');
+
+?>

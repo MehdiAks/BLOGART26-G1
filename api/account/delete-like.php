@@ -32,3 +32,5 @@ sql_delete('LIKEART', "numArt = $ba_bec_numArt AND numMemb = $ba_bec_numMemb");
 $_SESSION['success'] = 'Votre like a été supprimé.';
 header('Location: ' . ROOT_URL . '/compte.php');
 exit();
+
+?>

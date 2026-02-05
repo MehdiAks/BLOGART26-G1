@@ -130,3 +130,5 @@ function verifyRecaptcha($token, $action, $threshold = null) {
         'message' => ''
     ];
 }
+
+?>

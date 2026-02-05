@@ -22,21 +22,21 @@ function getCookieUserIP() {
  */
 function hasUserMadeCookieChoice() {
     $ip = getCookieUserIP();
-    
+
     $ba_bec_result = sql_select(
         "COOKIE_CONSENT",
         "*",
         "ipAdresse = '" . $ip . "'"
     );
-    
+
     if (empty($ba_bec_result)) {
         return false;
     }
-    
+
     // Vérifier manuellement si la date d'expiration n'est pas dépassée
     $expiration = strtotime($ba_bec_result[0]['dateExpiration']);
     $now = time();
-    
+
     return $expiration > $now;
 }
 
@@ -45,25 +45,25 @@ function hasUserMadeCookieChoice() {
  */
 function hasAcceptedCookies() {
     $ip = getCookieUserIP();
-    
+
     $ba_bec_result = sql_select(
         "COOKIE_CONSENT",
         "choixConsent, dateExpiration",
         "ipAdresse = '" . $ip . "'"
     );
-    
+
     if (empty($ba_bec_result)) {
         return false;
     }
-    
+
     // Vérifier manuellement si la date d'expiration n'est pas dépassée
     $expiration = strtotime($ba_bec_result[0]['dateExpiration']);
     $now = time();
-    
+
     if ($expiration <= $now) {
         return false;
     }
-    
+
     return $ba_bec_result[0]['choixConsent'] === 'accepted';
 }
 
@@ -72,23 +72,23 @@ function hasAcceptedCookies() {
  */
 function saveCookieConsent($choice) {
     global $DB;
-    
+
     $ip = getCookieUserIP();
     $dateExpiration = date('Y-m-d H:i:s', strtotime('+' . COOKIE_CONSENT_DURATION_MINUTES . ' minutes'));
-    
+
     // Vérifier si l'IP existe déjà
     $existing = sql_select(
         "COOKIE_CONSENT",
         "numCon",
         "ipAdresse = '" . $ip . "'"
     );
-    
+
     if (!empty($existing)) {
         // Mettre à jour
         $query = "UPDATE COOKIE_CONSENT 
-                SET choixConsent = '" . $choice . "', 
-                    dateCon = NOW(), 
-                    dateExpiration = '" . $dateExpiration . "' 
+            SET choixConsent = '" . $choice . "', 
+                dateCon = NOW(), 
+                dateExpiration = '" . $dateExpiration . "' 
                 WHERE ipAdresse = '" . $ip . "'";
         $DB->exec($query);
     } else {
@@ -112,7 +112,7 @@ function cleanExpiredConsents() {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['accept_cookies'])) {
         saveCookieConsent('accepted');
-        
+
         setcookie(
             'cookieConsent',
             'accepted',
@@ -122,14 +122,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             false,
             true
         );
-        
+
         header('Location: ' . $_SERVER['REQUEST_URI']);
         exit;
     }
-    
+
     if (isset($_POST['reject_cookies'])) {
         saveCookieConsent('rejected');
-        
+
         setcookie(
             'cookieConsent',
             'rejected',
@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             false,
             true
         );
-        
+
         header('Location: ' . $_SERVER['REQUEST_URI']);
         exit;
     }

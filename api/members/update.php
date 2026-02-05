@@ -107,3 +107,5 @@ if (isset($ba_bec_numMemb, $ba_bec_prenomMemb, $ba_bec_nomMemb, $ba_bec_eMailMem
 $_SESSION['errors'] = ['Erreur lors de la mise à jour du membre.'];
 header('Location: ' . $ba_bec_redirectUrl);
 exit();
+
+?>

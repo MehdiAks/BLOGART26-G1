@@ -193,8 +193,8 @@ sql_connect();
 
 $stmt = $DB->prepare(
     'INSERT INTO bec_matches (Section, numEquipe, Equipe, Competition, Phase, Journee, Date, Heure, Domicile_Exterieur, Adversaire, Score_BEC, Score_Adversaire, MatchNo, Source)
-     VALUES (:section, :numEquipe, :team, :competition, :phase, :journee, :matchDate, :matchTime, :location, :opponent, :scoreBec, :scoreOpponent, :matchNo, :sourceUrl)
-     ON DUPLICATE KEY UPDATE
+    VALUES (:section, :numEquipe, :team, :competition, :phase, :journee, :matchDate, :matchTime, :location, :opponent, :scoreBec, :scoreOpponent, :matchNo, :sourceUrl)
+    ON DUPLICATE KEY UPDATE
         Section = VALUES(Section),
         numEquipe = VALUES(numEquipe),
         Equipe = VALUES(Equipe),
@@ -254,3 +254,4 @@ echo json_encode([
     'imported' => $inserted,
     'skipped' => $skipped,
 ]);
+?>

@@ -43,3 +43,5 @@ $_SESSION = [];
 $_SESSION['success'] = 'Votre compte a bien été supprimé.';
 header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
 exit();
+
+?>

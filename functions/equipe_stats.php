@@ -47,7 +47,7 @@ function ba_bec_update_equipe_points(?int $numEquipe): void
 
     $stmt = $DB->prepare(
         'UPDATE EQUIPE e
-         SET pointsMarquesDomicile = (
+        SET pointsMarquesDomicile = (
                 SELECT COALESCE(SUM(Score_BEC), 0)
                 FROM bec_matches m
                 WHERE m.numEquipe = e.numEquipe
@@ -75,7 +75,7 @@ function ba_bec_update_equipe_points(?int $numEquipe): void
                     AND m.Competition = e.niveauEquipe
                     AND m.Domicile_Exterieur = "Extérieur"
             )
-         WHERE e.numEquipe = :numEquipe'
+        WHERE e.numEquipe = :numEquipe'
     );
     $stmt->execute([':numEquipe' => $numEquipe]);
 }

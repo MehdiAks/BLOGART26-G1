@@ -37,3 +37,4 @@ function sql_insert($table, $attributs, $values){
     }
     return ['success' => true, 'message' => 'Opération réalisée avec succès.'];
 }
+?>

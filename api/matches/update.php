@@ -41,3 +41,4 @@ if ($ba_bec_previousEquipeId !== null && $ba_bec_previousEquipeId !== $ba_bec_nu
 }
 
 header('Location: ../../views/backend/matches/list.php');
+?>

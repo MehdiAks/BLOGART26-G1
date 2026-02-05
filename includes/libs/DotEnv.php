@@ -88,3 +88,5 @@ class DotEnv{
         return $trimmedValue;
     }
 }
+
+?>
