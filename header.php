@@ -156,8 +156,7 @@ if (function_exists('sql_connect')) {
                     <details class="header-compte-menu">
                         <summary class="header-compte-toggle" aria-label="Ouvrir le menu">
                             <span class="header-compte-icon" aria-hidden="true">
-                                <span></span>
-                                <span></span>
+                                <b>Compte</b>
                             </span>
                         </summary>
                         
