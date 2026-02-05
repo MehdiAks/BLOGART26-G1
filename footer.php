@@ -4,7 +4,11 @@
             <div class="row gy-4 align-items-start">
                 <div class="col-lg-5">
                     <a class="btn-contact-footer" href="<?php echo ROOT_URL . '/contact.php'; ?>">Contactez-nous :)</a>
-                    <p class="mb-1">secretariat@bec-bordeaux</p>
+                    <p class="mb-1">
+                        <a href="mailto:secretariat@bec-bordeaux?subject=Demande%20de%20contact%20depuis%20le%20site%20BEC%20Bordeaux">
+                            secretariat@bec-bordeaux
+                        </a>
+                    </p>
                     <p class="mb-3">06 71 94 23 80 - 05 56 91 83 50</p>
                     <div class="d-flex align-items-center gap-3 mb-4">
                         <a href="https://www.instagram.com/becfootballclub/?hl=fr" class="social-icon">
