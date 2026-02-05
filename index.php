@@ -336,48 +336,72 @@ $homeStats = [
 <script>
     const counters = document.querySelectorAll("[data-counter]");
 
-function parseNumber(value) {
-const normalized = value.replace(/\s/g, "").replace(",", ".");
-return Number.parseFloat(normalized);
-}
-
-function formatNumber(value, template) {
-const hasSpace = template.includes(" ");
-return value.toLocaleString("fr-FR", {
-    maximumFractionDigits: 0,
-    useGrouping: hasSpace,
-});
-}
-
-function animateCounter(element) {
-const targetText = element.dataset.target || "0";
-const target = parseNumber(targetText);
-if (!Number.isFinite(target) || target < 0) {
-    element.textContent = targetText;
-    return;
-}
-
-let current = 0;
-const durationMs = 1500;
-const stepTime = 20;
-const steps = Math.max(1, Math.floor(durationMs / stepTime));
-const increment = Math.max(1, Math.ceil(target / steps));
-
- const timerId = setInterval(() => {
-    current += increment;
-    if (current >= target) {
-    current = target;
-    element.textContent = formatNumber(current, targetText);
-    clearInterval(timerId);
-    return;
+    function parseNumber(value) {
+        const normalized = value.replace(/\s/g, "").replace(",", ".");
+        return Number.parseFloat(normalized);
     }
-    element.textContent = formatNumber(current, targetText);
-}, stepTime);
-}
 
-window.addEventListener("load", () => {
-counters.forEach((counter) => animateCounter(counter));
-});
+    function formatNumber(value, template) {
+        const hasSpace = template.includes(" ");
+        return value.toLocaleString("fr-FR", {
+            maximumFractionDigits: 0,
+            useGrouping: hasSpace,
+        });
+    }
+
+    function animateCounter(element) {
+        const targetText = element.dataset.target || "0";
+        const target = parseNumber(targetText);
+        if (!Number.isFinite(target) || target < 0) {
+            element.textContent = targetText;
+            return;
+        }
+
+        let current = 0;
+        const durationMs = Number.parseInt(element.dataset.duration || "1500", 10);
+        const stepTime = 20;
+        const steps = Math.max(1, Math.floor(durationMs / stepTime));
+        const increment = Math.max(1, Math.ceil(target / steps));
+
+        const timerId = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                current = target;
+                element.textContent = formatNumber(current, targetText);
+                clearInterval(timerId);
+                return;
+            }
+            element.textContent = formatNumber(current, targetText);
+        }, stepTime);
+    }
+
+    function triggerCounter(element) {
+        if (element.dataset.started === "true") {
+            return;
+        }
+        element.dataset.started = "true";
+        setTimeout(() => animateCounter(element), 1000);
+    }
+
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        triggerCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.4 }
+        );
+
+        counters.forEach((counter) => observer.observe(counter));
+    } else {
+        window.addEventListener("load", () => {
+            counters.forEach((counter) => triggerCounter(counter));
+        });
+    }
 </script>
 
     <section aria-label="Dernières actualités" class="home-articles">
