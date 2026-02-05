@@ -14,30 +14,7 @@ include '../header.php';
     <!-- Ajout de Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-        }
-        .main-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-        .section-title {
-            color: #007bff;
-            font-size: 1.5rem;
-            margin-top: 20px;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-    </style>
+
 </head>
 <body>
     <main class="container main-content">
