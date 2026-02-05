@@ -11,3 +11,5 @@ sql_insert('comment', 'libCom, numArt, numMemb', "'$ba_bec_libCom', '$ba_bec_num
 
 
 header('Location: ../../views/backend/comments/list.php');
+
+?>

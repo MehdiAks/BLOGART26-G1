@@ -24,3 +24,5 @@ if ($ba_bec_result['success']) {
 }
 
 header('Location: ../../views/backend/statuts/list.php');
+
+?>

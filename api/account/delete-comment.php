@@ -32,3 +32,5 @@ sql_update('comment', "delLogiq = 1, dtDelLogCom = NOW()", "numCom = $ba_bec_num
 $_SESSION['success'] = 'Votre commentaire a été masqué.';
 header('Location: ' . ROOT_URL . '/compte.php');
 exit();
+
+?>

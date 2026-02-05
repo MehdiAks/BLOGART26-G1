@@ -37,3 +37,5 @@ function sql_delete($table, $where){
     }
     return ['success' => true, 'message' => 'Opération réalisée avec succès.'];
 }
+
+?>

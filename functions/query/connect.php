@@ -14,3 +14,5 @@ function sql_connect(){
     
 
 }
+
+?>

@@ -16,4 +16,5 @@ sql_update('comment', "attModOK = '$ba_bec_attModOK'", "numCom = $ba_bec_numCom"
 sql_update('comment', "notifComKOAff = '$ba_bec_notifComKOAff'", "numCom = $ba_bec_numCom");
 
 header('Location: ../../views/backend/comments/list.php');
+
 ?>

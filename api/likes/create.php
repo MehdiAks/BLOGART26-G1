@@ -26,4 +26,5 @@ if ($ba_bec_existingLike) {
 $ba_bec_redirectUrl = isset($_POST['redirect_to']) ? $_POST['redirect_to'] : '../../views/backend/likes/list.php';
 header("Location: $ba_bec_redirectUrl");
 exit();
+
 ?>

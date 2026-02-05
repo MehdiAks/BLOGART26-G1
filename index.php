@@ -154,7 +154,6 @@ foreach ($matches as $match) {
         <div class="carousel-item">
             <img src="<?php echo ROOT_URL . '/src/images/background/background-index-10.webp'; ?>" class="d-block w-100"
                 alt="dixieme image du carrousel">
-        </div>
 
     </div>
     <div class="home-carousel-title text-center">

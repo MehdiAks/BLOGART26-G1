@@ -14,3 +14,5 @@ if ((int)$ba_bec_numStat !== 1) {
     header("Location: " . ROOT_URL . "/views/backend/security/login.php");
     exit();
 }
+
+?>
