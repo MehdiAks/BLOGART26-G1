@@ -220,6 +220,54 @@ VALUES
     03);
 --
 -- ----------------------------------------------
+/*
+-- Table ARTICLE_BOUTIQUE
+*/
+--
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (01, "T-shirt", "T-shirt officiel du BEC.", "Rouge, noir", "XS à XXL", 15.00, null, null, "Vêtement");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (02, "Short molleton", "Short confortable en molleton.", "Noir", "XS à XXL", 20.00, null, null, "Vêtement");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (03, "Chaussettes", "Chaussettes de sport BEC.", "Rouge, blanc", "XS à XXL", 10.00, null, null, "Vêtement");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (04, "Polo", "Polo club pour les supporters.", "Rouge, blanc", "XS à XXL", 25.00, null, null, "Vêtement");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (05, "Short coton fin", "Short léger en coton fin.", "Noir", "XS à XXL", 15.00, null, null, "Vêtement");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (06, "Casquette", "Casquette officielle du BEC.", "Blanc, bleu", "Taille unique", 15.00, null, null, "Accessoire");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (07, "Pull", "Pull chaud pour l'entraînement ou le quotidien.", "Rouge, noir", "XS à XXL", 35.00, 32.00, null, "Vêtement");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (08, "Short entraînement", "Short respirant pour les séances.", "Rouge", "XS à XXL", 15.00, null, null, "Vêtement");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (09, "Serviette 100 x 140 cm", "Serviette idéale pour l'entraînement.", "Rouge, blanc", "100 x 140 cm", 20.00, null, null, "Accessoire");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (10, "Doudoune sans manche", "Doudoune légère sans manche.", "Noir, bleu", "XS à XXL", 36.00, 34.00, null, "Vêtement");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (11, "Doudoune manche longue", "Doudoune chaude à manches longues.", "Noir, bleu", "XS à XXL", 42.00, 40.00, null, "Vêtement");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (12, "Jogging", "Jogging BEC confortable.", "Blanc, noir", "XS à XXL", 30.00, null, null, "Vêtement");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (13, "Sac à dos", "Sac à dos pratique pour les matchs.", "Noir", "Taille unique", 25.00, null, null, "Accessoire");
+INSERT INTO ARTICLE_BOUTIQUE (numArtBoutique, libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique)
+VALUES
+  (14, "Gourde", "Gourde réutilisable pour l'entraînement.", "Blanc, rouge", "Taille unique", 6.00, null, null, "Accessoire");
+--
+-- ----------------------------------------------
 
 -- ----------------------------------------------
 /*

@@ -120,6 +120,9 @@ if (function_exists('sql_connect')) {
                                         <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
                                     </li>
                                     <li>
+                                        <a href="<?php echo ROOT_URL . '/boutique.php'; ?>" <?php if ($current_page == '/boutique.php') echo 'class="current"'; ?>>Boutique</a>
+                                    </li>
+                                    <li>
                                         <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
                                     </li>
                                     <li>
@@ -221,6 +224,9 @@ if (function_exists('sql_connect')) {
                     </li>
                     <li>
                         <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/boutique.php'; ?>" <?php if ($current_page == '/boutique.php') echo 'class="current"'; ?>>Boutique</a>
                     </li>
                     <li>
                         <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
