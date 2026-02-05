@@ -24,7 +24,7 @@ require_once 'header.php';
 <br>
 <h4>Cette page est indisponible pour le moment ou est actuellement en cours de développement.</h4>
 <br>
-<a href="index.php"><button class="bouton">Revenir à l'accueil</button></a>
+<a href="<?php echo ROOT_URL . '/index.php'; ?>"><button class="bouton">Revenir à l'accueil</button></a>
 <br>
 
 <?php
