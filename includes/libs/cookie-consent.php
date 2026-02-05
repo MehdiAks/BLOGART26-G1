@@ -40,7 +40,28 @@ function getCookieConsent($pdo) {
             "SELECT cookieMemb FROM membre WHERE numMemb = ?"
         );
         $stmt->execute([$_SESSION['user_id']]);
-        return $stmt->fetchColumn();
+        $memberConsent = $stmt->fetchColumn();
+        if ($memberConsent !== false && $memberConsent !== null && $memberConsent !== '') {
+            return $memberConsent;
+        }
+        if (!empty($_COOKIE['cookie_consent_token'])) {
+            $stmt = $pdo->prepare(
+                "SELECT consent FROM cookie_consent
+                WHERE token = ? AND expires_at > NOW()"
+            );
+            $stmt->execute([$_COOKIE['cookie_consent_token']]);
+            $tokenConsent = $stmt->fetchColumn();
+            if ($tokenConsent !== false && $tokenConsent !== null && $tokenConsent !== '') {
+                $stmt = $pdo->prepare(
+                    "UPDATE membre
+                    SET cookieMemb = ?, dtMajMemb = NOW()
+                    WHERE numMemb = ?"
+                );
+                $stmt->execute([(int) $tokenConsent, $_SESSION['user_id']]);
+                return $tokenConsent;
+            }
+        }
+        return null;
     }
 
     // CAS 2 : VISITEUR ANONYME
