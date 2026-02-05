@@ -133,7 +133,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $referenceLookup = static function (string $table, string $column, string $value) use ($DB): int {
-            $stmt = $DB->prepare("SELECT num" . ucfirst(strtolower(str_replace('_', '', $table))) . " FROM {$table} WHERE {$column} = :value LIMIT 1");
+            $idColumnMap = [
+                'CATEGORIE_EQUIPE' => 'numCategorie',
+                'SECTION_EQUIPE' => 'numSection',
+                'NIVEAU_EQUIPE' => 'numNiveau',
+            ];
+            $idColumn = $idColumnMap[$table] ?? ("num" . ucfirst(strtolower(str_replace('_', '', $table))));
+            $stmt = $DB->prepare("SELECT {$idColumn} FROM {$table} WHERE {$column} = :value LIMIT 1");
             $stmt->execute([':value' => $value]);
             $found = $stmt->fetchColumn();
             if ($found !== false) {
