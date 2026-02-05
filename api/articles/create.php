@@ -18,6 +18,26 @@ $ba_bec_libSsTitr2Art = ctrlSaisies($_POST['libSsTitr2Art'] ?? '');
 $ba_bec_parag3Art = ctrlSaisies($_POST['parag3Art'] ?? '');
 $ba_bec_libConclArt = ctrlSaisies($_POST['libConclArt'] ?? '');
 $ba_bec_numThem = ctrlSaisies($_POST['numThem'] ?? '');
+
+$ba_bec_bbcodeFields = [
+    'libTitrArt' => $ba_bec_libTitrArt,
+    'libChapoArt' => $ba_bec_libChapoArt,
+    'libAccrochArt' => $ba_bec_libAccrochArt,
+    'parag1Art' => $ba_bec_parag1Art,
+    'libSsTitr1Art' => $ba_bec_libSsTitr1Art,
+    'parag2Art' => $ba_bec_parag2Art,
+    'libSsTitr2Art' => $ba_bec_libSsTitr2Art,
+    'parag3Art' => $ba_bec_parag3Art,
+    'libConclArt' => $ba_bec_libConclArt,
+];
+
+foreach ($ba_bec_bbcodeFields as $ba_bec_fieldName => $ba_bec_fieldValue) {
+    if (!isValidBbcodeContent($ba_bec_fieldValue)) {
+        http_response_code(400);
+        echo "Le contenu du champ {$ba_bec_fieldName} contient du BBCode non autorisé.";
+        exit;
+    }
+}
         
 
 if (function_exists('mb_substr')) {
