@@ -179,8 +179,8 @@ if ($isPartial) {
                 </select>
             </div>
             <div class="col-12 d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-outline-secondary" id="news-reset">Réinitialiser</button>
                 <button type="submit" class="btn btn-primary">Appliquer les filtres</button>
-                <a class="btn btn-outline-secondary" href="<?php echo ROOT_URL . '/actualites.php'; ?>">Réinitialiser</a>
                 <p class="news-filters__count ms-lg-auto mb-0" id="news-count">
                     <?php echo format_news_count(count($ba_bec_articles)); ?>
                 </p>
@@ -195,9 +195,18 @@ if ($isPartial) {
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.news-filters form');
     const grid = document.querySelector('.news-grid');
+    const resetButton = document.getElementById('news-reset');
     if (!form || !grid || typeof window.fetch !== 'function') {
         return;
     }
+
+    let debounceTimer;
+    const debounceFetch = () => {
+        window.clearTimeout(debounceTimer);
+        debounceTimer = window.setTimeout(() => {
+            submitFilters();
+        }, 300);
+    };
 
     const buildUrl = (includePartial) => {
         const formData = new FormData(form);
@@ -209,8 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${action}?${params.toString()}`;
     };
 
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
+    const submitFilters = async () => {
         const url = buildUrl(true);
         try {
             const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
@@ -234,7 +242,31 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             form.submit();
         }
+    };
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        submitFilters();
     });
+
+    form.addEventListener('change', (event) => {
+        if (event.target.matches('select')) {
+            submitFilters();
+        }
+    });
+
+    form.addEventListener('input', (event) => {
+        if (event.target.matches('input[type="search"], input[type="text"]')) {
+            debounceFetch();
+        }
+    });
+
+    if (resetButton) {
+        resetButton.addEventListener('click', () => {
+            form.reset();
+            submitFilters();
+        });
+    }
 });
 </script>
 

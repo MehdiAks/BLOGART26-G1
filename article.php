@@ -203,6 +203,30 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                         </p>
                     </article>
 
+                    <div class="likes-section">
+                        <h2>Évaluer cet article</h2>
+                        <p class="likes-count">Nombre de likes : <?php echo $likeCount; ?> · Dislikes : <?php echo $dislikeCount; ?></p>
+                        <div class="vote-buttons d-flex gap-3">
+                            <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post">
+                                <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
+                                <input type="hidden" name="likeA" value="1">
+                                <button type="submit" class="btn btn-light d-flex align-items-center gap-2 btn-vote <?php echo $userVote === 1 ? 'active-like' : ''; ?>">
+                                    <img src="<?php echo ROOT_URL . '/src/images/icon/pnglike.png'; ?>" alt="Like">
+                                    <span><?php echo $likeCount; ?></span>
+                                </button>
+                            </form>
+
+                            <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post">
+                                <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
+                                <input type="hidden" name="likeA" value="0">
+                                <button type="submit" class="btn btn-light d-flex align-items-center gap-2 btn-vote <?php echo $userVote === 0 ? 'active-dislike' : ''; ?>">
+                                    <img src="<?php echo ROOT_URL . '/src/images/icon/pngdislike.png'; ?>"  alt="Dislike">
+                                    <span><?php echo $dislikeCount; ?></span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
                     <div class="comments-block">
                         <h2>Ajouter un commentaire</h2>
                         <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post" class="comment-form">
@@ -265,28 +289,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                         else: ?>
                             <p>Aucun article disponible.</p>
                         <?php endif; ?>
-                        <div class="likes-section">
-                            <h2>Évaluer cet article</h2>
-                            <div class="vote-buttons d-flex gap-3">
-                                <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post">
-                                    <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
-                                    <input type="hidden" name="likeA" value="1">
-                                    <button type="submit" class="btn btn-light d-flex align-items-center gap-2 <?php echo $userVote === 1 ? 'active-like' : ''; ?>">
-                                        <img src="<?php echo ROOT_URL . '/src/images/icon/pnglike.png'; ?>" alt="Like">
-                                        <span><?php echo $likeCount; ?></span>
-                                    </button>
-                                </form>
-
-                                <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post">
-                                    <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
-                                    <input type="hidden" name="likeA" value="0">
-                                    <button type="submit" class="btn btn-light d-flex align-items-center gap-2 <?php echo $userVote === 0 ? 'active-dislike' : ''; ?>">
-                                        <img src="<?php echo ROOT_URL . '/src/images/icon/pngdislike.png'; ?>"  alt="Dislike">
-                                        <span><?php echo $dislikeCount; ?></span>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
                     </aside>
                 </div>
             </div>

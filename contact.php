@@ -17,7 +17,8 @@ require_once 'header.php';
                 <h2 class="h5">Nous écrire</h2>
                 <p>
                     <strong>Email :</strong> contact@bec-bordeaux.fr<br>
-                    <strong>Téléphone :</strong> 06 71 94 23 80
+                    <strong>Téléphone :</strong> <a href="tel:+33671942380">06 71 94 23 80</a> <a> - </a>
+                    <a href="tel:+33556918350">05 56 91 83 50</a>
                 </p>
             </div>
         </div>
