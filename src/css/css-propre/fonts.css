@@ -13,12 +13,42 @@
     url("/src/fonts/Epilogue/Epilogue-VariableFont_wght.ttf") format("ttf");
 }
 
+@font-face {
+    font-family: "chetta_vissto";
+    src:
+    local("chetta_vissto"),
+    url("/src/fonts/chetta_vissto/chetta_vissto.woff2") format("woff2"),
+    url("/src/fonts/chetta_vissto/chetta_vissto.woff") format("woff"),
+    url("/src/fonts/chetta_vissto/chetta_vissto.ttf") format("truetype");
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.home-carousel-title,
+.news-summary__title,
+.news-card__title,
+.article-editor-display--title,
+.article-editor-display--subtitle,
+.article-title,
+.matches-hero__title,
+.matches-list__title,
+.admin-dashboard .card-title,
+.club-card-title,
+.header-burger-title,
+.header-burger-group-title {
+    font-family: "chetta_vissto", "Montserrat", sans-serif;
+}
+
 
 h1{
     color: var(--primary-color);
     font-size: 60px;
     margin-top: 20px;
-    font-family:"Montserrat", sans-serif  ;
+    font-family:"chetta_vissto", "Montserrat", sans-serif  ;
 }
 
 h2{
@@ -26,7 +56,7 @@ h2{
     font-size: 45px;
     margin-top: 20px;
     margin-bottom: 20px;
-    font-family:"Montserrat", sans-serif  ;
+    font-family:"chetta_vissto", "Montserrat", sans-serif  ;
 }
 
 h3{
@@ -34,7 +64,7 @@ h3{
     font-size: 30px;
     margin-top: 20px;
     margin-bottom: 10px;
-    font-family:"Montserrat", sans-serif  ;
+    font-family:"chetta_vissto", "Montserrat", sans-serif  ;
     font-weight: bold;
 }
 
@@ -43,7 +73,7 @@ h4{
     margin-top: 20px;
     margin-bottom: 20px;
     font-size: 22px;
-    font-family:"Montserrat", sans-serif  ;
+    font-family:"chetta_vissto", "Montserrat", sans-serif  ;
 }
 
 body{
