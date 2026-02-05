@@ -5,7 +5,7 @@ require_once '../../functions/ctrlSaisies.php';
 // Nettoyer les données
 $ba_bec_numMemb = ctrlSaisies($_POST['numMemb']);
 $ba_bec_numArt = ctrlSaisies($_POST['numArt']);
-$ba_bec_likeA = ctrlSaisies($_POST['likeA']);
+$ba_bec_likeA = isset($_POST['likeA']) ? ctrlSaisies($_POST['likeA']) : "0";
 
 // Validation de likeA
 if ($ba_bec_likeA !== "1" && $ba_bec_likeA !== "0") {

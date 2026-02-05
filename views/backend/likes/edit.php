@@ -3,10 +3,32 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
+$ba_bec_articles = sql_select("ARTICLE", "numArt, libTitrArt", null, null, "numArt ASC");
+$ba_bec_members = sql_select("MEMBRE", "numMemb, pseudoMemb", null, null, "numMemb ASC");
+
+$ba_bec_articleIdToTitle = [];
+$ba_bec_articleTitleToId = [];
+foreach ($ba_bec_articles as $ba_bec_article) {
+    $ba_bec_articleIdToTitle[$ba_bec_article['numArt']] = $ba_bec_article['libTitrArt'];
+    $ba_bec_articleTitleToId[$ba_bec_article['libTitrArt']] = $ba_bec_article['numArt'];
+}
+
+$ba_bec_memberIdToPseudo = [];
+$ba_bec_memberPseudoToId = [];
+foreach ($ba_bec_members as $ba_bec_member) {
+    $ba_bec_memberIdToPseudo[$ba_bec_member['numMemb']] = $ba_bec_member['pseudoMemb'];
+    $ba_bec_memberPseudoToId[$ba_bec_member['pseudoMemb']] = $ba_bec_member['numMemb'];
+}
+
+$ba_bec_selectedArticleTitle = '';
+$ba_bec_selectedMemberPseudo = '';
+
 if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
     $ba_bec_numMemb = $_GET['numMemb'];
     $ba_bec_numArt = $_GET['numArt'];
     $ba_bec_likeA = sql_select("LIKEART", "likeA", "numMemb = $ba_bec_numMemb AND numArt = $ba_bec_numArt")[0]['likeA'];
+    $ba_bec_selectedArticleTitle = $ba_bec_articleIdToTitle[$ba_bec_numArt] ?? '';
+    $ba_bec_selectedMemberPseudo = $ba_bec_memberIdToPseudo[$ba_bec_numMemb] ?? '';
 }
 ?>
 
@@ -19,28 +41,47 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
             <!-- Form to edit like -->
             <form action="<?php echo ROOT_URL . '/api/likes/update.php' ?>" method="post">
                 <div class="form-group">
-                    <label for="numArt">Numéro d'article</label>
-                    <input id="numArt" name="numArt" class="form-control" style="display: none" type="text"
+                    <label for="numArt">Article (ID)</label>
+                    <input id="numArt" name="numArt" class="form-control" type="text"
                         value="<?php echo $ba_bec_numArt; ?>" />
-                    <input id="numArt" name="numArt" class="form-control" type="text" value="<?php echo $ba_bec_numArt; ?>" />
+                    <label class="mt-2" for="libTitrArt">Rechercher un article</label>
+                    <input id="libTitrArt" name="libTitrArt_display" class="form-control" type="text"
+                        list="articleOptions" placeholder="Titre de l'article"
+                        value="<?php echo htmlspecialchars($ba_bec_selectedArticleTitle); ?>" />
+                    <datalist id="articleOptions">
+                        <?php foreach ($ba_bec_articles as $ba_bec_article) { ?>
+                            <option value="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>"
+                                data-id="<?php echo htmlspecialchars($ba_bec_article['numArt']); ?>"></option>
+                        <?php } ?>
+                    </datalist>
                 </div>
                 <br>
 
                 <div class="form-group">
-                    <label for="numMemb">Numéro Membre</label>
-                    <input id="numMemb" name="numMemb" class="form-control" style="display: none" type="text"
-                        value="<?php echo $ba_bec_numMemb; ?>" />
+                    <label for="numMemb">Utilisateur (ID)</label>
                     <input id="numMemb" name="numMemb" class="form-control" type="text"
                         value="<?php echo $ba_bec_numMemb; ?>" />
+                    <label class="mt-2" for="pseudoMemb">Rechercher un utilisateur</label>
+                    <input id="pseudoMemb" name="pseudoMemb_display" class="form-control" type="text"
+                        list="memberOptions" placeholder="Pseudo du membre"
+                        value="<?php echo htmlspecialchars($ba_bec_selectedMemberPseudo); ?>" />
+                    <datalist id="memberOptions">
+                        <?php foreach ($ba_bec_members as $ba_bec_member) { ?>
+                            <option value="<?php echo htmlspecialchars($ba_bec_member['pseudoMemb']); ?>"
+                                data-id="<?php echo htmlspecialchars($ba_bec_member['numMemb']); ?>"></option>
+                        <?php } ?>
+                    </datalist>
                 </div>
                 <br>
 
                 <div class="form-group">
-                    <label for="likeA">Like/Dislike</label>
-                    <select id="likeA" name="likeA" class="form-control">
-                        <option value="1" <?php echo ($ba_bec_likeA == 1 ? 'selected' : ''); ?>>Like</option>
-                        <option value="0" <?php echo ($ba_bec_likeA == 0 ? 'selected' : ''); ?>>Dislike</option>
-                    </select>
+                    <label for="likeA">Like / Dislike</label>
+                    <div class="form-check form-switch">
+                        <input type="hidden" name="likeA" value="0" />
+                        <input class="form-check-input" type="checkbox" id="likeA" name="likeA" value="1"
+                            <?php echo ($ba_bec_likeA == 1 ? 'checked' : ''); ?> />
+                        <label class="form-check-label" for="likeA">Like (désactiver pour dislike)</label>
+                    </div>
                 </div>
                 <br>
 
@@ -52,3 +93,51 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
         </div>
     </div>
 </div>
+
+<script>
+    const articleIdToTitle = <?php echo json_encode($ba_bec_articleIdToTitle); ?>;
+    const articleTitleToId = <?php echo json_encode($ba_bec_articleTitleToId); ?>;
+    const memberIdToPseudo = <?php echo json_encode($ba_bec_memberIdToPseudo); ?>;
+    const memberPseudoToId = <?php echo json_encode($ba_bec_memberPseudoToId); ?>;
+
+    const articleIdInput = document.getElementById('numArt');
+    const articleTitleInput = document.getElementById('libTitrArt');
+    const memberIdInput = document.getElementById('numMemb');
+    const memberPseudoInput = document.getElementById('pseudoMemb');
+
+    articleIdInput.addEventListener('input', () => {
+        const title = articleIdToTitle[articleIdInput.value];
+        if (title) {
+            articleTitleInput.value = title;
+        } else if (articleIdInput.value === '') {
+            articleTitleInput.value = '';
+        }
+    });
+
+    articleTitleInput.addEventListener('input', () => {
+        const id = articleTitleToId[articleTitleInput.value];
+        if (id) {
+            articleIdInput.value = id;
+        } else if (articleTitleInput.value === '') {
+            articleIdInput.value = '';
+        }
+    });
+
+    memberIdInput.addEventListener('input', () => {
+        const pseudo = memberIdToPseudo[memberIdInput.value];
+        if (pseudo) {
+            memberPseudoInput.value = pseudo;
+        } else if (memberIdInput.value === '') {
+            memberPseudoInput.value = '';
+        }
+    });
+
+    memberPseudoInput.addEventListener('input', () => {
+        const id = memberPseudoToId[memberPseudoInput.value];
+        if (id) {
+            memberIdInput.value = id;
+        } else if (memberPseudoInput.value === '') {
+            memberIdInput.value = '';
+        }
+    });
+</script>
