@@ -47,8 +47,9 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
                 </div>
                 <br>
 
-                <div class="form-group">
+                <div class="form-group d-flex gap-2">
                     <button type="submit" class="btn btn-danger">Confirmer la suppression ?</button>
+                    <a href="list.php" class="btn btn-secondary">Annuler</a>
                 </div>
             </form>
         </div>
