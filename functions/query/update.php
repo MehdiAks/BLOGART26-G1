@@ -37,3 +37,5 @@ function sql_update($table, $attributs, $where) {
     }
     return ['success' => true, 'message' => 'Opération réalisée avec succès.'];
 }
+
+?>

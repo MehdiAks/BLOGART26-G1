@@ -8,3 +8,5 @@ sql_delete('comment', "numCom = $ba_bec_numCom");
 
 
 header('Location: ../../views/backend/comments/list.php'); 
+
+?>

@@ -35,3 +35,5 @@ if ($ba_bec_delete_result['success']) {
 }
 
 header('Location: ../../views/backend/members/list.php');
+
+?>

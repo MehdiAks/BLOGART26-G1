@@ -18,3 +18,5 @@ if ($ba_bec_numMatch > 0) {
 }
 
 header('Location: ../../views/backend/matches/list.php');
+
+?>

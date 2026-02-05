@@ -91,3 +91,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: ../../../views/backend/security/signup.php');
     exit();
 }
+
+?>
