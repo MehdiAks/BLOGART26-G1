@@ -10,7 +10,11 @@ if (!empty($ba_bec_currentMax) && isset($ba_bec_currentMax[0]['maxStat'])) {
     $ba_bec_nextNumStat = (int)$ba_bec_currentMax[0]['maxStat'] + 1;
 }
 
-sql_insert('STATUT', 'numStat, libStat', "'$ba_bec_nextNumStat', '$ba_bec_libStat'");
-
+$ba_bec_result = sql_insert('STATUT', 'numStat, libStat', "'$ba_bec_nextNumStat', '$ba_bec_libStat'");
+if ($ba_bec_result['success']) {
+    flash_success();
+} else {
+    flash_error();
+}
 
 header('Location: ../../views/backend/statuts/list.php');

@@ -10,7 +10,11 @@ if ($ba_bec_libThem === '') {
     exit;
 }
 
-sql_insert('THEMATIQUE', 'libThem', "'$ba_bec_libThem'");
-
+$ba_bec_result = sql_insert('THEMATIQUE', 'libThem', "'$ba_bec_libThem'");
+if ($ba_bec_result['success']) {
+    flash_success();
+} else {
+    flash_error();
+}
 
 header('Location: ../../views/backend/thematiques/list.php');

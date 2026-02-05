@@ -10,14 +10,20 @@ $ba_bec_countnumStat = sql_select("MEMBRE", "COUNT(*) AS total", "numStat = $ba_
 
 if ($ba_bec_countnumStat > 0) {
     // Redirection avec message d'erreur
-    header('Location: ../../views/backend/statuts/list.php?error=used');
+    flash_delete_impossible();
+    header('Location: ../../views/backend/statuts/list.php');
     exit;
 }
 
 // Si le statut n'est pas utilisé, suppression
-sql_delete('STATUT', "numStat = $ba_bec_numStat");
+$ba_bec_result = sql_delete('STATUT', "numStat = $ba_bec_numStat");
+if ($ba_bec_result['success']) {
+    flash_success();
+} else {
+    flash_error();
+}
 
-header('Location: ../../views/backend/statuts/list.php?success=deleted');
+header('Location: ../../views/backend/statuts/list.php');
 exit;
 
 ?>

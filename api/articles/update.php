@@ -90,7 +90,12 @@ $ba_bec_where_num = "numArt = '$ba_bec_numArt'";
 $ba_bec_table_art = "ARTICLE";
 
 // Mise à jour de l'article
-sql_update($ba_bec_table_art, $ba_bec_set_art, $ba_bec_where_num);
+$ba_bec_update_result = sql_update($ba_bec_table_art, $ba_bec_set_art, $ba_bec_where_num);
+if (!$ba_bec_update_result['success']) {
+    flash_error();
+    header('Location: ../../views/backend/articles/list.php');
+    exit;
+}
 
 // Mise à jour des mots-clés liés à l'article (ajouts/suppressions)
 $ba_bec_existingKeywords = sql_select('MOTCLEARTICLE', 'numMotCle', $ba_bec_where_num);
@@ -111,6 +116,11 @@ foreach ($ba_bec_toRemove as $ba_bec_mot) {
 }
 
 // Redirection après la mise à jour
+if ($ba_bec_has_error) {
+    flash_error();
+} else {
+    flash_success();
+}
 header('Location: ../../views/backend/articles/list.php');
 exit;
 ?>

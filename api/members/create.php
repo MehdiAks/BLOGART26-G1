@@ -72,13 +72,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Vérification complète avant insertion
     if (empty($ba_bec_errors) && isset($ba_bec_pseudoMemb, $ba_bec_prenomMemb, $ba_bec_nomMemb, $ba_bec_hash_password, $ba_bec_eMailMemb, $ba_bec_numStat)) {
         $ba_bec_dtCreaMemb = date('Y-m-d H:i:s');
-        sql_insert(
+        $ba_bec_insert_result = sql_insert(
             'MEMBRE',
             'prenomMemb, nomMemb, pseudoMemb, passMemb, eMailMemb, dtCreaMemb, accordMemb, numStat',
             "'$ba_bec_prenomMemb', '$ba_bec_nomMemb', '$ba_bec_pseudoMemb', '$ba_bec_hash_password', '$ba_bec_eMailMemb', '$ba_bec_dtCreaMemb', '1', '$ba_bec_numStat'"
         );
-        header('Location: ../../views/backend/members/list.php');
-        exit();
+        if ($ba_bec_insert_result['success']) {
+            flash_success();
+            header('Location: ../../views/backend/members/list.php');
+            exit();
+        }
+        $ba_bec_errors[] = FLASH_MESSAGE_ERROR;
 
     }
 

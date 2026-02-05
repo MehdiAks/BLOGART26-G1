@@ -68,23 +68,35 @@ if ($ba_bec_numThem === '' || !is_numeric($ba_bec_numThem)) {
 $ba_bec_urlPhotValue = $ba_bec_nom_image ? "'$ba_bec_nom_image'" : "NULL";
 
 // Insertion dans la table ARTICLE
-sql_insert(
+$ba_bec_insert_result = sql_insert(
     'ARTICLE',
     'libTitrArt, libChapoArt, libAccrochArt, parag1Art, libSsTitr1Art, parag2Art, libSsTitr2Art, parag3Art, libConclArt, urlPhotArt, numThem',
     "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', $ba_bec_urlPhotValue, '$ba_bec_numThem'"
 );
+if (!$ba_bec_insert_result['success']) {
+    flash_error();
+    header('Location: ../../views/backend/articles/list.php');
+    exit;
+}
 $ba_bec_lastArt = sql_select('ARTICLE', 'numArt', null, null, 'numArt DESC', '1')[0]['numArt'];
 
-
-
+$ba_bec_has_error = false;
 foreach ($ba_bec_numMotCle as $ba_bec_mot){
-    sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_lastArt, $ba_bec_mot");
+    $ba_bec_link_result = sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_lastArt, $ba_bec_mot");
+    if (!$ba_bec_link_result['success']) {
+        $ba_bec_has_error = true;
+    }
 }
 
 
 
 
 // Redirection après l'insertion
+if ($ba_bec_has_error) {
+    flash_error();
+} else {
+    flash_success();
+}
 header('Location: ../../views/backend/articles/list.php');
 exit;
 

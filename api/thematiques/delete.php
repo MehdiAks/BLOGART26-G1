@@ -8,14 +8,20 @@ $ba_bec_numThem = ctrlSaisies($_POST['numThem']);
 $ba_bec_countnumThem = sql_select("ARTICLE", "COUNT(*) AS total", "numThem = $ba_bec_numThem")[0]['total'];
 if ($ba_bec_countnumThem > 0) {
     // Redirection avec message d'erreur
-    header('Location: ../../views/backend/thematiques/list.php?error=used');
+    flash_delete_impossible();
+    header('Location: ../../views/backend/thematiques/list.php');
     exit;
 }
 
 // Si le statut n'est pas utilisé, suppression
-sql_delete('THEMATIQUE', "numThem = $ba_bec_numThem");
+$ba_bec_result = sql_delete('THEMATIQUE', "numThem = $ba_bec_numThem");
+if ($ba_bec_result['success']) {
+    flash_success();
+} else {
+    flash_error();
+}
 
-header('Location: ../../views/backend/thematiques/list.php?success=deleted');
+header('Location: ../../views/backend/thematiques/list.php');
 exit;
 
 ?>
