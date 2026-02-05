@@ -165,11 +165,18 @@ $resolveTeamLogo = static function (string $teamName) use (
     $normalizeTeamName,
     $logoIndex,
     $defaultLogoUrl,
-    $becLogoUrl
+    $becLogoUrl,
+    $seniorKeywords
 ): string {
     $trimmed = trim($teamName);
     if ($trimmed === '') {
         return $defaultLogoUrl;
+    }
+
+    foreach ($seniorKeywords as $keyword) {
+        if ($keyword !== '' && stripos($trimmed, $keyword) !== false) {
+            return $becLogoUrl;
+        }
     }
 
     foreach ($clubIdentifiers as $identifier) {
@@ -243,7 +250,7 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
     ob_start();
     ?>
     <div class="col-12">
-        <article class="match-card">
+        <article class="match-card" style="--match-home-logo: url('<?php echo htmlspecialchars($homeLogo); ?>'); --match-away-logo: url('<?php echo htmlspecialchars($awayLogo); ?>');">
             <header class="match-card__header">
                 <div>
                     <p class="match-card__competition"><?php echo htmlspecialchars($ba_bec_match['competition']); ?></p>
