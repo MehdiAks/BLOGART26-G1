@@ -26,6 +26,10 @@ $themeStmt = $DB->prepare('SELECT numThem, libThem FROM THEMATIQUE ORDER BY libT
 $themeStmt->execute();
 $ba_bec_thematiques = $themeStmt->fetchAll(PDO::FETCH_ASSOC);
 
+$keywordStmt = $DB->prepare('SELECT libMotCle FROM MOTCLE ORDER BY libMotCle ASC');
+$keywordStmt->execute();
+$ba_bec_keywords = array_values(array_filter(array_map('trim', $keywordStmt->fetchAll(PDO::FETCH_COLUMN)), 'strlen'));
+
 $conditions = [];
 $params = [];
 
@@ -167,8 +171,15 @@ if ($isPartial) {
                     name="keyword"
                     class="form-control"
                     placeholder="Ex: entraînement, événement"
+                    list="keyword-options"
+                    data-keywords="<?php echo htmlspecialchars(json_encode($ba_bec_keywords, JSON_UNESCAPED_UNICODE), ENT_QUOTES); ?>"
                     value="<?php echo htmlspecialchars($ba_bec_keyword, ENT_QUOTES); ?>"
                 />
+                <datalist id="keyword-options">
+                    <?php foreach ($ba_bec_keywords as $ba_bec_keyword_option): ?>
+                        <option value="<?php echo htmlspecialchars($ba_bec_keyword_option, ENT_QUOTES); ?>"></option>
+                    <?php endforeach; ?>
+                </datalist>
             </div>
             <div class="col-12 col-lg-3">
                 <label for="sort" class="form-label">Trier</label>
@@ -194,11 +205,30 @@ if ($isPartial) {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.news-filters form');
-    const grid = document.querySelector('.news-grid');
+    let grid = document.querySelector('.news-grid');
     const resetButton = document.getElementById('news-reset');
+    const keywordInput = document.getElementById('keyword');
+    const keywordOptions = document.getElementById('keyword-options');
     if (!form || !grid || typeof window.fetch !== 'function') {
         return;
     }
+
+    const keywordList = keywordInput?.dataset.keywords
+        ? JSON.parse(keywordInput.dataset.keywords)
+        : [];
+
+    const updateKeywordOptions = (value) => {
+        if (!keywordOptions) {
+            return;
+        }
+        const query = value.trim().toLowerCase();
+        const matches = query === ''
+            ? keywordList
+            : keywordList.filter((item) => item.toLowerCase().includes(query));
+        keywordOptions.innerHTML = matches
+            .map((item) => `<option value="${item.replace(/"/g, '&quot;')}"></option>`)
+            .join('');
+    };
 
     let debounceTimer;
     const debounceFetch = () => {
@@ -233,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('No grid found in response');
             }
             grid.replaceWith(newGrid);
+            grid = newGrid;
             const countElement = document.getElementById('news-count');
             if (countElement && newGrid.dataset.newsCountLabel) {
                 countElement.textContent = newGrid.dataset.newsCountLabel;
@@ -257,6 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('input', (event) => {
         if (event.target.matches('input[type="search"], input[type="text"]')) {
+            if (event.target === keywordInput) {
+                updateKeywordOptions(event.target.value);
+            }
             debounceFetch();
         }
     });
@@ -264,8 +298,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (resetButton) {
         resetButton.addEventListener('click', () => {
             form.reset();
+            if (keywordInput) {
+                updateKeywordOptions(keywordInput.value);
+            }
             submitFilters();
         });
+    }
+
+    if (keywordInput) {
+        updateKeywordOptions(keywordInput.value);
     }
 });
 </script>
