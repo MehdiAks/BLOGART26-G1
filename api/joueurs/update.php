@@ -10,7 +10,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_numAffectation = (int) ($_POST['numAffectation'] ?? 0);
     $ba_bec_prenomJoueur = ctrlSaisies($_POST['prenomJoueur'] ?? '');
     $ba_bec_nomJoueur = ctrlSaisies($_POST['nomJoueur'] ?? '');
-    $ba_bec_posteJoueur = ctrlSaisies($_POST['posteJoueur'] ?? '');
+    $ba_bec_postesInput = $_POST['postesJoueur'] ?? ($_POST['posteJoueur'] ?? []);
+    $ba_bec_postesList = [];
+    if (is_array($ba_bec_postesInput)) {
+        foreach ($ba_bec_postesInput as $ba_bec_posteInput) {
+            $ba_bec_posteValue = ctrlSaisies($ba_bec_posteInput);
+            if ($ba_bec_posteValue !== '') {
+                $ba_bec_postesList[] = $ba_bec_posteValue;
+            }
+        }
+    } else {
+        $ba_bec_posteValue = ctrlSaisies($ba_bec_postesInput);
+        if ($ba_bec_posteValue !== '') {
+            $ba_bec_postesList[] = $ba_bec_posteValue;
+        }
+    }
     $ba_bec_photoActuelle = ctrlSaisies($_POST['photoActuelle'] ?? '');
     $ba_bec_numeroMaillot = ctrlSaisies($_POST['numeroMaillot'] ?? '');
     $ba_bec_numEquipe = (int) ($_POST['numEquipe'] ?? 0);
@@ -110,17 +124,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':numJoueur' => $ba_bec_numJoueur,
         ]);
 
-        $ba_bec_numPoste = null;
-        if ($ba_bec_posteJoueur !== '') {
-            $posteStmt = $DB->prepare('SELECT numPoste FROM POSTE WHERE libPoste = :libPoste LIMIT 1');
-            $posteStmt->execute([':libPoste' => $ba_bec_posteJoueur]);
-            $ba_bec_numPoste = $posteStmt->fetchColumn();
-            if ($ba_bec_numPoste === false) {
-                $insertPoste = $DB->prepare('INSERT INTO POSTE (libPoste) VALUES (:libPoste)');
-                $insertPoste->execute([':libPoste' => $ba_bec_posteJoueur]);
-                $ba_bec_numPoste = $DB->lastInsertId();
+        $ba_bec_numPostes = [];
+        if (!empty($ba_bec_postesList)) {
+            $posteSelectById = $DB->prepare('SELECT numPoste FROM POSTE WHERE numPoste = :numPoste LIMIT 1');
+            $posteSelectByLabel = $DB->prepare('SELECT numPoste FROM POSTE WHERE libPoste = :libPoste LIMIT 1');
+            $posteInsert = $DB->prepare('INSERT INTO POSTE (libPoste) VALUES (:libPoste)');
+
+            foreach ($ba_bec_postesList as $ba_bec_posteValue) {
+                if (is_numeric($ba_bec_posteValue)) {
+                    $ba_bec_posteId = (int) $ba_bec_posteValue;
+                    if ($ba_bec_posteId > 0) {
+                        $posteSelectById->execute([':numPoste' => $ba_bec_posteId]);
+                        if ($posteSelectById->fetchColumn() !== false) {
+                            $ba_bec_numPostes[] = $ba_bec_posteId;
+                        }
+                    }
+                } else {
+                    $posteSelectByLabel->execute([':libPoste' => $ba_bec_posteValue]);
+                    $ba_bec_posteId = $posteSelectByLabel->fetchColumn();
+                    if ($ba_bec_posteId === false) {
+                        $posteInsert->execute([':libPoste' => $ba_bec_posteValue]);
+                        $ba_bec_posteId = $DB->lastInsertId();
+                    }
+                    if ($ba_bec_posteId !== false) {
+                        $ba_bec_numPostes[] = (int) $ba_bec_posteId;
+                    }
+                }
             }
         }
+        $ba_bec_numPostes = array_values(array_unique($ba_bec_numPostes));
+        $ba_bec_numPoste = $ba_bec_numPostes[0] ?? null;
 
         $ba_bec_numeroValue = $ba_bec_numeroMaillot !== '' ? (int) $ba_bec_numeroMaillot : null;
         $ba_bec_dateDebutValue = $ba_bec_dateDebut !== '' ? $ba_bec_dateDebut : null;
@@ -156,6 +189,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':numMaillot' => $ba_bec_numeroValue,
                 ':dateDebut' => $ba_bec_dateDebutValue,
             ]);
+            $ba_bec_numAffectation = (int) $DB->lastInsertId();
+        }
+
+        if ($ba_bec_numAffectation > 0) {
+            $deletePostes = $DB->prepare(
+                'DELETE FROM JOUEUR_AFFECTATION_POSTE WHERE numAffectation = :numAffectation'
+            );
+            $deletePostes->execute([':numAffectation' => $ba_bec_numAffectation]);
+
+            if (!empty($ba_bec_numPostes)) {
+                $insertPosteLink = $DB->prepare(
+                    'INSERT INTO JOUEUR_AFFECTATION_POSTE (numAffectation, numPoste)
+                     VALUES (:numAffectation, :numPoste)'
+                );
+                foreach ($ba_bec_numPostes as $ba_bec_posteId) {
+                    $insertPosteLink->execute([
+                        ':numAffectation' => $ba_bec_numAffectation,
+                        ':numPoste' => $ba_bec_posteId,
+                    ]);
+                }
+            }
         }
 
         $deleteClubs = $DB->prepare('DELETE FROM JOUEUR_CLUB WHERE numJoueur = :numJoueur');

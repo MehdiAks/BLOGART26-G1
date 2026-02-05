@@ -5,7 +5,7 @@ include '../../../header.php';
 
 sql_connect();
 
-$ba_bec_allowed_tables = ['JOUEUR', 'EQUIPE', 'JOUEUR_AFFECTATION'];
+$ba_bec_allowed_tables = ['JOUEUR', 'EQUIPE', 'JOUEUR_AFFECTATION', 'JOUEUR_AFFECTATION_POSTE'];
 if (isset($_POST['create_table'])) {
     $ba_bec_table = strtoupper(trim((string) ($_POST['create_table'] ?? '')));
     if (in_array($ba_bec_table, $ba_bec_allowed_tables, true) && sql_create_table($ba_bec_table)) {
@@ -18,12 +18,14 @@ $ba_bec_is_missing_table = [
     'JOUEUR' => sql_is_missing_table('JOUEUR'),
     'EQUIPE' => sql_is_missing_table('EQUIPE'),
     'JOUEUR_AFFECTATION' => sql_is_missing_table('JOUEUR_AFFECTATION'),
+    'JOUEUR_AFFECTATION_POSTE' => sql_is_missing_table('JOUEUR_AFFECTATION_POSTE'),
 ];
 
 $ba_bec_missing_table_labels = [
     'JOUEUR' => 'JOUEUR',
     'EQUIPE' => 'EQUIPE',
     'JOUEUR_AFFECTATION' => 'JOUEUR_AFFECTATION',
+    'JOUEUR_AFFECTATION_POSTE' => 'JOUEUR_AFFECTATION_POSTE',
 ];
 
 $ba_bec_players = [];
@@ -35,7 +37,7 @@ if (!in_array(true, $ba_bec_is_missing_table, true)) {
             j.urlPhotoJoueur,
             j.dateNaissance,
             a.numMaillot,
-            p.libPoste,
+            GROUP_CONCAT(DISTINCT p.libPoste ORDER BY p.libPoste SEPARATOR ', ') AS libPostes,
             s.libSaison,
             e.libEquipe
         FROM JOUEUR j
@@ -45,9 +47,19 @@ if (!in_array(true, $ba_bec_is_missing_table, true)) {
             GROUP BY numJoueur
         ) latest ON j.numJoueur = latest.numJoueur
         LEFT JOIN JOUEUR_AFFECTATION a ON a.numAffectation = latest.latestAffectation
-        LEFT JOIN POSTE p ON a.numPoste = p.numPoste
+        LEFT JOIN JOUEUR_AFFECTATION_POSTE ap ON ap.numAffectation = a.numAffectation
+        LEFT JOIN POSTE p ON ap.numPoste = p.numPoste
         LEFT JOIN SAISON s ON a.numSaison = s.numSaison
         LEFT JOIN EQUIPE e ON a.numEquipe = e.numEquipe
+        GROUP BY
+            j.numJoueur,
+            j.prenomJoueur,
+            j.nomJoueur,
+            j.urlPhotoJoueur,
+            j.dateNaissance,
+            a.numMaillot,
+            s.libSaison,
+            e.libEquipe
         ORDER BY j.nomJoueur ASC";
     $ba_bec_players = $DB->query($playersQuery)->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -113,7 +125,7 @@ function format_age(?string $birthDate): string
                                 <td><?php echo htmlspecialchars(format_age($ba_bec_player['dateNaissance'] ?? null)); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_player['libEquipe'] ?? 'Non affecté'); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_player['libSaison'] ?? 'Non renseignée'); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_player['libPoste'] ?? 'Non renseigné'); ?></td>
+                                <td><?php echo htmlspecialchars($ba_bec_player['libPostes'] ?? 'Non renseigné'); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_player['numMaillot'] ?? ''); ?></td>
                                 <td>
                                     <a href="edit.php?numJoueur=<?php echo $ba_bec_player['numJoueur']; ?>" class="btn btn-primary">Edit</a>
