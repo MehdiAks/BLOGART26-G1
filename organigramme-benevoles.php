@@ -69,7 +69,7 @@ $branchDescriptions = [
     'Équipe communication' => 'L\'équipe communication valorise les actions du club et relaie les informations.',
 ];
 
-$defaultPhoto = ROOT_URL . '/src/images/logo.png';
+$defaultPhoto = ROOT_URL . '/src/images/image-defaut.jpeg';
 
 function branch_id(string $label): string
 {
