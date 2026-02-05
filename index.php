@@ -70,7 +70,7 @@ $formatMatchTime = static function (?string $matchTime): string {
 };
 
 $becLogo = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
-$defaultTeamLogo = ROOT_URL . '/src/images/logo/team-default.svg';
+$defaultTeamLogo = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
 $logoDirectory = ROOT . '/src/images/logo/logo-adversaire';
 $logoBaseUrl = ROOT_URL . '/src/images/logo/logo-adversaire';
 $clubIdentifiers = [
