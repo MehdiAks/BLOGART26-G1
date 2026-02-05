@@ -85,15 +85,29 @@ $ba_bec_where_num = "numArt = '$ba_bec_numArt'";
 $ba_bec_table_art = "ARTICLE";
 
 // Mise à jour de l'article
-sql_update($ba_bec_table_art, $ba_bec_set_art, $ba_bec_where_num);
+$ba_bec_update_result = sql_update($ba_bec_table_art, $ba_bec_set_art, $ba_bec_where_num);
+if (!$ba_bec_update_result['success']) {
+    flash_error();
+    header('Location: ../../views/backend/articles/list.php');
+    exit;
+}
 
 // Suppression des mots-clés existants et réinsertion des nouveaux mots-clés
-sql_delete('MOTCLEARTICLE', $ba_bec_where_num);
+$ba_bec_delete_result = sql_delete('MOTCLEARTICLE', $ba_bec_where_num);
+$ba_bec_has_error = !$ba_bec_delete_result['success'];
 foreach ($ba_bec_numMotCle as $ba_bec_mot) {
-    sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_numArt, $ba_bec_mot");
+    $ba_bec_link_result = sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_numArt, $ba_bec_mot");
+    if (!$ba_bec_link_result['success']) {
+        $ba_bec_has_error = true;
+    }
 }
 
 // Redirection après la mise à jour
+if ($ba_bec_has_error) {
+    flash_error();
+} else {
+    flash_success();
+}
 header('Location: ../../views/backend/articles/list.php');
 exit;
 ?>

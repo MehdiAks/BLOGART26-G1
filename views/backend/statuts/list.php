@@ -16,6 +16,15 @@ $ba_bec_statuts = sql_select("STATUT", "*");
                 </a>
             </div>
             <h1>Statuts</h1>
+            <?php
+            $ba_bec_flash_messages = flash_get();
+            $ba_bec_alert_map = ['success' => 'success', 'error' => 'danger', 'warning' => 'warning'];
+            ?>
+            <?php foreach ($ba_bec_flash_messages as $ba_bec_flash): ?>
+                <div class="alert alert-<?php echo $ba_bec_alert_map[$ba_bec_flash['type']] ?? 'info'; ?>" role="alert">
+                    <?php echo htmlspecialchars($ba_bec_flash['message']); ?>
+                </div>
+            <?php endforeach; ?>
             <table class="table table-striped">
                 <thead>
                     <tr>
