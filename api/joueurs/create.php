@@ -3,6 +3,47 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
+function normalize_upload_path(?string $path): ?string
+{
+    if (!$path) {
+        return null;
+    }
+
+    $path = trim($path);
+    $uploadsMarker = 'src/uploads/';
+    $markerPos = strpos($path, $uploadsMarker);
+    if ($markerPos !== false) {
+        $path = substr($path, $markerPos + strlen($uploadsMarker));
+    } elseif (preg_match('/^(https?:\\/\\/|\\/)/', $path)) {
+        return null;
+    }
+
+    $path = ltrim($path, '/');
+    return $path !== '' ? $path : null;
+}
+
+function joueur_photo_basename(string $prenom, string $nom): string
+{
+    $nomClean = preg_replace('/[^\\p{L}]/u', '', $nom);
+    if (function_exists('mb_substr')) {
+        $initials = mb_substr($nomClean, 0, 2);
+    } else {
+        $initials = substr($nomClean, 0, 2);
+    }
+    $initials = strtoupper($initials);
+    if ($initials === '') {
+        $initials = 'XX';
+    }
+
+    $prenomSlug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $prenom));
+    $prenomSlug = trim($prenomSlug, '-');
+    if ($prenomSlug === '') {
+        $prenomSlug = 'prenom';
+    }
+
+    return $initials . '.' . $prenomSlug;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     sql_connect();
 
@@ -66,9 +107,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (empty($ba_bec_errors)) {
-                $ba_bec_nom_image = time() . '_' . basename($ba_bec_name);
-                $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
-                $ba_bec_destination = $ba_bec_uploadDir . $ba_bec_nom_image;
+                $ba_bec_extension = strtolower(pathinfo($ba_bec_name, PATHINFO_EXTENSION));
+                $ba_bec_baseName = joueur_photo_basename($ba_bec_prenomJoueur, $ba_bec_nomJoueur);
+                $ba_bec_nom_image = 'photos-joueurs/' . $ba_bec_baseName . '.' . $ba_bec_extension;
+                $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-joueurs/';
+                if (!is_dir($ba_bec_uploadDir)) {
+                    mkdir($ba_bec_uploadDir, 0755, true);
+                }
+                $ba_bec_destination = $ba_bec_uploadDir . $ba_bec_baseName . '.' . $ba_bec_extension;
                 if (!move_uploaded_file($ba_bec_tmpName, $ba_bec_destination)) {
                     $ba_bec_errors[] = "Erreur lors de l'upload de l'image.";
                 }

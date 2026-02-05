@@ -416,12 +416,15 @@ if (!$becMatchesAvailable) {
                         //    - si l'article a une image, on utilise celle-ci
                         //    - sinon on utilise l'image par défaut.
                         $defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
-                        $uploadPath = !empty($ba_bec_article['urlPhotArt'])
-                            ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_article['urlPhotArt']
-                            : '';
-                        $ba_bec_imagePath = (!empty($ba_bec_article['urlPhotArt']) && file_exists($uploadPath))
-                            ? ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_article['urlPhotArt'])
-                            : $defaultImagePath;
+                        $articlePhoto = $ba_bec_article['urlPhotArt'] ?? '';
+                        if ($articlePhoto && preg_match('/^(https?:\\/\\/|\\/)/', $articlePhoto)) {
+                            $ba_bec_imagePath = $articlePhoto;
+                        } else {
+                            $uploadPath = $articlePhoto ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $articlePhoto : '';
+                            $ba_bec_imagePath = ($articlePhoto && file_exists($uploadPath))
+                                ? ROOT_URL . '/src/uploads/' . htmlspecialchars($articlePhoto)
+                                : $defaultImagePath;
+                        }
                         // 2) On récupère le chapo (texte d'accroche) ou une chaîne vide si absent.
                         $chapo = $ba_bec_article['libChapoArt'] ?? '';
                         // 3) On fixe la longueur max de l'extrait affiché.

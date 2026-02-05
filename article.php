@@ -17,12 +17,17 @@ if (empty($articleData)) {
 
 $ba_bec_article = $articleData[0];
 $defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
-$articleUploadPath = !empty($ba_bec_article['urlPhotArt'])
-    ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_article['urlPhotArt']
-    : '';
-$ba_bec_articleImageUrl = (!empty($ba_bec_article['urlPhotArt']) && file_exists($articleUploadPath))
-    ? ROOT_URL . '/src/uploads/' . $ba_bec_article['urlPhotArt']
-    : $defaultImagePath;
+$articlePhoto = $ba_bec_article['urlPhotArt'] ?? '';
+if ($articlePhoto && preg_match('/^(https?:\\/\\/|\\/)/', $articlePhoto)) {
+    $ba_bec_articleImageUrl = $articlePhoto;
+} else {
+    $articleUploadPath = $articlePhoto
+        ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $articlePhoto
+        : '';
+    $ba_bec_articleImageUrl = ($articlePhoto && file_exists($articleUploadPath))
+        ? ROOT_URL . '/src/uploads/' . $articlePhoto
+        : $defaultImagePath;
+}
 $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
 $ba_bec_keywords = sql_select("MOTCLE", "*");
 $ba_bec_selectedKeywords = sql_select("MOTCLEARTICLE", "*", "numArt = $ba_bec_numArt");
@@ -268,12 +273,17 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                         if (!empty($randomArticles)):
                             foreach ($randomArticles as $randomArticle): ?>
                                 <?php
-                                $randomUploadPath = !empty($randomArticle['urlPhotArt'])
-                                    ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $randomArticle['urlPhotArt']
-                                    : '';
-                                $randomImageUrl = (!empty($randomArticle['urlPhotArt']) && file_exists($randomUploadPath))
-                                    ? ROOT_URL . '/src/uploads/' . $randomArticle['urlPhotArt']
-                                    : $defaultImagePath;
+                                $randomPhoto = $randomArticle['urlPhotArt'] ?? '';
+                                if ($randomPhoto && preg_match('/^(https?:\\/\\/|\\/)/', $randomPhoto)) {
+                                    $randomImageUrl = $randomPhoto;
+                                } else {
+                                    $randomUploadPath = $randomPhoto
+                                        ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $randomPhoto
+                                        : '';
+                                    $randomImageUrl = ($randomPhoto && file_exists($randomUploadPath))
+                                        ? ROOT_URL . '/src/uploads/' . $randomPhoto
+                                        : $defaultImagePath;
+                                }
                                 ?>
                                 <div class="random-article">
                                     <img class="imagedroite img-fluid w-100" src="<?php echo $randomImageUrl; ?>" alt="Image article">

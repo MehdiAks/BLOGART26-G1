@@ -48,7 +48,7 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
             <h1>Modifier une équipe</h1>
         </div>
         <div class="col-md-12">
-            <form action="<?php echo ROOT_URL . '/api/equipes/update.php'; ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/api/equipes/update.php'; ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="numEquipe" value="<?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?>" />
                 <div class="form-group">
                     <label for="codeEquipe">Code équipe</label>
@@ -116,6 +116,24 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
                     <label for="descriptionEquipe">Description</label>
                     <textarea id="descriptionEquipe" name="descriptionEquipe" class="form-control" rows="4"
                         placeholder="Description de l'équipe..."><?php echo htmlspecialchars($ba_bec_equipe['descriptionEquipe'] ?? ''); ?></textarea>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="photoEquipe">Photo équipe</label>
+                    <?php if (!empty($ba_bec_equipe['urlPhotoEquipe'])): ?>
+                        <div class="mb-2">
+                            <img src="<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_equipe['urlPhotoEquipe']); ?>" alt="Photo équipe" class="img-fluid" style="max-height: 160px;">
+                        </div>
+                    <?php endif; ?>
+                    <input id="photoEquipe" name="photoEquipe" class="form-control" type="file" accept=".jpg,.jpeg,.png,.avif,.svg" />
+                </div>
+                <div class="form-group mt-2">
+                    <label for="photoStaff">Photo staff</label>
+                    <?php if (!empty($ba_bec_equipe['urlPhotoStaff'])): ?>
+                        <div class="mb-2">
+                            <img src="<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_equipe['urlPhotoStaff']); ?>" alt="Photo staff" class="img-fluid" style="max-height: 160px;">
+                        </div>
+                    <?php endif; ?>
+                    <input id="photoStaff" name="photoStaff" class="form-control" type="file" accept=".jpg,.jpeg,.png,.avif,.svg" />
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Enregistrer</button>
