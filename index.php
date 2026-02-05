@@ -175,7 +175,9 @@ foreach ($matches as $match) {
     <section class="home-section mb-5">
         <h1 class="mb-3">Bienvenue au BEC</h1>
         <p class="lead mb-4">
-            Description du site.
+            Bordeaux n'est pas seulement son miroir d'eau ou encore ses cannelés. C'est aussi une ville de sport et de talent ! <br>
+            Ce blog permet de suivre toute l'actualité du Bordeaux Etudiant Club, les jours de matchs, les résultats, les évènements, les joueurs, ...
+            <br>Le but ? Mettre en valeur la section basket du club, partager les performances de l'équipe ainsi que ses valeurs du sport.
         </p>
         <div class="d-flex gap-2">
             <a class="btn btn-primary" href="actualites.php">Voir les actualités</a>
@@ -224,7 +226,8 @@ foreach ($matches as $match) {
     </section>
 
     <section aria-label="Dernières actualités" class="home-articles">
-        <h2 class="mb-4">Nos derniers actualités</h2>
+        <h2 class="mb-4">Nos dernières actualités</h2>
+            <p class="text-body-secondary mb-4">Retrouvez ci-dessous nos dernières actualités et articles récents.</p>
         <!-- Si on a au moins un article récupéré, on les affiche. -->
         <?php if (!empty($ba_bec_articles)): ?>
             <div class="d-flex flex-column gap-4">

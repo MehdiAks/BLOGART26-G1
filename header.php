@@ -15,6 +15,17 @@ $club_pages = [
     '/equipes.php',
     '/joueurs.php',
 ];
+
+$ba_bec_cookieConsent = null;
+if (function_exists('sql_connect')) {
+    global $DB;
+    if (!$DB) {
+        sql_connect();
+    }
+    if (!empty($DB)) {
+        $ba_bec_cookieConsent = getCookieConsent($DB);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -165,4 +176,46 @@ $club_pages = [
             </div>
         </div>
     </header>
+    <?php if ($ba_bec_cookieConsent === null): ?>
+        <div class="cookie-overlay" id="cookie-overlay" hidden></div>
+        <div class="cookie-popup" id="cookie-popup" role="dialog" aria-modal="true" aria-labelledby="cookie-title" hidden>
+            <div class="cookie-content">
+                <h2 id="cookie-title">Gestion des cookies</h2>
+                <p>Nous utilisons des cookies pour améliorer votre expérience. Vous pouvez accepter ou refuser.</p>
+                <div class="cookie-buttons">
+                    <button type="button" class="btn btn-light" data-cookie-choice="1">Accepter</button>
+                    <button type="button" class="btn btn-outline-light" data-cookie-choice="0">Refuser</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            (function () {
+                var popup = document.getElementById('cookie-popup');
+                var overlay = document.getElementById('cookie-overlay');
+                if (!popup || !overlay) {
+                    return;
+                }
+                popup.hidden = false;
+                overlay.hidden = false;
+                document.body.classList.add('cookie-choice-required');
+
+                popup.querySelectorAll('[data-cookie-choice]').forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        var choice = button.getAttribute('data-cookie-choice');
+                        var formData = new FormData();
+                        formData.append('consent', choice);
+                        fetch('<?php echo ROOT_URL . '/api/security/cookie-consent.php'; ?>', {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            body: formData
+                        }).finally(function () {
+                            popup.hidden = true;
+                            overlay.hidden = true;
+                            document.body.classList.remove('cookie-choice-required');
+                        });
+                    });
+                });
+            })();
+        </script>
+    <?php endif; ?>
     <main class="site-main container py-5">

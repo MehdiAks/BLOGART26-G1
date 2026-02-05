@@ -11,15 +11,6 @@ $ba_bec_errorPseudo = $ba_bec_errorPassword = $ba_bec_errorCaptcha = "";
 $ba_bec_pseudo = "";
 $ba_bec_recaptchaSiteKey = getenv('RECAPTCHA_SITE_KEY');
 $ba_bec_recaptchaSiteKeyEscaped = htmlspecialchars($ba_bec_recaptchaSiteKey ?? '', ENT_QUOTES, 'UTF-8');
-$ba_bec_cookieConsentChoice = ctrlSaisies($_POST['cookieConsent'] ?? '');
-$ba_bec_showCookieBanner = true;
-
-if (!empty($_SESSION['user_id'])) {
-    $ba_bec_cookieData = sql_select("MEMBRE", "cookieMemb", "numMemb = " . intval($_SESSION['user_id']));
-    if (!empty($ba_bec_cookieData[0]['cookieMemb'])) {
-        $ba_bec_showCookieBanner = false;
-    }
-}
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -50,14 +41,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['user_id'] = $ba_bec_user[0]['numMemb'];
             $_SESSION['pseudoMemb'] = $ba_bec_user[0]['pseudoMemb'];
             $_SESSION['numStat'] = $ba_bec_user[0]['numStat']; // ✅ Stocker le statut
-            if ($ba_bec_cookieConsentChoice === 'accepted') {
-                sql_update(
-                    "MEMBRE",
-                    "cookieMemb = '1', dtMajMemb = NOW()",
-                    "numMemb = " . intval($ba_bec_user[0]['numMemb'])
-                );
-            }
-
             header("Location: " . ROOT_URL . "/index.php");
             exit();
         } else {
@@ -73,19 +56,6 @@ $pageStyles = [
 ];
 include '../../../header.php'; ?>
 
-<?php if ($ba_bec_showCookieBanner): ?>
-    <div class="cookie-overlay" id="cookie-overlay" hidden></div>
-    <div class="cookie-popup" id="cookie-popup" role="dialog" aria-modal="true" aria-labelledby="cookie-title" hidden>
-        <div class="cookie-content">
-            <h2 id="cookie-title">Gestion des cookies</h2>
-            <p>Nous utilisons des cookies pour améliorer votre expérience. Vous pouvez accepter ou refuser.</p>
-            <div class="cookie-buttons">
-                <button type="button" class="btn btn-light" data-cookie-choice="accepted">Accepter</button>
-                <button type="button" class="btn btn-outline-light" data-cookie-choice="rejected">Refuser</button>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
 
 <main class="auth-page">
     <section class="auth-card">
@@ -100,7 +70,6 @@ include '../../../header.php'; ?>
 
         <form action="" method="post" class="auth-form">
             <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-login">
-            <input type="hidden" name="cookieConsent" id="cookieConsent" value="">
             <div class="auth-stack">
                 <!-- Nom d'utilisateur -->
                 <div class="champ">
@@ -184,41 +153,6 @@ include '../../../header.php'; ?>
 </script>
 <script>
     (function () {
-        var popup = document.getElementById('cookie-popup');
-        var overlay = document.getElementById('cookie-overlay');
-        var consentInput = document.getElementById('cookieConsent');
-        var storedConsent = null;
-        if (typeof localStorage !== 'undefined') {
-            storedConsent = localStorage.getItem('cookieConsent');
-        }
-
-        if (consentInput && storedConsent) {
-            consentInput.value = storedConsent;
-        }
-
-        if (popup && overlay && !storedConsent) {
-            popup.hidden = false;
-            overlay.hidden = false;
-            document.body.classList.add('cookie-choice-required');
-            popup.querySelectorAll('[data-cookie-choice]').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    var choice = button.getAttribute('data-cookie-choice');
-                    if (consentInput) {
-                        consentInput.value = choice;
-                    }
-                    if (typeof localStorage !== 'undefined') {
-                        localStorage.setItem('cookieConsent', choice);
-                    }
-                    popup.hidden = true;
-                    overlay.hidden = true;
-                    document.body.classList.remove('cookie-choice-required');
-                });
-            });
-        } else if (popup && overlay) {
-            popup.hidden = true;
-            overlay.hidden = true;
-        }
-
         var form = document.querySelector('.auth-form');
         var tokenInput = document.getElementById('g-recaptcha-response-login');
         var siteKey = '<?php echo $ba_bec_recaptchaSiteKeyEscaped; ?>';
