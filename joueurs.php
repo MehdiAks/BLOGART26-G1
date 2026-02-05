@@ -3,110 +3,111 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
 
-function render_missing_table_page(PDOException $exception): void
-{
-    $errorInfo = $exception->errorInfo ?? [];
-    $isMissingTable = $exception->getCode() === '42S02'
-        || (isset($errorInfo[1]) && (int) $errorInfo[1] === 1146);
+require_once 'header.php';
 
-    if ($isMissingTable) {
-        http_response_code(404);
-        require_once 'erreur404.php';
-        exit;
-    }
-}
+sql_connect();
 
-$dbAvailable = getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_DATABASE');
+$ba_bec_players = [];
+try {
+    $playersQuery = "SELECT
+            j.numJoueur,
+            j.prenomJoueur,
+            j.nomJoueur,
+            j.urlPhotoJoueur,
+            j.dateNaissance,
+            a.numMaillot,
+            p.libPoste,
+            s.libSaison,
+            e.libEquipe,
+            clubs.clubsPrecedents
+        FROM JOUEUR j
+        LEFT JOIN (
+            SELECT numJoueur, MAX(numAffectation) AS latestAffectation
+            FROM JOUEUR_AFFECTATION
+            GROUP BY numJoueur
+        ) latest ON j.numJoueur = latest.numJoueur
+        LEFT JOIN JOUEUR_AFFECTATION a ON a.numAffectation = latest.latestAffectation
+        LEFT JOIN POSTE p ON a.numPoste = p.numPoste
+        LEFT JOIN SAISON s ON a.numSaison = s.numSaison
+        LEFT JOIN EQUIPE e ON a.numEquipe = e.numEquipe
+        LEFT JOIN (
+            SELECT jc.numJoueur, GROUP_CONCAT(c.nomClub ORDER BY c.nomClub SEPARATOR ', ') AS clubsPrecedents
+            FROM JOUEUR_CLUB jc
+            INNER JOIN CLUB c ON jc.numClub = c.numClub
+            GROUP BY jc.numJoueur
+        ) clubs ON clubs.numJoueur = j.numJoueur
+        ORDER BY j.nomJoueur ASC";
 
-if ($dbAvailable) {
-    try {
-        sql_connect();
-
-        $playersStmt = $DB->prepare(
-            'SELECT j.numJoueur, j.prenomJoueur, j.nomJoueur, j.urlPhotoJoueur, j.posteJoueur, j.numMaillot, j.anneeArrivee, j.clubsPrecedents,
-                j.dateNaissance, GROUP_CONCAT(e.libEquipe ORDER BY e.libEquipe SEPARATOR ", ") AS equipes
-            FROM JOUEUR j
-            LEFT JOIN EQUIPE_JOUEUR ej ON j.numJoueur = ej.numJoueur
-            LEFT JOIN EQUIPE e ON ej.numEquipe = e.numEquipe
-            GROUP BY j.numJoueur
-            ORDER BY j.nomJoueur ASC'
-        );
-        $playersStmt->execute();
-        $players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $exception) {
-        render_missing_table_page($exception);
-        throw $exception;
-    }
-} else {
-    $players = [];
+    $playersStmt = $DB->prepare($playersQuery);
+    $playersStmt->execute();
+    $ba_bec_players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $exception) {
+    $ba_bec_players = [];
 }
 
 $defaultPhoto = ROOT_URL . '/src/images/image-defaut.jpeg';
-
-function format_age(?string $birthDate): string
-{
-    if (!$birthDate) {
-        return 'Âge non renseigné';
-    }
-    $birth = new DateTime($birthDate);
-    $today = new DateTime();
-    $age = $today->diff($birth)->y;
-    return $age . ' ans';
-}
-
-function format_clubs(?string $clubs): string
-{
-    if (!$clubs) {
-        return 'Non renseignés';
-    }
-    $list = preg_split('/\\r\\n|\\r|\\n|\\s*\\|\\s*/', $clubs);
-    $list = array_values(array_filter(array_map('trim', $list), 'strlen'));
-    return $list ? implode(' · ', $list) : 'Non renseignés';
-}
 
 function player_photo_url(?string $photo, string $defaultPhoto): string
 {
     if (!$photo) {
         return $defaultPhoto;
     }
-    if (preg_match('/^(https?:\\/\\/|\\/)/', $photo)) {
+
+    if (preg_match('/^(https?:\/\/|\/)/', $photo)) {
         return $photo;
     }
+
     return ROOT_URL . '/src/uploads/' . $photo;
 }
-?>
 
-<?php require_once 'header.php'; ?>
+function format_age(?string $birthDate): string
+{
+    if (!$birthDate) {
+        return 'Non renseigné';
+    }
+    $date = DateTime::createFromFormat('Y-m-d', $birthDate);
+    if (!$date) {
+        return 'Non renseigné';
+    }
+    return (string) $date->diff(new DateTime())->y;
+}
+
+function format_clubs(?string $clubs): string
+{
+    if (!$clubs) {
+        return 'Non renseigné';
+    }
+    return $clubs;
+}
+?>
 
 <section class="club-page">
     <header class="club-header">
         <h1>Joueurs du club</h1>
-        <p class="lead">
+        <p>
             Retrouvez les joueurs du BEC, leurs postes, leurs parcours et l'équipe dans laquelle ils évoluent.
         </p>
     </header>
 
-    <?php if (empty($players)) : ?>
-        <div class="empty-state">
-            <p>Aucun joueur n'est encore enregistré. Les fiches seront ajoutées prochainement.</p>
-        </div>
+    <?php if (empty($ba_bec_players)) : ?>
+        <p>Aucun joueur n'est encore enregistré. Les fiches seront ajoutées prochainement.</p>
     <?php else : ?>
         <div class="club-grid">
-            <?php foreach ($players as $player) : ?>
+            <?php foreach ($ba_bec_players as $player) : ?>
                 <article class="club-card">
                     <img src="<?php echo htmlspecialchars(player_photo_url($player['urlPhotoJoueur'], $defaultPhoto)); ?>" alt="<?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>">
                     <div class="club-card-body">
                         <h2 class="club-card-title">
                             <?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>
                         </h2>
-                        <p class="club-card-meta">Numéro : <?php echo htmlspecialchars($player['numMaillot'] ?: 'Non renseigné'); ?></p>
-                        <p class="club-card-meta">Poste : <?php echo htmlspecialchars($player['posteJoueur'] ?: 'Non renseigné'); ?></p>
+                        <p class="club-card-meta">Numéro : <?php echo htmlspecialchars($player['numMaillot'] ?? 'Non renseigné'); ?></p>
+                        <p class="club-card-meta">Poste : <?php echo htmlspecialchars($player['libPoste'] ?? 'Non renseigné'); ?></p>
                         <p class="club-card-meta">Âge : <?php echo htmlspecialchars(format_age($player['dateNaissance'])); ?></p>
-                        <p class="club-card-meta">Arrivé au club : <?php echo htmlspecialchars($player['anneeArrivee'] ?: 'Non renseignée'); ?></p>
-                        <p class="club-card-meta">Clubs précédents : <?php echo htmlspecialchars(format_clubs($player['clubsPrecedents'])); ?></p>
-                        <?php if (!empty($player['equipes'])) : ?>
-                            <p class="club-card-meta">Équipe(s) : <?php echo htmlspecialchars($player['equipes']); ?></p>
+                        <p class="club-card-meta">Saison : <?php echo htmlspecialchars($player['libSaison'] ?? 'Non renseignée'); ?></p>
+                        <?php if (!empty($player['libEquipe'])) : ?>
+                            <p class="club-card-meta">Équipe : <?php echo htmlspecialchars($player['libEquipe']); ?></p>
                         <?php endif; ?>
+                        <p class="club-card-meta">Clubs précédents : <?php echo htmlspecialchars(format_clubs($player['clubsPrecedents'])); ?></p>
                     </div>
                 </article>
             <?php endforeach; ?>
@@ -114,6 +115,4 @@ function player_photo_url(?string $photo, string $defaultPhoto): string
     <?php endif; ?>
 </section>
 
-<?php
-require_once 'footer.php';
-?>
+<?php require_once 'footer.php'; ?>

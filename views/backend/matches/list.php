@@ -14,44 +14,43 @@ if (!in_array($ba_bec_perPage, $ba_bec_allowedPerPage, true)) {
 $ba_bec_page = max(1, (int) ($_GET['page'] ?? 1));
 $ba_bec_offset = ($ba_bec_page - 1) * $ba_bec_perPage;
 
-$ba_bec_where = $ba_bec_showAll ? null : '(Score_BEC IS NULL OR Score_Adversaire IS NULL)';
-$ba_bec_order = 'Date ASC, Heure ASC';
-$ba_bec_limit = $ba_bec_offset . ', ' . $ba_bec_perPage;
+$ba_bec_whereClause = $ba_bec_showAll ? '' : 'WHERE (home_part.score IS NULL OR away_part.score IS NULL)';
+$ba_bec_order = 'ORDER BY m.dateMatch ASC, m.heureMatch ASC';
+$ba_bec_limit = 'LIMIT ' . $ba_bec_offset . ', ' . $ba_bec_perPage;
 
-$ba_bec_select = "MatchNo AS numMatch, Competition AS competition, Date AS matchDate, Heure AS matchTime, Domicile_Exterieur AS location, Phase AS status, Equipe AS team, Adversaire AS opponent, Score_BEC AS scoreBec, Score_Adversaire AS scoreOpponent";
-$ba_bec_table = 'bec_matches';
+$ba_bec_select = "SELECT
+        m.numMatch AS numMatch,
+        c.libCompetition AS competition,
+        m.dateMatch AS matchDate,
+        m.heureMatch AS matchTime,
+        home_team.libEquipe AS teamHome,
+        away_team.libEquipe AS teamAway,
+        home_part.score AS scoreHome,
+        away_part.score AS scoreAway
+    FROM `MATCH` m
+    INNER JOIN COMPETITION c ON m.numCompetition = c.numCompetition
+    LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
+    LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
+    LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe
+    LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe
+    {$ba_bec_whereClause}
+    {$ba_bec_order}
+    {$ba_bec_limit}";
 
-$ba_bec_matches = sql_select($ba_bec_table, $ba_bec_select, $ba_bec_where, null, $ba_bec_order, $ba_bec_limit);
-$ba_bec_matches = array_map(
-    static function (array $match): array {
-        $location = strtolower(trim((string) ($match['location'] ?? '')));
-        $isAway = str_contains($location, 'extérieur') || str_contains($location, 'exterieur');
-        $team = (string) ($match['team'] ?? '');
-        $opponent = (string) ($match['opponent'] ?? '');
+$ba_bec_matches = [];
+try {
+    $ba_bec_matches = $DB->query($ba_bec_select)->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $exception) {
+    $ba_bec_matches = [];
+}
 
-        $teamHome = $isAway ? $opponent : $team;
-        $teamAway = $isAway ? $team : $opponent;
-        $scoreHome = $match['scoreBec'];
-        $scoreAway = $match['scoreOpponent'];
-        if ($isAway) {
-            $scoreHome = $match['scoreOpponent'];
-            $scoreAway = $match['scoreBec'];
-        }
-
-        return array_merge(
-            $match,
-            [
-                'teamHome' => $teamHome,
-                'teamAway' => $teamAway,
-                'scoreHome' => $scoreHome,
-                'scoreAway' => $scoreAway,
-            ]
-        );
-    },
-    $ba_bec_matches
-);
-$ba_bec_totalRow = sql_select($ba_bec_table, 'COUNT(*) AS total', $ba_bec_where);
-$ba_bec_total = $ba_bec_totalRow[0]['total'] ?? 0;
+$ba_bec_totalQuery = "SELECT COUNT(*) AS total
+    FROM `MATCH` m
+    LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
+    LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
+    {$ba_bec_whereClause}";
+$ba_bec_totalRow = $DB->query($ba_bec_totalQuery)->fetch(PDO::FETCH_ASSOC);
+$ba_bec_total = $ba_bec_totalRow['total'] ?? 0;
 $ba_bec_hasNextPage = ($ba_bec_offset + $ba_bec_perPage) < $ba_bec_total;
 
 $ba_bec_queryBase = [
@@ -108,11 +107,11 @@ $ba_bec_formatTime = static function ($time): string {
                     <?php foreach ($ba_bec_matches as $ba_bec_match) { ?>
                         <tr>
                             <td><?php echo $ba_bec_match['numMatch']; ?></td>
-                            <td><?php echo htmlspecialchars($ba_bec_match['competition']); ?></td>
-                            <td><?php echo htmlspecialchars($ba_bec_match['matchDate']); ?></td>
+                            <td><?php echo htmlspecialchars($ba_bec_match['competition'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($ba_bec_match['matchDate'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($ba_bec_formatTime($ba_bec_match['matchTime'] ?? '')); ?></td>
-                            <td><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></td>
-                            <td><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></td>
+                            <td><?php echo htmlspecialchars($ba_bec_match['teamHome'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($ba_bec_match['teamAway'] ?? ''); ?></td>
                             <td>
                                 <?php if ($ba_bec_match['scoreHome'] !== null && $ba_bec_match['scoreAway'] !== null) : ?>
                                     <?php echo (int) $ba_bec_match['scoreHome']; ?> - <?php echo (int) $ba_bec_match['scoreAway']; ?>

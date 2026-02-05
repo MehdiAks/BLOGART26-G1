@@ -50,41 +50,6 @@ function parse_date_and_time(?string $dateRaw, ?string $timeRaw): array
     return [$date, $time];
 }
 
-function resolve_match_side(string $home, string $away): array
-{
-    $clubIdentifiers = [
-        'bec',
-        'bordeaux',
-        'etudiant',
-    ];
-
-    foreach ($clubIdentifiers as $identifier) {
-        if ($identifier !== '' && stripos($home, $identifier) !== false) {
-            return [
-                'team' => $home,
-                'opponent' => $away,
-                'location' => 'Domicile',
-            ];
-        }
-    }
-
-    foreach ($clubIdentifiers as $identifier) {
-        if ($identifier !== '' && stripos($away, $identifier) !== false) {
-            return [
-                'team' => $away,
-                'opponent' => $home,
-                'location' => 'Extérieur',
-            ];
-        }
-    }
-
-    return [
-        'team' => $home,
-        'opponent' => $away,
-        'location' => 'Domicile',
-    ];
-}
-
 function normalize_match(array $item): ?array
 {
     $home = trim((string) ($item['home'] ?? $item['homeTeam'] ?? $item['teamHome'] ?? $item['domicile'] ?? ''));
@@ -94,8 +59,6 @@ function normalize_match(array $item): ?array
     $status = trim((string) ($item['phase'] ?? $item['status'] ?? $item['etat'] ?? ''));
     $scoreHome = isset($item['scoreHome']) ? (int) $item['scoreHome'] : (isset($item['score_dom']) ? (int) $item['score_dom'] : null);
     $scoreAway = isset($item['scoreAway']) ? (int) $item['scoreAway'] : (isset($item['score_ext']) ? (int) $item['score_ext'] : null);
-    $sourceUrl = trim((string) ($item['url'] ?? $item['sourceUrl'] ?? ''));
-    $sourceId = trim((string) ($item['id'] ?? $item['matchId'] ?? $item['uid'] ?? ''));
     $section = trim((string) ($item['section'] ?? $item['category'] ?? $item['teamSection'] ?? ''));
     $journee = trim((string) ($item['journee'] ?? $item['matchDay'] ?? $item['day'] ?? ''));
 
@@ -105,56 +68,179 @@ function normalize_match(array $item): ?array
         return null;
     }
 
-    if ($sourceId === '') {
-        $sourceId = sha1($competition . '|' . $matchDate . '|' . ($matchTime ?? '') . '|' . $home . '|' . $away);
-    }
-
-    $resolved = resolve_match_side($home, $away);
-    $locationValue = $location !== '' ? $location : $resolved['location'];
-    $team = $resolved['team'];
-    $opponent = $resolved['opponent'];
-
-    $scoreBec = $scoreHome;
-    $scoreOpponent = $scoreAway;
-    if (strtolower($locationValue) === 'extérieur' || strtolower($locationValue) === 'exterieur') {
-        $scoreBec = $scoreAway;
-        $scoreOpponent = $scoreHome;
-    }
-
-    $sectionValue = $section;
-    if ($sectionValue === '') {
-        $haystack = strtolower($team . ' ' . $competition);
-        $sectionValue = (str_contains($haystack, 'féminin') || str_contains($haystack, 'feminin') || str_contains($haystack, 'sf'))
-            ? 'Féminin'
-            : 'Masculin';
-    }
-
     $journeeValue = $journee;
     if ($journeeValue !== '' && preg_match('/^j/i', $journeeValue) !== 1) {
         $journeeValue = 'J' . $journeeValue;
     }
 
-    $matchNo = (int) ($item['matchNo'] ?? $item['matchNumber'] ?? $item['MatchNo'] ?? $item['match_id'] ?? 0);
-    if ($matchNo <= 0) {
-        $matchNo = abs(crc32($sourceId));
-    }
-
     return [
-        'sourceId' => $sourceId,
-        'section' => $sectionValue,
+        'home' => $home,
+        'away' => $away,
         'competition' => $competition !== '' ? $competition : 'Compétition FFBB',
         'phase' => $status !== '' ? $status : 'Saison régulière',
         'journee' => $journeeValue,
         'matchDate' => $matchDate,
-        'matchTime' => $matchTime ?? '00:00:00',
-        'location' => $locationValue,
-        'team' => $team,
-        'opponent' => $opponent,
-        'scoreBec' => $scoreBec,
-        'scoreOpponent' => $scoreOpponent,
-        'sourceUrl' => $sourceUrl !== '' ? $sourceUrl : $sourceId,
-        'matchNo' => $matchNo,
+        'matchTime' => $matchTime,
+        'location' => $location,
+        'scoreHome' => $scoreHome,
+        'scoreAway' => $scoreAway,
+        'section' => $section,
     ];
+}
+
+function ensure_reference(PDO $DB, string $table, string $labelColumn, string $value): int
+{
+    $stmt = $DB->prepare("SELECT {$table}.{$table === 'SAISON' ? 'numSaison' : 'num' . ucfirst(strtolower(str_replace('_', '', $table)))} FROM {$table} WHERE {$labelColumn} = :label LIMIT 1");
+    $stmt->execute([':label' => $value]);
+    $found = $stmt->fetchColumn();
+    if ($found !== false) {
+        return (int) $found;
+    }
+
+    $insert = $DB->prepare("INSERT INTO {$table} ({$labelColumn}) VALUES (:label)");
+    $insert->execute([':label' => $value]);
+
+    return (int) $DB->lastInsertId();
+}
+
+function get_or_create_club(PDO $DB, string $clubName): int
+{
+    $stmt = $DB->prepare('SELECT numClub FROM CLUB WHERE nomClub = :name LIMIT 1');
+    $stmt->execute([':name' => $clubName]);
+    $existing = $stmt->fetchColumn();
+    if ($existing !== false) {
+        return (int) $existing;
+    }
+
+    $isHomeClub = stripos($clubName, 'bec') !== false || stripos($clubName, 'bordeaux') !== false;
+    $insert = $DB->prepare('INSERT INTO CLUB (nomClub, estClubMaison) VALUES (:name, :isHome)');
+    $insert->execute([
+        ':name' => $clubName,
+        ':isHome' => $isHomeClub ? 1 : 0,
+    ]);
+
+    return (int) $DB->lastInsertId();
+}
+
+function slugify_code(string $value): string
+{
+    $normalized = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $value);
+    if ($normalized === false) {
+        $normalized = $value;
+    }
+    $normalized = preg_replace('/[^a-zA-Z0-9]+/', '-', (string) $normalized);
+    $normalized = strtoupper(trim((string) $normalized, '-'));
+    return $normalized !== '' ? $normalized : 'EQUIPE';
+}
+
+function get_or_create_team(PDO $DB, int $numClub, string $teamName, ?string $teamCode, ?string $sectionLabel): int
+{
+    $code = $teamCode !== null && $teamCode !== '' ? strtoupper($teamCode) : slugify_code($teamName);
+
+    $stmt = $DB->prepare('SELECT numEquipe FROM EQUIPE WHERE numClub = :numClub AND codeEquipe = :code LIMIT 1');
+    $stmt->execute([
+        ':numClub' => $numClub,
+        ':code' => $code,
+    ]);
+    $existing = $stmt->fetchColumn();
+    if ($existing !== false) {
+        return (int) $existing;
+    }
+
+    $categorieId = ensure_reference($DB, 'CATEGORIE_EQUIPE', 'libCategorie', 'Non renseigné');
+    $sectionLabel = $sectionLabel !== null && $sectionLabel !== '' ? $sectionLabel : 'Non renseigné';
+    $sectionId = ensure_reference($DB, 'SECTION_EQUIPE', 'libSection', $sectionLabel);
+    $niveauId = ensure_reference($DB, 'NIVEAU_EQUIPE', 'libNiveau', 'Non renseigné');
+
+    $insert = $DB->prepare(
+        'INSERT INTO EQUIPE (numClub, codeEquipe, libEquipe, libEquipeComplet, numCategorie, numSection, numNiveau)
+         VALUES (:numClub, :codeEquipe, :libEquipe, :libEquipeComplet, :numCategorie, :numSection, :numNiveau)'
+    );
+    $insert->execute([
+        ':numClub' => $numClub,
+        ':codeEquipe' => $code,
+        ':libEquipe' => $teamName,
+        ':libEquipeComplet' => $teamName,
+        ':numCategorie' => $categorieId,
+        ':numSection' => $sectionId,
+        ':numNiveau' => $niveauId,
+    ]);
+
+    return (int) $DB->lastInsertId();
+}
+
+function get_current_season(PDO $DB): int
+{
+    $stmt = $DB->query('SELECT numSaison FROM SAISON WHERE estCourante = 1 ORDER BY dateDebut DESC LIMIT 1');
+    $season = $stmt->fetchColumn();
+    if ($season !== false) {
+        return (int) $season;
+    }
+
+    $year = (int) date('Y');
+    $label = $year . '-' . ($year + 1);
+    $insert = $DB->prepare('INSERT INTO SAISON (libSaison, estCourante) VALUES (:label, 1)');
+    $insert->execute([':label' => $label]);
+
+    return (int) $DB->lastInsertId();
+}
+
+function get_or_create_competition(PDO $DB, int $numSaison, string $label): int
+{
+    $stmt = $DB->prepare('SELECT numCompetition FROM COMPETITION WHERE numSaison = :numSaison AND libCompetition = :label LIMIT 1');
+    $stmt->execute([':numSaison' => $numSaison, ':label' => $label]);
+    $found = $stmt->fetchColumn();
+    if ($found !== false) {
+        return (int) $found;
+    }
+
+    $insert = $DB->prepare('INSERT INTO COMPETITION (numSaison, libCompetition) VALUES (:numSaison, :label)');
+    $insert->execute([':numSaison' => $numSaison, ':label' => $label]);
+
+    return (int) $DB->lastInsertId();
+}
+
+function get_or_create_phase(PDO $DB, int $numCompetition, string $label): int
+{
+    $stmt = $DB->prepare('SELECT numPhase FROM PHASE_COMPETITION WHERE numCompetition = :numCompetition AND libPhase = :label LIMIT 1');
+    $stmt->execute([':numCompetition' => $numCompetition, ':label' => $label]);
+    $found = $stmt->fetchColumn();
+    if ($found !== false) {
+        return (int) $found;
+    }
+
+    $insert = $DB->prepare('INSERT INTO PHASE_COMPETITION (numCompetition, libPhase) VALUES (:numCompetition, :label)');
+    $insert->execute([':numCompetition' => $numCompetition, ':label' => $label]);
+
+    return (int) $DB->lastInsertId();
+}
+
+function get_or_create_journee(PDO $DB, int $numPhase, string $journee): int
+{
+    $numero = null;
+    if (preg_match('/\d+/', $journee, $matches)) {
+        $numero = (int) $matches[0];
+    }
+
+    $stmt = $DB->prepare('SELECT numJournee FROM JOURNEE WHERE numPhase = :numPhase AND (libJournee = :libJournee OR numeroJournee = :numero) LIMIT 1');
+    $stmt->execute([
+        ':numPhase' => $numPhase,
+        ':libJournee' => $journee,
+        ':numero' => $numero,
+    ]);
+    $found = $stmt->fetchColumn();
+    if ($found !== false) {
+        return (int) $found;
+    }
+
+    $insert = $DB->prepare('INSERT INTO JOURNEE (numPhase, libJournee, numeroJournee) VALUES (:numPhase, :libJournee, :numero)');
+    $insert->execute([
+        ':numPhase' => $numPhase,
+        ':libJournee' => $journee,
+        ':numero' => $numero,
+    ]);
+
+    return (int) $DB->lastInsertId();
 }
 
 $payload = null;
@@ -191,25 +277,6 @@ if (!is_array($matches)) {
 
 sql_connect();
 
-$stmt = $DB->prepare(
-    'INSERT INTO bec_matches (Section, numEquipe, Equipe, Competition, Phase, Journee, Date, Heure, Domicile_Exterieur, Adversaire, Score_BEC, Score_Adversaire, MatchNo, Source)
-    VALUES (:section, :numEquipe, :team, :competition, :phase, :journee, :matchDate, :matchTime, :location, :opponent, :scoreBec, :scoreOpponent, :matchNo, :sourceUrl)
-    ON DUPLICATE KEY UPDATE
-        Section = VALUES(Section),
-        numEquipe = VALUES(numEquipe),
-        Equipe = VALUES(Equipe),
-        Competition = VALUES(Competition),
-        Phase = VALUES(Phase),
-        Journee = VALUES(Journee),
-        Date = VALUES(Date),
-        Heure = VALUES(Heure),
-        Domicile_Exterieur = VALUES(Domicile_Exterieur),
-        Adversaire = VALUES(Adversaire),
-        Score_BEC = VALUES(Score_BEC),
-        Score_Adversaire = VALUES(Score_Adversaire),
-        Source = VALUES(Source)'
-);
-
 $inserted = 0;
 $skipped = 0;
 
@@ -225,26 +292,51 @@ foreach ($matches as $matchItem) {
         continue;
     }
 
-    $numEquipe = null;
-    if (!empty($normalized['section'])) {
-        $numEquipe = ba_bec_resolve_equipe_id_from_section($normalized['section']);
-    }
+    $numSaison = get_current_season($DB);
+    $numCompetition = get_or_create_competition($DB, $numSaison, $normalized['competition']);
+    $numPhase = get_or_create_phase($DB, $numCompetition, $normalized['phase']);
+    $numJournee = $normalized['journee'] !== '' ? get_or_create_journee($DB, $numPhase, $normalized['journee']) : null;
 
-    $stmt->execute([
-        ':section' => $normalized['section'],
-        ':numEquipe' => $numEquipe,
-        ':team' => $normalized['team'],
-        ':competition' => $normalized['competition'],
-        ':phase' => $normalized['phase'],
-        ':journee' => $normalized['journee'],
-        ':matchDate' => $normalized['matchDate'],
-        ':matchTime' => $normalized['matchTime'],
-        ':location' => $normalized['location'],
-        ':opponent' => $normalized['opponent'],
-        ':scoreBec' => $normalized['scoreBec'],
-        ':scoreOpponent' => $normalized['scoreOpponent'],
-        ':matchNo' => $normalized['matchNo'],
-        ':sourceUrl' => $normalized['sourceUrl'],
+    $clubHome = get_or_create_club($DB, $normalized['home']);
+    $clubAway = get_or_create_club($DB, $normalized['away']);
+
+    $teamCode = $normalized['section'] !== '' ? $normalized['section'] : null;
+    $sectionLabel = $normalized['section'] !== '' ? $normalized['section'] : null;
+
+    $teamHome = get_or_create_team($DB, $clubHome, $normalized['home'], $teamCode, $sectionLabel);
+    $teamAway = get_or_create_team($DB, $clubAway, $normalized['away'], null, $sectionLabel);
+
+    $matchStmt = $DB->prepare(
+        'INSERT INTO `MATCH` (numSaison, numCompetition, numPhase, numJournee, dateMatch, heureMatch, lieuMatch)
+         VALUES (:numSaison, :numCompetition, :numPhase, :numJournee, :dateMatch, :heureMatch, :lieuMatch)'
+    );
+    $matchStmt->execute([
+        ':numSaison' => $numSaison,
+        ':numCompetition' => $numCompetition,
+        ':numPhase' => $numPhase,
+        ':numJournee' => $numJournee,
+        ':dateMatch' => $normalized['matchDate'],
+        ':heureMatch' => $normalized['matchTime'],
+        ':lieuMatch' => $normalized['location'] !== '' ? $normalized['location'] : null,
+    ]);
+
+    $numMatch = (int) $DB->lastInsertId();
+
+    $participantStmt = $DB->prepare(
+        'INSERT INTO MATCH_PARTICIPANT (numMatch, numEquipe, cote, score)
+         VALUES (:numMatch, :numEquipe, :cote, :score)'
+    );
+    $participantStmt->execute([
+        ':numMatch' => $numMatch,
+        ':numEquipe' => $teamHome,
+        ':cote' => 'domicile',
+        ':score' => $normalized['scoreHome'],
+    ]);
+    $participantStmt->execute([
+        ':numMatch' => $numMatch,
+        ':numEquipe' => $teamAway,
+        ':cote' => 'exterieur',
+        ':score' => $normalized['scoreAway'],
     ]);
 
     $inserted++;
@@ -254,4 +346,3 @@ echo json_encode([
     'imported' => $inserted,
     'skipped' => $skipped,
 ]);
-?>

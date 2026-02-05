@@ -5,27 +5,66 @@ require_once '../../functions/ctrlSaisies.php';
 include '../../header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    sql_connect();
+
+    $ba_bec_codeEquipe = ctrlSaisies($_POST['codeEquipe'] ?? '');
     $ba_bec_libEquipe = ctrlSaisies($_POST['libEquipe'] ?? '');
+    $ba_bec_libEquipeComplet = ctrlSaisies($_POST['libEquipeComplet'] ?? '');
+    $ba_bec_descriptionEquipe = ctrlSaisies($_POST['descriptionEquipe'] ?? '');
+    $ba_bec_nomClub = ctrlSaisies($_POST['nomClub'] ?? '');
     $ba_bec_categorieEquipe = ctrlSaisies($_POST['categorieEquipe'] ?? '');
     $ba_bec_sectionEquipe = ctrlSaisies($_POST['sectionEquipe'] ?? '');
     $ba_bec_niveauEquipe = ctrlSaisies($_POST['niveauEquipe'] ?? '');
 
     $ba_bec_errors = [];
 
-    if ($ba_bec_libEquipe === '') {
-        $ba_bec_errors[] = 'Le nom de l\'équipe est obligatoire.';
+    if ($ba_bec_libEquipe === '' || $ba_bec_codeEquipe === '') {
+        $ba_bec_errors[] = 'Le code et le nom de l\'équipe sont obligatoires.';
+    }
+    if ($ba_bec_nomClub === '') {
+        $ba_bec_errors[] = 'Le club est obligatoire.';
     }
 
     if (empty($ba_bec_errors)) {
-        $ba_bec_categorieValue = $ba_bec_categorieEquipe !== '' ? "'$ba_bec_categorieEquipe'" : 'NULL';
-        $ba_bec_sectionValue = $ba_bec_sectionEquipe !== '' ? "'$ba_bec_sectionEquipe'" : 'NULL';
-        $ba_bec_niveauValue = $ba_bec_niveauEquipe !== '' ? "'$ba_bec_niveauEquipe'" : 'NULL';
+        $clubStmt = $DB->prepare('SELECT numClub FROM CLUB WHERE nomClub = :nomClub LIMIT 1');
+        $clubStmt->execute([':nomClub' => $ba_bec_nomClub]);
+        $numClub = $clubStmt->fetchColumn();
+        if ($numClub === false) {
+            $insertClub = $DB->prepare('INSERT INTO CLUB (nomClub) VALUES (:nomClub)');
+            $insertClub->execute([':nomClub' => $ba_bec_nomClub]);
+            $numClub = $DB->lastInsertId();
+        }
 
-        sql_insert(
-            'EQUIPE',
-            'libEquipe, categorieEquipe, sectionEquipe, niveauEquipe',
-            "'$ba_bec_libEquipe', $ba_bec_categorieValue, $ba_bec_sectionValue, $ba_bec_niveauValue"
+        $referenceLookup = static function (string $table, string $column, string $value) use ($DB): int {
+            $stmt = $DB->prepare("SELECT num" . ucfirst(strtolower(str_replace('_', '', $table))) . " FROM {$table} WHERE {$column} = :value LIMIT 1");
+            $stmt->execute([':value' => $value]);
+            $found = $stmt->fetchColumn();
+            if ($found !== false) {
+                return (int) $found;
+            }
+            $insert = $DB->prepare("INSERT INTO {$table} ({$column}) VALUES (:value)");
+            $insert->execute([':value' => $value]);
+            return (int) $DB->lastInsertId();
+        };
+
+        $numCategorie = $referenceLookup('CATEGORIE_EQUIPE', 'libCategorie', $ba_bec_categorieEquipe !== '' ? $ba_bec_categorieEquipe : 'Non renseigné');
+        $numSection = $referenceLookup('SECTION_EQUIPE', 'libSection', $ba_bec_sectionEquipe !== '' ? $ba_bec_sectionEquipe : 'Non renseigné');
+        $numNiveau = $referenceLookup('NIVEAU_EQUIPE', 'libNiveau', $ba_bec_niveauEquipe !== '' ? $ba_bec_niveauEquipe : 'Non renseigné');
+
+        $insertEquipe = $DB->prepare(
+            'INSERT INTO EQUIPE (numClub, codeEquipe, libEquipe, libEquipeComplet, numCategorie, numSection, numNiveau, descriptionEquipe)
+             VALUES (:numClub, :codeEquipe, :libEquipe, :libEquipeComplet, :numCategorie, :numSection, :numNiveau, :descriptionEquipe)'
         );
+        $insertEquipe->execute([
+            ':numClub' => $numClub,
+            ':codeEquipe' => $ba_bec_codeEquipe,
+            ':libEquipe' => $ba_bec_libEquipe,
+            ':libEquipeComplet' => $ba_bec_libEquipeComplet !== '' ? $ba_bec_libEquipeComplet : null,
+            ':numCategorie' => $numCategorie,
+            ':numSection' => $numSection,
+            ':numNiveau' => $numNiveau,
+            ':descriptionEquipe' => $ba_bec_descriptionEquipe !== '' ? $ba_bec_descriptionEquipe : null,
+        ]);
         header('Location: ../../views/backend/equipes/list.php');
         exit();
     }

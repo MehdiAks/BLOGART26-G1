@@ -1,35 +1,69 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
-require_once '../../functions/equipe_stats.php';
 
 sql_connect();
 
-$ba_bec_numMatch = (int) ($_POST['numMatch'] ?? 0);
-$ba_bec_section = ctrlSaisies($_POST['section'] ?? '');
-$ba_bec_team = ctrlSaisies($_POST['team'] ?? '');
-$ba_bec_competition = ctrlSaisies($_POST['competition'] ?? '');
-$ba_bec_matchDay = ctrlSaisies($_POST['matchDay'] ?? '');
-$ba_bec_matchDate = ctrlSaisies($_POST['matchDate'] ?? '');
-$ba_bec_matchTime = ctrlSaisies($_POST['matchTime'] ?? '');
-$ba_bec_opponent = ctrlSaisies($_POST['opponent'] ?? '');
-$ba_bec_location = ctrlSaisies($_POST['location'] ?? '');
-$ba_bec_status = ctrlSaisies($_POST['status'] ?? '');
-$ba_bec_scoreBec = ctrlSaisies($_POST['scoreBec'] ?? '');
-$ba_bec_scoreOpponent = ctrlSaisies($_POST['scoreOpponent'] ?? '');
-$ba_bec_sourceUrl = ctrlSaisies($_POST['sourceUrl'] ?? '');
+$ba_bec_numSaison = (int) ($_POST['numSaison'] ?? 0);
+$ba_bec_numCompetition = (int) ($_POST['numCompetition'] ?? 0);
+$ba_bec_numPhase = (int) ($_POST['numPhase'] ?? 0);
+$ba_bec_numJournee = (int) ($_POST['numJournee'] ?? 0);
+$ba_bec_dateMatch = ctrlSaisies($_POST['dateMatch'] ?? '');
+$ba_bec_heureMatch = ctrlSaisies($_POST['heureMatch'] ?? '');
+$ba_bec_lieuMatch = ctrlSaisies($_POST['lieuMatch'] ?? '');
+$ba_bec_numEquipeHome = (int) ($_POST['numEquipeHome'] ?? 0);
+$ba_bec_numEquipeAway = (int) ($_POST['numEquipeAway'] ?? 0);
+$ba_bec_scoreHome = ctrlSaisies($_POST['scoreHome'] ?? '');
+$ba_bec_scoreAway = ctrlSaisies($_POST['scoreAway'] ?? '');
 
-$ba_bec_scoreBecValue = $ba_bec_scoreBec !== '' ? (int) $ba_bec_scoreBec : 'NULL';
-$ba_bec_scoreOpponentValue = $ba_bec_scoreOpponent !== '' ? (int) $ba_bec_scoreOpponent : 'NULL';
+if ($ba_bec_numSaison <= 0 || $ba_bec_numCompetition <= 0 || $ba_bec_dateMatch === '' || $ba_bec_numEquipeHome <= 0 || $ba_bec_numEquipeAway <= 0) {
+    header('Location: ../../views/backend/matches/create.php?error=missing');
+    exit;
+}
 
-$ba_bec_numEquipe = ba_bec_resolve_equipe_id_from_section($ba_bec_section);
-$ba_bec_numEquipeValue = $ba_bec_numEquipe !== null ? (int) $ba_bec_numEquipe : 'NULL';
-$ba_bec_columns = 'Section, numEquipe, Equipe, Competition, Phase, Journee, Date, Heure, Domicile_Exterieur, Adversaire, Score_BEC, Score_Adversaire, MatchNo, Source';
-$ba_bec_values = "'$ba_bec_section', $ba_bec_numEquipeValue, '$ba_bec_team', '$ba_bec_competition', '$ba_bec_status', '$ba_bec_matchDay', '$ba_bec_matchDate', '$ba_bec_matchTime', '$ba_bec_location', '$ba_bec_opponent', $ba_bec_scoreBecValue, $ba_bec_scoreOpponentValue, $ba_bec_numMatch, '$ba_bec_sourceUrl'";
-sql_insert('bec_matches', $ba_bec_columns, $ba_bec_values);
+if ($ba_bec_numEquipeHome === $ba_bec_numEquipeAway) {
+    header('Location: ../../views/backend/matches/create.php?error=team_conflict');
+    exit;
+}
 
-ba_bec_update_equipe_points($ba_bec_numEquipe);
+$ba_bec_numPhaseValue = $ba_bec_numPhase > 0 ? $ba_bec_numPhase : null;
+$ba_bec_numJourneeValue = $ba_bec_numJournee > 0 ? $ba_bec_numJournee : null;
+$ba_bec_heureValue = $ba_bec_heureMatch !== '' ? $ba_bec_heureMatch : null;
+$ba_bec_lieuValue = $ba_bec_lieuMatch !== '' ? $ba_bec_lieuMatch : null;
+$ba_bec_scoreHomeValue = $ba_bec_scoreHome !== '' ? (int) $ba_bec_scoreHome : null;
+$ba_bec_scoreAwayValue = $ba_bec_scoreAway !== '' ? (int) $ba_bec_scoreAway : null;
+
+$matchStmt = $DB->prepare(
+    'INSERT INTO `MATCH` (numSaison, numCompetition, numPhase, numJournee, dateMatch, heureMatch, lieuMatch)
+     VALUES (:numSaison, :numCompetition, :numPhase, :numJournee, :dateMatch, :heureMatch, :lieuMatch)'
+);
+$matchStmt->execute([
+    ':numSaison' => $ba_bec_numSaison,
+    ':numCompetition' => $ba_bec_numCompetition,
+    ':numPhase' => $ba_bec_numPhaseValue,
+    ':numJournee' => $ba_bec_numJourneeValue,
+    ':dateMatch' => $ba_bec_dateMatch,
+    ':heureMatch' => $ba_bec_heureValue,
+    ':lieuMatch' => $ba_bec_lieuValue,
+]);
+
+$ba_bec_numMatch = (int) $DB->lastInsertId();
+
+$participantStmt = $DB->prepare(
+    'INSERT INTO MATCH_PARTICIPANT (numMatch, numEquipe, cote, score)
+     VALUES (:numMatch, :numEquipe, :cote, :score)'
+);
+$participantStmt->execute([
+    ':numMatch' => $ba_bec_numMatch,
+    ':numEquipe' => $ba_bec_numEquipeHome,
+    ':cote' => 'domicile',
+    ':score' => $ba_bec_scoreHomeValue,
+]);
+$participantStmt->execute([
+    ':numMatch' => $ba_bec_numMatch,
+    ':numEquipe' => $ba_bec_numEquipeAway,
+    ':cote' => 'exterieur',
+    ':score' => $ba_bec_scoreAwayValue,
+]);
 
 header('Location: ../../views/backend/matches/list.php');
-
-?>

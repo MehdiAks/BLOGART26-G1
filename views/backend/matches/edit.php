@@ -1,47 +1,55 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+$pageStyles = [ROOT_URL . '/src/css/match-create.css'];
 include '../../../header.php';
+
+$ba_bec_numMatch = (int) ($_GET['numMatch'] ?? 0);
+if ($ba_bec_numMatch <= 0) {
+    header('Location: list.php');
+    exit;
+}
 
 sql_connect();
 
-$ba_bec_match = null;
-if (isset($_GET['numMatch'])) {
-    $ba_bec_numMatch = (int) $_GET['numMatch'];
-    $ba_bec_match = sql_select(
-        'bec_matches',
-        "MatchNo AS numMatch,
-        Section AS section,
-        Equipe AS team,
-        Competition AS competition,
-        Phase AS status,
-        Journee AS matchDay,
-        Date AS matchDate,
-        Heure AS matchTime,
-        Domicile_Exterieur AS location,
-        Adversaire AS opponent,
-        Score_BEC AS scoreBec,
-        Score_Adversaire AS scoreOpponent,
-        Source AS sourceUrl",
-        "MatchNo = $ba_bec_numMatch"
-    );
-    $ba_bec_match = $ba_bec_match[0] ?? null;
+$ba_bec_matchStmt = $DB->prepare('SELECT * FROM `MATCH` WHERE numMatch = :numMatch');
+$ba_bec_matchStmt->execute([':numMatch' => $ba_bec_numMatch]);
+$ba_bec_match = $ba_bec_matchStmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$ba_bec_match) {
+    header('Location: list.php');
+    exit;
 }
 
-$ba_bec_displayMatchTime = '';
-if (!empty($ba_bec_match['matchTime'])) {
-    $ba_bec_timestamp = strtotime($ba_bec_match['matchTime']);
-    $ba_bec_displayMatchTime = $ba_bec_timestamp !== false ? date('H:i', $ba_bec_timestamp) : $ba_bec_match['matchTime'];
+$ba_bec_participantsStmt = $DB->prepare('SELECT numEquipe, cote, score FROM MATCH_PARTICIPANT WHERE numMatch = :numMatch');
+$ba_bec_participantsStmt->execute([':numMatch' => $ba_bec_numMatch]);
+$ba_bec_participants = $ba_bec_participantsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$ba_bec_home = null;
+$ba_bec_away = null;
+foreach ($ba_bec_participants as $participant) {
+    if ($participant['cote'] === 'domicile') {
+        $ba_bec_home = $participant;
+    } elseif ($participant['cote'] === 'exterieur') {
+        $ba_bec_away = $participant;
+    }
 }
 
-$ba_bec_matchDayNumber = '';
-if (!empty($ba_bec_match['matchDay'])) {
-    $ba_bec_matchDayNumber = ltrim((string) $ba_bec_match['matchDay'], 'Jj');
-}
+$ba_bec_seasons = sql_select('SAISON', 'numSaison, libSaison, estCourante', null, null, 'dateDebut DESC');
+$ba_bec_competitions = sql_select('COMPETITION', 'numCompetition, libCompetition, numSaison', null, null, 'libCompetition ASC');
+$ba_bec_phases = sql_select('PHASE_COMPETITION', 'numPhase, libPhase, numCompetition', null, null, 'ordrePhase ASC');
+$ba_bec_journees = sql_select('JOURNEE', 'numJournee, libJournee, numeroJournee, numPhase', null, null, 'numeroJournee ASC');
+$ba_bec_equipes = sql_select('EQUIPE', 'numEquipe, libEquipe, libEquipeComplet, codeEquipe', null, null, 'libEquipe ASC');
 
-$ba_bec_isCup = !empty($ba_bec_match['competition']) && strtolower(trim((string) $ba_bec_match['competition'])) === 'coupe';
-$ba_bec_locationValue = strtolower(trim((string) ($ba_bec_match['location'] ?? '')));
-$ba_bec_isAway = str_contains($ba_bec_locationValue, 'extérieur') || str_contains($ba_bec_locationValue, 'exterieur');
+function ba_bec_team_label(array $team): string
+{
+    $label = $team['libEquipeComplet'] ?? '';
+    if ($label === '') {
+        $label = $team['libEquipe'] ?? '';
+    }
+    $code = $team['codeEquipe'] ?? '';
+    return $code !== '' ? $label . ' (' . $code . ')' : $label;
+}
 ?>
 
 <div class="container">
@@ -50,221 +58,153 @@ $ba_bec_isAway = str_contains($ba_bec_locationValue, 'extérieur') || str_contai
             <h1>Modifier un match</h1>
         </div>
         <div class="col-md-12">
-            <?php if ($ba_bec_match) : ?>
-                <form action="<?php echo ROOT_URL . '/api/matches/update.php' ?>" method="post">
-                    <input type="hidden" name="numMatch" value="<?php echo $ba_bec_match['numMatch']; ?>" />
-                    <div class="form-group">
-                        <label for="section">Catégorie</label>
-                        <select id="section" name="section" class="form-control" required>
-                            <option value="" disabled>Sélectionner une catégorie</option>
-                            <option value="SG1" <?php echo $ba_bec_match['section'] === 'SG1' ? 'selected' : ''; ?>>SG1</option>
-                            <option value="SG2" <?php echo $ba_bec_match['section'] === 'SG2' ? 'selected' : ''; ?>>SG2</option>
-                            <option value="SG3" <?php echo $ba_bec_match['section'] === 'SG3' ? 'selected' : ''; ?>>SG3</option>
-                            <option value="SG4" <?php echo $ba_bec_match['section'] === 'SG4' ? 'selected' : ''; ?>>SG4</option>
-                            <option value="SF1" <?php echo $ba_bec_match['section'] === 'SF1' ? 'selected' : ''; ?>>SF1</option>
-                            <option value="SF2" <?php echo $ba_bec_match['section'] === 'SF2' ? 'selected' : ''; ?>>SF2</option>
-                            <option value="SF3" <?php echo $ba_bec_match['section'] === 'SF3' ? 'selected' : ''; ?>>SF3</option>
-                        </select>
-                    </div>
-                    <div class="form-group mt-2">
-                        <label for="competition">Compétition</label>
-                        <input id="competition" name="competition" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_match['competition']); ?>" readonly required />
-                        <small class="form-text text-muted">Prérempli selon la catégorie (national, régional, pré-régional, départemental).</small>
-                    </div>
-                    <div class="form-group mt-2 d-flex align-items-center gap-2">
-                        <div class="flex-grow-1">
-                            <label class="form-label">Match de coupe</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="isCup" <?php echo $ba_bec_isCup ? 'checked' : ''; ?> />
-                                <label class="form-check-label" for="isCup">Match de coupe</label>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <label for="location">Lieu</label>
-                            <div class="btn-group w-100" role="group" aria-label="Lieu du match">
-                                <input type="radio" class="btn-check" name="location" id="locationHome" value="Domicile" <?php echo $ba_bec_isAway ? '' : 'checked'; ?> required>
-                                <label class="btn btn-outline-primary" for="locationHome">Domicile</label>
-                                <input type="radio" class="btn-check" name="location" id="locationAway" value="Extérieur" <?php echo $ba_bec_isAway ? 'checked' : ''; ?>>
-                                <label class="btn btn-outline-primary" for="locationAway">Extérieur</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group mt-2">
-                        <label for="matchDayNumber">Journée</label>
-                        <div class="input-group">
-                            <span class="input-group-text">J</span>
-                        <input id="matchDayNumber" class="form-control" type="number" min="1" placeholder="1" value="<?php echo htmlspecialchars($ba_bec_matchDayNumber); ?>" required />
-                    </div>
-                    <input type="hidden" id="matchDay" name="matchDay" value="<?php echo htmlspecialchars($ba_bec_match['matchDay']); ?>" />
+            <form action="<?php echo ROOT_URL . '/api/matches/update.php' ?>" method="post">
+                <input type="hidden" name="numMatch" value="<?php echo htmlspecialchars($ba_bec_numMatch); ?>" />
+                <div class="form-group">
+                    <label for="numSaison">Saison</label>
+                    <select id="numSaison" name="numSaison" class="form-control" required>
+                        <option value="" disabled>Sélectionner une saison</option>
+                        <?php foreach ($ba_bec_seasons as $ba_bec_season): ?>
+                            <option value="<?php echo htmlspecialchars($ba_bec_season['numSaison']); ?>"
+                                <?php echo ($ba_bec_match['numSaison'] == $ba_bec_season['numSaison']) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($ba_bec_season['libSaison']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="numCompetition">Compétition</label>
+                    <select id="numCompetition" name="numCompetition" class="form-control" required>
+                        <option value="" disabled>Sélectionner une compétition</option>
+                        <?php foreach ($ba_bec_competitions as $ba_bec_competition): ?>
+                            <option value="<?php echo htmlspecialchars($ba_bec_competition['numCompetition']); ?>" data-season="<?php echo htmlspecialchars($ba_bec_competition['numSaison']); ?>"
+                                <?php echo ($ba_bec_match['numCompetition'] == $ba_bec_competition['numCompetition']) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($ba_bec_competition['libCompetition']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="numPhase">Phase</label>
+                    <select id="numPhase" name="numPhase" class="form-control">
+                        <option value="">Sélectionner une phase (optionnel)</option>
+                        <?php foreach ($ba_bec_phases as $ba_bec_phase): ?>
+                            <option value="<?php echo htmlspecialchars($ba_bec_phase['numPhase']); ?>" data-competition="<?php echo htmlspecialchars($ba_bec_phase['numCompetition']); ?>"
+                                <?php echo ($ba_bec_match['numPhase'] == $ba_bec_phase['numPhase']) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($ba_bec_phase['libPhase']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="numJournee">Journée</label>
+                    <select id="numJournee" name="numJournee" class="form-control">
+                        <option value="">Sélectionner une journée (optionnel)</option>
+                        <?php foreach ($ba_bec_journees as $ba_bec_journee): ?>
+                            <option value="<?php echo htmlspecialchars($ba_bec_journee['numJournee']); ?>" data-phase="<?php echo htmlspecialchars($ba_bec_journee['numPhase']); ?>"
+                                <?php echo ($ba_bec_match['numJournee'] == $ba_bec_journee['numJournee']) ? 'selected' : ''; ?>>
+                                <?php
+                                $journeeLabel = $ba_bec_journee['libJournee'] ?? '';
+                                if ($journeeLabel === '' && !empty($ba_bec_journee['numeroJournee'])) {
+                                    $journeeLabel = 'J' . $ba_bec_journee['numeroJournee'];
+                                }
+                                echo htmlspecialchars($journeeLabel ?: 'Journée');
+                                ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="form-group mt-2 row">
                     <div class="col-md-4">
-                        <label for="matchDate">Date</label>
-                        <input id="matchDate" name="matchDate" class="form-control" type="date" value="<?php echo htmlspecialchars($ba_bec_match['matchDate']); ?>" required />
+                        <label for="dateMatch">Date</label>
+                        <input id="dateMatch" name="dateMatch" class="form-control" type="date" value="<?php echo htmlspecialchars($ba_bec_match['dateMatch']); ?>" required />
                     </div>
                     <div class="col-md-4">
-                        <label for="matchTime">Heure</label>
-                        <input id="matchTime" name="matchTime" class="form-control" type="time" value="<?php echo htmlspecialchars($ba_bec_displayMatchTime); ?>" required />
+                        <label for="heureMatch">Heure</label>
+                        <input id="heureMatch" name="heureMatch" class="form-control" type="time" value="<?php echo htmlspecialchars($ba_bec_match['heureMatch'] ?? ''); ?>" />
                     </div>
                     <div class="col-md-4">
-                        <label for="status">Phase</label>
-                        <select id="status" name="status" class="form-control" required>
-                            <option value="Saison régulière" <?php echo ($ba_bec_match['status'] ?? '') === 'Saison régulière' ? 'selected' : ''; ?>>Saison régulière</option>
-                            <option value="Playoff" <?php echo ($ba_bec_match['status'] ?? '') === 'Playoff' ? 'selected' : ''; ?>>Playoff</option>
-                        </select>
+                        <label for="lieuMatch">Lieu</label>
+                        <input id="lieuMatch" name="lieuMatch" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_match['lieuMatch'] ?? ''); ?>" />
                     </div>
                 </div>
-                <div class="form-group mt-2 row align-items-end" id="teamRow">
-                    <div class="col-md-6" id="teamHomeColumn">
-                        <label for="teamDisplay">Bordeaux Étudiant Club</label>
-                        <input id="teamDisplay" name="team" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_match['team'] ?? 'Bordeaux Étudiant Club'); ?>" readonly />
+                <div class="form-group mt-3 row">
+                    <div class="col-md-6">
+                        <label for="numEquipeHome">Équipe à domicile</label>
+                        <select id="numEquipeHome" name="numEquipeHome" class="form-control" required>
+                            <option value="" disabled>Sélectionner l'équipe domicile</option>
+                            <?php foreach ($ba_bec_equipes as $ba_bec_equipe): ?>
+                                <option value="<?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?>"
+                                    <?php echo ($ba_bec_home && $ba_bec_home['numEquipe'] == $ba_bec_equipe['numEquipe']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars(ba_bec_team_label($ba_bec_equipe)); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
-                    <div class="col-md-6" id="teamAwayColumn">
-                        <label for="opponent">Équipe adverse</label>
-                        <input id="opponent" name="opponent" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_match['opponent']); ?>" placeholder="Équipe adverse" required />
+                    <div class="col-md-6">
+                        <label for="numEquipeAway">Équipe à l'extérieur</label>
+                        <select id="numEquipeAway" name="numEquipeAway" class="form-control" required>
+                            <option value="" disabled>Sélectionner l'équipe extérieure</option>
+                            <?php foreach ($ba_bec_equipes as $ba_bec_equipe): ?>
+                                <option value="<?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?>"
+                                    <?php echo ($ba_bec_away && $ba_bec_away['numEquipe'] == $ba_bec_equipe['numEquipe']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars(ba_bec_team_label($ba_bec_equipe)); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group mt-2 row">
                     <div class="col-md-6">
-                        <label for="scoreBec">Score BEC</label>
-                        <input id="scoreBec" name="scoreBec" class="form-control" type="number" min="0" value="<?php echo htmlspecialchars($ba_bec_match['scoreBec'] ?? ''); ?>" />
+                        <label for="scoreHome">Score domicile</label>
+                        <input id="scoreHome" name="scoreHome" class="form-control" type="number" min="0" value="<?php echo htmlspecialchars($ba_bec_home['score'] ?? ''); ?>" />
                     </div>
                     <div class="col-md-6">
-                        <label for="scoreOpponent">Score adversaire</label>
-                        <input id="scoreOpponent" name="scoreOpponent" class="form-control" type="number" min="0" value="<?php echo htmlspecialchars($ba_bec_match['scoreOpponent'] ?? ''); ?>" />
+                        <label for="scoreAway">Score extérieur</label>
+                        <input id="scoreAway" name="scoreAway" class="form-control" type="number" min="0" value="<?php echo htmlspecialchars($ba_bec_away['score'] ?? ''); ?>" />
                     </div>
                     <small class="form-text text-muted">Laisser vide si le match n'a pas encore eu lieu.</small>
                 </div>
-                <div class="form-group mt-2 row">
-                    <div class="col-md-4">
-                        <label for="numMatchDisplay">MatchNo</label>
-                        <input id="numMatchDisplay" class="form-control" type="number" value="<?php echo htmlspecialchars($ba_bec_match['numMatch']); ?>" readonly />
-                        <small class="form-text text-muted">Récupéré sur le site FFBB.</small>
-                    </div>
-                    <div class="col-md-8">
-                        <label for="sourceUrl">Source</label>
-                        <input id="sourceUrl" name="sourceUrl" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_match['sourceUrl'] ?? ''); ?>" required />
-                        <small class="form-text text-muted">Prérempli selon la catégorie et la phase.</small>
-                    </div>
+                <div class="form-group mt-3">
+                    <a href="list.php" class="btn btn-primary">List</a>
+                    <button type="submit" class="btn btn-success">Enregistrer</button>
                 </div>
-                    <br />
-                    <div class="form-group mt-2">
-                        <a href="list.php" class="btn btn-primary">List</a>
-                        <button type="submit" class="btn btn-success">Confirmer edit ?</button>
-                    </div>
-                </form>
-            <?php else : ?>
-                <div class="alert alert-danger">Match introuvable.</div>
-                <a href="list.php" class="btn btn-primary">Retour</a>
-            <?php endif; ?>
+            </form>
         </div>
     </div>
 </div>
 
-<?php if ($ba_bec_match) : ?>
-    <script>
-        const categorySelect = document.getElementById('section');
-        const competitionInput = document.getElementById('competition');
-        const cupCheckbox = document.getElementById('isCup');
-        const locationHome = document.getElementById('locationHome');
-        const locationAway = document.getElementById('locationAway');
-        const teamHomeColumn = document.getElementById('teamHomeColumn');
-        const teamAwayColumn = document.getElementById('teamAwayColumn');
-        const matchDayNumber = document.getElementById('matchDayNumber');
-        const matchDayInput = document.getElementById('matchDay');
-        const statusSelect = document.getElementById('status');
-        const sourceInput = document.getElementById('sourceUrl');
+<script>
+    (function () {
+        const seasonSelect = document.getElementById('numSaison');
+        const competitionSelect = document.getElementById('numCompetition');
+        const phaseSelect = document.getElementById('numPhase');
+        const journeeSelect = document.getElementById('numJournee');
 
-        const competitionLabels = {
-            SF1: 'National 3 Féminine',
-            SF2: 'Pré-Nationale Féminine',
-            SF3: 'Pré-Régionale Féminine',
-            SG1: 'Pré-Nationale Masculine',
-            SG2: 'Régionale Masculine 2',
-            SG3: 'Départementale Masculine 3',
-            SG4: 'Départementale Masculine 4'
+        const filterOptions = (select, attribute, value) => {
+            Array.from(select.options).forEach((option) => {
+                if (!option.value) {
+                    option.hidden = false;
+                    return;
+                }
+                const dataValue = option.dataset[attribute] || '';
+                option.hidden = value && dataValue !== value;
+            });
         };
 
-        const sourceLinks = {
-            SG1: {
-                default: 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005137983'
-            },
-            SG2: {
-                default: 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005138117'
-            },
-            SG3: {
-                'Saison régulière': 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145647',
-                Playoff: 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248420'
-            },
-            SG4: {
-                'Saison régulière': 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005179778',
-                Playoff: 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005248439'
-            },
-            SF1: {
-                default: 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139512'
-            },
-            SF2: {
-                default: 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005139159'
-            },
-            SF3: {
-                default: 'https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024/equipes/200000005145370'
-            }
-        };
-
-        const updateCompetition = () => {
-            if (cupCheckbox.checked) {
-                competitionInput.value = 'Coupe';
-                return;
-            }
-            const category = categorySelect.value;
-            competitionInput.value = competitionLabels[category] || competitionInput.value;
-        };
-
-        const updateSource = () => {
-            const category = categorySelect.value;
-            if (!category) {
-                return;
-            }
-            const categorySources = sourceLinks[category];
-            if (!categorySources) {
-                return;
-            }
-            if (categorySources.default) {
-                sourceInput.value = categorySources.default;
-                return;
-            }
-            const phase = statusSelect.value || 'Saison régulière';
-            sourceInput.value = categorySources[phase] || sourceInput.value;
-        };
-
-        const updateLocationLayout = () => {
-            if (locationAway.checked) {
-                teamHomeColumn.classList.add('order-md-2');
-                teamAwayColumn.classList.add('order-md-1');
-            } else {
-                teamHomeColumn.classList.remove('order-md-2');
-                teamAwayColumn.classList.remove('order-md-1');
-            }
-        };
-
-        const updateMatchDay = () => {
-            const value = matchDayNumber.value.trim();
-            matchDayInput.value = value ? `J${value}` : '';
-        };
-
-        categorySelect.addEventListener('change', () => {
-            updateCompetition();
-            updateSource();
+        seasonSelect.addEventListener('change', () => {
+            filterOptions(competitionSelect, 'season', seasonSelect.value);
+            filterOptions(phaseSelect, 'competition', competitionSelect.value);
+            filterOptions(journeeSelect, 'phase', phaseSelect.value);
         });
-        cupCheckbox.addEventListener('change', updateCompetition);
-        statusSelect.addEventListener('change', updateSource);
-        locationHome.addEventListener('change', updateLocationLayout);
-        locationAway.addEventListener('change', updateLocationLayout);
-        matchDayNumber.addEventListener('input', updateMatchDay);
 
-        updateCompetition();
-        updateSource();
-        updateLocationLayout();
-        updateMatchDay();
-    </script>
-<?php endif; ?>
+        competitionSelect.addEventListener('change', () => {
+            filterOptions(phaseSelect, 'competition', competitionSelect.value);
+            filterOptions(journeeSelect, 'phase', phaseSelect.value);
+        });
+
+        phaseSelect.addEventListener('change', () => {
+            filterOptions(journeeSelect, 'phase', phaseSelect.value);
+        });
+    })();
+</script>

@@ -11,21 +11,25 @@ sql_connect();
 
 $becMatchesAvailable = true;
 
-$matchesQuery = "SELECT MatchNo AS numMatch,
-        Competition AS competition,
-        Date AS matchDate,
-        Heure AS matchTime,
-        Domicile_Exterieur AS location,
-        Phase AS status,
-        Equipe AS team,
-        Adversaire AS opponent,
-        Score_BEC AS scoreBec,
-        Score_Adversaire AS scoreOpponent,
-        Source AS sourceUrl
-    FROM bec_matches
-    WHERE Date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
-    ORDER BY Date ASC, Heure ASC";
-$lastUpdateQuery = "SELECT MAX(Date) AS lastUpdate FROM bec_matches";
+$matchesQuery = "SELECT
+        m.numMatch AS numMatch,
+        c.libCompetition AS competition,
+        m.dateMatch AS matchDate,
+        m.heureMatch AS matchTime,
+        m.lieuMatch AS location,
+        home_team.libEquipe AS teamHome,
+        away_team.libEquipe AS teamAway,
+        home_part.score AS scoreHome,
+        away_part.score AS scoreAway
+    FROM `MATCH` m
+    INNER JOIN COMPETITION c ON m.numCompetition = c.numCompetition
+    LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
+    LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
+    LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe
+    LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe
+    WHERE m.dateMatch BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
+    ORDER BY m.dateMatch ASC, m.heureMatch ASC";
+$lastUpdateQuery = "SELECT MAX(dateMatch) AS lastUpdate FROM `MATCH`";
 
 $allMatches = [];
 try {
@@ -35,130 +39,23 @@ try {
 } catch (PDOException $exception) {
     $becMatchesAvailable = false;
 }
-$allMatches = array_map(
-    static function (array $match): array {
-        $location = strtolower(trim((string) ($match['location'] ?? '')));
-        $isHome = str_contains($location, 'domicile');
-        $isAway = str_contains($location, 'extérieur') || str_contains($location, 'exterieur');
-        $team = (string) ($match['team'] ?? '');
-        $opponent = (string) ($match['opponent'] ?? '');
 
-        $teamHome = $isAway ? $opponent : $team;
-        $teamAway = $isAway ? $team : $opponent;
-        $scoreHome = $match['scoreBec'];
-        $scoreAway = $match['scoreOpponent'];
-
-        if ($isAway) {
-            $scoreHome = $match['scoreOpponent'];
-            $scoreAway = $match['scoreBec'];
-        }
-
-        return array_merge(
-            $match,
-            [
-                'teamHome' => $teamHome,
-                'teamAway' => $teamAway,
-                'scoreHome' => $scoreHome,
-                'scoreAway' => $scoreAway,
-            ]
-        );
-    },
-    $allMatches
-);
-
-$seniorKeywords = [
-    'senior',
-    'sénior',
-    'pré-nationale',
-    'pre-nationale',
-];
 $clubIdentifiers = [
     'bec',
     'bordeaux',
     'etudiant',
 ];
-$defaultLogoUrl = ROOT_URL . '/src/images/image-defaut.jpeg';
-$becLogoUrl = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
-$logoDirectory = ROOT . '/src/images/logo/logo-adversaire';
-$logoBaseUrl = ROOT_URL . '/src/images/logo/logo-adversaire';
-$normalizeTeamName = static function (string $name): string {
-    $normalized = trim($name);
-    if ($normalized === '') {
-        return '';
-    }
-    $transliterated = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $normalized);
-    if ($transliterated !== false) {
-        $normalized = $transliterated;
-    }
-    $normalized = preg_replace('/[^a-zA-Z0-9]+/', '_', $normalized);
-    $normalized = preg_replace('/_+/', '_', (string) $normalized);
-    return strtoupper(trim((string) $normalized, '_'));
-};
-$logoIndex = [];
-if (is_dir($logoDirectory)) {
-    foreach (scandir($logoDirectory) as $file) {
-        if ($file === '.' || $file === '..') {
-            continue;
-        }
-        $path = $logoDirectory . '/' . $file;
-        if (!is_file($path)) {
-            continue;
-        }
-        $baseName = pathinfo($file, PATHINFO_FILENAME);
-        $normalized = $normalizeTeamName($baseName);
-        if ($normalized !== '') {
-            $logoIndex[$normalized] = $logoBaseUrl . '/' . rawurlencode($file);
-        }
-    }
-}
-$isSeniorMatch = static function (array $match) use ($seniorKeywords): bool {
-    $haystack = strtolower(
-        ($match['competition'] ?? '') . ' ' . ($match['teamHome'] ?? '') . ' ' . ($match['teamAway'] ?? '')
-    );
-    foreach ($seniorKeywords as $keyword) {
-        if ($keyword !== '' && str_contains($haystack, $keyword)) {
-            return true;
-        }
-    }
 
-    return false;
-};
-$resolveClubTeam = static function (array $match) use ($clubIdentifiers): string {
-    $home = (string) ($match['teamHome'] ?? '');
-    $away = (string) ($match['teamAway'] ?? '');
-
-    foreach ($clubIdentifiers as $identifier) {
-        if ($identifier !== '' && stripos($home, $identifier) !== false) {
-            return $home;
-        }
-    }
-
-    foreach ($clubIdentifiers as $identifier) {
-        if ($identifier !== '' && stripos($away, $identifier) !== false) {
-            return $away;
-        }
-    }
-
-    return $home !== '' ? $home : $away;
-};
 $resolveClubSide = static function (array $match) use ($clubIdentifiers): string {
-    $location = strtolower((string) ($match['location'] ?? ''));
-    if ($location !== '') {
-        if (str_contains($location, 'domicile')) {
-            return 'home';
-        }
-        if (str_contains($location, 'extérieur') || str_contains($location, 'exterieur')) {
-            return 'away';
-        }
-    }
-
     $home = (string) ($match['teamHome'] ?? '');
     $away = (string) ($match['teamAway'] ?? '');
+
     foreach ($clubIdentifiers as $identifier) {
         if ($identifier !== '' && stripos($home, $identifier) !== false) {
             return 'home';
         }
     }
+
     foreach ($clubIdentifiers as $identifier) {
         if ($identifier !== '' && stripos($away, $identifier) !== false) {
             return 'away';
@@ -167,66 +64,10 @@ $resolveClubSide = static function (array $match) use ($clubIdentifiers): string
 
     return 'unknown';
 };
-$resolveTeamLogo = static function (string $teamName) use (
-    $clubIdentifiers,
-    $normalizeTeamName,
-    $logoIndex,
-    $defaultLogoUrl,
-    $becLogoUrl,
-    $seniorKeywords
-): string {
-    $trimmed = trim($teamName);
-    if ($trimmed === '') {
-        return $defaultLogoUrl;
-    }
-
-    foreach ($seniorKeywords as $keyword) {
-        if ($keyword !== '' && stripos($trimmed, $keyword) !== false) {
-            return $becLogoUrl;
-        }
-    }
-
-    foreach ($clubIdentifiers as $identifier) {
-        if ($identifier !== '' && stripos($trimmed, $identifier) !== false) {
-            return $becLogoUrl;
-        }
-    }
-
-    $normalized = $normalizeTeamName($trimmed);
-    if ($normalized !== '' && array_key_exists($normalized, $logoIndex)) {
-        return $logoIndex[$normalized];
-    }
-
-    if ($normalized !== '') {
-        foreach ($logoIndex as $key => $url) {
-            if (str_contains($normalized, $key) || str_contains($key, $normalized)) {
-                return $url;
-            }
-        }
-    }
-
-    return $defaultLogoUrl;
-};
-$seniorMatches = [];
-foreach ($allMatches as $ba_bec_match) {
-    if (!$isSeniorMatch($ba_bec_match)) {
-        continue;
-    }
-
-    $teamKey = $resolveClubTeam($ba_bec_match);
-    if (!array_key_exists($teamKey, $seniorMatches)) {
-        $seniorMatches[$teamKey] = $ba_bec_match;
-    }
-}
-
-$ba_bec_matches = array_values($seniorMatches);
-if (empty($ba_bec_matches)) {
-    $ba_bec_matches = $allMatches;
-}
 
 $homeMatches = [];
 $awayMatches = [];
-foreach ($ba_bec_matches as $ba_bec_match) {
+foreach ($allMatches as $ba_bec_match) {
     $side = $resolveClubSide($ba_bec_match);
     if ($side === 'away') {
         $awayMatches[] = $ba_bec_match;
@@ -246,7 +87,7 @@ if ($becMatchesAvailable) {
     }
 }
 
-$renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo): string {
+$renderMatchCard = static function (array $ba_bec_match): string {
     $matchDate = new DateTime($ba_bec_match['matchDate']);
     $displayDate = $matchDate->format('d/m/Y');
     $displayTime = '';
@@ -258,13 +99,11 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
     if ($ba_bec_match['scoreHome'] !== null && $ba_bec_match['scoreAway'] !== null) {
         $score = (int) $ba_bec_match['scoreHome'] . ' - ' . (int) $ba_bec_match['scoreAway'];
     }
-    $homeLogo = $resolveTeamLogo((string) ($ba_bec_match['teamHome'] ?? ''));
-    $awayLogo = $resolveTeamLogo((string) ($ba_bec_match['teamAway'] ?? ''));
 
     ob_start();
     ?>
     <div class="col-12">
-        <article class="match-card" style="--match-home-logo: url('<?php echo htmlspecialchars($homeLogo); ?>'); --match-away-logo: url('<?php echo htmlspecialchars($awayLogo); ?>');">
+        <article class="match-card">
             <header class="match-card__header">
                 <div>
                     <p class="match-card__competition"><?php echo htmlspecialchars($ba_bec_match['competition']); ?></p>
@@ -276,29 +115,21 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
                     </p>
                 </div>
             </header>
-                    <div class="wrapper">
-                        <div class="match-card__team">
-                            <span>Domicile</span>
-                            <img class="match-card__logo" src="<?php echo htmlspecialchars($homeLogo); ?>" alt="<?php echo htmlspecialchars($ba_bec_match['teamHome']); ?>" loading="lazy">
-                            <strong><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></strong>
-                        </div>
-                        <div class="match-card__score">
-                            <?php echo $score !== '' ? htmlspecialchars($score) : 'vs'; ?>
-                        </div>
-                        <div class="match-card__team">
-                            <span>Extérieur</span>
-                            <img class="match-card__logo" src="<?php echo htmlspecialchars($awayLogo); ?>" alt="<?php echo htmlspecialchars($ba_bec_match['teamAway']); ?>" loading="lazy">
-                            <strong><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></strong>
-                        </div>
-                    </div>
+            <div class="wrapper">
+                <div class="match-card__team">
+                    <span>Domicile</span>
+                    <strong><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></strong>
+                </div>
+                <div class="match-card__score">
+                    <?php echo $score !== '' ? htmlspecialchars($score) : 'vs'; ?>
+                </div>
+                <div class="match-card__team">
+                    <span>Extérieur</span>
+                    <strong><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></strong>
+                </div>
+            </div>
             <?php if (!empty($ba_bec_match['location'])): ?>
                 <p class="match-card__location">Lieu : <?php echo htmlspecialchars($ba_bec_match['location']); ?></p>
-            <?php endif; ?>
-
-            <?php if (!empty($ba_bec_match['sourceUrl'])): ?>
-                <a href="<?php echo htmlspecialchars($ba_bec_match['sourceUrl']); ?>" class="btn-more" target="_blank" rel="noopener noreferrer">En savoir plus</a>
-            <?php else: ?>
-                <span class="btn-more disabled" aria-disabled="true">En savoir plus</span>
             <?php endif; ?>
         </article>
     </div>
@@ -316,12 +147,6 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
             Retrouvez ici le prochain match de chaque équipe senior du club, affiché selon la date du jour.
         </p>
         <div class="matches-hero__meta">
-            <span class="matches-hero__source">
-                Source :
-                <a href="https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024" target="_blank" rel="noopener noreferrer">
-                    FFBB Nouvelle-Aquitaine
-                </a>
-            </span>
             <?php if ($becMatchesAvailable && !empty($lastUpdate)): ?>
                 <span class="matches-hero__update">Dernière mise à jour : <?php echo htmlspecialchars($lastUpdate); ?></span>
             <?php endif; ?>
@@ -332,11 +157,6 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
         <?php if (!$becMatchesAvailable): ?>
             <div class="alert alert-light border matches-empty" role="status">
                 Le calendrier n'est pas disponible pour le moment.
-            </div>
-            <div class="mt-3">
-                <a class="btn btn-primary" href="https://competitions.ffbb.com/ligues/naq/comites/0033/clubs/naq0033024" target="_blank" rel="noopener noreferrer">
-                    Voir le calendrier FFBB
-                </a>
             </div>
         <?php elseif (!empty($homeMatches) || !empty($awayMatches)): ?>
             <?php if (!empty($homeMatches)): ?>

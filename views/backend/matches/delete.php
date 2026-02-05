@@ -8,15 +8,21 @@ sql_connect();
 $ba_bec_match = null;
 if (isset($_GET['numMatch'])) {
     $ba_bec_numMatch = (int) $_GET['numMatch'];
-    $ba_bec_match = sql_select(
-        'bec_matches',
-        "MatchNo AS numMatch,
-        Domicile_Exterieur AS location,
-        Equipe AS team,
-        Adversaire AS opponent",
-        "MatchNo = $ba_bec_numMatch"
-    );
-    $ba_bec_match = $ba_bec_match[0] ?? null;
+    if ($ba_bec_numMatch > 0) {
+        $stmt = $DB->prepare(
+            "SELECT m.numMatch,
+                    home_team.libEquipe AS teamHome,
+                    away_team.libEquipe AS teamAway
+             FROM `MATCH` m
+             LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
+             LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
+             LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe
+             LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe
+             WHERE m.numMatch = :numMatch"
+        );
+        $stmt->execute([':numMatch' => $ba_bec_numMatch]);
+        $ba_bec_match = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
 }
 ?>
 
@@ -28,10 +34,8 @@ if (isset($_GET['numMatch'])) {
         <div class="col-md-12">
             <?php if ($ba_bec_match) : ?>
                 <?php
-                $ba_bec_location = strtolower(trim((string) ($ba_bec_match['location'] ?? '')));
-                $ba_bec_isAway = str_contains($ba_bec_location, 'extérieur') || str_contains($ba_bec_location, 'exterieur');
-                $ba_bec_teamHome = $ba_bec_isAway ? $ba_bec_match['opponent'] : $ba_bec_match['team'];
-                $ba_bec_teamAway = $ba_bec_isAway ? $ba_bec_match['team'] : $ba_bec_match['opponent'];
+                $ba_bec_teamHome = $ba_bec_match['teamHome'] ?? 'Domicile';
+                $ba_bec_teamAway = $ba_bec_match['teamAway'] ?? 'Extérieur';
                 $ba_bec_summary = $ba_bec_teamHome . ' vs ' . $ba_bec_teamAway;
                 ?>
                 <form action="<?php echo ROOT_URL . '/api/matches/delete.php' ?>" method="post">
