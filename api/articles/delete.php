@@ -16,7 +16,9 @@ if ($ba_bec_ancienneImage && file_exists($ba_bec_uploadDir . $ba_bec_ancienneIma
     unlink($ba_bec_uploadDir . $ba_bec_ancienneImage);
 }
 
-// Supprimer les mots-clés associés à l'article
+// Supprimer les dépendances associées à l'article avant la suppression
+sql_delete('COMMENT', "numArt = '$ba_bec_numArt'");
+sql_delete('LIKEART', "numArt = '$ba_bec_numArt'");
 sql_delete('MOTCLEARTICLE', "numArt = '$ba_bec_numArt'");
 
 // Supprimer l'article de la base de données
