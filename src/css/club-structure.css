@@ -98,6 +98,27 @@
     margin: 0;
 }
 
+.team-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.75rem;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+    width: fit-content;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.team-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
+    color: #ffffff;
+}
+
 .team-card-body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
