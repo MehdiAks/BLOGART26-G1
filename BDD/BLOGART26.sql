@@ -515,9 +515,13 @@ INSERT INTO `COOKIE_CONSENT` (`numCon`, `ipAdresse`, `choixConsent`, `dateCon`, 
 CREATE TABLE `EQUIPE` (
   `numEquipe` int NOT NULL,
   `libEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `libEquipeComplet` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `categorieEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sectionEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `niveauEquipe` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `descriptionEquipe` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `photoEquipe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `photoStaffEquipe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `pointsMarquesDomicile` int NOT NULL DEFAULT '0',
   `pointsEncaissesDomicile` int NOT NULL DEFAULT '0',
   `pointsMarquesExterieur` int NOT NULL DEFAULT '0',
@@ -528,14 +532,14 @@ CREATE TABLE `EQUIPE` (
 -- Déchargement des données de la table `EQUIPE`
 --
 
-INSERT INTO `EQUIPE` (`numEquipe`, `libEquipe`, `categorieEquipe`, `sectionEquipe`, `niveauEquipe`, `pointsMarquesDomicile`, `pointsEncaissesDomicile`, `pointsMarquesExterieur`, `pointsEncaissesExterieur`) VALUES
-(1, 'SG1', 'Sénior', 'Masculin', 'PNM', 0, 0, 0, 0),
-(2, 'SG2', 'Sénior', 'Masculin', 'RM2', 0, 0, 0, 0),
-(3, 'SG3', 'Sénior', 'Masculin', 'DM3', 0, 0, 0, 0),
-(4, 'SG4', 'Sénior', 'Masculin', 'DM4', 0, 0, 0, 0),
-(5, 'SF1', 'Sénior', 'Féminin', 'NF3', 0, 0, 0, 0),
-(6, 'SF2', 'Sénior', 'Féminin', 'PNF', 0, 0, 0, 0),
-(7, 'SF3', 'Sénior', 'Féminin', 'PRF', 0, 0, 0, 0);
+INSERT INTO `EQUIPE` (`numEquipe`, `libEquipe`, `libEquipeComplet`, `categorieEquipe`, `sectionEquipe`, `niveauEquipe`, `descriptionEquipe`, `photoEquipe`, `photoStaffEquipe`, `pointsMarquesDomicile`, `pointsEncaissesDomicile`, `pointsMarquesExterieur`, `pointsEncaissesExterieur`) VALUES
+(1, 'SG1', 'Seniors garçons - Pré-nationale', 'Sénior', 'Masculin', 'PNM', 'Équipe fanion masculine engagée en pré-nationale, portée par l’intensité et la rigueur collective.', 'photo-equipe-SG1.webp', 'photo-staff-equipe-SG1.webp', 0, 0, 0, 0),
+(2, 'SG2', 'Seniors garçons - Régionale 2', 'Sénior', 'Masculin', 'RM2', 'Groupe solide et ambitieux en régionale 2, avec un encadrement tourné vers la progression.', 'photo-equipe-SG2.webp', 'photo-staff-equipe-SG2.webp', 0, 0, 0, 0),
+(3, 'SG3', 'Seniors garçons - Départementale 3', 'Sénior', 'Masculin', 'DM3', 'Collectif en départementale 3 qui fait grandir les joueurs tout en développant le jeu d’équipe.', 'photo-equipe-SG3.webp', 'photo-staff-equipe-SG3.webp', 0, 0, 0, 0),
+(4, 'SG4', 'Seniors garçons - Départementale 4', 'Sénior', 'Masculin', 'DM4', 'Équipe en départementale 4 dédiée au plaisir du jeu et à l’apprentissage compétitif.', 'photo-equipe-SG4.webp', 'photo-staff-equipe-SG4.webp', 0, 0, 0, 0),
+(5, 'SF1', 'Seniors filles - National 3', 'Sénior', 'Féminin', 'NF3', 'Les Seniors filles en National 3 incarnent l’exigence et l’ambition du BEC au plus haut niveau.', 'photo-equipe-SF1.webp', 'photo-staff-equipe-SF1.webp', 0, 0, 0, 0),
+(6, 'SF2', 'Seniors filles - Pré-nationale', 'Sénior', 'Féminin', 'PNF', 'Formation compétitive en pré-nationale, axée sur la cohésion et la montée en puissance.', 'photo-equipe-SF2.webp', 'photo-staff-equipe-SF2.webp', 0, 0, 0, 0),
+(7, 'SF3', 'Seniors filles - Pré-régionale', 'Sénior', 'Féminin', 'PRF', 'Groupe en pré-régionale qui combine intensité et développement des jeunes talents.', 'photo-equipe-SF3.webp', 'photo-staff-equipe-SF3.webp', 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
