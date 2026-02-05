@@ -89,6 +89,41 @@
             });
         });
     </script>
+    <script>
+        const buttonHoverTargets = document.querySelectorAll(
+            'button:not(.btn-check), input[type="button"], input[type="submit"], input[type="reset"], .btn, .btn-contact-footer, .btn-more, .btn_envoyer, .bouton'
+        );
+
+        buttonHoverTargets.forEach((button) => {
+            if (
+                button.disabled ||
+                button.classList.contains('disabled') ||
+                button.getAttribute('aria-disabled') === 'true'
+            ) {
+                return;
+            }
+
+            const lift = () => {
+                if (
+                    button.disabled ||
+                    button.classList.contains('disabled') ||
+                    button.getAttribute('aria-disabled') === 'true'
+                ) {
+                    return;
+                }
+                button.classList.add('is-lifted');
+            };
+
+            const reset = () => {
+                button.classList.remove('is-lifted');
+            };
+
+            button.addEventListener('pointerenter', lift);
+            button.addEventListener('pointerleave', reset);
+            button.addEventListener('focus', lift);
+            button.addEventListener('blur', reset);
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
