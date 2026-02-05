@@ -8,7 +8,9 @@ require_once 'header.php';
 
     <!-- Hero / Intro -->
     <section class="text-center mb-5 hero-section">
-        <img src="/src/images/logo/logo-bec/logo.svg" alt="Logo BEC" class="hero-logo mb-3">
+        <video class="hero-logo mb-3" autoplay muted loop playsinline aria-label="BEC" poster="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo.png'; ?>">
+            <source src="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo-anime-transparent.mov'; ?>" type="video/quicktime">
+        </video>
         <h1 class="display-4 fw-bold mb-3">Notre histoire</h1>
         <p class="lead mx-auto" style="max-width: 800px; color: #212529;">
             Depuis la fin du XIXᵉ siècle, le Bordeaux Étudiants Club (BEC) rassemble les passionnés de sport
