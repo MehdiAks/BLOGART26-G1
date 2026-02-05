@@ -1,3 +1,26 @@
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+
+$pageStyles = [
+    ROOT_URL . '/src/css/stylearticle.css',
+    ROOT_URL . '/src/css/article-editor.css',
+];
+
+include '../../../header.php';
+
+if (isset($_GET['numArt'])) {
+    $ba_bec_numArt = (int) $_GET['numArt'];
+    $ba_bec_article = sql_select("ARTICLE", "*", "numArt = $ba_bec_numArt")[0];
+    $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
+    $ba_bec_keywords = sql_select("MOTCLE", "*");
+    $ba_bec_selectedKeywords = sql_select("MOTCLEARTICLE", "*", "numArt = $ba_bec_numArt");
+    $ba_bec_selectedKeywordIds = array_map('intval', array_column($ba_bec_selectedKeywords, 'numMotCle'));
+    $ba_bec_numArt = $_GET['numArt'];
+    $ba_bec_urlPhotArt = $ba_bec_article['urlPhotArt'];
+}
+?>
+
 <div class="article-editor-page">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
@@ -156,16 +179,28 @@
                                         <div class="row g-2">
                                             <div class="col-12">
                                                 <select name="addMotCle" id="addMotCle" class="form-select" size="5">
-                                                    <?php foreach ($ba_bec_keywords as $ba_bec_req) { ?>
-                                                        <option id="mot" value="<?php echo $ba_bec_req['numMotCle']; ?>">
-                                                            <?php echo $ba_bec_req['libMotCle']; ?>
-                                                        </option>
-                                                    <?php } ?>
+                                                    <?php
+                                                    foreach ($ba_bec_keywords as $ba_bec_req) {
+                                                        if (in_array((int) $ba_bec_req['numMotCle'], $ba_bec_selectedKeywordIds, true)) {
+                                                            continue;
+                                                        }
+                                                        echo '<option id="mot" value="' . $ba_bec_req['numMotCle'] . '">' . $ba_bec_req['libMotCle'] . '</option>';
+                                                    }
+                                                    ?>
                                                 </select>
                                             </div>
                                             <div class="col-12">
                                                 <select id="newMotCle" name="motCle[]" class="form-select" size="5"
-                                                    multiple></select>
+                                                    multiple>
+                                                    <?php
+                                                    foreach ($ba_bec_keywords as $ba_bec_req) {
+                                                        if (!in_array((int) $ba_bec_req['numMotCle'], $ba_bec_selectedKeywordIds, true)) {
+                                                            continue;
+                                                        }
+                                                        echo '<option id="mot" value="' . $ba_bec_req['numMotCle'] . '" selected>' . $ba_bec_req['libMotCle'] . '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>

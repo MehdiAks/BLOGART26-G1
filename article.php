@@ -184,10 +184,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                         <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post" class="comment-form">
                             <div class="champ">
                                 <textarea id="libCom" name="libCom" class="form-control" type="text" required></textarea>
-                                <small class="form-text text-muted d-block mt-2">
-                                    BBCode autorisé : [b]gras[/b], [i]italique[/i], [u]souligné[/u], [url=https://exemple.com]lien[/url],
-                                    [url]https://exemple.com[/url], [emoji=smile].
-                                </small>
                             </div>
                             <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>" />
                             <div class="btn-se-connecter">
