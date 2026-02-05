@@ -185,6 +185,33 @@ foreach ($matches as $match) {
         'location' => 'Gymnase Barbey',
     ];
 }
+
+$homeStatsStmt = $DB->prepare(
+    "SELECT
+        SUM(CASE
+            WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%' THEN COALESCE(Score_Bec, 0)
+            ELSE 0
+        END) AS pointsFor,
+        SUM(CASE
+            WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%' THEN COALESCE(Score_Adversaire, 0)
+            ELSE 0
+        END) AS pointsAgainst,
+        SUM(CASE
+            WHEN LOWER(TRIM(Domicile_Exterieur)) LIKE '%domicile%'
+                AND Score_Bec IS NOT NULL AND Score_Bec <> ''
+                AND Score_Adversaire IS NOT NULL AND Score_Adversaire <> ''
+                THEN 1
+            ELSE 0
+        END) AS homeMatchCount
+    FROM bec_matches"
+);
+$homeStatsStmt->execute();
+$homeStats = $homeStatsStmt->fetch(PDO::FETCH_ASSOC) ?: [];
+$homeStats = [
+    'matches' => (int) ($homeStats['homeMatchCount'] ?? 0),
+    'pointsFor' => (int) ($homeStats['pointsFor'] ?? 0),
+    'pointsAgainst' => (int) ($homeStats['pointsAgainst'] ?? 0),
+];
 ?>
 
 <section class="home-hero full-bleed">
@@ -253,6 +280,39 @@ foreach ($matches as $match) {
                     </article>
                 </div>
             <?php endforeach; ?>
+        </div>
+    </section>
+
+    <section class="home-section mb-5">
+        <h2 class="fw-bold mb-4">Cette saison à Barbey</h2>
+        <p class="text-body-secondary mb-4">
+            Les chiffres des matchs séniors disputés à domicile.
+        </p>
+        <div class="row g-4">
+            <div class="col-12 col-md-4">
+                <article class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <p class="text-uppercase text-body-secondary mb-2">Matchs joués</p>
+                        <p class="display-6 fw-bold mb-0"><?php echo number_format($homeStats['matches'], 0, ',', ' '); ?></p>
+                    </div>
+                </article>
+            </div>
+            <div class="col-12 col-md-4">
+                <article class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <p class="text-uppercase text-body-secondary mb-2">Points marqués</p>
+                        <p class="display-6 fw-bold mb-0"><?php echo number_format($homeStats['pointsFor'], 0, ',', ' '); ?></p>
+                    </div>
+                </article>
+            </div>
+            <div class="col-12 col-md-4">
+                <article class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <p class="text-uppercase text-body-secondary mb-2">Points encaissés</p>
+                        <p class="display-6 fw-bold mb-0"><?php echo number_format($homeStats['pointsAgainst'], 0, ',', ' '); ?></p>
+                    </div>
+                </article>
+            </div>
         </div>
     </section>
 
