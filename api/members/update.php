@@ -93,8 +93,14 @@ if (isset($ba_bec_numMemb, $ba_bec_prenomMemb, $ba_bec_nomMemb, $ba_bec_eMailMem
         $ba_bec_updateFields = "prenomMemb = '$ba_bec_prenomMemb', nomMemb = '$ba_bec_nomMemb', eMailMemb = '$ba_bec_eMailMemb', numStat = '$ba_bec_numStat'";
     }
 
-    sql_update('MEMBRE', $ba_bec_updateFields, "numMemb = '$ba_bec_numMemb'");
-    header('Location: ../../views/backend/members/list.php');
+    $ba_bec_update_result = sql_update('MEMBRE', $ba_bec_updateFields, "numMemb = '$ba_bec_numMemb'");
+    if ($ba_bec_update_result['success']) {
+        flash_success();
+        header('Location: ../../views/backend/members/list.php');
+        exit();
+    }
+    $_SESSION['errors'] = [FLASH_MESSAGE_ERROR];
+    header('Location: ' . $ba_bec_redirectUrl);
     exit();
 }
 

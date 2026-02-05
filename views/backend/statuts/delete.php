@@ -1,13 +1,3 @@
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-include '../../../header.php';
-
-if(isset($_GET['numStat'])){
-    $ba_bec_numStat = $_GET['numStat'];
-    $ba_bec_libStat = sql_select("STATUT", "libStat", "numStat = $ba_bec_numStat")[0]['libStat'];
-}
-?>
-
 <!-- Bootstrap form to create a new statut -->
 <div class="container">
     <div class="row">
@@ -16,7 +6,7 @@ if(isset($_GET['numStat'])){
         </div>
         <div class="col-md-12">
             <!-- Form to create a new statut -->
-            <form action="<?php echo ROOT_URL . '/api/statuts/delete.php' ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=destroy'; ?>" method="post">
                 <div class="form-group">
                     <label for="libStat">Nom du statut</label>
                     <input id="numStat" name="numStat" class="form-control" style="display: none" type="text" value="<?php echo($ba_bec_numStat); ?>" readonly="readonly" />
@@ -24,7 +14,7 @@ if(isset($_GET['numStat'])){
                 </div>
                 <br />
                 <div class="form-group mt-2">
-                    <a href="list.php" class="btn btn-primary">List</a>
+                    <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=list'; ?>" class="btn btn-primary">List</a>
                     <button type="submit" class="btn btn-danger">Confirmer delete ?</button>
                 </div>
             </form>

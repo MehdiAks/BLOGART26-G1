@@ -27,6 +27,11 @@ if (empty($ba_bec_numMemb)) {
     exit();
 }
 
-sql_delete('MEMBRE', "numMemb = $ba_bec_numMemb");
+$ba_bec_delete_result = sql_delete('MEMBRE', "numMemb = $ba_bec_numMemb");
+if ($ba_bec_delete_result['success']) {
+    flash_success();
+} else {
+    flash_error();
+}
 
 header('Location: ../../views/backend/members/list.php');

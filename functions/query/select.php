@@ -27,6 +27,7 @@ function sql_parse_missing_table($message){
 // select instances
 function sql_select($table, $attributs = '*', $where = null, $group = null, $order = null, $limit = null){
     global $DB;
+    sql_clear_last_error();
 
     //connect to database
     if(!$DB){
@@ -53,7 +54,7 @@ function sql_select($table, $attributs = '*', $where = null, $group = null, $ord
         
         $ba_bec_error = $DB->errorInfo();
         if($ba_bec_error[0] != 0){
-            echo("Error: " . $ba_bec_error[2]);
+            sql_set_last_error($ba_bec_error[2]);
         }else{
             $ba_bec_result = $ba_bec_result->fetchAll();
         }
@@ -67,7 +68,7 @@ function sql_select($table, $attributs = '*', $where = null, $group = null, $ord
             sql_register_missing_table($ba_bec_missing_table);
             $ba_bec_result = [];
         }else{
-            echo("Error: " . $ba_bec_error_message);
+            sql_set_last_error($ba_bec_error_message);
             $ba_bec_result = [];
         }
     }

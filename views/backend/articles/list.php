@@ -1,15 +1,3 @@
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
-include '../../../header.php'; // contains the header and call to config.php
-
-//Load all articles
-$ba_bec_articles = sql_select("ARTICLE", "*");
-$ba_bec_keywords = sql_select("MOTCLE", "*");
-$ba_bec_keywordsart = sql_select("MOTCLEARTICLE", "*");
-$ba_bec_thematiques = sql_select("THEMATIQUE", "*");
-?>
-
 <!-- Bootstrap default layout to display all articles in foreach -->
 <div class="container">
     <div class="row">
@@ -20,6 +8,15 @@ $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
                 </a>
             </div>
             <h1>Articles</h1>
+            <?php
+            $ba_bec_flash_messages = flash_get();
+            $ba_bec_alert_map = ['success' => 'success', 'error' => 'danger', 'warning' => 'warning'];
+            ?>
+            <?php foreach ($ba_bec_flash_messages as $ba_bec_flash): ?>
+                <div class="alert alert-<?php echo $ba_bec_alert_map[$ba_bec_flash['type']] ?? 'info'; ?>" role="alert">
+                    <?php echo htmlspecialchars($ba_bec_flash['message']); ?>
+                </div>
+            <?php endforeach; ?>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -35,10 +32,6 @@ $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
                 </thead>
                 <tbody>
                     <?php foreach ($ba_bec_articles as $ba_bec_article) {
-                        $ba_bec_numArt = $ba_bec_article['numArt']; // QUEL ARTICLE NUM EST-IL QUESTION?
-                        $ba_bec_listMot = sql_select('ARTICLE
-                        INNER JOIN MOTCLEARTICLE ON article.numArt = motclearticle.numArt
-                        INNER JOIN motcle ON motclearticle.numMotCle = motcle.numMotCle', 'article.numArt, libMotCle', "article.numArt = '$ba_bec_numArt'");
                         ?>
                         <tr>
                             <td><?php echo $ba_bec_article['numArt']; ?></td>
@@ -74,16 +67,16 @@ $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
                                 ?>
                             </td>
                             <td>
-                                <a href="edit.php?numArt=<?php echo ($ba_bec_article['numArt']); ?>"
+                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=article&action=edit&numArt=' . $ba_bec_article['numArt']; ?>"
                                     class="btn btn-primary">Edit</a>
-                                <a href="delete.php?numArt=<?php echo ($ba_bec_article['numArt']); ?>"
+                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=article&action=delete&numArt=' . $ba_bec_article['numArt']; ?>"
                                     class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                     <?php } ?>
                 </tbody>
             </table>
-            <a href="create.php" class="btn btn-success">Create</a>
+            <a href="<?php echo ROOT_URL . '/public/index.php?controller=article&action=create'; ?>" class="btn btn-success">Create</a>
         </div>
     </div>
 </div>
