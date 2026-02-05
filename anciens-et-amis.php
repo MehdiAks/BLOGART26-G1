@@ -18,6 +18,9 @@ require_once 'header.php';
         <p>
             Rejoignez l’association des Anciens et Amis du Bordeaux Etudiants Club. Près de 1000 membres sont déjà inscrits, alors pourquoi pas vous ?
         </p>
+        <a class="btn btn-primary" href="https://anciensbec-bordeaux.fr" target="_blank" rel="noopener noreferrer">
+            Accéder au site des Anciens du BEC
+        </a>
     </div>
 
     <div class="row g-4">
