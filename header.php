@@ -50,8 +50,9 @@ $club_pages = [
     <header class="site-header">
         <div class="container d-flex align-items-center justify-content-between flex-wrap gap-3 py-2">
             <a class="navbar-brand d-flex align-items-center gap-2" href="<?php echo ROOT_URL . '/index.php'; ?>">
-                <video class="site-logo" autoplay muted loop playsinline aria-label="BEC">
+                <video class="site-logo" autoplay muted loop playsinline aria-label="BEC" poster="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo.png'; ?>">
                     <source src="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo-anime-transparent.mov'; ?>" type="video/quicktime">
+                    <img src="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo.png'; ?>" alt="Logo BEC">
                 </video>
                 <span>Bordeaux Étudiant Club</span>
             </a>
