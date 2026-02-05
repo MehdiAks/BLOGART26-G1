@@ -64,6 +64,7 @@
             font-weight: 700;
             color: var(--bec-dark);
             padding-right: 60px;
+            margin-top: 20px;
         }
 
         .site-header {
@@ -772,10 +773,9 @@
         .btn-compte {
             background-color:#ddd;
             font-size: 18px;
-            padding: 12px 24px;
+            padding: 12px 20px;
+            margin-top: 20px;
             border: none;
             border-radius: 6px;
-            transform: translateY(10px);
-            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
         }
 
