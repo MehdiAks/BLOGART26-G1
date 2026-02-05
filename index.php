@@ -226,7 +226,7 @@ foreach ($matches as $match) {
     </section>
 
     <section aria-label="Dernières actualités" class="home-articles">
-        <h2 class="mb-4">Nos derniers actualités</h2>
+        <h2 class="mb-4">Nos dernières actualités</h2>
             <p class="text-body-secondary mb-4">Retrouvez ci-dessous nos dernières actualités et articles récents.</p>
         <!-- Si on a au moins un article récupéré, on les affiche. -->
         <?php if (!empty($ba_bec_articles)): ?>
