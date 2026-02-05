@@ -37,6 +37,10 @@ $ba_bec_listMot = sql_select(
 );
 
 $ba_bec_article = $articleData[0];
+$ba_bec_thematique = [];
+if (!empty($ba_bec_article['numThem'])) {
+    $ba_bec_thematique = sql_select('THEMATIQUE', '*', 'numThem = ' . $ba_bec_article['numThem'])[0] ?? [];
+}
 
 // Récupération des statistiques likes/dislikes
 $likeCount = sql_select("LIKEART", "COUNT(*) as count", "numArt = $ba_bec_numArt AND likeA = 1")[0]['count'] ?? 0;
@@ -140,6 +144,26 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
             <div class="container">
                 <div class="article-lead">
                     <?php echo renderBbcode($ba_bec_article['libChapoArt']); ?> 
+                </div>
+                <div class="article-taxonomy mb-4">
+                    <p class="article-theme mb-1">
+                        <strong>Thématique :</strong>
+                        <?php echo !empty($ba_bec_thematique['libThem']) ? htmlspecialchars($ba_bec_thematique['libThem']) : 'Non renseignée'; ?>
+                    </p>
+                    <p class="article-keywords mb-0">
+                        <strong>Mots-clés :</strong>
+                        <?php if (!empty($ba_bec_listMot)): ?>
+                            <?php
+                            $ba_bec_keywordLabels = array_map(
+                                static fn($ba_bec_mot) => htmlspecialchars($ba_bec_mot['libMotCle']),
+                                $ba_bec_listMot
+                            );
+                            echo implode(', ', $ba_bec_keywordLabels);
+                            ?>
+                        <?php else: ?>
+                            Aucun mot-clé.
+                        <?php endif; ?>
+                    </p>
                 </div>
 
                 <div class="row g-4">
