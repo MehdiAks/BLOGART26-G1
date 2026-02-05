@@ -389,6 +389,11 @@
             transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
+        .home-page .header-burger-icon span {
+            background-color: #ddd;
+        }
+
+
         .header-burger-menu[open] .header-burger-icon span:nth-child(1) {
             transform: translateY(8px) rotate(45deg);
         }
@@ -759,16 +764,6 @@
             color: var(--bec-dark);
         }
 
-        @media (max-width: 991.98px) {
-            .header-compte-toggle {
-                display: none;
-            }
-
-            .header-compte-wrapper {
-                display: block;
-                margin-left: auto;
-            }
-        }
 
         .btn-compte {
             background-color:#ddd;
@@ -779,3 +774,15 @@
             border-radius: 6px;
         }
 
+
+
+        @media (max-width: 991.98px) {
+            .btn-compte {
+                display: none;
+            }
+
+            .header-compte-wrapper {
+                display: block;
+                margin-left: auto;
+            }
+        }
