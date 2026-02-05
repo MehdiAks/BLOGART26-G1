@@ -280,8 +280,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $numClub = $DB->lastInsertId();
         }
 
-        $referenceLookup = static function (string $table, string $column, string $value) use ($DB): int {
-            $stmt = $DB->prepare("SELECT num" . ucfirst(strtolower(str_replace('_', '', $table))) . " FROM {$table} WHERE {$column} = :value LIMIT 1");
+        $referenceLookup = static function (string $table, string $column, string $value, string $idColumn) use ($DB): int {
+            $stmt = $DB->prepare("SELECT {$idColumn} FROM {$table} WHERE {$column} = :value LIMIT 1");
             $stmt->execute([':value' => $value]);
             $found = $stmt->fetchColumn();
             if ($found !== false) {
@@ -292,9 +292,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             return (int) $DB->lastInsertId();
         };
 
-        $numCategorie = $referenceLookup('CATEGORIE_EQUIPE', 'libCategorie', $ba_bec_categorieEquipe !== '' ? $ba_bec_categorieEquipe : 'Non renseigné');
-        $numSection = $referenceLookup('SECTION_EQUIPE', 'libSection', $ba_bec_sectionEquipe !== '' ? $ba_bec_sectionEquipe : 'Non renseigné');
-        $numNiveau = $referenceLookup('NIVEAU_EQUIPE', 'libNiveau', $ba_bec_niveauEquipe !== '' ? $ba_bec_niveauEquipe : 'Non renseigné');
+        $numCategorie = $referenceLookup('CATEGORIE_EQUIPE', 'libCategorie', $ba_bec_categorieEquipe !== '' ? $ba_bec_categorieEquipe : 'Non renseigné', 'numCategorie');
+        $numSection = $referenceLookup('SECTION_EQUIPE', 'libSection', $ba_bec_sectionEquipe !== '' ? $ba_bec_sectionEquipe : 'Non renseigné', 'numSection');
+        $numNiveau = $referenceLookup('NIVEAU_EQUIPE', 'libNiveau', $ba_bec_niveauEquipe !== '' ? $ba_bec_niveauEquipe : 'Non renseigné', 'numNiveau');
 
         $updateEquipe = $DB->prepare(
             'UPDATE EQUIPE
