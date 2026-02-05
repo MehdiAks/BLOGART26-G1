@@ -2,7 +2,6 @@
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
-include '../../header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_prenomPersonnel = ctrlSaisies($_POST['prenomPersonnel'] ?? '');
@@ -119,6 +118,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+<?php include '../../header.php'; ?>
 
 <div class="container">
     <div class="row">
