@@ -1,20 +1,3 @@
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
-
-$pageStyles = [
-    ROOT_URL . '/src/css/stylearticle.css',
-    ROOT_URL . '/src/css/article-editor.css',
-];
-
-include '../../../header.php';
-
-// Récupération des thématiques et mots-clés disponibles
-$ba_bec_thematiques = sql_select("THEMATIQUE", "*");
-$ba_bec_keywords = sql_select("MOTCLE", "*");
-$ba_bec_keywordsart = sql_select("MOTCLEARTICLE", "*");
-?>
-
 <div class="article-editor-page">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
@@ -27,7 +10,7 @@ $ba_bec_keywordsart = sql_select("MOTCLEARTICLE", "*");
         <button type="submit" form="article-create-form" class="btn btn-primary">Confirmer la création</button>
     </div>
 
-    <form id="article-create-form" action="<?php echo ROOT_URL . '/api/articles/create.php'; ?>" method="post"
+    <form id="article-create-form" action="<?php echo ROOT_URL . '/public/index.php?controller=article&action=store'; ?>" method="post"
         enctype="multipart/form-data">
         <section class="article-page article-editor">
             <header class="article-hero" style="--hero-image: url('<?php echo ROOT_URL . '/src/images/article.png'; ?>')">
@@ -162,12 +145,11 @@ $ba_bec_keywordsart = sql_select("MOTCLEARTICLE", "*");
                                         <div class="row g-2">
                                             <div class="col-12">
                                                 <select name="addMotCle" id="addMotCle" class="form-select" size="5">
-                                                    <?php
-                                                    $ba_bec_result = sql_select('MOTCLE');
-                                                    foreach ($ba_bec_result as $ba_bec_req) {
-                                                        echo '<option id="mot" value="' . $ba_bec_req['numMotCle'] . '">' . $ba_bec_req['libMotCle'] . '</option>';
-                                                    }
-                                                    ?>
+                                                    <?php foreach ($ba_bec_keywords as $ba_bec_req) { ?>
+                                                        <option id="mot" value="<?php echo $ba_bec_req['numMotCle']; ?>">
+                                                            <?php echo $ba_bec_req['libMotCle']; ?>
+                                                        </option>
+                                                    <?php } ?>
                                                 </select>
                                             </div>
                                             <div class="col-12">

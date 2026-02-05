@@ -17,12 +17,17 @@ if ($ba_bec_ancienneImage && file_exists($ba_bec_uploadDir . $ba_bec_ancienneIma
 }
 
 // Supprimer les mots-clés associés à l'article
-sql_delete('MOTCLEARTICLE', "numArt = '$ba_bec_numArt'");
+$ba_bec_motcle_result = sql_delete('MOTCLEARTICLE', "numArt = '$ba_bec_numArt'");
 
 // Supprimer l'article de la base de données
-sql_delete('ARTICLE', "numArt = '$ba_bec_numArt'");
+$ba_bec_delete_result = sql_delete('ARTICLE', "numArt = '$ba_bec_numArt'");
 
 // Redirection après la suppression
+if ($ba_bec_motcle_result['success'] && $ba_bec_delete_result['success']) {
+    flash_success();
+} else {
+    flash_error();
+}
 header('Location: ../../views/backend/articles/list.php');
 exit;
 ?>

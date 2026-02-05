@@ -87,7 +87,7 @@ unset($_SESSION['errors'], $_SESSION['old']);
                             <span class="icon icon-open">Masquer</span>
                         </button>
                     </div>
-                    <small class="form-text text-muted">Au moins 8 caractères, une majuscule, une minuscule et un chiffre</small>
+                    <small class="form-text text-muted">Entre 8 et 15 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial</small>
                 </div>
 
                 <!-- Confirmation mot de passe -->

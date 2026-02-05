@@ -11,14 +11,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $ba_bec_pseudoMemb = isset($_POST['pseudoMemb']) ? ctrlSaisies($_POST['pseudoMemb']) : null;
     $ba_bec_prenomMemb = isset($_POST['prenomMemb']) ? ctrlSaisies($_POST['prenomMemb']) : null;
     $ba_bec_nomMemb = isset($_POST['nomMemb']) ? ctrlSaisies($_POST['nomMemb']) : null;
-    $ba_bec_passMemb = isset($_POST['passMemb']) ? ctrlSaisies($_POST['passMemb']) : null;
-    $ba_bec_passMemb2 = isset($_POST['passMemb2']) ? ctrlSaisies($_POST['passMemb2']) : null;
+    $ba_bec_passMemb = $_POST['passMemb'] ?? '';
+    $ba_bec_passMemb2 = $_POST['passMemb2'] ?? '';
     $ba_bec_eMailMemb = isset($_POST['eMailMemb']) ? ctrlSaisies($_POST['eMailMemb']) : null;
     $ba_bec_eMailMemb2 = isset($_POST['eMailMemb2']) ? ctrlSaisies($_POST['eMailMemb2']) : null;
     $ba_bec_accordMemb = isset($_POST['accordMemb']) ? ctrlSaisies($_POST['accordMemb']) : null;
     $ba_bec_numStat = isset($_POST['numStat']) ? ctrlSaisies($_POST['numStat']) : null;
 
     $ba_bec_errors = [];
+
+    $ba_bec_recaptcha = verifyRecaptcha($_POST['g-recaptcha-response'] ?? '', 'create');
+    if (!$ba_bec_recaptcha['valid']) {
+        $ba_bec_errors[] = $ba_bec_recaptcha['message'] ?: 'Échec de la vérification reCAPTCHA.';
+    }
+
+    // Vérification nom et prénom
+    if (empty($ba_bec_prenomMemb)) {
+        $ba_bec_errors[] = "Le prénom est obligatoire.";
+    }
+
+    if (empty($ba_bec_nomMemb)) {
+        $ba_bec_errors[] = "Le nom est obligatoire.";
+    }
 
     // Vérification nom d'utilisateur
     if (strlen($ba_bec_pseudoMemb) < 6 || strlen($ba_bec_pseudoMemb) > 70) {
@@ -32,8 +46,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Vérification mot de passe
-    if (!preg_match('/[A-Z]/', $ba_bec_passMemb) || !preg_match('/[a-z]/', $ba_bec_passMemb) || !preg_match('/[0-9]/', $ba_bec_passMemb)) {
-        $ba_bec_errors[] = "Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre.";
+    if (strlen($ba_bec_passMemb) < 8 || strlen($ba_bec_passMemb) > 15) {
+        $ba_bec_errors[] = "Le mot de passe doit contenir entre 8 et 15 caractères.";
+        $ba_bec_passMemb = null;
+    } elseif (
+        !preg_match('/[A-Z]/', $ba_bec_passMemb) ||
+        !preg_match('/[a-z]/', $ba_bec_passMemb) ||
+        !preg_match('/[0-9]/', $ba_bec_passMemb) ||
+        !preg_match('/[^a-zA-Z0-9]/', $ba_bec_passMemb)
+    ) {
+        $ba_bec_errors[] = "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.";
         $ba_bec_passMemb = null;
     }
 
@@ -55,6 +77,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($ba_bec_eMailMemb !== $ba_bec_eMailMemb2) {
         $ba_bec_errors[] = "Les adresses mail doivent être identiques.";
         $ba_bec_eMailMemb = null;
+    } elseif (!empty(sql_select('MEMBRE', 'eMailMemb', "eMailMemb = '$ba_bec_eMailMemb'"))) {
+        $ba_bec_errors[] = "Cette adresse email est déjà utilisée.";
+        $ba_bec_eMailMemb = null;
     }
 
     // Vérification Accord
@@ -72,13 +97,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Vérification complète avant insertion
     if (empty($ba_bec_errors) && isset($ba_bec_pseudoMemb, $ba_bec_prenomMemb, $ba_bec_nomMemb, $ba_bec_hash_password, $ba_bec_eMailMemb, $ba_bec_numStat)) {
         $ba_bec_dtCreaMemb = date('Y-m-d H:i:s');
-        sql_insert(
+        $ba_bec_insert_result = sql_insert(
             'MEMBRE',
             'prenomMemb, nomMemb, pseudoMemb, passMemb, eMailMemb, dtCreaMemb, accordMemb, numStat',
             "'$ba_bec_prenomMemb', '$ba_bec_nomMemb', '$ba_bec_pseudoMemb', '$ba_bec_hash_password', '$ba_bec_eMailMemb', '$ba_bec_dtCreaMemb', '1', '$ba_bec_numStat'"
         );
-        header('Location: ../../views/backend/members/list.php');
-        exit();
+        if ($ba_bec_insert_result['success']) {
+            flash_success();
+            header('Location: ../../views/backend/members/list.php');
+            exit();
+        }
+        $ba_bec_errors[] = FLASH_MESSAGE_ERROR;
 
     }
 

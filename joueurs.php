@@ -41,7 +41,7 @@ if ($dbAvailable) {
     $players = [];
 }
 
-$defaultPhoto = ROOT_URL . '/src/images/logo.png';
+$defaultPhoto = ROOT_URL . '/src/images/image-defaut.jpeg';
 
 function format_age(?string $birthDate): string
 {

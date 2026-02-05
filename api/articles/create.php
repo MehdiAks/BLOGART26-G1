@@ -18,6 +18,26 @@ $ba_bec_libSsTitr2Art = ctrlSaisies($_POST['libSsTitr2Art'] ?? '');
 $ba_bec_parag3Art = ctrlSaisies($_POST['parag3Art'] ?? '');
 $ba_bec_libConclArt = ctrlSaisies($_POST['libConclArt'] ?? '');
 $ba_bec_numThem = ctrlSaisies($_POST['numThem'] ?? '');
+
+$ba_bec_bbcodeFields = [
+    'libTitrArt' => $ba_bec_libTitrArt,
+    'libChapoArt' => $ba_bec_libChapoArt,
+    'libAccrochArt' => $ba_bec_libAccrochArt,
+    'parag1Art' => $ba_bec_parag1Art,
+    'libSsTitr1Art' => $ba_bec_libSsTitr1Art,
+    'parag2Art' => $ba_bec_parag2Art,
+    'libSsTitr2Art' => $ba_bec_libSsTitr2Art,
+    'parag3Art' => $ba_bec_parag3Art,
+    'libConclArt' => $ba_bec_libConclArt,
+];
+
+foreach ($ba_bec_bbcodeFields as $ba_bec_fieldName => $ba_bec_fieldValue) {
+    if (!isValidBbcodeContent($ba_bec_fieldValue)) {
+        http_response_code(400);
+        echo "Le contenu du champ {$ba_bec_fieldName} contient du BBCode non autorisé.";
+        exit;
+    }
+}
         
 
 if (function_exists('mb_substr')) {
@@ -26,7 +46,12 @@ if (function_exists('mb_substr')) {
     $ba_bec_libAccrochArt = substr($ba_bec_libAccrochArt, 0, 100);
 }
 
-$ba_bec_numMotCle = isset($_POST['motCle']) ? (array) $_POST['motCle'] : [];
+$ba_bec_numMotCle = isset($_POST['motCle']) ? array_values(array_filter((array) $_POST['motCle'], 'strlen')) : [];
+if (count($ba_bec_numMotCle) < 3) {
+    http_response_code(400);
+    echo "Veuillez sélectionner au moins 3 mots-clés.";
+    exit;
+}
 if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
     $ba_bec_tmpName = $_FILES['urlPhotArt']['tmp_name'];
     $ba_bec_name = $_FILES['urlPhotArt']['name'];
@@ -63,23 +88,35 @@ if ($ba_bec_numThem === '' || !is_numeric($ba_bec_numThem)) {
 $ba_bec_urlPhotValue = $ba_bec_nom_image ? "'$ba_bec_nom_image'" : "NULL";
 
 // Insertion dans la table ARTICLE
-sql_insert(
+$ba_bec_insert_result = sql_insert(
     'ARTICLE',
     'libTitrArt, libChapoArt, libAccrochArt, parag1Art, libSsTitr1Art, parag2Art, libSsTitr2Art, parag3Art, libConclArt, urlPhotArt, numThem',
     "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', $ba_bec_urlPhotValue, '$ba_bec_numThem'"
 );
+if (!$ba_bec_insert_result['success']) {
+    flash_error();
+    header('Location: ../../views/backend/articles/list.php');
+    exit;
+}
 $ba_bec_lastArt = sql_select('ARTICLE', 'numArt', null, null, 'numArt DESC', '1')[0]['numArt'];
 
-
-
+$ba_bec_has_error = false;
 foreach ($ba_bec_numMotCle as $ba_bec_mot){
-    sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_lastArt, $ba_bec_mot");
+    $ba_bec_link_result = sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_lastArt, $ba_bec_mot");
+    if (!$ba_bec_link_result['success']) {
+        $ba_bec_has_error = true;
+    }
 }
 
 
 
 
 // Redirection après l'insertion
+if ($ba_bec_has_error) {
+    flash_error();
+} else {
+    flash_success();
+}
 header('Location: ../../views/backend/articles/list.php');
 exit;
 

@@ -23,6 +23,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['errors'][] = $ba_bec_recaptcha['message'] ?: 'Échec de la vérification reCAPTCHA.';
     }
 
+    // Validation prénom et nom
+    if (empty($ba_bec_prenomMemb)) {
+        $_SESSION['errors'][] = 'Le prénom est obligatoire';
+    }
+
+    if (empty($ba_bec_nomMemb)) {
+        $_SESSION['errors'][] = 'Le nom est obligatoire';
+    }
+
     // Validation nom d'utilisateur
     if (strlen($ba_bec_pseudoMemb) < 6 || strlen($ba_bec_pseudoMemb) > 70) {
         $_SESSION['errors'][] = "Le nom d'utilisateur doit contenir entre 6 et 70 caractères";
@@ -31,14 +40,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Validation mot de passe
-    if (strlen($ba_bec_passMemb) < 8) {
-        $_SESSION['errors'][] = 'Le mot de passe doit contenir au moins 8 caractères';
+    if (strlen($ba_bec_passMemb) < 8 || strlen($ba_bec_passMemb) > 15) {
+        $_SESSION['errors'][] = 'Le mot de passe doit contenir entre 8 et 15 caractères';
     } elseif (
         !preg_match('/[A-Z]/', $ba_bec_passMemb) ||
         !preg_match('/[a-z]/', $ba_bec_passMemb) ||
-        !preg_match('/[0-9]/', $ba_bec_passMemb)
+        !preg_match('/[0-9]/', $ba_bec_passMemb) ||
+        !preg_match('/[^a-zA-Z0-9]/', $ba_bec_passMemb)
     ) {
-        $_SESSION['errors'][] = 'Le mot de passe doit contenir une majuscule, une minuscule et un chiffre';
+        $_SESSION['errors'][] = 'Le mot de passe doit contenir une majuscule, une minuscule, un chiffre et un caractère spécial';
     } elseif ($ba_bec_passMemb !== $ba_bec_passMemb2) {
         $_SESSION['errors'][] = 'Les mots de passe ne correspondent pas';
     }

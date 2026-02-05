@@ -29,7 +29,7 @@ $club_pages = [
     <link href="<?php echo ROOT_URL . '/src/css/css-propre/style.css'; ?>" rel="stylesheet">
     <link href="<?php echo ROOT_URL . '/src/css/css-propre/fonts.css'; ?>" rel="stylesheet">
         <link href="<?php echo ROOT_URL . '/src/css/css-header-footer/header-et-footer.css'; ?>" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/src/images/logo.svg" />
+    <link rel="icon" type="image/png" href="/src/images/logo/logo-bec/logo.svg" />
     <?php if (!empty($pageStyles) && is_array($pageStyles)) : ?>
         <?php foreach ($pageStyles as $stylePath) : ?>
             <link href="<?php echo htmlspecialchars($stylePath); ?>" rel="stylesheet">
@@ -62,9 +62,9 @@ $club_pages = [
         </div>
     <?php endif; ?>
     <header class="site-header">
-        <div class="container d-flex align-items-center justify-content-between flex-wrap gap-3 py-3">
+        <div class="container d-flex align-items-center justify-content-between flex-wrap gap-3 py-2">
             <a class="navbar-brand d-flex align-items-center gap-2" href="<?php echo ROOT_URL . '/index.php'; ?>">
-                <img src="<?php echo ROOT_URL . '/src/images/logo.png'; ?>" alt="BEC" class="site-logo">
+                <img src="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo.png'; ?>" alt="BEC" class="site-logo">
                 <span>Bordeaux Étudiant Club</span>
             </a>
 
@@ -119,6 +119,39 @@ $club_pages = [
                         <button type="button" class="header-burger-close" aria-label="Fermer le menu" onclick="this.closest('details').removeAttribute('open')">
                             &times;
                         </button>
+                        <nav class="header-burger-nav" aria-label="Navigation principale">
+                            <ul>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/index.php'; ?>" <?php if ($current_page == '/index.php') echo 'class="current"'; ?>>Accueil</a>
+                                </li>
+                                <li class="header-burger-group">
+                                    <span class="header-burger-group-title">Le club</span>
+                                    <ul class="header-burger-sublist" aria-label="Le club">
+                                        <li>
+                                            <a href="<?php echo ROOT_URL . '/notre-histoire.php'; ?>" <?php if ($current_page == '/notre-histoire.php') echo 'class="current"'; ?>>Notre histoire</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo ROOT_URL . '/organigramme-benevoles.php'; ?>" <?php if ($current_page == '/organigramme-benevoles.php') echo 'class="current"'; ?>>Bénévoles</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo ROOT_URL . '/joueurs.php'; ?>" <?php if ($current_page == '/joueurs.php') echo 'class="current"'; ?>>Joueurs</a>
+                                        </li>
+                                        <li>
+                                            <a href="<?php echo ROOT_URL . '/equipes.php'; ?>" <?php if ($current_page == '/equipes.php') echo 'class="current"'; ?>>Équipes</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
+                                </li>
+                            </ul>
+                        </nav>
                         <div class="header-burger-actions">
                             <p class="header-burger-title">Espace membre</p>
                             <?php if ($ba_bec_pseudoMemb): ?>
