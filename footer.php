@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row gy-4 align-items-start">
                 <div class="col-lg-5">
-                    <a class="btn-contact-footer" href="<?php echo ROOT_URL . '/contact.php'; ?>">CONTACTEZ-NOUS!</a>
+                    <a class="btn-contact-footer" href="<?php echo ROOT_URL . '/contact.php'; ?>">Contactez-nous :)"</a>
                     <p class="mb-1">secretariat@bec-bordeaux</p>
                     <p class="mb-3">06 71 94 23 80 - 05 56 91 83 50</p>
                     <div class="d-flex align-items-center gap-3 mb-4">
