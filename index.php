@@ -286,35 +286,99 @@ $homeStats = [
     <section class="home-section mb-5">
         <h2 class="fw-bold mb-4">Cette saison à Barbey</h2>
         <p class="text-body-secondary mb-4">
-            Les chiffres des matchs séniors disputés à domicile.
+        Les chiffres des matchs séniors disputés à domicile.
         </p>
         <div class="row g-4">
-            <div class="col-12 col-md-4">
-                <article class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <p class="text-uppercase text-body-secondary mb-2">Matchs joués</p>
-                        <p class="display-6 fw-bold mb-0"><?php echo number_format($homeStats['matches'], 0, ',', ' '); ?></p>
-                    </div>
-                </article>
+        <div class="col-12 col-md-4">
+            <article class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <p class="text-uppercase text-body-secondary mb-2">Matchs joués</p>
+                <p
+                class="display-6 fw-bold mb-0"
+                data-counter
+                data-target="<?php echo number_format($homeStats['matches'], 0, ',', ' '); ?>"
+                >
+                0
+                </p>
             </div>
-            <div class="col-12 col-md-4">
-                <article class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <p class="text-uppercase text-body-secondary mb-2">Points marqués</p>
-                        <p class="display-6 fw-bold mb-0"><?php echo number_format($homeStats['pointsFor'], 0, ',', ' '); ?></p>
-                    </div>
-                </article>
+            </article>
+        </div>
+        <div class="col-12 col-md-4">
+            <article class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <p class="text-uppercase text-body-secondary mb-2">Points marqués</p>
+                <p
+                class="display-6 fw-bold mb-0"
+                data-counter
+                data-target="<?php echo number_format($homeStats['pointsFor'], 0, ',', ' '); ?>"
+                >
+                0
+                </p>
             </div>
-            <div class="col-12 col-md-4">
-                <article class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <p class="text-uppercase text-body-secondary mb-2">Points encaissés</p>
-                        <p class="display-6 fw-bold mb-0"><?php echo number_format($homeStats['pointsAgainst'], 0, ',', ' '); ?></p>
-                    </div>
-                </article>
+            </article>
+        </div>
+        <div class="col-12 col-md-4">
+            <article class="card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <p class="text-uppercase text-body-secondary mb-2">Points encaissés</p>
+                <p
+                class="display-6 fw-bold mb-0"
+                data-counter
+                data-target="<?php echo number_format($homeStats['pointsAgainst'], 0, ',', ' '); ?>"
+                >
+                0
+                </p>
             </div>
+            </article>
+        </div>
         </div>
     </section>
+<script>
+    const counters = document.querySelectorAll("[data-counter]");
+
+function parseNumber(value) {
+const normalized = value.replace(/\s/g, "").replace(",", ".");
+return Number.parseFloat(normalized);
+}
+
+function formatNumber(value, template) {
+const hasSpace = template.includes(" ");
+return value.toLocaleString("fr-FR", {
+    maximumFractionDigits: 0,
+    useGrouping: hasSpace,
+});
+}
+
+function animateCounter(element) {
+const targetText = element.dataset.target || "0";
+const target = parseNumber(targetText);
+if (!Number.isFinite(target) || target < 0) {
+    element.textContent = targetText;
+    return;
+}
+
+let current = 0;
+const durationMs = 1500;
+const stepTime = 20;
+const steps = Math.max(1, Math.floor(durationMs / stepTime));
+const increment = Math.max(1, Math.ceil(target / steps));
+
+ const timerId = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+    current = target;
+    element.textContent = formatNumber(current, targetText);
+    clearInterval(timerId);
+    return;
+    }
+    element.textContent = formatNumber(current, targetText);
+}, stepTime);
+}
+
+window.addEventListener("load", () => {
+counters.forEach((counter) => animateCounter(counter));
+});
+</script>
 
     <section aria-label="Dernières actualités" class="home-articles">
         <h2 class="fw-bold mb-4">Nos dernières actualités</h2>
