@@ -2,6 +2,30 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/ctrlSaisies.php';
 
+function resolve_article_image_url(?string $path, string $defaultImage): string
+{
+    if (!$path) {
+        return $defaultImage;
+    }
+
+    if (preg_match('/^https?:\/\//', $path)) {
+        return $path;
+    }
+
+    if (strpos($path, '/src/uploads/') !== false) {
+        $relative = substr($path, strpos($path, '/src/uploads/') + strlen('/src/uploads/'));
+    } else {
+        $relative = ltrim($path, '/');
+    }
+
+    $filePath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $relative;
+    if (file_exists($filePath)) {
+        return ROOT_URL . '/src/uploads/' . $relative;
+    }
+
+    return $defaultImage;
+}
+
 // Vérification de la présence de numArt
 if (!isset($_GET['numArt']) || empty($_GET['numArt'])) {
     die("Aucun article sélectionné.");
@@ -17,17 +41,7 @@ if (empty($articleData)) {
 
 $ba_bec_article = $articleData[0];
 $defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
-$articlePhoto = $ba_bec_article['urlPhotArt'] ?? '';
-if ($articlePhoto && preg_match('/^(https?:\\/\\/|\\/)/', $articlePhoto)) {
-    $ba_bec_articleImageUrl = $articlePhoto;
-} else {
-    $articleUploadPath = $articlePhoto
-        ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $articlePhoto
-        : '';
-    $ba_bec_articleImageUrl = ($articlePhoto && file_exists($articleUploadPath))
-        ? ROOT_URL . '/src/uploads/' . $articlePhoto
-        : $defaultImagePath;
-}
+$ba_bec_articleImageUrl = resolve_article_image_url($ba_bec_article['urlPhotArt'] ?? null, $defaultImagePath);
 $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
 $ba_bec_keywords = sql_select("MOTCLE", "*");
 $ba_bec_selectedKeywords = sql_select("MOTCLEARTICLE", "*", "numArt = $ba_bec_numArt");
@@ -273,17 +287,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                         if (!empty($randomArticles)):
                             foreach ($randomArticles as $randomArticle): ?>
                                 <?php
-                                $randomPhoto = $randomArticle['urlPhotArt'] ?? '';
-                                if ($randomPhoto && preg_match('/^(https?:\\/\\/|\\/)/', $randomPhoto)) {
-                                    $randomImageUrl = $randomPhoto;
-                                } else {
-                                    $randomUploadPath = $randomPhoto
-                                        ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $randomPhoto
-                                        : '';
-                                    $randomImageUrl = ($randomPhoto && file_exists($randomUploadPath))
-                                        ? ROOT_URL . '/src/uploads/' . $randomPhoto
-                                        : $defaultImagePath;
-                                }
+                                $randomImageUrl = resolve_article_image_url(
+                                    $randomArticle['urlPhotArt'] ?? null,
+                                    $defaultImagePath
+                                );
                                 ?>
                                 <div class="random-article">
                                     <img class="imagedroite img-fluid w-100" src="<?php echo $randomImageUrl; ?>" alt="Image article">

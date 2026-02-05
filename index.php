@@ -16,6 +16,30 @@ require_once 'header.php';
 // On ouvre la connexion à la base de données.
 sql_connect();
 
+function resolve_article_image_url(?string $path, string $defaultImage): string
+{
+    if (!$path) {
+        return $defaultImage;
+    }
+
+    if (preg_match('/^https?:\/\//', $path)) {
+        return $path;
+    }
+
+    if (strpos($path, '/src/uploads/') !== false) {
+        $relative = substr($path, strpos($path, '/src/uploads/') + strlen('/src/uploads/'));
+    } else {
+        $relative = ltrim($path, '/');
+    }
+
+    $filePath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $relative;
+    if (file_exists($filePath)) {
+        return ROOT_URL . '/src/uploads/' . $relative;
+    }
+
+    return $defaultImage;
+}
+
 // On prépare la requête SQL pour récupérer 3 articles au hasard.
 // - ORDER BY RAND() mélange aléatoirement les lignes.
 // - LIMIT 3 garantit qu'on n'affiche jamais plus de 3 articles.
@@ -416,15 +440,7 @@ if (!$becMatchesAvailable) {
                         //    - si l'article a une image, on utilise celle-ci
                         //    - sinon on utilise l'image par défaut.
                         $defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
-                        $articlePhoto = $ba_bec_article['urlPhotArt'] ?? '';
-                        if ($articlePhoto && preg_match('/^(https?:\\/\\/|\\/)/', $articlePhoto)) {
-                            $ba_bec_imagePath = $articlePhoto;
-                        } else {
-                            $uploadPath = $articlePhoto ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $articlePhoto : '';
-                            $ba_bec_imagePath = ($articlePhoto && file_exists($uploadPath))
-                                ? ROOT_URL . '/src/uploads/' . htmlspecialchars($articlePhoto)
-                                : $defaultImagePath;
-                        }
+                        $ba_bec_imagePath = resolve_article_image_url($ba_bec_article['urlPhotArt'] ?? null, $defaultImagePath);
                         // 2) On récupère le chapo (texte d'accroche) ou une chaîne vide si absent.
                         $chapo = $ba_bec_article['libChapoArt'] ?? '';
                         // 3) On fixe la longueur max de l'extrait affiché.

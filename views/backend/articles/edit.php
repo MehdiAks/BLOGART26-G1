@@ -18,11 +18,13 @@ if (isset($_GET['numArt'])) {
     $ba_bec_selectedKeywordIds = array_map('intval', array_column($ba_bec_selectedKeywords, 'numMotCle'));
     $ba_bec_numArt = $_GET['numArt'];
     $ba_bec_urlPhotArt = $ba_bec_article['urlPhotArt'];
-    $ba_bec_photoUrl = '';
+    $ba_bec_defaultImage = ROOT_URL . '/src/images/article.png';
     if (!empty($ba_bec_urlPhotArt)) {
-        $ba_bec_photoUrl = preg_match('/^(https?:\\/\\/|\\/)/', $ba_bec_urlPhotArt)
+        $ba_bec_photoUrl = preg_match('/^(https?:\/\/|\/)/', $ba_bec_urlPhotArt)
             ? $ba_bec_urlPhotArt
             : ROOT_URL . '/src/uploads/' . $ba_bec_urlPhotArt;
+    } else {
+        $ba_bec_photoUrl = $ba_bec_defaultImage;
     }
 }
 ?>

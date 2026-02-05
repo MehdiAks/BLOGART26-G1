@@ -3,41 +3,28 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
-function normalize_upload_path(?string $path): ?string
+function ensure_upload_dir(string $path): void
 {
-    if (!$path) {
-        return null;
+    if (!is_dir($path)) {
+        mkdir($path, 0775, true);
     }
-
-    $path = trim($path);
-    $uploadsMarker = 'src/uploads/';
-    $markerPos = strpos($path, $uploadsMarker);
-    if ($markerPos !== false) {
-        $path = substr($path, $markerPos + strlen($uploadsMarker));
-    } elseif (preg_match('/^(https?:\\/\\/|\\/)/', $path)) {
-        return null;
-    }
-
-    $path = ltrim($path, '/');
-    return $path !== '' ? $path : null;
 }
 
-function sanitize_equipe_code(string $code): string
+function sanitize_code_equipe(string $codeEquipe): string
 {
-    $code = preg_replace('/[^a-z0-9-]+/i', '-', $code);
-    $code = trim($code, '-');
-    return $code !== '' ? $code : 'equipe';
+    $sanitized = preg_replace('/[^A-Za-z0-9_-]+/', '', $codeEquipe);
+    return $sanitized !== '' ? $sanitized : 'equipe';
 }
 
-function process_equipe_upload(string $field, string $codeEquipe, string $suffix, array &$errors): ?string
+function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, array &$errors): ?string
 {
-    if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== 0) {
+    if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== 0) {
         return null;
     }
 
-    $tmpName = $_FILES[$field]['tmp_name'];
-    $name = $_FILES[$field]['name'];
-    $size = $_FILES[$field]['size'];
+    $tmpName = $_FILES[$fileKey]['tmp_name'];
+    $name = $_FILES[$fileKey]['name'];
+    $size = $_FILES[$fileKey]['size'];
     $allowedExtensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
     $allowedMimeTypes = [
         'image/jpeg',
@@ -82,19 +69,44 @@ function process_equipe_upload(string $field, string $codeEquipe, string $suffix
         }
     }
 
-    $safeCode = sanitize_equipe_code($codeEquipe);
-    $fileName = $safeCode . '-' . $suffix . '.' . $extension;
+    $codeEquipeSafe = sanitize_code_equipe($codeEquipe);
+    $fileName = $codeEquipeSafe . '-' . $suffix . '.' . $extension;
     $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
-    }
+    ensure_upload_dir($uploadDir);
     $destination = $uploadDir . $fileName;
+
     if (!move_uploaded_file($tmpName, $destination)) {
         $errors[] = "Erreur lors de l'upload de l'image.";
         return null;
     }
 
     return 'photos-equipes/' . $fileName;
+}
+
+function rename_team_photo_variants(string $oldCode, string $newCode, string $suffix): void
+{
+    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
+    foreach ($extensions as $extension) {
+        $oldPath = $uploadDir . $oldCode . '-' . $suffix . '.' . $extension;
+        $newPath = $uploadDir . $newCode . '-' . $suffix . '.' . $extension;
+        if (file_exists($oldPath)) {
+            ensure_upload_dir($uploadDir);
+            rename($oldPath, $newPath);
+        }
+    }
+}
+
+function delete_team_photo_variants(string $codeEquipe, string $suffix): void
+{
+    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
+    foreach ($extensions as $extension) {
+        $path = $uploadDir . $codeEquipe . '-' . $suffix . '.' . $extension;
+        if (file_exists($path)) {
+            unlink($path);
+        }
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -198,6 +210,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $ba_bec_photoStaff = $oldRelative;
                     }
                 }
+            }
+        }
+    }
+
+    if (empty($ba_bec_errors)) {
+        $ba_bec_existingCode = '';
+        if ($ba_bec_numEquipe > 0) {
+            $codeStmt = $DB->prepare('SELECT codeEquipe FROM EQUIPE WHERE numEquipe = :numEquipe LIMIT 1');
+            $codeStmt->execute([':numEquipe' => $ba_bec_numEquipe]);
+            $ba_bec_existingCode = (string) $codeStmt->fetchColumn();
+        }
+        $ba_bec_existingCodeSafe = $ba_bec_existingCode !== '' ? sanitize_code_equipe($ba_bec_existingCode) : '';
+        $ba_bec_codeEquipeSafe = sanitize_code_equipe($ba_bec_codeEquipe);
+
+        $hasEquipeUpload = isset($_FILES['photoEquipe']) && $_FILES['photoEquipe']['error'] === 0;
+        $hasStaffUpload = isset($_FILES['photoStaff']) && $_FILES['photoStaff']['error'] === 0;
+
+        if ($ba_bec_existingCodeSafe && $ba_bec_existingCodeSafe !== $ba_bec_codeEquipeSafe) {
+            if (!$hasEquipeUpload) {
+                rename_team_photo_variants($ba_bec_existingCodeSafe, $ba_bec_codeEquipeSafe, 'photo-equipe');
+            }
+            if (!$hasStaffUpload) {
+                rename_team_photo_variants($ba_bec_existingCodeSafe, $ba_bec_codeEquipeSafe, 'photo-staff');
+            }
+        }
+
+        if ($hasEquipeUpload) {
+            upload_team_photo('photoEquipe', $ba_bec_codeEquipe, 'photo-equipe', $ba_bec_errors);
+            if ($ba_bec_existingCodeSafe) {
+                delete_team_photo_variants($ba_bec_existingCodeSafe, 'photo-equipe');
+            }
+        }
+        if ($hasStaffUpload) {
+            upload_team_photo('photoStaff', $ba_bec_codeEquipe, 'photo-staff', $ba_bec_errors);
+            if ($ba_bec_existingCodeSafe) {
+                delete_team_photo_variants($ba_bec_existingCodeSafe, 'photo-staff');
             }
         }
     }

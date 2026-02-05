@@ -6,6 +6,32 @@ require_once '../../functions/ctrlSaisies.php';
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+function ensure_upload_dir(string $path): void
+{
+    if (!is_dir($path)) {
+        mkdir($path, 0775, true);
+    }
+}
+
+function build_article_image_path(int $numArt, string $extension): string
+{
+    return 'article/article-' . $numArt . '.' . $extension;
+}
+
+function normalize_upload_path(?string $path): ?string
+{
+    if (!$path) {
+        return null;
+    }
+
+    if (strpos($path, '/src/uploads/') !== false) {
+        $relative = substr($path, strpos($path, '/src/uploads/') + strlen('/src/uploads/'));
+        return ltrim($relative, '/');
+    }
+
+    return ltrim($path, '/');
+}
+
 // Récupération des données du formulaire
 $ba_bec_dtMajArt = date("Y-m-d H:i:s");
 $ba_bec_libTitrArt = ctrlSaisies($_POST['libTitrArt']);
@@ -54,21 +80,7 @@ if (function_exists('mb_substr')) {
 
 // Récupérer l'ancienne image de l'article
 $ba_bec_article = sql_select("ARTICLE", "urlPhotArt", "numArt = '$ba_bec_numArt'")[0];
-$ba_bec_ancienneImageRaw = $ba_bec_article['urlPhotArt'];
-$ba_bec_uploadsMarker = 'src/uploads/';
-$ba_bec_markerPos = $ba_bec_ancienneImageRaw ? strpos($ba_bec_ancienneImageRaw, $ba_bec_uploadsMarker) : false;
-if ($ba_bec_markerPos !== false) {
-    $ba_bec_ancienneImage = substr($ba_bec_ancienneImageRaw, $ba_bec_markerPos + strlen($ba_bec_uploadsMarker));
-} elseif ($ba_bec_ancienneImageRaw && preg_match('/^(https?:\\/\\/|\\/)/', $ba_bec_ancienneImageRaw)) {
-    $ba_bec_ancienneImage = null;
-} else {
-    $ba_bec_ancienneImage = $ba_bec_ancienneImageRaw;
-}
-
-$ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/article/';
-if (!is_dir($ba_bec_uploadDir)) {
-    mkdir($ba_bec_uploadDir, 0755, true);
-}
+$ba_bec_ancienneImage = normalize_upload_path($ba_bec_article['urlPhotArt'] ?? null);
 
 // Gestion de l'image
 if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
@@ -120,17 +132,17 @@ if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
         }
     }
 
-    // Définir un nom unique pour l'image
-    $ba_bec_nom_image = 'article-' . $ba_bec_numArt . '.' . $ba_bec_extension;
-    $ba_bec_destination = $ba_bec_uploadDir . $ba_bec_nom_image;
-    $ba_bec_relativePath = 'article/' . $ba_bec_nom_image;
+    $ba_bec_nom_image = build_article_image_path((int) $ba_bec_numArt, $ba_bec_extension);
+    $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/article/';
+    ensure_upload_dir($ba_bec_uploadDir);
+    $ba_bec_destination = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_nom_image;
 
     if (!move_uploaded_file($ba_bec_tmpName, $ba_bec_destination)) {
         die("Erreur lors de l'upload de l'image.");
     }
 
     // Supprimer l'ancienne image du serveur si elle existe et n'est pas celle par défaut
-    if ($ba_bec_ancienneImage && $ba_bec_ancienneImage !== $ba_bec_relativePath) {
+    if ($ba_bec_ancienneImage) {
         $ba_bec_oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_ancienneImage;
         if (file_exists($ba_bec_oldPath)) {
             unlink($ba_bec_oldPath);
@@ -140,16 +152,17 @@ if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
 
 } else {
     // Si aucune nouvelle image n'est téléchargée, conserver l'image existante
-    $ba_bec_nom_image = $ba_bec_ancienneImage ?? $ba_bec_ancienneImageRaw;
-    if ($ba_bec_ancienneImage) {
-        $ba_bec_extension = strtolower(pathinfo($ba_bec_ancienneImage, PATHINFO_EXTENSION));
-        $ba_bec_targetName = 'article-' . $ba_bec_numArt . '.' . $ba_bec_extension;
-        $ba_bec_targetRelative = 'article/' . $ba_bec_targetName;
-        if ($ba_bec_ancienneImage !== $ba_bec_targetRelative) {
-            $ba_bec_oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_ancienneImage;
-            $ba_bec_newPath = $ba_bec_uploadDir . $ba_bec_targetName;
-            if (file_exists($ba_bec_oldPath) && rename($ba_bec_oldPath, $ba_bec_newPath)) {
-                $ba_bec_nom_image = $ba_bec_targetRelative;
+    $ba_bec_nom_image = $ba_bec_ancienneImage;
+    if ($ba_bec_nom_image && strpos($ba_bec_nom_image, 'article/') !== 0) {
+        $ba_bec_legacyPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_nom_image;
+        if (file_exists($ba_bec_legacyPath)) {
+            $ba_bec_extension = strtolower(pathinfo($ba_bec_nom_image, PATHINFO_EXTENSION));
+            $ba_bec_nom_image = build_article_image_path((int) $ba_bec_numArt, $ba_bec_extension);
+            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/article/';
+            ensure_upload_dir($ba_bec_uploadDir);
+            $ba_bec_destination = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_nom_image;
+            if (!rename($ba_bec_legacyPath, $ba_bec_destination)) {
+                $ba_bec_nom_image = $ba_bec_ancienneImage;
             }
         }
     }
