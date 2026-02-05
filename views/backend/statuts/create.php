@@ -1,9 +1,3 @@
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
-include '../../../header.php';
-?>
-
 <!-- Bootstrap form to create a new statut -->
 <div class="container">
     <div class="row">
@@ -12,14 +6,14 @@ include '../../../header.php';
         </div>
         <div class="col-md-12">
             <!-- Form to create a new statut -->
-            <form action="<?php echo ROOT_URL . '/api/statuts/create.php' ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=store'; ?>" method="post">
                 <div class="form-group">
                     <label for="libStat">Nom du statut</label>
                     <input id="libStat" name="libStat" class="form-control" type="text" autofocus="autofocus" />
                 </div>
                 <br />
                 <div class="form-group mt-2">
-                    <a href="list.php" class="btn btn-primary">List</a>
+                    <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=list'; ?>" class="btn btn-primary">List</a>
                     <button type="submit" class="btn btn-success">Confirmer create ?</button>
                 </div>
             </form>

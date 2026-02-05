@@ -15,6 +15,7 @@ if (isset($_GET['numArt'])) {
     $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
     $ba_bec_keywords = sql_select("MOTCLE", "*");
     $ba_bec_selectedKeywords = sql_select("MOTCLEARTICLE", "*", "numArt = $ba_bec_numArt");
+    $ba_bec_selectedKeywordIds = array_map('intval', array_column($ba_bec_selectedKeywords, 'numMotCle'));
     $ba_bec_numArt = $_GET['numArt'];
     $ba_bec_urlPhotArt = $ba_bec_article['urlPhotArt'];
 }
@@ -32,7 +33,7 @@ if (isset($_GET['numArt'])) {
         <button type="submit" form="article-edit-form" class="btn btn-primary">Confirmer la mise à jour</button>
     </div>
 
-    <form id="article-edit-form" action="<?php echo ROOT_URL . '/api/articles/update.php'; ?>" method="post"
+    <form id="article-edit-form" action="<?php echo ROOT_URL . '/public/index.php?controller=article&action=update'; ?>" method="post"
         enctype="multipart/form-data">
         <input id="numArt" name="numArt" type="hidden" value="<?php echo $ba_bec_article['numArt']; ?>"
             readonly="readonly" />
@@ -179,8 +180,10 @@ if (isset($_GET['numArt'])) {
                                             <div class="col-12">
                                                 <select name="addMotCle" id="addMotCle" class="form-select" size="5">
                                                     <?php
-                                                    $ba_bec_result = sql_select('MOTCLE');
-                                                    foreach ($ba_bec_result as $ba_bec_req) {
+                                                    foreach ($ba_bec_keywords as $ba_bec_req) {
+                                                        if (in_array((int) $ba_bec_req['numMotCle'], $ba_bec_selectedKeywordIds, true)) {
+                                                            continue;
+                                                        }
                                                         echo '<option id="mot" value="' . $ba_bec_req['numMotCle'] . '">' . $ba_bec_req['libMotCle'] . '</option>';
                                                     }
                                                     ?>
@@ -188,7 +191,16 @@ if (isset($_GET['numArt'])) {
                                             </div>
                                             <div class="col-12">
                                                 <select id="newMotCle" name="motCle[]" class="form-select" size="5"
-                                                    multiple></select>
+                                                    multiple>
+                                                    <?php
+                                                    foreach ($ba_bec_keywords as $ba_bec_req) {
+                                                        if (!in_array((int) $ba_bec_req['numMotCle'], $ba_bec_selectedKeywordIds, true)) {
+                                                            continue;
+                                                        }
+                                                        echo '<option id="mot" value="' . $ba_bec_req['numMotCle'] . '" selected>' . $ba_bec_req['libMotCle'] . '</option>';
+                                                    }
+                                                    ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>

@@ -19,7 +19,12 @@ $ba_bec_parag3Art = ctrlSaisies($_POST['parag3Art']);
 $ba_bec_libConclArt = ctrlSaisies($_POST['libConclArt']);
 $ba_bec_numThem = ctrlSaisies($_POST['numThem']);
 $ba_bec_numArt = ctrlSaisies($_POST['numArt']);
-$ba_bec_numMotCle = isset($_POST['motCle']) ? (array) $_POST['motCle'] : [];
+$ba_bec_numMotCle = isset($_POST['motCle']) ? array_values(array_filter((array) $_POST['motCle'], 'strlen')) : [];
+if (count($ba_bec_numMotCle) < 3) {
+    http_response_code(400);
+    echo "Veuillez sélectionner au moins 3 mots-clés.";
+    exit;
+}
 
 if (function_exists('mb_substr')) {
     $ba_bec_libAccrochArt = mb_substr($ba_bec_libAccrochArt, 0, 100);
@@ -92,14 +97,22 @@ if (!$ba_bec_update_result['success']) {
     exit;
 }
 
-// Suppression des mots-clés existants et réinsertion des nouveaux mots-clés
-$ba_bec_delete_result = sql_delete('MOTCLEARTICLE', $ba_bec_where_num);
-$ba_bec_has_error = !$ba_bec_delete_result['success'];
-foreach ($ba_bec_numMotCle as $ba_bec_mot) {
-    $ba_bec_link_result = sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_numArt, $ba_bec_mot");
-    if (!$ba_bec_link_result['success']) {
-        $ba_bec_has_error = true;
-    }
+// Mise à jour des mots-clés liés à l'article (ajouts/suppressions)
+$ba_bec_existingKeywords = sql_select('MOTCLEARTICLE', 'numMotCle', $ba_bec_where_num);
+$ba_bec_existingIds = array_map('intval', array_column($ba_bec_existingKeywords, 'numMotCle'));
+$ba_bec_newIds = array_map('intval', $ba_bec_numMotCle);
+$ba_bec_newIds = array_values(array_unique($ba_bec_newIds));
+
+$ba_bec_toAdd = array_diff($ba_bec_newIds, $ba_bec_existingIds);
+$ba_bec_toRemove = array_diff($ba_bec_existingIds, $ba_bec_newIds);
+
+foreach ($ba_bec_toAdd as $ba_bec_mot) {
+    sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_numArt, $ba_bec_mot");
+}
+
+foreach ($ba_bec_toRemove as $ba_bec_mot) {
+    $ba_bec_where_mot = "numArt = '$ba_bec_numArt' AND numMotCle = '$ba_bec_mot'";
+    sql_delete('MOTCLEARTICLE', $ba_bec_where_mot);
 }
 
 // Redirection après la mise à jour

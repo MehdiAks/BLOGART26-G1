@@ -26,7 +26,12 @@ if (function_exists('mb_substr')) {
     $ba_bec_libAccrochArt = substr($ba_bec_libAccrochArt, 0, 100);
 }
 
-$ba_bec_numMotCle = isset($_POST['motCle']) ? (array) $_POST['motCle'] : [];
+$ba_bec_numMotCle = isset($_POST['motCle']) ? array_values(array_filter((array) $_POST['motCle'], 'strlen')) : [];
+if (count($ba_bec_numMotCle) < 3) {
+    http_response_code(400);
+    echo "Veuillez sélectionner au moins 3 mots-clés.";
+    exit;
+}
 if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
     $ba_bec_tmpName = $_FILES['urlPhotArt']['tmp_name'];
     $ba_bec_name = $_FILES['urlPhotArt']['name'];
