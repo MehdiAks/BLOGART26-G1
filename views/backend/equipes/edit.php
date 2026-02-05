@@ -35,6 +35,26 @@ $ba_bec_clubs = sql_select('CLUB', 'nomClub', null, null, 'nomClub ASC');
 $ba_bec_categories = sql_select('CATEGORIE_EQUIPE', 'libCategorie', null, null, 'libCategorie ASC');
 $ba_bec_sections = sql_select('SECTION_EQUIPE', 'libSection', null, null, 'libSection ASC');
 $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNiveau ASC');
+
+function ba_bec_photo_url(string $codeEquipe, string $suffix): ?string
+{
+    $codeEquipe = preg_replace('/[^A-Za-z0-9_-]+/', '', $codeEquipe);
+    if ($codeEquipe === '') {
+        return null;
+    }
+    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+    foreach ($extensions as $extension) {
+        $fileName = $codeEquipe . '-' . $suffix . '.' . $extension;
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/' . $fileName;
+        if (file_exists($path)) {
+            return ROOT_URL . '/src/uploads/photos-equipes/' . $fileName;
+        }
+    }
+    return null;
+}
+
+$ba_bec_photoEquipeUrl = ba_bec_photo_url($ba_bec_equipe['codeEquipe'] ?? '', 'photo-equipe');
+$ba_bec_photoStaffUrl = ba_bec_photo_url($ba_bec_equipe['codeEquipe'] ?? '', 'photo-staff');
 ?>
 
 <div class="container">
@@ -48,7 +68,7 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
             <h1>Modifier une équipe</h1>
         </div>
         <div class="col-md-12">
-            <form action="<?php echo ROOT_URL . '/api/equipes/update.php'; ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/api/equipes/update.php'; ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="numEquipe" value="<?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?>" />
                 <div class="form-group">
                     <label for="codeEquipe">Code équipe</label>
@@ -116,6 +136,26 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
                     <label for="descriptionEquipe">Description</label>
                     <textarea id="descriptionEquipe" name="descriptionEquipe" class="form-control" rows="4"
                         placeholder="Description de l'équipe..."><?php echo htmlspecialchars($ba_bec_equipe['descriptionEquipe'] ?? ''); ?></textarea>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="photoEquipe">Photo de l'équipe (upload)</label>
+                    <input id="photoEquipe" name="photoEquipe" class="form-control" type="file"
+                        accept=".png, .jpeg, .jpg, .avif, .svg" />
+                    <?php if ($ba_bec_photoEquipeUrl): ?>
+                        <div class="mt-2">
+                            <img src="<?php echo htmlspecialchars($ba_bec_photoEquipeUrl); ?>" alt="Photo équipe" style="max-width: 160px;" />
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="photoStaff">Photo staff (upload)</label>
+                    <input id="photoStaff" name="photoStaff" class="form-control" type="file"
+                        accept=".png, .jpeg, .jpg, .avif, .svg" />
+                    <?php if ($ba_bec_photoStaffUrl): ?>
+                        <div class="mt-2">
+                            <img src="<?php echo htmlspecialchars($ba_bec_photoStaffUrl); ?>" alt="Photo staff" style="max-width: 160px;" />
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Enregistrer</button>

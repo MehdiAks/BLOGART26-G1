@@ -16,6 +16,30 @@ $theme = isset($_GET['theme']) ? (int) $_GET['theme'] : 0;
 $sort = $_GET['sort'] ?? 'recent';
 $isPartial = isset($_GET['partial']) && $_GET['partial'] === '1';
 
+function resolve_article_image_url(?string $path, string $defaultImage): string
+{
+    if (!$path) {
+        return $defaultImage;
+    }
+
+    if (preg_match('/^https?:\/\//', $path)) {
+        return $path;
+    }
+
+    if (strpos($path, '/src/uploads/') !== false) {
+        $relative = substr($path, strpos($path, '/src/uploads/') + strlen('/src/uploads/'));
+    } else {
+        $relative = ltrim($path, '/');
+    }
+
+    $filePath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $relative;
+    if (file_exists($filePath)) {
+        return ROOT_URL . '/src/uploads/' . $relative;
+    }
+
+    return $defaultImage;
+}
+
 function format_news_count(int $count): string
 {
     $suffix = $count > 1 ? 's' : '';
@@ -77,12 +101,7 @@ function render_news_grid(array $ba_bec_articles): string
                 <?php foreach ($ba_bec_articles as $ba_bec_article): ?>
                     <?php
                     $defaultImagePath = ROOT_URL . '/src/images/image-defaut.jpeg';
-                    $uploadPath = !empty($ba_bec_article['urlPhotArt'])
-                        ? $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_article['urlPhotArt']
-                        : '';
-                    $ba_bec_imagePath = (!empty($ba_bec_article['urlPhotArt']) && file_exists($uploadPath))
-                        ? ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_article['urlPhotArt'])
-                        : $defaultImagePath;
+                    $ba_bec_imagePath = resolve_article_image_url($ba_bec_article['urlPhotArt'] ?? null, $defaultImagePath);
                     $chapo = $ba_bec_article['libChapoArt'] ?? '';
                     $maxLength = 140;
                     $excerptBase = function_exists('mb_substr') ? mb_substr($chapo, 0, $maxLength) : substr($chapo, 0, $maxLength);

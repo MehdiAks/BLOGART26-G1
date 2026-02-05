@@ -2,11 +2,25 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
+function normalize_upload_path(?string $path): ?string
+{
+    if (!$path) {
+        return null;
+    }
+
+    if (strpos($path, '/src/uploads/') !== false) {
+        $relative = substr($path, strpos($path, '/src/uploads/') + strlen('/src/uploads/'));
+        return ltrim($relative, '/');
+    }
+
+    return ltrim($path, '/');
+}
+
 $ba_bec_numArt = ctrlSaisies($_POST['numArt']);
 
 // Récupérer le chemin de l'image associée à l'article avant de supprimer l'article
 $ba_bec_article = sql_select("ARTICLE", "urlPhotArt", "numArt = '$ba_bec_numArt'")[0];
-$ba_bec_ancienneImage = $ba_bec_article['urlPhotArt'];
+$ba_bec_ancienneImage = normalize_upload_path($ba_bec_article['urlPhotArt'] ?? null);
 
 // Spécifier le chemin du dossier des images
 $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';

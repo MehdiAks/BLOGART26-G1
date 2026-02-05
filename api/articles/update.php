@@ -6,6 +6,32 @@ require_once '../../functions/ctrlSaisies.php';
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+function ensure_upload_dir(string $path): void
+{
+    if (!is_dir($path)) {
+        mkdir($path, 0775, true);
+    }
+}
+
+function build_article_image_path(int $numArt, string $extension): string
+{
+    return 'article/article-' . $numArt . '.' . $extension;
+}
+
+function normalize_upload_path(?string $path): ?string
+{
+    if (!$path) {
+        return null;
+    }
+
+    if (strpos($path, '/src/uploads/') !== false) {
+        $relative = substr($path, strpos($path, '/src/uploads/') + strlen('/src/uploads/'));
+        return ltrim($relative, '/');
+    }
+
+    return ltrim($path, '/');
+}
+
 // Récupération des données du formulaire
 $ba_bec_dtMajArt = date("Y-m-d H:i:s");
 $ba_bec_libTitrArt = ctrlSaisies($_POST['libTitrArt']);
@@ -54,7 +80,7 @@ if (function_exists('mb_substr')) {
 
 // Récupérer l'ancienne image de l'article
 $ba_bec_article = sql_select("ARTICLE", "urlPhotArt", "numArt = '$ba_bec_numArt'")[0];
-$ba_bec_ancienneImage = $ba_bec_article['urlPhotArt'];
+$ba_bec_ancienneImage = normalize_upload_path($ba_bec_article['urlPhotArt'] ?? null);
 
 // Gestion de l'image
 if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
@@ -106,23 +132,39 @@ if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
         }
     }
 
-    // Définir un nom unique pour l'image
-    $ba_bec_nom_image = time() . '_' . $ba_bec_name;
-    $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
-    $ba_bec_destination = $ba_bec_uploadDir . $ba_bec_nom_image;
+    $ba_bec_nom_image = build_article_image_path((int) $ba_bec_numArt, $ba_bec_extension);
+    $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/article/';
+    ensure_upload_dir($ba_bec_uploadDir);
+    $ba_bec_destination = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_nom_image;
 
     if (!move_uploaded_file($ba_bec_tmpName, $ba_bec_destination)) {
         die("Erreur lors de l'upload de l'image.");
     }
 
     // Supprimer l'ancienne image du serveur si elle existe et n'est pas celle par défaut
-    if ($ba_bec_ancienneImage && file_exists($ba_bec_uploadDir . $ba_bec_ancienneImage)) {
-        unlink($ba_bec_uploadDir . $ba_bec_ancienneImage);
+    if ($ba_bec_ancienneImage) {
+        $ba_bec_oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_ancienneImage;
+        if (file_exists($ba_bec_oldPath)) {
+            unlink($ba_bec_oldPath);
+        }
     }
 
 } else {
     // Si aucune nouvelle image n'est téléchargée, conserver l'image existante
     $ba_bec_nom_image = $ba_bec_ancienneImage;
+    if ($ba_bec_nom_image && strpos($ba_bec_nom_image, 'article/') !== 0) {
+        $ba_bec_legacyPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_nom_image;
+        if (file_exists($ba_bec_legacyPath)) {
+            $ba_bec_extension = strtolower(pathinfo($ba_bec_nom_image, PATHINFO_EXTENSION));
+            $ba_bec_nom_image = build_article_image_path((int) $ba_bec_numArt, $ba_bec_extension);
+            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/article/';
+            ensure_upload_dir($ba_bec_uploadDir);
+            $ba_bec_destination = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_nom_image;
+            if (!rename($ba_bec_legacyPath, $ba_bec_destination)) {
+                $ba_bec_nom_image = $ba_bec_ancienneImage;
+            }
+        }
+    }
 }
 
 // Variables pour la mise à jour de l'article

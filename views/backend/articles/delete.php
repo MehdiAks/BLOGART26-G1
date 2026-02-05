@@ -1,3 +1,15 @@
+<?php
+$ba_bec_articlePhoto = $ba_bec_article['urlPhotArt'] ?? '';
+$ba_bec_defaultImage = ROOT_URL . '/src/images/article.png';
+if (!empty($ba_bec_articlePhoto)) {
+    $ba_bec_photoUrl = preg_match('/^(https?:\/\/|\/)/', $ba_bec_articlePhoto)
+        ? $ba_bec_articlePhoto
+        : ROOT_URL . '/src/uploads/' . $ba_bec_articlePhoto;
+} else {
+    $ba_bec_photoUrl = $ba_bec_defaultImage;
+}
+?>
+
 <!-- Affichage des informations de l'article -->
 <div class="container">
     <div class="row">
@@ -79,7 +91,7 @@
                 <!-- Image -->
                 <div class="form-group">
                     <label for="image">Image</label>
-                    <img src="<?php echo ROOT_URL . '/src/uploads/' . $ba_bec_article['urlPhotArt']; ?>"
+                    <img src="<?php echo htmlspecialchars($ba_bec_photoUrl); ?>"
                         alt="Image de l'article" style="max-width: 200px;">
                 </div>
 

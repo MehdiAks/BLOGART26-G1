@@ -22,7 +22,7 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
             <h1>Ajouter une équipe</h1>
         </div>
         <div class="col-md-12">
-            <form action="<?php echo ROOT_URL . '/api/equipes/create.php'; ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/api/equipes/create.php'; ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="codeEquipe">Code équipe</label>
                     <input id="codeEquipe" name="codeEquipe" class="form-control" type="text"
@@ -82,6 +82,16 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
                     <label for="descriptionEquipe">Description</label>
                     <textarea id="descriptionEquipe" name="descriptionEquipe" class="form-control" rows="4"
                         placeholder="Description de l'équipe..."></textarea>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="photoEquipe">Photo de l'équipe (upload)</label>
+                    <input id="photoEquipe" name="photoEquipe" class="form-control" type="file"
+                        accept=".png, .jpeg, .jpg, .avif, .svg" />
+                </div>
+                <div class="form-group mt-2">
+                    <label for="photoStaff">Photo staff (upload)</label>
+                    <input id="photoStaff" name="photoStaff" class="form-control" type="file"
+                        accept=".png, .jpeg, .jpg, .avif, .svg" />
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Créer</button>

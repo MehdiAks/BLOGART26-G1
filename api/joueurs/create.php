@@ -3,6 +3,32 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
+function ensure_upload_dir(string $path): void
+{
+    if (!is_dir($path)) {
+        mkdir($path, 0775, true);
+    }
+}
+
+function build_player_photo_name(string $nom, string $prenom, string $extension): string
+{
+    $nomNettoye = preg_replace('/[^A-Za-zÀ-ÿ]/u', '', $nom);
+    $prefix = $nomNettoye !== '' ? $nomNettoye : 'XX';
+    if (function_exists('mb_substr')) {
+        $prefix = mb_substr($prefix, 0, 2);
+    } else {
+        $prefix = substr($prefix, 0, 2);
+    }
+    $prefix = strtoupper($prefix);
+    if (strlen($prefix) < 2) {
+        $prefix = str_pad($prefix, 2, 'X');
+    }
+    $prenomNettoye = preg_replace('/[^A-Za-z0-9]+/u', '', $prenom);
+    $prenomSlug = strtolower($prenomNettoye !== '' ? $prenomNettoye : 'joueur');
+
+    return $prefix . '.' . $prenomSlug . '.' . $extension;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     sql_connect();
 
@@ -66,11 +92,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if (empty($ba_bec_errors)) {
-                $ba_bec_nom_image = time() . '_' . basename($ba_bec_name);
-                $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
+                $ba_bec_nom_image = build_player_photo_name($ba_bec_nomJoueur, $ba_bec_prenomJoueur, $ba_bec_extension);
+                $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-joueurs/';
+                ensure_upload_dir($ba_bec_uploadDir);
                 $ba_bec_destination = $ba_bec_uploadDir . $ba_bec_nom_image;
                 if (!move_uploaded_file($ba_bec_tmpName, $ba_bec_destination)) {
                     $ba_bec_errors[] = "Erreur lors de l'upload de l'image.";
+                } else {
+                    $ba_bec_nom_image = 'photos-joueurs/' . $ba_bec_nom_image;
                 }
             }
         }
