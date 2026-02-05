@@ -280,7 +280,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $numClub = $DB->lastInsertId();
         }
 
-        $referenceLookup = static function (string $table, string $column, string $value, string $idColumn) use ($DB): int {
+        $referenceLookup = static function (string $table, string $column, string $value) use ($DB): int {
+            $idColumnMap = [
+                'CATEGORIE_EQUIPE' => 'numCategorie',
+                'SECTION_EQUIPE' => 'numSection',
+                'NIVEAU_EQUIPE' => 'numNiveau',
+            ];
+            $idColumn = $idColumnMap[$table] ?? ("num" . ucfirst(strtolower(str_replace('_', '', $table))));
             $stmt = $DB->prepare("SELECT {$idColumn} FROM {$table} WHERE {$column} = :value LIMIT 1");
             $stmt->execute([':value' => $value]);
             $found = $stmt->fetchColumn();
