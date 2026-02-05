@@ -9,11 +9,23 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Block access to API endpoints for all users
+// Block access to API endpoints for non-authenticated users (except public endpoints)
 $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
 if (strpos($scriptName, '/api/') === 0) {
-    http_response_code(403);
-    exit('Accès interdit.');
+    $publicApiEndpoints = [
+        '/api/security/signup.php',
+        '/api/security/login.php',
+        '/api/security/disconnect.php',
+        '/api/security/cookie-consent.php',
+    ];
+
+    $isPublicEndpoint = in_array($scriptName, $publicApiEndpoints, true);
+    $isAuthenticated = !empty($_SESSION['user_id']);
+
+    if (!$isPublicEndpoint && !$isAuthenticated) {
+        http_response_code(403);
+        exit('Accès interdit.');
+    }
 }
 
 //Load env
