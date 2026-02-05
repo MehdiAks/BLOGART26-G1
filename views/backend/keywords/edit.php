@@ -18,7 +18,7 @@ if(isset($_GET['numMotCle'])){
             <!-- Form to create a new statut -->
             <form action="<?php echo ROOT_URL . '/api/keywords/update.php' ?>" method="post">
                 <div class="form-group">
-                    <label for="libMotCle">Nom du statut</label>
+                    <label for="libMotCle">Nom du mots-clés</label>
                     <input id="numMotCle" name="numMotCle" class="form-control" style="display: none" type="text" value="<?php echo($ba_bec_numMotCle); ?>" readonly="readonly" />
                     <input id="libMotCle" name="libMotCle" class="form-control" type="text" value="<?php echo($ba_bec_libMotCle); ?>"/>
                 </div>

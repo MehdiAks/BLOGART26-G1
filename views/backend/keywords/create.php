@@ -15,7 +15,7 @@ include '../../../header.php';
             <!-- Form to create a new statut -->
             <form action="<?php echo ROOT_URL . '/api/keywords/create.php' ?>" method="post">
                 <div class="form-group">
-                    <label for="libMotCle">Nom du Mot-clé</label>
+                    <label for="libMotCle">Nom du mots-clés</label>
                     <input id="libMotCle" name="libMotCle" class="form-control" type="text" autofocus="autofocus" required />
                 </div>
                 <br />
