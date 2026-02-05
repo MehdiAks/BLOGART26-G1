@@ -13,7 +13,7 @@
                 </div>
                 <br />
                 <div class="form-group mt-2">
-                    <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=list'; ?>" class="btn btn-primary">List</a>
+                    <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=list'; ?>" class="btn btn-primary">Annuler</a>
                     <button type="submit" class="btn btn-success">Confirmer create ?</button>
                 </div>
             </form>
