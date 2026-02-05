@@ -146,15 +146,21 @@ function ba_bec_team_label(array $team): string
                 <div class="form-group mt-2 row">
                     <div class="col-md-4">
                         <label for="dateMatch">Date</label>
-                        <input id="dateMatch" name="dateMatch" class="form-control" type="date" value="<?php echo htmlspecialchars($ba_bec_match['dateMatch']); ?>" required />
+                        <input id="dateMatch" name="dateMatch" class="form-control" type="date"
+                            value="<?php echo htmlspecialchars($ba_bec_match['dateMatch']); ?>" placeholder="JJ/MM/AAAA"
+                            required />
                     </div>
                     <div class="col-md-4">
                         <label for="heureMatch">Heure</label>
-                        <input id="heureMatch" name="heureMatch" class="form-control" type="time" value="<?php echo htmlspecialchars($ba_bec_match['heureMatch'] ?? ''); ?>" />
+                        <input id="heureMatch" name="heureMatch" class="form-control" type="time"
+                            value="<?php echo htmlspecialchars($ba_bec_match['heureMatch'] ?? ''); ?>"
+                            placeholder="HH:MM" />
                     </div>
                     <div class="col-md-4">
                         <label for="lieuMatch">Lieu</label>
-                        <input id="lieuMatch" name="lieuMatch" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_match['lieuMatch'] ?? ''); ?>" />
+                        <input id="lieuMatch" name="lieuMatch" class="form-control" type="text"
+                            value="<?php echo htmlspecialchars($ba_bec_match['lieuMatch'] ?? ''); ?>"
+                            placeholder="Gymnase / Salle..." />
                     </div>
                 </div>
                 <div class="form-group mt-3">
@@ -210,11 +216,15 @@ function ba_bec_team_label(array $team): string
                 <div class="form-group mt-2 row">
                     <div class="col-md-6">
                         <label for="scoreHome">Score domicile</label>
-                        <input id="scoreHome" name="scoreHome" class="form-control" type="number" min="0" value="<?php echo htmlspecialchars($ba_bec_home['score'] ?? ''); ?>" />
+                        <input id="scoreHome" name="scoreHome" class="form-control" type="number" min="0"
+                            value="<?php echo htmlspecialchars($ba_bec_home['score'] ?? ''); ?>"
+                            placeholder="Score (ex: 75)" />
                     </div>
                     <div class="col-md-6">
                         <label for="scoreAway">Score extérieur</label>
-                        <input id="scoreAway" name="scoreAway" class="form-control" type="number" min="0" value="<?php echo htmlspecialchars($ba_bec_away['score'] ?? ''); ?>" />
+                        <input id="scoreAway" name="scoreAway" class="form-control" type="number" min="0"
+                            value="<?php echo htmlspecialchars($ba_bec_away['score'] ?? ''); ?>"
+                            placeholder="Score (ex: 68)" />
                     </div>
                     <small class="form-text text-muted">Laisser vide si le match n'a pas encore eu lieu.</small>
                 </div>

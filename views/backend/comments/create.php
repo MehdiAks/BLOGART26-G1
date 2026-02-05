@@ -16,15 +16,18 @@ include '../../../header.php';
             <form action="<?php echo ROOT_URL . '/api/comments/create.php' ?>" method="post">
                 <div class="form-group">
                     <label for="libCom">Commentaires</label>
-                    <input id="libCom" name="libCom" class="form-control" type="text" autofocus="autofocus" />
+                    <input id="libCom" name="libCom" class="form-control" type="text" autofocus="autofocus"
+                        placeholder="Votre commentaire..." />
                 </div>
                 <div class="form-group">
                     <label for="numArt">Article</label>
-                    <input id="numArt" name="numArt" class="form-control" type="text" autofocus="autofocus" />
+                    <input id="numArt" name="numArt" class="form-control" type="text" autofocus="autofocus"
+                        placeholder="ID article (ex: 42)" />
                 </div>
                 <div class="form-group">
                     <label for="numMemb">numéro d'utilisateur</label>
-                    <input id="numMemb" name="numMemb" class="form-control" type="text" autofocus="autofocus" />
+                    <input id="numMemb" name="numMemb" class="form-control" type="text" autofocus="autofocus"
+                        placeholder="ID utilisateur (ex: 7)" />
                 </div>
                 <br />
                 <div class="form-group mt-2">

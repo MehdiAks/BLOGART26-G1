@@ -22,7 +22,8 @@ if(isset($_GET['numThem'])){
                 <div class="form-group">
                     <label for="libThem">Nom de Thematique </label>
                     <input id="numThem" name="numThem" class="form-control" style="display: none" type="text" value="<?php echo($ba_bec_numThem); ?>" readonly="readonly" />
-                    <input id="libThem" name="libThem" class="form-control" type="text" value="<?php echo($ba_bec_libThem); ?>"/>
+                    <input id="libThem" name="libThem" class="form-control" type="text"
+                        value="<?php echo($ba_bec_libThem); ?>" placeholder="Nom de la thématique..."/>
                 </div>
                 <br />
                 <div class="form-group mt-2">

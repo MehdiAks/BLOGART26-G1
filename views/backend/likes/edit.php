@@ -44,33 +44,15 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
                     <label for="numArt">Article (ID)</label>
                     <input id="numArt" name="numArt" class="form-control" type="text"
                         value="<?php echo $ba_bec_numArt; ?>" />
-                    <label class="mt-2" for="libTitrArt">Rechercher un article</label>
-                    <input id="libTitrArt" name="libTitrArt_display" class="form-control" type="text"
-                        list="articleOptions" placeholder="Titre de l'article"
-                        value="<?php echo htmlspecialchars($ba_bec_selectedArticleTitle); ?>" />
-                    <datalist id="articleOptions">
-                        <?php foreach ($ba_bec_articles as $ba_bec_article) { ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>"
-                                data-id="<?php echo htmlspecialchars($ba_bec_article['numArt']); ?>"></option>
-                        <?php } ?>
-                    </datalist>
+                    <input id="numArt" name="numArt" class="form-control" type="text" value="<?php echo $ba_bec_numArt; ?>"
+                        placeholder="ID article (ex: 42)" />
                 </div>
                 <br>
 
                 <div class="form-group">
                     <label for="numMemb">Utilisateur (ID)</label>
                     <input id="numMemb" name="numMemb" class="form-control" type="text"
-                        value="<?php echo $ba_bec_numMemb; ?>" />
-                    <label class="mt-2" for="pseudoMemb">Rechercher un utilisateur</label>
-                    <input id="pseudoMemb" name="pseudoMemb_display" class="form-control" type="text"
-                        list="memberOptions" placeholder="Pseudo du membre"
-                        value="<?php echo htmlspecialchars($ba_bec_selectedMemberPseudo); ?>" />
-                    <datalist id="memberOptions">
-                        <?php foreach ($ba_bec_members as $ba_bec_member) { ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_member['pseudoMemb']); ?>"
-                                data-id="<?php echo htmlspecialchars($ba_bec_member['numMemb']); ?>"></option>
-                        <?php } ?>
-                    </datalist>
+                        value="<?php echo $ba_bec_numMemb; ?>" placeholder="ID utilisateur (ex: 7)" />
                 </div>
                 <br>
 

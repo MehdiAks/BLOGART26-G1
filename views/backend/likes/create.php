@@ -32,30 +32,12 @@ foreach ($ba_bec_members as $ba_bec_member) {
             <!-- Form to create a new like -->
             <form action="<?php echo ROOT_URL . '/api/likes/create.php' ?>" method="post">
                 <div class="form-group">
-                    <label for="numArt">Article (ID)</label>
-                    <input id="numArt" name="numArt" class="form-control" type="text" required />
-                    <label class="mt-2" for="libTitrArt">Rechercher un article</label>
-                    <input id="libTitrArt" name="libTitrArt_display" class="form-control" type="text"
-                        list="articleOptions" placeholder="Titre de l'article" />
-                    <datalist id="articleOptions">
-                        <?php foreach ($ba_bec_articles as $ba_bec_article) { ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>"
-                                data-id="<?php echo htmlspecialchars($ba_bec_article['numArt']); ?>"></option>
-                        <?php } ?>
-                    </datalist>
+                    <label for="numArt">Article</label>
+                    <input id="numArt" name="numArt" class="form-control" type="text" placeholder="ID article (ex: 42)" required />
                 </div>
                 <div class="form-group">
-                    <label for="numMemb">Utilisateur (ID)</label>
-                    <input id="numMemb" name="numMemb" class="form-control" type="text" required />
-                    <label class="mt-2" for="pseudoMemb">Rechercher un utilisateur</label>
-                    <input id="pseudoMemb" name="pseudoMemb_display" class="form-control" type="text"
-                        list="memberOptions" placeholder="Pseudo du membre" />
-                    <datalist id="memberOptions">
-                        <?php foreach ($ba_bec_members as $ba_bec_member) { ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_member['pseudoMemb']); ?>"
-                                data-id="<?php echo htmlspecialchars($ba_bec_member['numMemb']); ?>"></option>
-                        <?php } ?>
-                    </datalist>
+                    <label for="numMemb">Numéro d'utilisateur</label>
+                    <input id="numMemb" name="numMemb" class="form-control" type="text" placeholder="ID utilisateur (ex: 7)" required />
                 </div>
                 <div class="form-group">
                     <label for="likeA">Like / Dislike</label>

@@ -20,7 +20,8 @@
                         <h1 id="preview-title" class="article-title article-editor-display article-editor-display--title"
                             data-placeholder="Titre de l’article"></h1>
                         <input id="libTitrArt" name="libTitrArt" class="article-editor-input article-editor-input--light"
-                            type="text" maxlength="100" required data-preview-target="preview-title" />
+                            type="text" maxlength="100" required data-preview-target="preview-title"
+                            placeholder="Titre de l’article" />
                     </div>
                     <div class="article-meta">
                         <span>Publié le</span>
@@ -29,7 +30,7 @@
                                 data-placeholder="Date de publication"></span>
                             <input id="dtCreaArt" name="dtCreaArt"
                                 class="article-editor-input article-editor-input--light" type="datetime-local" required
-                                data-preview-target="preview-date" />
+                                data-preview-target="preview-date" placeholder="JJ/MM/AAAA HH:MM" />
                         </span>
                         <span class="article-meta__dot">•</span>
                         <span>Lecture 2 min</span>
@@ -43,7 +44,8 @@
                         <p id="preview-chapo" class="article-lead article-editor-display article-editor-display--lead"
                             data-placeholder="Ajoutez le chapeau de l’article pour donner le ton."></p>
                         <textarea id="libChapoArt" name="libChapoArt" class="article-editor-input" maxlength="500"
-                            required data-preview-target="preview-chapo"></textarea>
+                            required data-preview-target="preview-chapo"
+                            placeholder="Ajoutez le chapeau de l’article pour donner le ton."></textarea>
                     </div>
 
                     <div class="row g-4">
@@ -54,7 +56,8 @@
                                         class="phraseaccroche article-editor-display article-editor-display--accroche"
                                         data-placeholder="Ajoutez l’accroche principale."></h2>
                                     <input id="libAccrochArt" name="libAccrochArt" class="article-editor-input"
-                                        type="text" maxlength="100" required data-preview-target="preview-accroche" />
+                                        type="text" maxlength="100" required data-preview-target="preview-accroche"
+                                        placeholder="Accroche principale..." />
                                 </div>
 
                                 <div class="article-editor-field">
@@ -62,7 +65,8 @@
                                         class="paragraphe article-editor-display article-editor-display--paragraph"
                                         data-placeholder="Premier paragraphe : racontez l’essentiel ici."></p>
                                     <textarea id="parag1Art" name="parag1Art" class="article-editor-input"
-                                        maxlength="1200" required data-preview-target="preview-parag1"></textarea>
+                                        maxlength="1200" required data-preview-target="preview-parag1"
+                                        placeholder="Premier paragraphe : racontez l’essentiel ici."></textarea>
                                 </div>
 
                                 <figure class="article-figure article-editor-figure">
@@ -79,7 +83,8 @@
                                         class="text-with-line article-editor-display article-editor-display--subtitle"
                                         data-placeholder="Sous-titre 1"></div>
                                     <input id="libSsTitr1Art" name="libSsTitr1Art" class="article-editor-input"
-                                        type="text" maxlength="100" required data-preview-target="preview-subtitle1" />
+                                        type="text" maxlength="100" required data-preview-target="preview-subtitle1"
+                                        placeholder="Sous-titre 1" />
                                 </div>
 
                                 <div class="article-editor-field">
@@ -87,7 +92,8 @@
                                         class="paragraphe2 article-editor-display article-editor-display--paragraph"
                                         data-placeholder="Deuxième paragraphe : développez votre idée."></p>
                                     <textarea id="parag2Art" name="parag2Art" class="article-editor-input"
-                                        maxlength="1200" required data-preview-target="preview-parag2"></textarea>
+                                        maxlength="1200" required data-preview-target="preview-parag2"
+                                        placeholder="Deuxième paragraphe : développez votre idée."></textarea>
                                 </div>
 
                                 <div class="article-editor-field">
@@ -95,7 +101,8 @@
                                         class="text-with-line article-editor-display article-editor-display--subtitle"
                                         data-placeholder="Sous-titre 2"></div>
                                     <input id="libSsTitr2Art" name="libSsTitr2Art" class="article-editor-input"
-                                        type="text" maxlength="100" required data-preview-target="preview-subtitle2" />
+                                        type="text" maxlength="100" required data-preview-target="preview-subtitle2"
+                                        placeholder="Sous-titre 2" />
                                 </div>
 
                                 <div class="article-editor-field">
@@ -103,7 +110,8 @@
                                         class="paragraphe3 article-editor-display article-editor-display--paragraph"
                                         data-placeholder="Troisième paragraphe : concluez votre développement."></p>
                                     <textarea id="parag3Art" name="parag3Art" class="article-editor-input"
-                                        maxlength="1200" required data-preview-target="preview-parag3"></textarea>
+                                        maxlength="1200" required data-preview-target="preview-parag3"
+                                        placeholder="Troisième paragraphe : concluez votre développement."></textarea>
                                 </div>
 
                                 <div class="article-editor-field">
@@ -111,7 +119,8 @@
                                         class="conclusion article-editor-display article-editor-display--conclusion"
                                         data-placeholder="Conclusion : terminez sur une note forte."></p>
                                     <textarea id="libConclArt" name="libConclArt" class="article-editor-input"
-                                        maxlength="800" required data-preview-target="preview-concl"></textarea>
+                                        maxlength="800" required data-preview-target="preview-concl"
+                                        placeholder="Conclusion : terminez sur une note forte."></textarea>
                                 </div>
                             </article>
                         </div>

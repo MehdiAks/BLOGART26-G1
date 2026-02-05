@@ -11,7 +11,7 @@
                     <input id="numStat" name="numStat" class="form-control" style="display: none" type="text"
                         value="<?php echo ($ba_bec_numStat); ?>" readonly="readonly" />
                     <input id="libStat" name="libStat" class="form-control" type="text"
-                        value="<?php echo ($ba_bec_libStat); ?>" />
+                        value="<?php echo ($ba_bec_libStat); ?>" placeholder="Nom du statut..." />
                 </div>
                 <br />
                 <div class="form-group mt-2">

@@ -85,11 +85,15 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                 <input type="hidden" name="photoActuelle" value="<?php echo htmlspecialchars($ba_bec_joueur['urlPhotoJoueur'] ?? ''); ?>" />
                 <div class="form-group">
                     <label for="prenomJoueur">Prénom</label>
-                    <input id="prenomJoueur" name="prenomJoueur" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_joueur['prenomJoueur']); ?>" required />
+                    <input id="prenomJoueur" name="prenomJoueur" class="form-control" type="text"
+                        value="<?php echo htmlspecialchars($ba_bec_joueur['prenomJoueur']); ?>"
+                        placeholder="Prénom (ex: Léa)" required />
                 </div>
                 <div class="form-group mt-2">
                     <label for="nomJoueur">Nom</label>
-                    <input id="nomJoueur" name="nomJoueur" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_joueur['nomJoueur']); ?>" required />
+                    <input id="nomJoueur" name="nomJoueur" class="form-control" type="text"
+                        value="<?php echo htmlspecialchars($ba_bec_joueur['nomJoueur']); ?>"
+                        placeholder="Nom (ex: Martin)" required />
                 </div>
                 <div class="form-group mt-2">
                     <label for="posteJoueur">Postes</label>
@@ -129,7 +133,9 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                 </div>
                 <div class="form-group mt-2">
                     <label for="numeroMaillot">Numéro de maillot (saison)</label>
-                    <input id="numeroMaillot" name="numeroMaillot" class="form-control" type="number" min="0" max="99" value="<?php echo htmlspecialchars($ba_bec_affectation['numMaillot'] ?? ''); ?>" />
+                    <input id="numeroMaillot" name="numeroMaillot" class="form-control" type="number" min="0" max="99"
+                        value="<?php echo htmlspecialchars($ba_bec_affectation['numMaillot'] ?? ''); ?>"
+                        placeholder="Numéro (0-99)" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="numSaison">Saison</label>
@@ -156,12 +162,16 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                     </select>
                 </div>
                 <div class="form-group mt-2">
-                    <label for="dateDebut">Date de recrutement</label>
-                    <input id="dateDebut" name="dateDebut" class="form-control" type="date" value="<?php echo htmlspecialchars($ba_bec_affectation['dateDebut'] ?? ''); ?>" />
+                    <label for="dateDebut">Date de rectrutement</label>
+                    <input id="dateDebut" name="dateDebut" class="form-control" type="date"
+                        value="<?php echo htmlspecialchars($ba_bec_affectation['dateDebut'] ?? ''); ?>"
+                        placeholder="JJ/MM/AAAA" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="dateNaissance">Date de naissance</label>
-                    <input id="dateNaissance" name="dateNaissance" class="form-control" type="date" value="<?php echo htmlspecialchars($ba_bec_joueur['dateNaissance'] ?? ''); ?>" />
+                    <input id="dateNaissance" name="dateNaissance" class="form-control" type="date"
+                        value="<?php echo htmlspecialchars($ba_bec_joueur['dateNaissance'] ?? ''); ?>"
+                        placeholder="JJ/MM/AAAA" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="clubsPrecedents">Clubs précédents</label>
@@ -173,7 +183,9 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                     ?>
                     <div id="clubsPrecedentsList" class="d-grid gap-2">
                         <?php foreach ($ba_bec_clubsList as $ba_bec_club): ?>
-                            <input name="clubsPrecedents[]" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_club); ?>" />
+                            <input name="clubsPrecedents[]" class="form-control" type="text"
+                                value="<?php echo htmlspecialchars($ba_bec_club); ?>"
+                                placeholder="Nom du club (ex: BEC Basket)" />
                         <?php endforeach; ?>
                     </div>
                     <button type="button" id="addClubButton" class="btn btn-outline-secondary btn-sm mt-2">
@@ -201,7 +213,7 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
             input.name = 'clubsPrecedents[]';
             input.className = 'form-control';
             input.type = 'text';
-            input.placeholder = 'Nom du club';
+            input.placeholder = 'Nom du club (ex: BEC Basket)';
 
             const removeButton = document.createElement('button');
             removeButton.type = 'button';
