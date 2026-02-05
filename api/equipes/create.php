@@ -84,8 +84,18 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
     return 'photos-equipes/' . $fileName;
 }
 
+function process_equipe_upload(string $fileKey, string $codeEquipe, string $suffix, array &$errors): ?string
+{
+    return upload_team_photo($fileKey, $codeEquipe, $suffix, $errors);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     sql_connect();
+
+    $ba_bec_errors = [];
+    if (empty($_POST) && empty($_FILES)) {
+        $ba_bec_errors[] = 'Le formulaire est vide. Vérifiez la taille des fichiers envoyés et réessayez.';
+    }
 
     $ba_bec_codeEquipe = ctrlSaisies($_POST['codeEquipe'] ?? '');
     $ba_bec_libEquipe = ctrlSaisies($_POST['libEquipe'] ?? '');
@@ -98,12 +108,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_sectionEquipe = ctrlSaisies($_POST['sectionEquipe'] ?? '');
     $ba_bec_niveauEquipe = ctrlSaisies($_POST['niveauEquipe'] ?? '');
 
-    $ba_bec_errors = [];
-
-    if ($ba_bec_libEquipe === '' || $ba_bec_codeEquipe === '') {
+    if (empty($ba_bec_errors) && ($ba_bec_libEquipe === '' || $ba_bec_codeEquipe === '')) {
         $ba_bec_errors[] = 'Le code et le nom de l\'équipe sont obligatoires.';
     }
-    if ($ba_bec_nomClub === '') {
+    if (empty($ba_bec_errors) && $ba_bec_nomClub === '') {
         $ba_bec_errors[] = 'Le club est obligatoire.';
     }
 
@@ -112,11 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($ba_bec_errors)) {
         $ba_bec_photoEquipe = process_equipe_upload('photoEquipe', $ba_bec_codeEquipe, 'photo-equipe', $ba_bec_errors);
         $ba_bec_photoStaff = process_equipe_upload('photoStaff', $ba_bec_codeEquipe, 'photo-staff', $ba_bec_errors);
-    }
-
-    if (empty($ba_bec_errors)) {
-        upload_team_photo('photoEquipe', $ba_bec_codeEquipe, 'photo-equipe', $ba_bec_errors);
-        upload_team_photo('photoStaff', $ba_bec_codeEquipe, 'photo-staff', $ba_bec_errors);
     }
 
     if (empty($ba_bec_errors)) {

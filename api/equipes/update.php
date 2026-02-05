@@ -10,6 +10,20 @@ function ensure_upload_dir(string $path): void
     }
 }
 
+function normalize_upload_path(?string $path): ?string
+{
+    if (!$path) {
+        return null;
+    }
+
+    if (strpos($path, '/src/uploads/') !== false) {
+        $relative = substr($path, strpos($path, '/src/uploads/') + strlen('/src/uploads/'));
+        return ltrim($relative, '/');
+    }
+
+    return ltrim($path, '/');
+}
+
 function sanitize_code_equipe(string $codeEquipe): string
 {
     $sanitized = preg_replace('/[^A-Za-z0-9_-]+/', '', $codeEquipe);
@@ -83,6 +97,11 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
     return 'photos-equipes/' . $fileName;
 }
 
+function process_equipe_upload(string $fileKey, string $codeEquipe, string $suffix, array &$errors): ?string
+{
+    return upload_team_photo($fileKey, $codeEquipe, $suffix, $errors);
+}
+
 function rename_team_photo_variants(string $oldCode, string $newCode, string $suffix): void
 {
     $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
@@ -112,6 +131,11 @@ function delete_team_photo_variants(string $codeEquipe, string $suffix): void
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     sql_connect();
 
+    $ba_bec_errors = [];
+    if (empty($_POST) && empty($_FILES)) {
+        $ba_bec_errors[] = 'Le formulaire est vide. Vérifiez la taille des fichiers envoyés et réessayez.';
+    }
+
     $ba_bec_numEquipe = (int) ($_POST['numEquipe'] ?? 0);
     $ba_bec_codeEquipe = ctrlSaisies($_POST['codeEquipe'] ?? '');
     $ba_bec_libEquipe = ctrlSaisies($_POST['libEquipe'] ?? '');
@@ -124,12 +148,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_sectionEquipe = ctrlSaisies($_POST['sectionEquipe'] ?? '');
     $ba_bec_niveauEquipe = ctrlSaisies($_POST['niveauEquipe'] ?? '');
 
-    $ba_bec_errors = [];
-
-    if ($ba_bec_numEquipe <= 0 || $ba_bec_libEquipe === '' || $ba_bec_codeEquipe === '') {
+    if (empty($ba_bec_errors) && ($ba_bec_numEquipe <= 0 || $ba_bec_libEquipe === '' || $ba_bec_codeEquipe === '')) {
         $ba_bec_errors[] = 'Le code et le nom de l\'équipe sont obligatoires.';
     }
-    if ($ba_bec_nomClub === '') {
+    if (empty($ba_bec_errors) && $ba_bec_nomClub === '') {
         $ba_bec_errors[] = 'Le club est obligatoire.';
     }
 
@@ -161,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($oldRelative) {
                 $extension = strtolower(pathinfo($oldRelative, PATHINFO_EXTENSION));
                 if ($extension !== '') {
-                    $safeCode = sanitize_equipe_code($ba_bec_codeEquipe);
+                    $safeCode = sanitize_code_equipe($ba_bec_codeEquipe);
                     $targetRelative = 'photos-equipes/' . $safeCode . '-photo-equipe.' . $extension;
                     if ($oldRelative !== $targetRelative) {
                         $oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $oldRelative;
@@ -194,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($oldRelative) {
                 $extension = strtolower(pathinfo($oldRelative, PATHINFO_EXTENSION));
                 if ($extension !== '') {
-                    $safeCode = sanitize_equipe_code($ba_bec_codeEquipe);
+                    $safeCode = sanitize_code_equipe($ba_bec_codeEquipe);
                     $targetRelative = 'photos-equipes/' . $safeCode . '-photo-staff.' . $extension;
                     if ($oldRelative !== $targetRelative) {
                         $oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $oldRelative;
@@ -237,13 +259,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($hasEquipeUpload) {
-            upload_team_photo('photoEquipe', $ba_bec_codeEquipe, 'photo-equipe', $ba_bec_errors);
             if ($ba_bec_existingCodeSafe) {
                 delete_team_photo_variants($ba_bec_existingCodeSafe, 'photo-equipe');
             }
         }
         if ($hasStaffUpload) {
-            upload_team_photo('photoStaff', $ba_bec_codeEquipe, 'photo-staff', $ba_bec_errors);
             if ($ba_bec_existingCodeSafe) {
                 delete_team_photo_variants($ba_bec_existingCodeSafe, 'photo-staff');
             }
