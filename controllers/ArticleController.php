@@ -1,0 +1,287 @@
+<?php
+
+class ArticleController
+{
+    private function render(string $view, array $data = []): void
+    {
+        extract($data, EXTR_SKIP);
+        require_once __DIR__ . '/../config.php';
+        include __DIR__ . '/../header.php';
+        include __DIR__ . '/../' . $view;
+        include __DIR__ . '/../footer.php';
+    }
+
+    public function list(): void
+    {
+        require_once __DIR__ . '/../config.php';
+
+        $ba_bec_articles = sql_select('ARTICLE', '*');
+        $ba_bec_keywords = sql_select('MOTCLE', '*');
+        $ba_bec_keywordsart = sql_select('MOTCLEARTICLE', '*');
+        $ba_bec_thematiques = sql_select('THEMATIQUE', '*');
+
+        $this->render('views/backend/articles/list.php', [
+            'ba_bec_articles' => $ba_bec_articles,
+            'ba_bec_keywords' => $ba_bec_keywords,
+            'ba_bec_keywordsart' => $ba_bec_keywordsart,
+            'ba_bec_thematiques' => $ba_bec_thematiques,
+        ]);
+    }
+
+    public function create(): void
+    {
+        require_once __DIR__ . '/../config.php';
+
+        $pageStyles = [
+            ROOT_URL . '/src/css/stylearticle.css',
+            ROOT_URL . '/src/css/article-editor.css',
+        ];
+
+        $ba_bec_thematiques = sql_select('THEMATIQUE', '*');
+        $ba_bec_keywords = sql_select('MOTCLE', '*');
+
+        $this->render('views/backend/articles/create.php', [
+            'pageStyles' => $pageStyles,
+            'ba_bec_thematiques' => $ba_bec_thematiques,
+            'ba_bec_keywords' => $ba_bec_keywords,
+        ]);
+    }
+
+    public function store(): void
+    {
+        require_once __DIR__ . '/../config.php';
+        require_once __DIR__ . '/../functions/ctrlSaisies.php';
+
+        ini_set('display_errors', 1);
+        error_reporting(E_ALL);
+
+        $ba_bec_nom_image = null;
+
+        $ba_bec_libTitrArt = ctrlSaisies($_POST['libTitrArt'] ?? '');
+        $ba_bec_libChapoArt = ctrlSaisies($_POST['libChapoArt'] ?? '');
+        $ba_bec_libAccrochArt = ctrlSaisies($_POST['libAccrochArt'] ?? '');
+        $ba_bec_parag1Art = ctrlSaisies($_POST['parag1Art'] ?? '');
+        $ba_bec_libSsTitr1Art = ctrlSaisies($_POST['libSsTitr1Art'] ?? '');
+        $ba_bec_parag2Art = ctrlSaisies($_POST['parag2Art'] ?? '');
+        $ba_bec_libSsTitr2Art = ctrlSaisies($_POST['libSsTitr2Art'] ?? '');
+        $ba_bec_parag3Art = ctrlSaisies($_POST['parag3Art'] ?? '');
+        $ba_bec_libConclArt = ctrlSaisies($_POST['libConclArt'] ?? '');
+        $ba_bec_numThem = ctrlSaisies($_POST['numThem'] ?? '');
+
+        if (function_exists('mb_substr')) {
+            $ba_bec_libAccrochArt = mb_substr($ba_bec_libAccrochArt, 0, 100);
+        } else {
+            $ba_bec_libAccrochArt = substr($ba_bec_libAccrochArt, 0, 100);
+        }
+
+        $ba_bec_numMotCle = isset($_POST['motCle']) ? (array) $_POST['motCle'] : [];
+        if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
+            $ba_bec_tmpName = $_FILES['urlPhotArt']['tmp_name'];
+            $ba_bec_name = $_FILES['urlPhotArt']['name'];
+            $ba_bec_size = $_FILES['urlPhotArt']['size'];
+
+            if ($ba_bec_size > 10000000) {
+                die('Le fichier est trop volumineux.');
+            }
+
+            [$ba_bec_width, $ba_bec_height] = getimagesize($ba_bec_tmpName);
+            if ($ba_bec_width > 5000 || $ba_bec_height > 5000) {
+                die("L'image est trop grande.");
+            }
+
+            $ba_bec_nom_image = time() . '_' . $ba_bec_name;
+            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
+            $ba_bec_destination = $ba_bec_uploadDir . $ba_bec_nom_image;
+
+            if (!move_uploaded_file($ba_bec_tmpName, $ba_bec_destination)) {
+                die("Erreur lors de l'upload de l'image.");
+            }
+        }
+
+        if ($ba_bec_numThem === '' || !is_numeric($ba_bec_numThem)) {
+            http_response_code(400);
+            echo 'Veuillez sélectionner une thématique valide.';
+            exit;
+        }
+
+        $ba_bec_urlPhotValue = $ba_bec_nom_image ? "'$ba_bec_nom_image'" : 'NULL';
+
+        sql_insert(
+            'ARTICLE',
+            'libTitrArt, libChapoArt, libAccrochArt, parag1Art, libSsTitr1Art, parag2Art, libSsTitr2Art, parag3Art, libConclArt, urlPhotArt, numThem',
+            "'$ba_bec_libTitrArt', '$ba_bec_libChapoArt', '$ba_bec_libAccrochArt', '$ba_bec_parag1Art', '$ba_bec_libSsTitr1Art', '$ba_bec_parag2Art', '$ba_bec_libSsTitr2Art', '$ba_bec_parag3Art', '$ba_bec_libConclArt', $ba_bec_urlPhotValue, '$ba_bec_numThem'"
+        );
+        $ba_bec_lastArt = sql_select('ARTICLE', 'numArt', null, null, 'numArt DESC', '1')[0]['numArt'];
+
+        foreach ($ba_bec_numMotCle as $ba_bec_mot) {
+            sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_lastArt, $ba_bec_mot");
+        }
+
+        header('Location: ' . ROOT_URL . '/public/index.php?controller=article&action=list');
+        exit;
+    }
+
+    public function edit(): void
+    {
+        require_once __DIR__ . '/../config.php';
+
+        $pageStyles = [
+            ROOT_URL . '/src/css/stylearticle.css',
+            ROOT_URL . '/src/css/article-editor.css',
+        ];
+
+        $ba_bec_numArt = isset($_GET['numArt']) ? (int) $_GET['numArt'] : 0;
+        $ba_bec_article = $ba_bec_numArt ? (sql_select('ARTICLE', '*', "numArt = $ba_bec_numArt")[0] ?? []) : [];
+        $ba_bec_thematiques = sql_select('THEMATIQUE', '*');
+        $ba_bec_keywords = sql_select('MOTCLE', '*');
+        $ba_bec_selectedKeywords = $ba_bec_numArt ? sql_select('MOTCLEARTICLE', '*', "numArt = $ba_bec_numArt") : [];
+        $ba_bec_urlPhotArt = $ba_bec_article['urlPhotArt'] ?? '';
+
+        $this->render('views/backend/articles/edit.php', [
+            'pageStyles' => $pageStyles,
+            'ba_bec_numArt' => $ba_bec_numArt,
+            'ba_bec_article' => $ba_bec_article,
+            'ba_bec_thematiques' => $ba_bec_thematiques,
+            'ba_bec_keywords' => $ba_bec_keywords,
+            'ba_bec_selectedKeywords' => $ba_bec_selectedKeywords,
+            'ba_bec_urlPhotArt' => $ba_bec_urlPhotArt,
+        ]);
+    }
+
+    public function update(): void
+    {
+        require_once __DIR__ . '/../config.php';
+        require_once __DIR__ . '/../functions/ctrlSaisies.php';
+
+        ini_set('display_errors', 1);
+        error_reporting(E_ALL);
+
+        $ba_bec_dtMajArt = date('Y-m-d H:i:s');
+        $ba_bec_libTitrArt = ctrlSaisies($_POST['libTitrArt'] ?? '');
+        $ba_bec_libChapoArt = ctrlSaisies($_POST['libChapoArt'] ?? '');
+        $ba_bec_libAccrochArt = ctrlSaisies($_POST['libAccrochArt'] ?? '');
+        $ba_bec_parag1Art = ctrlSaisies($_POST['parag1Art'] ?? '');
+        $ba_bec_libSsTitr1Art = ctrlSaisies($_POST['libSsTitr1Art'] ?? '');
+        $ba_bec_parag2Art = ctrlSaisies($_POST['parag2Art'] ?? '');
+        $ba_bec_libSsTitr2Art = ctrlSaisies($_POST['libSsTitr2Art'] ?? '');
+        $ba_bec_parag3Art = ctrlSaisies($_POST['parag3Art'] ?? '');
+        $ba_bec_libConclArt = ctrlSaisies($_POST['libConclArt'] ?? '');
+        $ba_bec_numThem = ctrlSaisies($_POST['numThem'] ?? '');
+        $ba_bec_numArt = ctrlSaisies($_POST['numArt'] ?? '');
+        $ba_bec_numMotCle = isset($_POST['motCle']) ? (array) $_POST['motCle'] : [];
+
+        if (function_exists('mb_substr')) {
+            $ba_bec_libAccrochArt = mb_substr($ba_bec_libAccrochArt, 0, 100);
+        } else {
+            $ba_bec_libAccrochArt = substr($ba_bec_libAccrochArt, 0, 100);
+        }
+
+        $ba_bec_article = sql_select('ARTICLE', 'urlPhotArt', "numArt = '$ba_bec_numArt'")[0] ?? [];
+        $ba_bec_ancienneImage = $ba_bec_article['urlPhotArt'] ?? null;
+
+        if (isset($_FILES['urlPhotArt']) && $_FILES['urlPhotArt']['error'] === 0) {
+            $ba_bec_tmpName = $_FILES['urlPhotArt']['tmp_name'];
+            $ba_bec_name = $_FILES['urlPhotArt']['name'];
+            $ba_bec_size = $_FILES['urlPhotArt']['size'];
+
+            if ($ba_bec_size > 10000000) {
+                die('Le fichier est trop volumineux.');
+            }
+
+            [$ba_bec_width, $ba_bec_height] = getimagesize($ba_bec_tmpName);
+            if ($ba_bec_width > 5000 || $ba_bec_height > 5000) {
+                die("L'image est trop grande.");
+            }
+
+            $ba_bec_nom_image = time() . '_' . $ba_bec_name;
+            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
+            $ba_bec_destination = $ba_bec_uploadDir . $ba_bec_nom_image;
+
+            if (!move_uploaded_file($ba_bec_tmpName, $ba_bec_destination)) {
+                die("Erreur lors de l'upload de l'image.");
+            }
+
+            if ($ba_bec_ancienneImage && file_exists($ba_bec_uploadDir . $ba_bec_ancienneImage)) {
+                unlink($ba_bec_uploadDir . $ba_bec_ancienneImage);
+            }
+        } else {
+            $ba_bec_nom_image = $ba_bec_ancienneImage;
+        }
+
+        $ba_bec_set_art = "dtMajArt = '$ba_bec_dtMajArt',
+libTitrArt = '$ba_bec_libTitrArt',
+libChapoArt = '$ba_bec_libChapoArt',
+libAccrochArt = '$ba_bec_libAccrochArt',
+parag1Art = '$ba_bec_parag1Art',
+libSsTitr1Art = '$ba_bec_libSsTitr1Art',
+parag2Art = '$ba_bec_parag2Art',
+libSsTitr2Art = '$ba_bec_libSsTitr2Art',
+parag3Art = '$ba_bec_parag3Art',
+libConclArt = '$ba_bec_libConclArt',
+urlPhotArt = '$ba_bec_nom_image',
+numThem = '$ba_bec_numThem'";
+
+        $ba_bec_where_num = "numArt = '$ba_bec_numArt'";
+
+        sql_update('ARTICLE', $ba_bec_set_art, $ba_bec_where_num);
+
+        sql_delete('MOTCLEARTICLE', $ba_bec_where_num);
+        foreach ($ba_bec_numMotCle as $ba_bec_mot) {
+            sql_insert('MOTCLEARTICLE', 'numArt, numMotCle', "$ba_bec_numArt, $ba_bec_mot");
+        }
+
+        header('Location: ' . ROOT_URL . '/public/index.php?controller=article&action=list');
+        exit;
+    }
+
+    public function delete(): void
+    {
+        require_once __DIR__ . '/../config.php';
+
+        $ba_bec_numArt = isset($_GET['numArt']) ? (int) $_GET['numArt'] : 0;
+        $ba_bec_article = $ba_bec_numArt ? (sql_select('ARTICLE', '*', "numArt = $ba_bec_numArt")[0] ?? []) : [];
+
+        $ba_bec_thematique = [];
+        if (!empty($ba_bec_article['numThem'])) {
+            $ba_bec_thematique = sql_select('THEMATIQUE', '*', 'numThem = ' . $ba_bec_article['numThem'])[0] ?? [];
+        }
+
+        $ba_bec_keywords = $ba_bec_numArt ? sql_select('MOTCLEARTICLE', '*', "numArt = $ba_bec_numArt") : [];
+        $ba_bec_keywordsList = [];
+        foreach ($ba_bec_keywords as $ba_bec_keyword) {
+            $ba_bec_keywordInfo = sql_select('MOTCLE', '*', 'numMotCle = ' . $ba_bec_keyword['numMotCle'])[0] ?? [];
+            if (!empty($ba_bec_keywordInfo['libMotCle'])) {
+                $ba_bec_keywordsList[] = $ba_bec_keywordInfo['libMotCle'];
+            }
+        }
+
+        $this->render('views/backend/articles/delete.php', [
+            'ba_bec_article' => $ba_bec_article,
+            'ba_bec_thematique' => $ba_bec_thematique,
+            'ba_bec_keywordsList' => $ba_bec_keywordsList,
+        ]);
+    }
+
+    public function destroy(): void
+    {
+        require_once __DIR__ . '/../config.php';
+        require_once __DIR__ . '/../functions/ctrlSaisies.php';
+
+        $ba_bec_numArt = ctrlSaisies($_POST['numArt'] ?? '');
+
+        $ba_bec_article = sql_select('ARTICLE', 'urlPhotArt', "numArt = '$ba_bec_numArt'")[0] ?? [];
+        $ba_bec_ancienneImage = $ba_bec_article['urlPhotArt'] ?? '';
+
+        $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/';
+
+        if ($ba_bec_ancienneImage && file_exists($ba_bec_uploadDir . $ba_bec_ancienneImage)) {
+            unlink($ba_bec_uploadDir . $ba_bec_ancienneImage);
+        }
+
+        sql_delete('MOTCLEARTICLE', "numArt = '$ba_bec_numArt'");
+        sql_delete('ARTICLE', "numArt = '$ba_bec_numArt'");
+
+        header('Location: ' . ROOT_URL . '/public/index.php?controller=article&action=list');
+        exit;
+    }
+}

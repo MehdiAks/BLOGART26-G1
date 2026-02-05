@@ -1,25 +1,3 @@
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
-
-$pageStyles = [
-    ROOT_URL . '/src/css/stylearticle.css',
-    ROOT_URL . '/src/css/article-editor.css',
-];
-
-include '../../../header.php';
-
-if (isset($_GET['numArt'])) {
-    $ba_bec_numArt = (int) $_GET['numArt'];
-    $ba_bec_article = sql_select("ARTICLE", "*", "numArt = $ba_bec_numArt")[0];
-    $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
-    $ba_bec_keywords = sql_select("MOTCLE", "*");
-    $ba_bec_selectedKeywords = sql_select("MOTCLEARTICLE", "*", "numArt = $ba_bec_numArt");
-    $ba_bec_numArt = $_GET['numArt'];
-    $ba_bec_urlPhotArt = $ba_bec_article['urlPhotArt'];
-}
-?>
-
 <div class="article-editor-page">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
@@ -32,7 +10,7 @@ if (isset($_GET['numArt'])) {
         <button type="submit" form="article-edit-form" class="btn btn-primary">Confirmer la mise à jour</button>
     </div>
 
-    <form id="article-edit-form" action="<?php echo ROOT_URL . '/api/articles/update.php'; ?>" method="post"
+    <form id="article-edit-form" action="<?php echo ROOT_URL . '/public/index.php?controller=article&action=update'; ?>" method="post"
         enctype="multipart/form-data">
         <input id="numArt" name="numArt" type="hidden" value="<?php echo $ba_bec_article['numArt']; ?>"
             readonly="readonly" />
@@ -178,12 +156,11 @@ if (isset($_GET['numArt'])) {
                                         <div class="row g-2">
                                             <div class="col-12">
                                                 <select name="addMotCle" id="addMotCle" class="form-select" size="5">
-                                                    <?php
-                                                    $ba_bec_result = sql_select('MOTCLE');
-                                                    foreach ($ba_bec_result as $ba_bec_req) {
-                                                        echo '<option id="mot" value="' . $ba_bec_req['numMotCle'] . '">' . $ba_bec_req['libMotCle'] . '</option>';
-                                                    }
-                                                    ?>
+                                                    <?php foreach ($ba_bec_keywords as $ba_bec_req) { ?>
+                                                        <option id="mot" value="<?php echo $ba_bec_req['numMotCle']; ?>">
+                                                            <?php echo $ba_bec_req['libMotCle']; ?>
+                                                        </option>
+                                                    <?php } ?>
                                                 </select>
                                             </div>
                                             <div class="col-12">

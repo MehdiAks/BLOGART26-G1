@@ -1,11 +1,3 @@
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-include '../../../header.php'; // contains the header and call to config.php
-
-//Load all statuts
-$ba_bec_statuts = sql_select("STATUT", "*");
-?>
-
 <!-- Bootstrap default layout to display all statuts in foreach -->
 <div class="container">
     <div class="row">
@@ -30,16 +22,14 @@ $ba_bec_statuts = sql_select("STATUT", "*");
                             <td><?php echo($ba_bec_statut['numStat']); ?></td>
                             <td><?php echo($ba_bec_statut['libStat']); ?></td>
                             <td>
-                                <a href="edit.php?numStat=<?php echo($ba_bec_statut['numStat']); ?>" class="btn btn-primary">Edit</a>
-                                <a href="delete.php?numStat=<?php echo($ba_bec_statut['numStat']); ?>" class="btn btn-danger">Delete</a>
+                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=edit&numStat=' . $ba_bec_statut['numStat']; ?>" class="btn btn-primary">Edit</a>
+                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=delete&numStat=' . $ba_bec_statut['numStat']; ?>" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                     <?php } ?>
                 </tbody>
             </table>
-            <a href="create.php" class="btn btn-success">Create</a>
+            <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=create'; ?>" class="btn btn-success">Create</a>
         </div>
     </div>
 </div>
-<?php
-include '../../../footer.php'; // contains the footer
