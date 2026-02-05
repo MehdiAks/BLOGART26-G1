@@ -16,6 +16,19 @@ function render_missing_table_page(PDOException $exception): void
     }
 }
 
+function ba_bec_team_photo_url(?string $path): string
+{
+    if (!$path) {
+        return '';
+    }
+
+    if (preg_match('/^(https?:\/\/|\/)/', $path)) {
+        return $path;
+    }
+
+    return ROOT_URL . '/src/uploads/photos-equipes/' . ltrim($path, '/');
+}
+
 $teamId = filter_input(INPUT_GET, 'numEquipe', FILTER_VALIDATE_INT);
 if (!$teamId) {
     http_response_code(404);
@@ -38,7 +51,7 @@ if ($dbAvailable) {
         $currentSeasonId = $currentSeasonStmt ? $currentSeasonStmt->fetchColumn() : null;
 
         $teamStmt = $DB->prepare(
-            'SELECT e.numEquipe, e.libEquipe, e.libEquipeComplet, e.descriptionEquipe,
+            'SELECT e.numEquipe, e.libEquipe, e.libEquipeComplet, e.descriptionEquipe, e.urlPhotoEquipe, e.urlPhotoStaff,
                     c.libCategorie, s.libSection, n.libNiveau
              FROM EQUIPE e
              INNER JOIN CATEGORIE_EQUIPE c ON e.numCategorie = c.numCategorie
@@ -116,6 +129,8 @@ if ($dbAvailable) {
         'libSection' => 'Championnat régional',
         'libNiveau' => 'Niveau 1',
         'descriptionEquipe' => 'Une équipe engagée et soudée qui défend fièrement les couleurs du BEC tout au long de la saison.',
+        'urlPhotoEquipe' => '',
+        'urlPhotoStaff' => '',
     ];
     $players = [
         ['prenomJoueur' => 'Léo', 'nomJoueur' => 'Martin', 'libPoste' => 'Meneur'],
@@ -136,6 +151,8 @@ if ($dbAvailable) {
 $bannerImage = ROOT_URL . '/src/images/background/background-index-4.webp';
 
 $teamName = $team['libEquipeComplet'] ?: $team['libEquipe'];
+$teamPhotoUrl = ba_bec_team_photo_url($team['urlPhotoEquipe'] ?? '');
+$staffPhotoUrl = ba_bec_team_photo_url($team['urlPhotoStaff'] ?? '');
 
 $stats = [
     'home' => ['matches' => 0, 'pointsFor' => 0, 'pointsAgainst' => 0],
@@ -237,7 +254,24 @@ if (!$coachLead && !empty($assistantCoaches)) {
         <div class="team-profile card shadow-sm">
             <div class="row g-0 align-items-center">
                 <div class="col-md-4 team-profile-media">
-                    <div class="team-profile-placeholder">Photo du staff à venir</div>
+                    <div class="team-profile-gallery">
+                        <div class="team-profile-photo">
+                            <p class="team-profile-label">Photo équipe</p>
+                            <?php if ($teamPhotoUrl) : ?>
+                                <img src="<?php echo htmlspecialchars($teamPhotoUrl); ?>" alt="<?php echo htmlspecialchars($teamName); ?>">
+                            <?php else : ?>
+                                <span class="team-profile-placeholder">Photo d'équipe à venir</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="team-profile-photo">
+                            <p class="team-profile-label">Photo staff</p>
+                            <?php if ($staffPhotoUrl) : ?>
+                                <img src="<?php echo htmlspecialchars($staffPhotoUrl); ?>" alt="Photo du staff <?php echo htmlspecialchars($teamName); ?>">
+                            <?php else : ?>
+                                <span class="team-profile-placeholder">Photo du staff à venir</span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">

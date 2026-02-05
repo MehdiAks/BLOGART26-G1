@@ -31,6 +31,25 @@ if (!$ba_bec_equipe) {
     exit;
 }
 
+$ba_bec_photoEquipe = $ba_bec_equipe['urlPhotoEquipe'] ?? '';
+$ba_bec_photoStaff = $ba_bec_equipe['urlPhotoStaff'] ?? '';
+
+function ba_bec_equipe_photo_url(?string $path): string
+{
+    if (!$path) {
+        return '';
+    }
+
+    if (preg_match('/^(https?:\/\/|\/)/', $path)) {
+        return $path;
+    }
+
+    return ROOT_URL . '/src/uploads/photos-equipes/' . ltrim($path, '/');
+}
+
+$ba_bec_photoEquipeUrl = ba_bec_equipe_photo_url($ba_bec_photoEquipe);
+$ba_bec_photoStaffUrl = ba_bec_equipe_photo_url($ba_bec_photoStaff);
+
 $ba_bec_clubs = sql_select('CLUB', 'nomClub', null, null, 'nomClub ASC');
 $ba_bec_categories = sql_select('CATEGORIE_EQUIPE', 'libCategorie', null, null, 'libCategorie ASC');
 $ba_bec_sections = sql_select('SECTION_EQUIPE', 'libSection', null, null, 'libSection ASC');
@@ -116,6 +135,30 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
                     <label for="descriptionEquipe">Description</label>
                     <textarea id="descriptionEquipe" name="descriptionEquipe" class="form-control" rows="4"
                         placeholder="Description de l'équipe..."><?php echo htmlspecialchars($ba_bec_equipe['descriptionEquipe'] ?? ''); ?></textarea>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="urlPhotoEquipe">Photo de l'équipe (fichier)</label>
+                    <input id="urlPhotoEquipe" name="urlPhotoEquipe" class="form-control" type="text"
+                        value="<?php echo htmlspecialchars($ba_bec_photoEquipe); ?>"
+                        placeholder="ex: equipe-seniors.jpg (stocké dans /src/uploads/photos-equipes/)" />
+                    <?php if ($ba_bec_photoEquipeUrl): ?>
+                        <div class="mt-2">
+                            <img src="<?php echo htmlspecialchars($ba_bec_photoEquipeUrl); ?>" alt="Photo équipe"
+                                style="max-width: 200px; height: auto;">
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="form-group mt-2">
+                    <label for="urlPhotoStaff">Photo du staff (fichier)</label>
+                    <input id="urlPhotoStaff" name="urlPhotoStaff" class="form-control" type="text"
+                        value="<?php echo htmlspecialchars($ba_bec_photoStaff); ?>"
+                        placeholder="ex: staff-seniors.jpg (stocké dans /src/uploads/photos-equipes/)" />
+                    <?php if ($ba_bec_photoStaffUrl): ?>
+                        <div class="mt-2">
+                            <img src="<?php echo htmlspecialchars($ba_bec_photoStaffUrl); ?>" alt="Photo staff"
+                                style="max-width: 200px; height: auto;">
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Enregistrer</button>

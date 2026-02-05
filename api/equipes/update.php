@@ -11,6 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_libEquipe = ctrlSaisies($_POST['libEquipe'] ?? '');
     $ba_bec_libEquipeComplet = ctrlSaisies($_POST['libEquipeComplet'] ?? '');
     $ba_bec_descriptionEquipe = ctrlSaisies($_POST['descriptionEquipe'] ?? '');
+    $ba_bec_urlPhotoEquipe = ctrlSaisies($_POST['urlPhotoEquipe'] ?? '');
+    $ba_bec_urlPhotoStaff = ctrlSaisies($_POST['urlPhotoStaff'] ?? '');
     $ba_bec_nomClub = ctrlSaisies($_POST['nomClub'] ?? '');
     $ba_bec_categorieEquipe = ctrlSaisies($_POST['categorieEquipe'] ?? '');
     $ba_bec_sectionEquipe = ctrlSaisies($_POST['sectionEquipe'] ?? '');
@@ -60,7 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     numCategorie = :numCategorie,
                     numSection = :numSection,
                     numNiveau = :numNiveau,
-                    descriptionEquipe = :descriptionEquipe
+                    descriptionEquipe = :descriptionEquipe,
+                    urlPhotoEquipe = :urlPhotoEquipe,
+                    urlPhotoStaff = :urlPhotoStaff
              WHERE numEquipe = :numEquipe'
         );
         $updateEquipe->execute([
@@ -72,6 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':numSection' => $numSection,
             ':numNiveau' => $numNiveau,
             ':descriptionEquipe' => $ba_bec_descriptionEquipe !== '' ? $ba_bec_descriptionEquipe : null,
+            ':urlPhotoEquipe' => $ba_bec_urlPhotoEquipe !== '' ? $ba_bec_urlPhotoEquipe : null,
+            ':urlPhotoStaff' => $ba_bec_urlPhotoStaff !== '' ? $ba_bec_urlPhotoStaff : null,
             ':numEquipe' => $ba_bec_numEquipe,
         ]);
         header('Location: ../../views/backend/equipes/list.php');

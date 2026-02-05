@@ -41,6 +41,8 @@ function sql_create_table($table){
                 `numSection` int NOT NULL,
                 `numNiveau` int NOT NULL,
                 `descriptionEquipe` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                `urlPhotoEquipe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                `urlPhotoStaff` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 PRIMARY KEY (`numEquipe`),
                 KEY `idx_equipe_club` (`numClub`),
                 KEY `idx_equipe_categorie` (`numCategorie`),
