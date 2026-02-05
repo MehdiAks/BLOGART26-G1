@@ -248,7 +248,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                                     <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
                                     <input type="hidden" name="likeA" value="1">
                                     <button type="submit" class="btn btn-light d-flex align-items-center gap-2 <?php echo $userVote === 1 ? 'active-like' : ''; ?>">
-                                        <img src="<?php echo ROOT_URL; ?>/src/images/pnglike.png" alt="Like">
+                                        <img src="<?php echo ROOT_URL . '/src/images/icon/pnglike.png'; ?>" alt="Like">
                                         <span><?php echo $likeCount; ?></span>
                                     </button>
                                 </form>
@@ -257,7 +257,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                                     <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
                                     <input type="hidden" name="likeA" value="0">
                                     <button type="submit" class="btn btn-light d-flex align-items-center gap-2 <?php echo $userVote === 0 ? 'active-dislike' : ''; ?>">
-                                        <img src="<?php echo ROOT_URL; ?>/src/images/pngdislike.png" alt="Dislike">
+                                        <img src="<?php echo ROOT_URL . '/src/images/icon/pngdislike.png'; ?>"  alt="Dislike">
                                         <span><?php echo $dislikeCount; ?></span>
                                     </button>
                                 </form>
