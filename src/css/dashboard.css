@@ -32,3 +32,79 @@
   border-color: #6c757d;
   opacity: 0.65;
 }
+
+.admin-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0c0c0c;
+  overflow: hidden;
+}
+
+.admin-loading__fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  background: linear-gradient(180deg, #e01a2b 0%, #9e0f1c 100%);
+  animation: admin-fill 1.6s ease-out forwards;
+}
+
+.admin-loading__logo {
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.admin-loading--logo .admin-loading__logo {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.admin-loading__video {
+  width: clamp(120px, 20vw, 220px);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.35));
+}
+
+.admin-loading--drain {
+  animation: admin-fade 0.8s ease-in forwards;
+}
+
+.admin-loading--drain .admin-loading__fill {
+  animation: admin-drain 0.9s ease-in forwards;
+}
+
+@keyframes admin-fill {
+  0% {
+    height: 0;
+  }
+  100% {
+    height: 100%;
+  }
+}
+
+@keyframes admin-drain {
+  0% {
+    height: 100%;
+  }
+  100% {
+    height: 0;
+  }
+}
+
+@keyframes admin-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
