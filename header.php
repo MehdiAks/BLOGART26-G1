@@ -120,10 +120,16 @@ if (function_exists('sql_connect')) {
                                         <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
                                     </li>
                                     <li>
+                                        <a href="<?php echo ROOT_URL . '/boutique.php'; ?>" <?php if ($current_page == '/boutique.php') echo 'class="current"'; ?>>Boutique</a>
+                                    </li>
+                                    <li>
                                         <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
                                     </li>
                                     <li>
                                         <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo ROOT_URL . '/nos-partenaires.php'; ?>" <?php if ($current_page == '/nos-partenaires.php') echo 'class="current"'; ?>>Nos partenaires</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -221,10 +227,16 @@ if (function_exists('sql_connect')) {
                         <a href="<?php echo ROOT_URL . '/actualites.php'; ?>" <?php if ($current_page == '/actualites.php') echo 'class="current"'; ?>>Actualités</a>
                     </li>
                     <li>
+                        <a href="<?php echo ROOT_URL . '/boutique.php'; ?>" <?php if ($current_page == '/boutique.php') echo 'class="current"'; ?>>Boutique</a>
+                    </li>
+                    <li>
                         <a href="<?php echo ROOT_URL . '/calendrier.php'; ?>" <?php if ($current_page == '/calendrier.php') echo 'class="current"'; ?>>Calendrier</a>
                     </li>
                     <li>
                         <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo ROOT_URL . '/nos-partenaires.php'; ?>" <?php if ($current_page == '/nos-partenaires.php') echo 'class="current"'; ?>>Nos partenaires</a>
                     </li>
                 </ul>
             </nav>

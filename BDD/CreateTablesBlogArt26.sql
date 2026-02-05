@@ -159,6 +159,35 @@ create index ARTICLE_FK on ARTICLE
 
 -- ----------------------------------------------
 --
+-- Structure de la table ARTICLE_BOUTIQUE
+--
+/*=============================================*/
+/* Table : ARTICLE_BOUTIQUE                    */
+/*=============================================*/
+create table ARTICLE_BOUTIQUE
+(
+   numArtBoutique int(8) not null auto_increment,     -- PK numéro article boutique
+   libArtBoutique varchar(100) not null,              -- Nom article boutique
+   descArtBoutique varchar(255) default null,         -- Description courte
+   couleursArtBoutique varchar(120) default null,     -- Couleurs disponibles
+   taillesArtBoutique varchar(80) default null,       -- Tailles disponibles
+   prixAdulteArtBoutique decimal(6,2) not null,       -- Prix adulte
+   prixEnfantArtBoutique decimal(6,2) default null,   -- Prix enfant
+   urlPhotoArtBoutique varchar(120) default null,     -- Nom photo article
+   categorieArtBoutique varchar(60) default null,     -- Catégorie article
+   primary key (numArtBoutique)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/*=============================================*/
+/* Index : ARTICLE_BOUTIQUE_FK                 */
+/*=============================================*/
+create index ARTICLE_BOUTIQUE_FK on ARTICLE_BOUTIQUE
+(
+   numArtBoutique
+);
+
+-- ----------------------------------------------
+--
 -- Structure de la table COMMENT
 --
 /*=============================================*/
