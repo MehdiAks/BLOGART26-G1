@@ -158,8 +158,8 @@ if (isset($_GET['numArt'])) {
                                             src="<?php echo ROOT_URL . '/src/uploads/' . htmlspecialchars($ba_bec_urlPhotArt); ?>"
                                             alt="Image de l'article">
                                         <input type="file" id="urlPhotArt" name="urlPhotArt" class="form-control"
-                                            accept=".jpg, .jpeg, .png, .gif" maxlength="80000">
-                                        <p class="form-text">Extensions acceptées : .jpg, .gif, .png, .jpeg.</p>
+                                            accept=".png, .jpeg, .jpg, .avif, .svg" maxlength="80000">
+                                        <p class="form-text">Extensions acceptées : .png, .jpeg, .jpg, .avif, .svg.</p>
                                     </div>
 
                                     <div class="mb-3">

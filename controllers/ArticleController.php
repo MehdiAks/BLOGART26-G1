@@ -79,14 +79,48 @@ class ArticleController
             $ba_bec_tmpName = $_FILES['urlPhotArt']['tmp_name'];
             $ba_bec_name = $_FILES['urlPhotArt']['name'];
             $ba_bec_size = $_FILES['urlPhotArt']['size'];
+            $ba_bec_allowedExtensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+            $ba_bec_allowedMimeTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/avif',
+                'image/svg+xml',
+                'image/svg',
+                'text/xml',
+                'application/xml',
+            ];
 
             if ($ba_bec_size > 10000000) {
                 die('Le fichier est trop volumineux.');
             }
 
-            [$ba_bec_width, $ba_bec_height] = getimagesize($ba_bec_tmpName);
-            if ($ba_bec_width > 5000 || $ba_bec_height > 5000) {
-                die("L'image est trop grande.");
+            $ba_bec_extension = strtolower(pathinfo($ba_bec_name, PATHINFO_EXTENSION));
+            if (!in_array($ba_bec_extension, $ba_bec_allowedExtensions, true)) {
+                die("Format d'image non autorisé.");
+            }
+
+            $ba_bec_mimeType = null;
+            if (function_exists('finfo_open')) {
+                $ba_bec_finfo = finfo_open(FILEINFO_MIME_TYPE);
+                if ($ba_bec_finfo) {
+                    $ba_bec_mimeType = finfo_file($ba_bec_finfo, $ba_bec_tmpName);
+                    finfo_close($ba_bec_finfo);
+                }
+            }
+
+            if ($ba_bec_mimeType && !in_array($ba_bec_mimeType, $ba_bec_allowedMimeTypes, true)) {
+                die("Format d'image non autorisé.");
+            }
+
+            if (!in_array($ba_bec_extension, ['svg', 'avif'], true)) {
+                $ba_bec_dimensions = getimagesize($ba_bec_tmpName);
+                if ($ba_bec_dimensions === false) {
+                    die("Le fichier n'est pas une image valide.");
+                }
+                [$ba_bec_width, $ba_bec_height] = $ba_bec_dimensions;
+                if ($ba_bec_width > 5000 || $ba_bec_height > 5000) {
+                    die("L'image est trop grande.");
+                }
             }
 
             $ba_bec_nom_image = time() . '_' . $ba_bec_name;
@@ -183,14 +217,48 @@ class ArticleController
             $ba_bec_tmpName = $_FILES['urlPhotArt']['tmp_name'];
             $ba_bec_name = $_FILES['urlPhotArt']['name'];
             $ba_bec_size = $_FILES['urlPhotArt']['size'];
+            $ba_bec_allowedExtensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+            $ba_bec_allowedMimeTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/avif',
+                'image/svg+xml',
+                'image/svg',
+                'text/xml',
+                'application/xml',
+            ];
 
             if ($ba_bec_size > 10000000) {
                 die('Le fichier est trop volumineux.');
             }
 
-            [$ba_bec_width, $ba_bec_height] = getimagesize($ba_bec_tmpName);
-            if ($ba_bec_width > 5000 || $ba_bec_height > 5000) {
-                die("L'image est trop grande.");
+            $ba_bec_extension = strtolower(pathinfo($ba_bec_name, PATHINFO_EXTENSION));
+            if (!in_array($ba_bec_extension, $ba_bec_allowedExtensions, true)) {
+                die("Format d'image non autorisé.");
+            }
+
+            $ba_bec_mimeType = null;
+            if (function_exists('finfo_open')) {
+                $ba_bec_finfo = finfo_open(FILEINFO_MIME_TYPE);
+                if ($ba_bec_finfo) {
+                    $ba_bec_mimeType = finfo_file($ba_bec_finfo, $ba_bec_tmpName);
+                    finfo_close($ba_bec_finfo);
+                }
+            }
+
+            if ($ba_bec_mimeType && !in_array($ba_bec_mimeType, $ba_bec_allowedMimeTypes, true)) {
+                die("Format d'image non autorisé.");
+            }
+
+            if (!in_array($ba_bec_extension, ['svg', 'avif'], true)) {
+                $ba_bec_dimensions = getimagesize($ba_bec_tmpName);
+                if ($ba_bec_dimensions === false) {
+                    die("Le fichier n'est pas une image valide.");
+                }
+                [$ba_bec_width, $ba_bec_height] = $ba_bec_dimensions;
+                if ($ba_bec_width > 5000 || $ba_bec_height > 5000) {
+                    die("L'image est trop grande.");
+                }
             }
 
             $ba_bec_nom_image = time() . '_' . $ba_bec_name;

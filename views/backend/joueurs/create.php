@@ -56,7 +56,8 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                 </div>
                 <div class="form-group mt-2">
                     <label for="photoJoueur">Photo (upload)</label>
-                    <input id="photoJoueur" name="photoJoueur" class="form-control" type="file" accept="image/*" />
+                    <input id="photoJoueur" name="photoJoueur" class="form-control" type="file"
+                        accept=".png, .jpeg, .jpg, .avif, .svg" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="numeroMaillot">Numéro de maillot</label>
