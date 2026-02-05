@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-define('COOKIE_DURATION', 365 * 24 * 60 * 60); // 1 an
+define('COOKIE_DURATION', 365 * 24 * 60 * 60);
 
 /* =========================
 OUTILS
@@ -34,13 +34,13 @@ function getCookieConsent($pdo) {
         return null;
     }
 
-    // CAS 1 : MEMBRE CONNECTÉ
+    // CAS 1 : MEMBRE CONNECTE
     if (!empty($_SESSION['user_id'])) {
         $stmt = $pdo->prepare(
             "SELECT cookieMemb FROM membre WHERE numMemb = ?"
         );
         $stmt->execute([$_SESSION['user_id']]);
-        return $stmt->fetchColumn(); // NULL / 0 / 1
+        return $stmt->fetchColumn();
     }
 
     // CAS 2 : VISITEUR ANONYME
@@ -50,7 +50,7 @@ function getCookieConsent($pdo) {
             WHERE token = ? AND expires_at > NOW()"
         );
         $stmt->execute([$_COOKIE['cookie_consent_token']]);
-        return $stmt->fetchColumn(); // NULL / 0 / 1
+        return $stmt->fetchColumn();
     }
 
     return null;
@@ -65,7 +65,7 @@ function saveCookieConsent($pdo, int $consent) {
         return;
     }
 
-    // MEMBRE CONNECTÉ
+    // MEMBRE CONNECTE
     if (!empty($_SESSION['user_id'])) {
         $stmt = $pdo->prepare(
             "UPDATE membre
