@@ -1,34 +1,3 @@
-<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
-include '../../../header.php'; // Inclure le header
-
-
-// Vérifier si l'ID de l'article est passé en paramètre
-if (isset($_GET['numArt'])) {
-    $ba_bec_numArt = $_GET['numArt'];
-
-    // Récupérer les informations de l'article
-    $ba_bec_article = sql_select("ARTICLE", "*", "numArt = $ba_bec_numArt")[0];
-
-    // Récupérer la thématique de l'article
-    $ba_bec_thematique = sql_select("THEMATIQUE", "*", "numThem = " . $ba_bec_article['numThem'])[0];
-
-    // Récupérer les mots-clés associés à l'article
-    $ba_bec_keywords = sql_select("MOTCLEARTICLE", "*", "numArt = $ba_bec_numArt");
-
-    // Récupérer les noms des mots-clés
-    $ba_bec_keywordsList = [];
-    foreach ($ba_bec_keywords as $ba_bec_keyword) {
-        $ba_bec_keywordInfo = sql_select("MOTCLE", "*", "numMotCle = " . $ba_bec_keyword['numMotCle'])[0];
-        $ba_bec_keywordsList[] = $ba_bec_keywordInfo['libMotCle'];
-    }
-
-    // Chemin de l'image
-    $ba_bec_imagePath = $_SERVER['DOCUMENT_ROOT'] . "/src/uploads/" . $ba_bec_article['urlPhotArt'];
-}
-?>
-
 <!-- Affichage des informations de l'article -->
 <div class="container">
     <div class="row">
@@ -37,7 +6,7 @@ if (isset($_GET['numArt'])) {
             <p>Êtes-vous sûr de vouloir supprimer cet article ?</p>
         </div>
         <div class="col-md-12">
-            <form action="<?php echo ROOT_URL . '/api/articles/delete.php' ?>" method="post">
+            <form action="<?php echo ROOT_URL . '/public/index.php?controller=article&action=destroy'; ?>" method="post">
                 <!-- Champ caché pour l'ID de l'article -->
                 <input type="hidden" name="numArt" value="<?php echo $ba_bec_article['numArt']; ?>">
 
@@ -132,7 +101,7 @@ if (isset($_GET['numArt'])) {
 
                 <!-- Boutons de confirmation -->
                 <div class="form-group mt-2">
-                    <a href="list.php" class="btn btn-primary">Retour à la liste</a>
+                    <a href="<?php echo ROOT_URL . '/public/index.php?controller=article&action=list'; ?>" class="btn btn-primary">Retour à la liste</a>
                     <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
                 </div>
             </form>

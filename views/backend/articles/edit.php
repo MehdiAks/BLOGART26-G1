@@ -33,7 +33,7 @@ if (isset($_GET['numArt'])) {
         <button type="submit" form="article-edit-form" class="btn btn-primary">Confirmer la mise à jour</button>
     </div>
 
-    <form id="article-edit-form" action="<?php echo ROOT_URL . '/api/articles/update.php'; ?>" method="post"
+    <form id="article-edit-form" action="<?php echo ROOT_URL . '/public/index.php?controller=article&action=update'; ?>" method="post"
         enctype="multipart/form-data">
         <input id="numArt" name="numArt" type="hidden" value="<?php echo $ba_bec_article['numArt']; ?>"
             readonly="readonly" />
