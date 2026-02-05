@@ -46,9 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Vérification mot de passe
-    if (strlen($ba_bec_passMemb) < 8 || strlen($ba_bec_passMemb) > 15) {
+    $ba_bec_password_valid = true;
+    $ba_bec_pass_length = mb_strlen($ba_bec_passMemb ?? '', 'UTF-8');
+    if ($ba_bec_pass_length < 8 || $ba_bec_pass_length > 15) {
         $ba_bec_errors[] = "Le mot de passe doit contenir entre 8 et 15 caractères.";
-        $ba_bec_passMemb = null;
+        $ba_bec_password_valid = false;
     } elseif (
         !preg_match('/[A-Z]/', $ba_bec_passMemb) ||
         !preg_match('/[a-z]/', $ba_bec_passMemb) ||
@@ -56,16 +58,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         !preg_match('/[^a-zA-Z0-9]/', $ba_bec_passMemb)
     ) {
         $ba_bec_errors[] = "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.";
-        $ba_bec_passMemb = null;
+        $ba_bec_password_valid = false;
     }
 
-    if ($ba_bec_passMemb !== $ba_bec_passMemb2) {
+    if ($ba_bec_password_valid && $ba_bec_passMemb !== $ba_bec_passMemb2) {
         $ba_bec_errors[] = "Les mots de passe doivent être identiques.";
-        $ba_bec_passMemb = null;
-
+        $ba_bec_password_valid = false;
     }
 
-    if ($ba_bec_passMemb) {
+    if ($ba_bec_password_valid) {
         $ba_bec_hash_password = password_hash($ba_bec_passMemb, PASSWORD_DEFAULT);
     }
 
