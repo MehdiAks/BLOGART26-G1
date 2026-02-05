@@ -83,6 +83,16 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
                     <textarea id="descriptionEquipe" name="descriptionEquipe" class="form-control" rows="4"
                         placeholder="Description de l'équipe..."></textarea>
                 </div>
+                <div class="form-group mt-2">
+                    <label for="urlPhotoEquipe">Photo de l'équipe (fichier)</label>
+                    <input id="urlPhotoEquipe" name="urlPhotoEquipe" class="form-control" type="text"
+                        placeholder="ex: equipe-seniors.jpg (stocké dans /src/uploads/photos-equipes/)" />
+                </div>
+                <div class="form-group mt-2">
+                    <label for="urlPhotoStaff">Photo du staff (fichier)</label>
+                    <input id="urlPhotoStaff" name="urlPhotoStaff" class="form-control" type="text"
+                        placeholder="ex: staff-seniors.jpg (stocké dans /src/uploads/photos-equipes/)" />
+                </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Créer</button>
                 </div>
