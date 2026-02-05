@@ -2,7 +2,8 @@
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
-include '../../header.php';
+
+$ba_bec_errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_numPersonnel = ctrlSaisies($_POST['numPersonnel'] ?? '');
@@ -15,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_estCommissionAnimation = !empty($_POST['estCommissionAnimation']) ? 1 : 0;
     $ba_bec_estCommissionCommunication = !empty($_POST['estCommissionCommunication']) ? 1 : 0;
 
-    $ba_bec_errors = [];
     $ba_bec_photoPath = null;
 
     $ba_bec_normalize = static function (string $value): string {
@@ -116,6 +116,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+<?php include '../../header.php'; ?>
 
 <div class="container">
     <div class="row">
