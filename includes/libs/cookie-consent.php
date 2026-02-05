@@ -86,15 +86,15 @@ function saveCookieConsent($choice) {
     if (!empty($existing)) {
         // Mettre à jour
         $query = "UPDATE COOKIE_CONSENT 
-                  SET choixConsent = '" . $choice . "', 
-                      dateCon = NOW(), 
-                      dateExpiration = '" . $dateExpiration . "' 
-                  WHERE ipAdresse = '" . $ip . "'";
+                SET choixConsent = '" . $choice . "', 
+                    dateCon = NOW(), 
+                    dateExpiration = '" . $dateExpiration . "' 
+                WHERE ipAdresse = '" . $ip . "'";
         $DB->exec($query);
     } else {
         // Insérer
         $query = "INSERT INTO COOKIE_CONSENT (ipAdresse, choixConsent, dateCon, dateExpiration) 
-                  VALUES ('" . $ip . "', '" . $choice . "', NOW(), '" . $dateExpiration . "')";
+                VALUES ('" . $ip . "', '" . $choice . "', NOW(), '" . $dateExpiration . "')";
         $DB->exec($query);
     }
 }

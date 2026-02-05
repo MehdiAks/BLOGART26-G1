@@ -16,7 +16,10 @@
 @font-face {
     font-family: "chetta_vissto";
     src:
-    local("chetta_vissto");
+    local("chetta_vissto"),
+    url("/src/fonts/chetta_vissto/chetta_vissto.woff2") format("woff2"),
+    url("/src/fonts/chetta_vissto/chetta_vissto.woff") format("woff"),
+    url("/src/fonts/chetta_vissto/chetta_vissto.ttf") format("truetype");
 }
 
 h1,
