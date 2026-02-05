@@ -2,6 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $ba_bec_numMemb = $_SESSION['user_id'] ?? null;
+$ba_bec_numStat = $_SESSION['numStat'] ?? null;
 if (!$ba_bec_numMemb) {
     header("Location: " . ROOT_URL . "/views/backend/security/login.php");
     exit();
@@ -63,6 +64,20 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
     <?php endif; ?>
 
     <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Accès rapide</h2>
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-outline-primary" href="<?php echo ROOT_URL . '/compte.php'; ?>">Mon compte</a>
+                        <?php if ($ba_bec_numStat === 1 || $ba_bec_numStat === 2): ?>
+                            <a class="btn btn-outline-secondary" href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>">Panneau admin</a>
+                        <?php endif; ?>
+                        <a class="btn btn-outline-danger" href="<?php echo ROOT_URL . '/api/security/disconnect.php'; ?>">Déconnexion</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-4">
             <div class="card h-100">
                 <div class="card-body">

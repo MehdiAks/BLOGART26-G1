@@ -6,6 +6,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 $pageStyles = [
     ROOT_URL . '/src/css/style.css',
 ];
+$pageHasVideo = true;
+$pageBackgroundVideo = ROOT_URL . '/src/video/Background_index.mp4';
+$pageBackgroundPoster = ROOT_URL . '/src/images/background/background-index-1.webp';
 
 // On inclut l'en-tête HTML (balises <head>, menu, etc.).
 require_once 'header.php';
@@ -66,6 +69,19 @@ $formatMatchTime = static function (?string $matchTime): string {
     return $time ? $time->format('H\hi') : $matchTime;
 };
 
+$becLogo = ROOT_URL . '/src/images/logo/logo-bec/logo.svg';
+$defaultTeamLogo = ROOT_URL . '/src/images/logo/team-default.svg';
+$resolveTeamLogo = static function (?string $teamName) use ($becLogo, $defaultTeamLogo): string {
+    if ($teamName === null || $teamName === '') {
+        return $defaultTeamLogo;
+    }
+    $normalized = strtolower($teamName);
+    if (str_contains($normalized, 'bec') || str_contains($normalized, 'bordeaux')) {
+        return $becLogo;
+    }
+    return $defaultTeamLogo;
+};
+
 $matchesStmt = $DB->prepare(
     "SELECT Section AS section,
         Equipe AS teamName,
@@ -106,6 +122,8 @@ foreach ($matches as $match) {
         'label' => $key === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
         'teamHome' => $match['teamName'] ?? 'BEC',
         'teamAway' => $match['opponent'] ?? '',
+        'logoHome' => $resolveTeamLogo($match['teamName'] ?? ''),
+        'logoAway' => $resolveTeamLogo($match['opponent'] ?? ''),
         'matchDate' => $match['matchDate'],
         'matchTime' => $match['matchTime'] ?? '',
         'location' => 'Gymnase Barbey',
@@ -113,64 +131,12 @@ foreach ($matches as $match) {
 }
 ?>
 
-<div id="carouselExampleAutoplaying" class="carousel slide home-carousel full-bleed mb-5" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="<?php echo ROOT_URL . '/src/images/background/background-index-1.webp'; ?>" class="d-block w-100"
-                alt="Première image du carrousel">
-        </div>
-        <div class="carousel-item">
-            <img src="<?php echo ROOT_URL . '/src/images/background/background-index-2.webp'; ?>" class="d-block w-100"
-                alt="Deuxième image du carrousel">
-        </div>
-        <div class="carousel-item">
-            <img src="<?php echo ROOT_URL . '/src/images/background/background-index-3.webp'; ?>" class="d-block w-100"
-                alt="Troisième image du carrousel">
-        </div>
-        <div class="carousel-item">
-            <img src="<?php echo ROOT_URL . '/src/images/background/background-index-4.webp'; ?>" class="d-block w-100"
-                alt="Quatrime image du carrousel">
-        </div>
-        <div class="carousel-item">
-            <img src="<?php echo ROOT_URL . '/src/images/background/background-index-5.webp'; ?>" class="d-block w-100"
-                alt="Cinquième image du carrousel">
-        </div>
-        <div class="carousel-item">
-            <img src="<?php echo ROOT_URL . '/src/images/background/background-index-6.webp'; ?>" class="d-block w-100"
-                alt="Sixieme image du carrousel">
-        </div>
-        <div class="carousel-item">
-            <img src="<?php echo ROOT_URL . '/src/images/background/background-index-7.webp'; ?>" class="d-block w-100"
-                alt="Septime image du carrousel">
-        </div>
-        <div class="carousel-item">
-            <img src="<?php echo ROOT_URL . '/src/images/background/background-index-8.webp'; ?>" class="d-block w-100"
-                alt="huitieme image du carrousel">
-        </div>
-        <div class="carousel-item">
-            <img src="<?php echo ROOT_URL . '/src/images/background/background-index-9.webp'; ?>" class="d-block w-100"
-                alt="neuvieme image du carrousel">
-        </div>
-        <div class="carousel-item">
-            <img src="<?php echo ROOT_URL . '/src/images/background/background-index-10.webp'; ?>" class="d-block w-100"
-                alt="dixieme image du carrousel">
-
-    </div>
-    <div class="home-carousel-title text-center">
+<section class="home-hero full-bleed">
+    <div class="home-hero-content text-center">
         <h2 class="fw-semibold mb-0">Bordeaux étudiant club</h2>
         <h3 class="fw-light mb-0">Basket-ball</h3>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
-        data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
-        data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
-</div>
+</section>
 <div class="container py-5">
     <section class="home-section mb-5">
         <h1 class="mb-3">Bienvenue au BEC</h1>
@@ -203,6 +169,15 @@ foreach ($matches as $match) {
                                 <span class="badge <?php echo $match['badge']; ?> mb-2">
                                     <?php echo htmlspecialchars($match['label']); ?>
                                 </span>
+                                <div class="home-match-logos mb-3">
+                                    <div class="home-match-logo">
+                                        <img src="<?php echo htmlspecialchars($match['logoHome']); ?>" alt="<?php echo htmlspecialchars($match['teamHome']); ?>">
+                                    </div>
+                                    <span class="home-match-vs">VS</span>
+                                    <div class="home-match-logo">
+                                        <img src="<?php echo htmlspecialchars($match['logoAway']); ?>" alt="<?php echo htmlspecialchars($match['teamAway']); ?>">
+                                    </div>
+                                </div>
                                 <h3 class="h5 mb-2">
                                     <?php echo htmlspecialchars($match['teamHome']); ?> vs. <?php echo htmlspecialchars($match['teamAway']); ?>
                                 </h3>
@@ -230,9 +205,9 @@ foreach ($matches as $match) {
             <p class="text-body-secondary mb-4">Retrouvez ci-dessous nos dernières actualités et articles récents.</p>
         <!-- Si on a au moins un article récupéré, on les affiche. -->
         <?php if (!empty($ba_bec_articles)): ?>
-            <div class="d-flex flex-column gap-4">
+            <div class="row g-4">
                 <!-- On parcourt les 3 articles aléatoires récupérés depuis la base. -->
-                <?php foreach ($ba_bec_articles as $index => $ba_bec_article): ?>
+                <?php foreach ($ba_bec_articles as $ba_bec_article): ?>
                     <?php
                     // 1) On détermine l'image à afficher :
                     //    - si l'article a une image, on utilise celle-ci
@@ -254,32 +229,22 @@ foreach ($matches as $match) {
                     $chapoLength = function_exists('mb_strlen') ? mb_strlen($chapo) : strlen($chapo);
                     // 6) On ajoute "..." seulement si le chapo dépassait la limite.
                     $excerpt = $excerptBase . ($chapoLength > $maxLength ? '...' : '');
-                    $isMiddleArticle = $index === 1;
-                    $imageOrderClass = $isMiddleArticle ? 'order-md-2' : 'order-md-1';
-                    $contentOrderClass = $isMiddleArticle ? 'order-md-1' : 'order-md-2';
                     ?>
-                    <article class="card w-100 home-article-card">
-                        <div class="row g-3 h-100 align-items-center">
-                            <div class="col-md-4 <?php echo $imageOrderClass; ?>">
-                                <div class="ratio ratio-1x1">
-                                    <img src="<?php echo $ba_bec_imagePath; ?>"
-                                        class="img-fluid object-fit-cover w-100 h-100 home-article-image"
-                                        alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
-                                </div>
+                    <div class="col-lg-4 col-md-6">
+                        <article class="home-article-card" data-hover-card>
+                            <img src="<?php echo $ba_bec_imagePath; ?>"
+                                class="home-article-image mb-3"
+                                alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
+                            <h3 class="h5 mb-2"><?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?></h3>
+                            <p class="fst-italic"><?php echo htmlspecialchars($excerpt); ?></p>
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <small class="text-body-secondary">
+                                    <?php echo htmlspecialchars($ba_bec_article['dtCreaArt']); ?>
+                                </small>
+                                <a href="<?php echo ROOT_URL . '/article.php?numArt=' . (int) $ba_bec_article['numArt']; ?>" class="home-article-link">Lire la suite</a>
                             </div>
-                            <div class="col-md-8 <?php echo $contentOrderClass; ?>">
-                                <div class="card-body d-flex flex-column h-100">
-                                    <h3 class="card-title h4 mb-2"><?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?></h3>
-                                    <p class="card-text fst-italic"><?php echo htmlspecialchars($excerpt); ?></p>
-                                    <p class="card-text mt-auto">
-                                        <small class="text-body-secondary">
-                                            <?php echo htmlspecialchars($ba_bec_article['dtCreaArt']); ?>
-                                        </small>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
+                        </article>
+                    </div>
                 <?php endforeach; ?>
             </div>
             <div class="mt-4">
@@ -294,6 +259,7 @@ foreach ($matches as $match) {
     </section>
 </div>
 
+<script src="<?php echo ROOT_URL . '/src/js/home-articles-hover.js'; ?>"></script>
 <?php require_once 'footer.php'; ?>
 
 <p></p>

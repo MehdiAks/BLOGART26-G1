@@ -40,7 +40,7 @@
         .site-background-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(103, 8, 29, 0.3);
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -90,6 +90,10 @@
             display: flex;
             gap: 60px;
             justify-content: center;
+        }
+
+        .site-header .header-nav {
+            margin-left: auto;
         }
 
         .site-header .header-nav li {
@@ -173,6 +177,38 @@
         .site-logo {
             height: 38px;
             width: auto;
+        }
+
+        .header-burger-wrapper {
+            display: none;
+        }
+
+        .home-page .site-header .navbar-brand,
+        .home-page .site-header .header-nav a,
+        .home-page .site-header .header-nav .submenu-toggle {
+            color: #fff;
+        }
+
+        .home-page .site-header .header-nav a:hover,
+        .home-page .site-header .header-nav .submenu-toggle:hover,
+        .home-page .site-header .header-nav a:focus,
+        .home-page .site-header .header-nav .submenu-toggle:focus {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .home-page .site-header .header-nav .submenu-list a {
+            color: var(--bec-dark);
+        }
+
+        @media (max-width: 991.98px) {
+            .site-header .header-nav {
+                display: none;
+            }
+
+            .header-burger-wrapper {
+                display: block;
+                margin-left: auto;
+            }
         }
 
         .btn-bec-primary {
