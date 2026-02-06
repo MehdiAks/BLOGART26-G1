@@ -596,8 +596,8 @@ if (!$becMatchesAvailable) {
 
         let current = 0;
         const durationMs = Number.parseInt(element.dataset.duration || "2500", 10);
-        const safeDuration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : 2500;
-        const minStepTime = 16;
+        const safeDuration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : 1500;
+        const minStepTime = 10;
         const normalStepTime = Math.max(minStepTime, Math.floor(safeDuration / Math.max(1, target)));
         const fastStepTime = Math.max(8, Math.floor(normalStepTime * 0.4));
         const midStepTime = Math.max(12, Math.floor(normalStepTime * 0.7));
