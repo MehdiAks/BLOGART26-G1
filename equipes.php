@@ -29,17 +29,11 @@ try {
     $teams = $teamsStmt->fetchAll(PDO::FETCH_ASSOC);
 
     $coachesStmt = $DB->prepare(
-        'SELECT ape.numEquipe, p.prenomPersonnel, p.nomPersonnel, rp.libRolePersonnel
-         FROM AFFECTATION_PERSONNEL_EQUIPE ape
-         INNER JOIN PERSONNEL p ON ape.numPersonnel = p.numPersonnel
-         INNER JOIN ROLE_PERSONNEL rp ON ape.numRolePersonnel = rp.numRolePersonnel
-         ' . ($ba_bec_currentSeasonId ? 'WHERE ape.numSaison = :numSaison' : '')
+        'SELECT p.numEquipeStaff AS numEquipe, p.prenomPersonnel, p.nomPersonnel, p.roleStaffEquipe AS libRolePersonnel
+         FROM PERSONNEL p
+         WHERE p.estStaffEquipe = 1 AND p.numEquipeStaff IS NOT NULL'
     );
-    $params = [];
-    if ($ba_bec_currentSeasonId) {
-        $params[':numSaison'] = $ba_bec_currentSeasonId;
-    }
-    $coachesStmt->execute($params);
+    $coachesStmt->execute();
     $coaches = $coachesStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $exception) {
     $teams = [];
