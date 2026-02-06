@@ -111,6 +111,7 @@ try {
             m.scoreAdversaire AS scoreAdversaire,
             m.clubAdversaire AS clubAdversaire,
             m.numEquipeAdverse AS numEquipeAdverse,
+            m.codeEquipe AS teamCode,
             e.nomEquipe AS teamName
         FROM `MATCH` m
         INNER JOIN EQUIPE e ON m.codeEquipe = e.codeEquipe
@@ -151,12 +152,17 @@ foreach ($matches as $match) {
     $opponent = $buildOpponent($match);
     $teamHome = $isHome ? ($match['teamName'] ?? 'BEC') : $opponent;
     $teamAway = $isHome ? $opponent : ($match['teamName'] ?? 'BEC');
+    $teamCode = strtoupper(trim((string) ($match['teamCode'] ?? '')));
     $teamHomeName = strtolower($teamHome);
     $teamAwayName = strtolower($teamAway);
     $key = null;
-    if ($teamHomeName !== '' && (str_contains($teamHomeName, 'sf1') || str_contains($teamHomeName, 'sénior 1') || str_contains($teamHomeName, 'senior 1'))) {
+    if ($teamCode === 'SF1') {
         $key = 'SF1';
-    } elseif ($teamHomeName !== '' && (str_contains($teamHomeName, 'sg1') || str_contains($teamHomeName, 'sénior 1') || str_contains($teamHomeName, 'senior 1'))) {
+    } elseif ($teamCode === 'SG1') {
+        $key = 'SG1';
+    } elseif ($teamHomeName !== '' && (str_contains($teamHomeName, 'sf1') || str_contains($teamHomeName, 'filles 1') || str_contains($teamHomeName, 'fille 1'))) {
+        $key = 'SF1';
+    } elseif ($teamHomeName !== '' && (str_contains($teamHomeName, 'sg1') || str_contains($teamHomeName, 'garçons 1') || str_contains($teamHomeName, 'garcons 1') || str_contains($teamHomeName, 'garcon 1'))) {
         $key = 'SG1';
     }
 
