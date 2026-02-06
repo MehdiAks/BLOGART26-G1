@@ -235,7 +235,6 @@ foreach ($matches as $match) {
     }
 
     $nextMatches[$key] = [
-        'label' => $key === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
         'teamHome' => $teamHome,
         'teamAway' => $teamAway,
         'matchDate' => $match['matchDate'],
@@ -356,9 +355,12 @@ if (!$becMatchesAvailable) {
                         <article class="card h-100 border-0 shadow-sm home-match-card">
                             <div class="card-body">
                                 <?php if ($match): ?>
-                                    <span class="badge <?php echo $match['badge']; ?> mb-2">
-                                        <?php echo htmlspecialchars($match['label']); ?>
-                                    </span>
+                                    <?php $label = $match['label'] ?? ''; ?>
+                                    <?php if ($label !== ''): ?>
+                                        <span class="badge <?php echo $match['badge']; ?> mb-2">
+                                            <?php echo htmlspecialchars($label); ?>
+                                        </span>
+                                    <?php endif; ?>
                                     <h3 class="h5 mb-2">
                                         <?php echo htmlspecialchars($match['teamHome']); ?> vs. <?php echo htmlspecialchars($match['teamAway']); ?>
                                     </h3>
