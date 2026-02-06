@@ -5,6 +5,34 @@
     --bec-button-bg-hover: #550516;
     --bec-button-shadow: rgba(103, 8, 29, 0.28);
     --bec-button-shadow-lifted: rgba(103, 8, 29, 0.4);
+    --cursor-glow-size: 180px;
+}
+
+.cursor-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--cursor-glow-size);
+    height: var(--cursor-glow-size);
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.45) 0%,
+        rgba(255, 255, 255, 0.2) 35%,
+        rgba(255, 255, 255, 0) 70%
+    );
+    filter: blur(2px);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+    z-index: 5;
+    mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cursor-glow {
+        transition: none;
+    }
 }
 
 button:not(.btn-check),

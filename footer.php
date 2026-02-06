@@ -130,6 +130,48 @@
             button.addEventListener('blur', reset);
         });
     </script>
+    <script>
+        (function () {
+            if (window.matchMedia('(pointer: coarse)').matches) {
+                return;
+            }
+
+            const glow = document.createElement('div');
+            glow.className = 'cursor-glow';
+            document.body.appendChild(glow);
+
+            let currentX = 0;
+            let currentY = 0;
+            let targetX = 0;
+            let targetY = 0;
+            const offset = { x: 18, y: 18 };
+            let isVisible = false;
+
+            const update = () => {
+                currentX += (targetX - currentX) * 0.12;
+                currentY += (targetY - currentY) * 0.12;
+                glow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate3d(-50%, -50%, 0)`;
+                requestAnimationFrame(update);
+            };
+
+            const handleMove = (event) => {
+                targetX = event.clientX + offset.x;
+                targetY = event.clientY + offset.y;
+                if (!isVisible) {
+                    glow.style.opacity = '1';
+                    isVisible = true;
+                }
+            };
+
+            document.addEventListener('pointermove', handleMove);
+            document.addEventListener('pointerleave', () => {
+                glow.style.opacity = '0';
+                isVisible = false;
+            });
+
+            update();
+        })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
