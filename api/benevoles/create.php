@@ -134,10 +134,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($ba_bec_estStaffEquipe) {
             $ba_bec_estCommissionTechnique = 1;
         }
-        $ba_bec_currentMax = sql_select('PERSONNEL', 'MAX(numPersonnel) AS maxPersonnel');
-        $ba_bec_nextNumPersonnel = 1;
-        if (!empty($ba_bec_currentMax) && isset($ba_bec_currentMax[0]['maxPersonnel'])) {
-            $ba_bec_nextNumPersonnel = (int) $ba_bec_currentMax[0]['maxPersonnel'] + 1;
+        $ba_bec_surnomBase = $ba_bec_normalize($ba_bec_prenomPersonnel . $ba_bec_nomPersonnel);
+        if ($ba_bec_surnomBase === '') {
+            $ba_bec_surnomBase = 'benevole';
+        }
+        $ba_bec_surnomPersonnel = $ba_bec_surnomBase;
+        $ba_bec_suffix = 1;
+        while (!empty(sql_select('PERSONNEL', 'surnomPersonnel', "surnomPersonnel = '$ba_bec_surnomPersonnel'"))) {
+            $ba_bec_suffix++;
+            $ba_bec_surnomPersonnel = $ba_bec_surnomBase . $ba_bec_suffix;
         }
         $ba_bec_photoValue = $ba_bec_photoPath !== null ? "'" . $ba_bec_photoPath . "'" : 'NULL';
         $ba_bec_equipeValue = $ba_bec_numEquipeStaff !== '' ? "'" . $ba_bec_numEquipeStaff . "'" : 'NULL';
@@ -164,13 +169,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$ba_bec_estCommissionCommunication) {
             $ba_bec_posteCommissionCommunicationValue = 'NULL';
         }
-        sql_insert(
+        $ba_bec_insert_result = sql_insert(
             'PERSONNEL',
-            'numPersonnel, prenomPersonnel, nomPersonnel, urlPhotoPersonnel, estStaffEquipe, numEquipeStaff, roleStaffEquipe, estDirection, posteDirection, estCommissionTechnique, posteCommissionTechnique, estCommissionAnimation, posteCommissionAnimation, estCommissionCommunication, posteCommissionCommunication',
-            "'$ba_bec_nextNumPersonnel', '$ba_bec_prenomPersonnel', '$ba_bec_nomPersonnel', $ba_bec_photoValue, '$ba_bec_estStaffEquipe', $ba_bec_equipeValue, $ba_bec_roleStaffValue, '$ba_bec_estDirection', $ba_bec_posteDirectionValue, '$ba_bec_estCommissionTechnique', $ba_bec_posteCommissionTechniqueValue, '$ba_bec_estCommissionAnimation', $ba_bec_posteCommissionAnimationValue, '$ba_bec_estCommissionCommunication', $ba_bec_posteCommissionCommunicationValue"
+            'surnomPersonnel, prenomPersonnel, nomPersonnel, urlPhotoPersonnel, estStaffEquipe, numEquipeStaff, roleStaffEquipe, estDirection, posteDirection, estCommissionTechnique, posteCommissionTechnique, estCommissionAnimation, posteCommissionAnimation, estCommissionCommunication, posteCommissionCommunication',
+            "'$ba_bec_surnomPersonnel', '$ba_bec_prenomPersonnel', '$ba_bec_nomPersonnel', $ba_bec_photoValue, '$ba_bec_estStaffEquipe', $ba_bec_equipeValue, $ba_bec_roleStaffValue, '$ba_bec_estDirection', $ba_bec_posteDirectionValue, '$ba_bec_estCommissionTechnique', $ba_bec_posteCommissionTechniqueValue, '$ba_bec_estCommissionAnimation', $ba_bec_posteCommissionAnimationValue, '$ba_bec_estCommissionCommunication', $ba_bec_posteCommissionCommunicationValue"
         );
-        header('Location: ../../views/backend/benevoles/list.php');
-        exit();
+        if ($ba_bec_insert_result['success']) {
+            flash_success();
+            header('Location: ../../views/backend/benevoles/list.php');
+            exit();
+        }
+        $ba_bec_errors[] = FLASH_MESSAGE_ERROR;
     }
 }
 ?>
