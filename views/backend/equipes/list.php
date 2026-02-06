@@ -35,15 +35,9 @@ function ba_bec_equipe_photo_url(?string $path): string
 
 if (!$ba_bec_is_missing_table) {
     $teamsStmt = $DB->prepare(
-        'SELECT e.numEquipe, e.codeEquipe, e.libEquipe, e.libEquipeComplet,
-                c.nomClub, ce.libCategorie, se.libSection, ne.libNiveau,
-                e.urlPhotoEquipe, e.urlPhotoStaff
-         FROM EQUIPE e
-         INNER JOIN CLUB c ON e.numClub = c.numClub
-         INNER JOIN CATEGORIE_EQUIPE ce ON e.numCategorie = ce.numCategorie
-         INNER JOIN SECTION_EQUIPE se ON e.numSection = se.numSection
-         INNER JOIN NIVEAU_EQUIPE ne ON e.numNiveau = ne.numNiveau
-         ORDER BY e.libEquipe ASC'
+        'SELECT numEquipe, codeEquipe, nomEquipe, club, categorie, section, niveau, photoDLequipe, photoStaff
+         FROM EQUIPE
+         ORDER BY nomEquipe ASC'
     );
     $teamsStmt->execute();
     $ba_bec_equipes = $teamsStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -90,17 +84,17 @@ if (!$ba_bec_is_missing_table) {
                     <tbody>
                         <?php foreach ($ba_bec_equipes as $ba_bec_equipe): ?>
                             <?php
-                            $ba_bec_photoEquipeUrl = ba_bec_equipe_photo_url($ba_bec_equipe['urlPhotoEquipe'] ?? '');
-                            $ba_bec_photoStaffUrl = ba_bec_equipe_photo_url($ba_bec_equipe['urlPhotoStaff'] ?? '');
+                            $ba_bec_photoEquipeUrl = ba_bec_equipe_photo_url($ba_bec_equipe['photoDLequipe'] ?? '');
+                            $ba_bec_photoStaffUrl = ba_bec_equipe_photo_url($ba_bec_equipe['photoStaff'] ?? '');
                             ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_equipe['codeEquipe']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['libEquipeComplet'] ?: $ba_bec_equipe['libEquipe']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['nomClub']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['libCategorie']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['libSection']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['libNiveau']); ?></td>
+                                <td><?php echo htmlspecialchars($ba_bec_equipe['nomEquipe']); ?></td>
+                                <td><?php echo htmlspecialchars($ba_bec_equipe['club']); ?></td>
+                                <td><?php echo htmlspecialchars($ba_bec_equipe['categorie']); ?></td>
+                                <td><?php echo htmlspecialchars($ba_bec_equipe['section']); ?></td>
+                                <td><?php echo htmlspecialchars($ba_bec_equipe['niveau']); ?></td>
                                 <td>
                                     <?php if ($ba_bec_photoEquipeUrl): ?>
                                         <img src="<?php echo htmlspecialchars($ba_bec_photoEquipeUrl); ?>" alt="Photo équipe"

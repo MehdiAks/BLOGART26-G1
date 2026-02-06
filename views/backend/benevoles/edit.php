@@ -19,7 +19,7 @@ if (!isset($_GET['numPersonnel'])) {
 $ba_bec_numPersonnel = $_GET['numPersonnel'];
 $ba_bec_benevole = sql_select('PERSONNEL', '*', "numPersonnel = '$ba_bec_numPersonnel'");
 $ba_bec_benevole = $ba_bec_benevole[0] ?? null;
-$ba_bec_teams = sql_select('EQUIPE', 'numEquipe, libEquipe', null, null, 'libEquipe ASC');
+$ba_bec_teams = sql_select('EQUIPE', 'codeEquipe, nomEquipe', null, null, 'nomEquipe ASC');
 
 if (!$ba_bec_benevole) {
     header('Location: ' . ROOT_URL . '/views/backend/benevoles/list.php');
@@ -67,8 +67,8 @@ if (!$ba_bec_benevole) {
                         <select id="numEquipeStaff" name="numEquipeStaff" class="form-select">
                             <option value="">Sélectionner une équipe</option>
                             <?php foreach ($ba_bec_teams as $ba_bec_team): ?>
-                                <option value="<?php echo htmlspecialchars($ba_bec_team['numEquipe']); ?>" <?php echo ((int) ($ba_bec_benevole['numEquipeStaff'] ?? 0) === (int) $ba_bec_team['numEquipe']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($ba_bec_team['libEquipe']); ?>
+                                <option value="<?php echo htmlspecialchars($ba_bec_team['codeEquipe']); ?>" <?php echo ((string) ($ba_bec_benevole['numEquipeStaff'] ?? '') === (string) $ba_bec_team['codeEquipe']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($ba_bec_team['nomEquipe']); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>

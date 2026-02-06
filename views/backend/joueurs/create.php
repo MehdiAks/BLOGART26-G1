@@ -13,9 +13,7 @@ include '../../../header.php';
 
 sql_connect();
 
-$ba_bec_equipes = sql_select('EQUIPE', 'numEquipe, libEquipe, libEquipeComplet, codeEquipe', null, null, 'libEquipe ASC');
-$ba_bec_saisons = sql_select('SAISON', 'numSaison, libSaison, estCourante', null, null, 'dateDebut DESC');
-$ba_bec_postes = sql_select('POSTE', 'numPoste, libPoste', null, null, 'libPoste ASC');
+$ba_bec_equipes = sql_select('EQUIPE', 'codeEquipe, nomEquipe', null, null, 'nomEquipe ASC');
 
 $ba_bec_posteChoices = [
     'Poste 1 : meneur (point guard)',
@@ -25,20 +23,9 @@ $ba_bec_posteChoices = [
     'Poste 5 : pivot (center)',
 ];
 
-$ba_bec_currentSeason = null;
-foreach ($ba_bec_saisons as $ba_bec_saison) {
-    if (!empty($ba_bec_saison['estCourante'])) {
-        $ba_bec_currentSeason = $ba_bec_saison['numSaison'];
-        break;
-    }
-}
-
 function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
 {
-    $label = $ba_bec_equipe['libEquipeComplet'] ?? '';
-    if ($label === '') {
-        $label = $ba_bec_equipe['libEquipe'] ?? '';
-    }
+    $label = $ba_bec_equipe['nomEquipe'] ?? '';
     $code = $ba_bec_equipe['codeEquipe'] ?? '';
     return $code !== '' ? $label . ' (' . $code . ')' : $label;
 }
@@ -57,6 +44,11 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/joueurs/create.php'; ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
+                    <label for="surnomJoueur">Surnom</label>
+                    <input id="surnomJoueur" name="surnomJoueur" class="form-control" type="text"
+                        placeholder="Surnom (ex: Ace)" required />
+                </div>
+                <div class="form-group mt-2">
                     <label for="prenomJoueur">Prénom</label>
                     <input id="prenomJoueur" name="prenomJoueur" class="form-control" type="text"
                         placeholder="Prénom (ex: Léa)" required />
@@ -77,23 +69,11 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                         placeholder="JJ/MM/AAAA" />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="numSaison">Saison</label>
-                    <select id="numSaison" name="numSaison" class="form-control" required>
-                        <option value="">Sélectionnez une saison</option>
-                        <?php foreach ($ba_bec_saisons as $ba_bec_saison): ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_saison['numSaison']); ?>"
-                                <?php echo ($ba_bec_currentSeason == $ba_bec_saison['numSaison']) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($ba_bec_saison['libSaison']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="form-group mt-2">
                     <label for="numEquipe">Équipe</label>
-                    <select id="numEquipe" name="numEquipe" class="form-control" required>
+                    <select id="numEquipe" name="codeEquipe" class="form-control" required>
                         <option value="">Sélectionnez une équipe</option>
                         <?php foreach ($ba_bec_equipes as $ba_bec_equipe): ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?>">
+                            <option value="<?php echo htmlspecialchars($ba_bec_equipe['codeEquipe']); ?>">
                                 <?php echo htmlspecialchars(ba_bec_formatEquipeLabel($ba_bec_equipe)); ?>
                             </option>
                         <?php endforeach; ?>
@@ -101,21 +81,13 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                 </div>
                 <div class="form-group mt-2">
                     <label for="posteJoueur">Poste</label>
-                    <select id="posteJoueur" name="posteJoueur" class="form-control">
+                    <select id="posteJoueur" name="posteJoueur" class="form-control" required>
                         <option value="">Sélectionnez un poste</option>
-                        <?php if (!empty($ba_bec_postes)): ?>
-                            <?php foreach ($ba_bec_postes as $ba_bec_poste): ?>
-                                <option value="<?php echo htmlspecialchars($ba_bec_poste['libPoste']); ?>">
-                                    <?php echo htmlspecialchars($ba_bec_poste['libPoste']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <?php foreach ($ba_bec_posteChoices as $ba_bec_posteChoice): ?>
-                                <option value="<?php echo htmlspecialchars($ba_bec_posteChoice); ?>">
-                                    <?php echo htmlspecialchars($ba_bec_posteChoice); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                        <?php foreach ($ba_bec_posteChoices as $index => $ba_bec_posteChoice): ?>
+                            <option value="<?php echo htmlspecialchars((string) ($index + 1)); ?>">
+                                <?php echo htmlspecialchars($ba_bec_posteChoice); ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group mt-2">
@@ -124,8 +96,8 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                         placeholder="Numéro (0-99)" />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="dateDebut">Date de début d'affectation</label>
-                    <input id="dateDebut" name="dateDebut" class="form-control" type="date"
+                    <label for="dateRecrutement">Date de recrutement</label>
+                    <input id="dateRecrutement" name="dateRecrutement" class="form-control" type="date"
                         placeholder="JJ/MM/AAAA" />
                 </div>
                 <div class="form-group mt-2">

@@ -2,10 +2,6 @@
 /*
  * Vue d'administration (suppression) pour le module matches.
  * - Cette page sert de confirmation avant la suppression définitive d'un enregistrement.
- * - L'ID ciblé est transmis par la query string afin de récupérer les détails à afficher.
- * - Le bouton principal déclenche la route de suppression côté backend.
- * - Un lien de retour évite la suppression et renvoie vers la liste.
- * - Aucun traitement métier n'est exécuté ici : la vue décrit seulement l'interface.
  */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
@@ -16,21 +12,9 @@ sql_connect();
 $ba_bec_match = null;
 if (isset($_GET['numMatch'])) {
     $ba_bec_numMatch = (int) $_GET['numMatch'];
-    if ($ba_bec_numMatch > 0) {
-        $stmt = $DB->prepare(
-            "SELECT m.numMatch,
-                    COALESCE(home_team.libEquipe, home_part.nomEquipeAdverse) AS teamHome,
-                    COALESCE(away_team.libEquipe, away_part.nomEquipeAdverse) AS teamAway
-             FROM `MATCH` m
-             LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
-             LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
-             LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe
-             LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe
-             WHERE m.numMatch = :numMatch"
-        );
-        $stmt->execute([':numMatch' => $ba_bec_numMatch]);
-        $ba_bec_match = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-    }
+    $stmt = $DB->prepare('SELECT m.*, e.nomEquipe FROM `MATCH` m INNER JOIN EQUIPE e ON m.codeEquipe = e.codeEquipe WHERE m.numMatch = :numMatch');
+    $stmt->execute([':numMatch' => $ba_bec_numMatch]);
+    $ba_bec_match = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
 }
 ?>
 
@@ -41,19 +25,15 @@ if (isset($_GET['numMatch'])) {
         </div>
         <div class="col-md-12">
             <?php if ($ba_bec_match) : ?>
-                <?php
-                $ba_bec_teamHome = $ba_bec_match['teamHome'] ?? 'Domicile';
-                $ba_bec_teamAway = $ba_bec_match['teamAway'] ?? 'Extérieur';
-                $ba_bec_summary = $ba_bec_teamHome . ' vs ' . $ba_bec_teamAway;
-                ?>
                 <form action="<?php echo ROOT_URL . '/api/matches/delete.php' ?>" method="post">
                     <div class="form-group">
                         <label for="numMatch">ID match</label>
-                        <input id="numMatch" name="numMatch" class="form-control" type="text" value="<?php echo $ba_bec_match['numMatch']; ?>" readonly />
+                        <input id="numMatch" name="numMatch" class="form-control" type="text" value="<?php echo htmlspecialchars((string) $ba_bec_match['numMatch']); ?>" readonly />
                     </div>
                     <div class="form-group mt-2">
                         <label for="summary">Résumé</label>
-                        <input id="summary" name="summary" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_summary); ?>" readonly />
+                        <input id="summary" name="summary" class="form-control" type="text"
+                            value="<?php echo htmlspecialchars(($ba_bec_match['nomEquipe'] ?? 'BEC') . ' vs ' . ($ba_bec_match['clubAdversaire'] ?? 'Adversaire')); ?>" readonly />
                     </div>
                     <br />
                     <div class="form-group mt-2">

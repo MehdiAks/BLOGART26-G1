@@ -43,13 +43,13 @@ function build_player_photo_name(string $nom, string $prenom, string $extension)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     sql_connect();
 
+    $ba_bec_surnomJoueur = ctrlSaisies($_POST['surnomJoueur'] ?? '');
     $ba_bec_prenomJoueur = ctrlSaisies($_POST['prenomJoueur'] ?? '');
     $ba_bec_nomJoueur = ctrlSaisies($_POST['nomJoueur'] ?? '');
-    $ba_bec_numSaison = (int) ($_POST['numSaison'] ?? 0);
-    $ba_bec_numEquipe = (int) ($_POST['numEquipe'] ?? 0);
-    $ba_bec_posteJoueur = ctrlSaisies($_POST['posteJoueur'] ?? '');
+    $ba_bec_codeEquipe = ctrlSaisies($_POST['codeEquipe'] ?? '');
+    $ba_bec_posteJoueur = (int) ($_POST['posteJoueur'] ?? 0);
     $ba_bec_numeroMaillot = ctrlSaisies($_POST['numeroMaillot'] ?? '');
-    $ba_bec_dateDebut = ctrlSaisies($_POST['dateDebut'] ?? '');
+    $ba_bec_dateRecrutement = ctrlSaisies($_POST['dateRecrutement'] ?? '');
     $ba_bec_dateNaissance = ctrlSaisies($_POST['dateNaissance'] ?? '');
     $ba_bec_errors = [];
     $ba_bec_clubsPrecedentsInput = $_POST['clubsPrecedents'] ?? '';
@@ -116,84 +116,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if ($ba_bec_prenomJoueur === '' || $ba_bec_nomJoueur === '') {
-        $ba_bec_errors[] = 'Le prénom et le nom sont obligatoires.';
+    if ($ba_bec_surnomJoueur === '' || $ba_bec_prenomJoueur === '' || $ba_bec_nomJoueur === '') {
+        $ba_bec_errors[] = 'Le surnom, le prénom et le nom sont obligatoires.';
     }
-    if ($ba_bec_numEquipe <= 0) {
+    if ($ba_bec_codeEquipe === '') {
         $ba_bec_errors[] = 'Veuillez sélectionner une équipe valide.';
     }
-    if ($ba_bec_numSaison <= 0) {
-        $ba_bec_errors[] = 'Veuillez sélectionner une saison valide.';
+    if ($ba_bec_posteJoueur <= 0) {
+        $ba_bec_errors[] = 'Veuillez sélectionner un poste valide.';
     }
 
     if (empty($ba_bec_errors)) {
         $ba_bec_photoValue = $ba_bec_nom_image !== null ? $ba_bec_nom_image : null;
         $ba_bec_dateValue = $ba_bec_dateNaissance !== '' ? $ba_bec_dateNaissance : null;
+        $ba_bec_dateRecrutementValue = $ba_bec_dateRecrutement !== '' ? $ba_bec_dateRecrutement : null;
+        $ba_bec_clubsValue = !empty($ba_bec_clubsList) ? implode(', ', $ba_bec_clubsList) : null;
 
         $insertJoueur = $DB->prepare(
-            'INSERT INTO JOUEUR (prenomJoueur, nomJoueur, urlPhotoJoueur, dateNaissance)
-             VALUES (:prenom, :nom, :photo, :dateNaissance)'
+            'INSERT INTO JOUEUR (surnomJoueur, prenomJoueur, nomJoueur, urlPhotoJoueur, dateNaissance, codeEquipe, posteJoueur, numeroMaillot, dateRecrutement, clubsPrecedents)
+             VALUES (:surnom, :prenom, :nom, :photo, :dateNaissance, :codeEquipe, :posteJoueur, :numeroMaillot, :dateRecrutement, :clubsPrecedents)'
         );
         $insertJoueur->execute([
+            ':surnom' => $ba_bec_surnomJoueur,
             ':prenom' => $ba_bec_prenomJoueur,
             ':nom' => $ba_bec_nomJoueur,
             ':photo' => $ba_bec_photoValue,
             ':dateNaissance' => $ba_bec_dateValue,
+            ':codeEquipe' => $ba_bec_codeEquipe,
+            ':posteJoueur' => $ba_bec_posteJoueur,
+            ':numeroMaillot' => $ba_bec_numeroMaillot !== '' ? (int) $ba_bec_numeroMaillot : null,
+            ':dateRecrutement' => $ba_bec_dateRecrutementValue,
+            ':clubsPrecedents' => $ba_bec_clubsValue,
         ]);
-
-        $ba_bec_numJoueur = (int) $DB->lastInsertId();
-
-        $ba_bec_numPoste = null;
-        if ($ba_bec_posteJoueur !== '') {
-            $posteStmt = $DB->prepare('SELECT numPoste FROM POSTE WHERE libPoste = :libPoste LIMIT 1');
-            $posteStmt->execute([':libPoste' => $ba_bec_posteJoueur]);
-            $ba_bec_numPoste = $posteStmt->fetchColumn();
-            if ($ba_bec_numPoste === false) {
-                $insertPoste = $DB->prepare('INSERT INTO POSTE (libPoste) VALUES (:libPoste)');
-                $insertPoste->execute([':libPoste' => $ba_bec_posteJoueur]);
-                $ba_bec_numPoste = $DB->lastInsertId();
-            }
-        }
-
-        $ba_bec_numeroValue = $ba_bec_numeroMaillot !== '' ? (int) $ba_bec_numeroMaillot : null;
-        $ba_bec_dateDebutValue = $ba_bec_dateDebut !== '' ? $ba_bec_dateDebut : null;
-
-        $insertAffectation = $DB->prepare(
-            'INSERT INTO JOUEUR_AFFECTATION (numJoueur, numEquipe, numSaison, numPoste, numMaillot, dateDebut)
-             VALUES (:numJoueur, :numEquipe, :numSaison, :numPoste, :numMaillot, :dateDebut)'
-        );
-        $insertAffectation->execute([
-            ':numJoueur' => $ba_bec_numJoueur,
-            ':numEquipe' => $ba_bec_numEquipe,
-            ':numSaison' => $ba_bec_numSaison,
-            ':numPoste' => $ba_bec_numPoste,
-            ':numMaillot' => $ba_bec_numeroValue,
-            ':dateDebut' => $ba_bec_dateDebutValue,
-        ]);
-
-        if (!empty($ba_bec_clubsList)) {
-            $clubSelect = $DB->prepare('SELECT numClub FROM CLUB WHERE nomClub = :nomClub LIMIT 1');
-            $clubInsert = $DB->prepare('INSERT INTO CLUB (nomClub) VALUES (:nomClub)');
-            $clubLinkInsert = $DB->prepare(
-                'INSERT INTO JOUEUR_CLUB (numJoueur, numClub, notes)
-                 VALUES (:numJoueur, :numClub, :notes)'
-            );
-
-            foreach ($ba_bec_clubsList as $clubName) {
-                $clubSelect->execute([':nomClub' => $clubName]);
-                $clubId = $clubSelect->fetchColumn();
-                if ($clubId === false) {
-                    $clubInsert->execute([':nomClub' => $clubName]);
-                    $clubId = $DB->lastInsertId();
-                }
-
-                $clubLinkInsert->execute([
-                    ':numJoueur' => $ba_bec_numJoueur,
-                    ':numClub' => $clubId,
-                    ':notes' => null,
-                ]);
-            }
-        }
 
         header('Location: ../../views/backend/joueurs/list.php');
         exit();

@@ -3,33 +3,23 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
 
-require_once 'header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
 sql_connect();
-
-$ba_bec_currentSeasonId = null;
-$currentSeasonStmt = $DB->query('SELECT numSaison FROM SAISON WHERE estCourante = 1 ORDER BY dateDebut DESC LIMIT 1');
-if ($currentSeasonStmt) {
-    $ba_bec_currentSeasonId = $currentSeasonStmt->fetchColumn();
-}
 
 $teams = [];
 $coachesByTeam = [];
 try {
     $teamsStmt = $DB->prepare(
-        'SELECT e.numEquipe, e.libEquipe, e.libEquipeComplet,
-                c.libCategorie, s.libSection, n.libNiveau
+        'SELECT e.numEquipe, e.codeEquipe, e.nomEquipe, e.categorie, e.section, e.niveau
          FROM EQUIPE e
-         INNER JOIN CATEGORIE_EQUIPE c ON e.numCategorie = c.numCategorie
-         INNER JOIN SECTION_EQUIPE s ON e.numSection = s.numSection
-         INNER JOIN NIVEAU_EQUIPE n ON e.numNiveau = n.numNiveau
-         ORDER BY e.libEquipe ASC'
+         ORDER BY e.nomEquipe ASC'
     );
     $teamsStmt->execute();
     $teams = $teamsStmt->fetchAll(PDO::FETCH_ASSOC);
 
     $coachesStmt = $DB->prepare(
-        'SELECT p.numEquipeStaff AS numEquipe, p.prenomPersonnel, p.nomPersonnel, p.roleStaffEquipe AS libRolePersonnel
+        'SELECT p.numEquipeStaff AS codeEquipe, p.prenomPersonnel, p.nomPersonnel, p.roleStaffEquipe AS libRolePersonnel
          FROM PERSONNEL p
          WHERE p.estStaffEquipe = 1 AND p.numEquipeStaff IS NOT NULL'
     );
@@ -41,7 +31,7 @@ try {
 }
 
 foreach ($coaches ?? [] as $coach) {
-    $coachesByTeam[$coach['numEquipe']][] = $coach;
+    $coachesByTeam[$coach['codeEquipe']][] = $coach;
 }
 ?>
 
@@ -59,17 +49,17 @@ foreach ($coaches ?? [] as $coach) {
         <div class="club-stack">
             <?php foreach ($teams as $team) : ?>
                 <?php
-                $teamName = $team['libEquipeComplet'] ?: $team['libEquipe'];
+                $teamName = $team['nomEquipe'] ?? '';
                 ?>
                 <article class="team-card">
                     <div class="team-card-header">
                         <h2 class="team-card-title"><?php echo htmlspecialchars($teamName); ?></h2>
                         <p class="team-card-meta">
-                            <?php echo htmlspecialchars($team['libCategorie']); ?> · <?php echo htmlspecialchars($team['libSection']); ?> · <?php echo htmlspecialchars($team['libNiveau']); ?>
+                            <?php echo htmlspecialchars($team['categorie']); ?> · <?php echo htmlspecialchars($team['section']); ?> · <?php echo htmlspecialchars($team['niveau']); ?>
                         </p>
                     </div>
                     <div class="team-card-body">
-                        <?php $teamCoaches = $coachesByTeam[$team['numEquipe']] ?? []; ?>
+                        <?php $teamCoaches = $coachesByTeam[$team['codeEquipe']] ?? []; ?>
                         <?php if (!empty($teamCoaches)) : ?>
                             <p class="team-card-subtitle">Encadrement</p>
                             <ul class="team-card-list">
@@ -96,4 +86,4 @@ foreach ($coaches ?? [] as $coach) {
     <?php endif; ?>
 </section>
 
-<?php require_once 'footer.php'; ?>
+<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php'; ?>

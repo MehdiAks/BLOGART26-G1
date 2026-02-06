@@ -5,7 +5,7 @@ $pageStyles = [
     ROOT_URL . '/src/css/boutique.css',
 ];
 
-require_once 'header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
 $defaultBoutiqueArticles = [
     [
