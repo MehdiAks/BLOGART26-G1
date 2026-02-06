@@ -1,4 +1,12 @@
 <?php
+/*
+ * Vue d'administration (suppression) pour le module articles.
+ * - Cette page sert de confirmation avant la suppression définitive d'un enregistrement.
+ * - L'ID ciblé est transmis par la query string afin de récupérer les détails à afficher.
+ * - Le bouton principal déclenche la route de suppression côté backend.
+ * - Un lien de retour évite la suppression et renvoie vers la liste.
+ * - Aucun traitement métier n'est exécuté ici : la vue décrit seulement l'interface.
+ */
 $ba_bec_articlePhoto = $ba_bec_article['urlPhotArt'] ?? '';
 $ba_bec_defaultImage = ROOT_URL . '/src/images/article.png';
 if (!empty($ba_bec_articlePhoto)) {

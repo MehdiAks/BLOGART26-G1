@@ -1,4 +1,11 @@
 <?php
+/*
+ * Vue d'administration (dashboard).
+ * - Cette page rassemble les principaux modules accessibles via des cartes et boutons d'action.
+ * - Les liens mènent vers les listes ou formulaires de création des entités gérées.
+ * - L'affichage utilise la grille Bootstrap pour organiser les blocs fonctionnels.
+ * - Le code PHP en amont prépare uniquement les ressources et indicateurs d'affichage.
+ */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 $pageStyles = [ROOT_URL . '/src/css/dashboard.css'];

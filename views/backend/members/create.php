@@ -1,4 +1,12 @@
 <?php
+/*
+ * Vue d'administration (création) pour le module members.
+ * - Cette page expose un formulaire HTML complet permettant de saisir les données métier.
+ * - L'action du formulaire pointe vers la route de création côté backend (controller/action).
+ * - Les champs sont regroupés par sections pour guider l'utilisateur et faciliter la validation.
+ * - Les boutons principaux déclenchent l'envoi et les liens secondaires ramènent au tableau de bord ou à la liste.
+ * - Les classes Bootstrap structurent la mise en forme sans logique métier dans la vue.
+ */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';

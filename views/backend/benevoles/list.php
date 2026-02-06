@@ -1,4 +1,12 @@
 <?php
+/*
+ * Vue d'administration (liste) pour le module benevoles.
+ * - Le gabarit est rendu côté serveur et s'appuie sur les inclusions globales (config/header) déjà chargées.
+ * - Les filtres éventuels sont lus via la query string (GET) pour limiter l'affichage sans modifier l'URL de base.
+ * - Les résultats sont présentés dans un tableau structuré, avec des actions de consultation/modification/suppression.
+ * - Les liens d'action pointent vers les routes backend correspondantes afin d'enchaîner le workflow.
+ * - Les classes utilitaires (Bootstrap) gèrent la mise en page et la hiérarchie visuelle des sections.
+ */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';

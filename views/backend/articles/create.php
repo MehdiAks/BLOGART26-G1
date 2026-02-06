@@ -1,3 +1,13 @@
+<!--
+    /*
+     * Vue d'administration (création) pour le module articles.
+     * - Cette page expose un formulaire HTML complet permettant de saisir les données métier.
+     * - L'action du formulaire pointe vers la route de création côté backend (controller/action).
+     * - Les champs sont regroupés par sections pour guider l'utilisateur et faciliter la validation.
+     * - Les boutons principaux déclenchent l'envoi et les liens secondaires ramènent au tableau de bord ou à la liste.
+     * - Les classes Bootstrap structurent la mise en forme sans logique métier dans la vue.
+     */
+-->
 <div class="article-editor-page">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
