@@ -236,6 +236,27 @@ foreach ($teamMatches as $match) {
     }
 }
 
+$chartMetrics = [
+    [
+        'label' => 'Matchs jouÃ©s',
+        'home' => $stats['home']['matches'],
+        'away' => $stats['away']['matches'],
+        'total' => $stats['total']['matches'],
+    ],
+    [
+        'label' => 'Points marquÃ©s',
+        'home' => $stats['home']['pointsFor'],
+        'away' => $stats['away']['pointsFor'],
+        'total' => $stats['total']['pointsFor'],
+    ],
+    [
+        'label' => 'Points encaissÃ©s',
+        'home' => $stats['home']['pointsAgainst'],
+        'away' => $stats['away']['pointsAgainst'],
+        'total' => $stats['total']['pointsAgainst'],
+    ],
+];
+
 $upcomingMatches = array_values(array_filter(
     $teamMatches,
     static function (array $match): bool {
@@ -396,6 +417,41 @@ if (!$coachLead && !empty($assistantCoaches)) {
                             <p class="mb-0 text-muted">Aucune victoire enregistrée.</p>
                         <?php endif; ?>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-detail-section">
+        <h2>Graphique domicile vs extérieur</h2>
+        <div class="card h-100 shadow-sm stats-chart-card">
+            <div class="card-body">
+                <div class="stats-chart">
+                    <?php foreach ($chartMetrics as $metric) : ?>
+                        <?php
+                        $homeValue = (int) $metric['home'];
+                        $awayValue = (int) $metric['away'];
+                        $maxValue = max($homeValue, $awayValue, 1);
+                        $homePercent = (int) round(($homeValue / $maxValue) * 100);
+                        $awayPercent = (int) round(($awayValue / $maxValue) * 100);
+                        ?>
+                        <div class="stats-row" style="--home: <?php echo $homePercent; ?>%; --away: <?php echo $awayPercent; ?>%;">
+                            <div class="stats-row-header">
+                                <span class="stats-label"><?php echo htmlspecialchars($metric['label']); ?></span>
+                                <span class="stats-total">Total: <?php echo htmlspecialchars((string) $metric['total']); ?></span>
+                            </div>
+                            <div class="stats-bars">
+                                <div class="stats-bar stats-bar-home">
+                                    <span>Domicile</span>
+                                    <strong><?php echo htmlspecialchars((string) $homeValue); ?></strong>
+                                </div>
+                                <div class="stats-bar stats-bar-away">
+                                    <span>Extérieur</span>
+                                    <strong><?php echo htmlspecialchars((string) $awayValue); ?></strong>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>

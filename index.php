@@ -471,20 +471,26 @@ if (!$becMatchesAvailable) {
 
     function animateCounter(element) {
         const targetText = element.dataset.target || "0";
-        const target = parseNumber(targetText);
-        if (!Number.isFinite(target) || target < 0) {
+        const rawTarget = parseNumber(targetText);
+        if (!Number.isFinite(rawTarget) || rawTarget < 0) {
             element.textContent = targetText;
+            return;
+        }
+
+        const target = Math.floor(rawTarget);
+        if (target === 0) {
+            element.textContent = formatNumber(0, targetText);
             return;
         }
 
         let current = 0;
         const durationMs = Number.parseInt(element.dataset.duration || "1500", 10);
-        const stepTime = 20;
-        const steps = Math.max(1, Math.floor(durationMs / stepTime));
-        const increment = Math.max(1, Math.ceil(target / steps));
+        const safeDuration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : 1500;
+        const minStepTime = 16;
+        const stepTime = Math.max(minStepTime, Math.floor(safeDuration / Math.max(1, target)));
 
         const timerId = setInterval(() => {
-            current += increment;
+            current += 1;
             if (current >= target) {
                 current = target;
                 element.textContent = formatNumber(current, targetText);

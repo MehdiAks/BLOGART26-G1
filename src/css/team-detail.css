@@ -263,6 +263,80 @@
     padding: 0 1rem;
 }
 
+.stats-chart-card {
+    background: #ffffff;
+}
+
+.stats-chart {
+    display: grid;
+    gap: 1rem;
+}
+
+.stats-row {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.stats-row-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #475569;
+    font-weight: 600;
+}
+
+.stats-bars {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.stats-bar {
+    position: relative;
+    min-height: 36px;
+    padding: 0 0.9rem;
+    border-radius: 999px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+    color: #0f172a;
+    overflow: hidden;
+}
+
+.stats-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 0;
+    background: var(--bar-color);
+    opacity: 0.28;
+    border-radius: inherit;
+}
+
+.stats-bar-home {
+    --bar-color: #0ea5e9;
+}
+
+.stats-bar-home::before {
+    width: var(--home);
+}
+
+.stats-bar-away {
+    --bar-color: #f97316;
+}
+
+.stats-bar-away::before {
+    width: var(--away);
+}
+
+.stats-bar span,
+.stats-bar strong {
+    position: relative;
+    z-index: 1;
+}
+
 @media (max-width: 600px) {
     .team-detail-banner-content {
         padding: 1.5rem;
