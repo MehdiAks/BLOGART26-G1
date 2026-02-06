@@ -26,6 +26,10 @@ function ba_bec_team_photo_url(?string $path): string
         return $path;
     }
 
+    if (strpos($path, 'photos-equipes/') === 0) {
+        return ROOT_URL . '/src/uploads/' . ltrim($path, '/');
+    }
+
     return ROOT_URL . '/src/uploads/photos-equipes/' . ltrim($path, '/');
 }
 

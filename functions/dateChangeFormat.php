@@ -1,37 +1,32 @@
 <?php
 /******************************************************
 *
+* Fonction utilitaire de conversion de format de date.
 * En entrée :
-* 	Attribut date
-*	Attribut avec format d'origine
-*	Attribut format désiré en sortie
+*  - $dateIn : date en chaîne de caractères.
+*  - $from : format d'origine (ex : 'Y-m-d' ou 'Y-m-d H:i:s').
+*  - $to : format de sortie désiré (ex : 'd/m/Y').
 * En sortie :
-*	Retourne tous les éléments de la fonction date() selon le format en E comme en S
+*  - Retourne la date reformattée ou une chaîne vide si entrée invalide.
 *
-*	$today = date("j, n, Y");		// 10, 3, 2001
-*
-*	$today = date("Y-m-d");			// 2001-03-10
-*
-*	$today = date("Y-m-d H:i:s");	// 2001-03-10 17:16:18 (le format DATETIME de MySQL)
-*
-*	En entrée :
-*		$from='Y-m-d'
-* ou
-*		$from='Y-m-d H:i:s'
-*
-*	En sortie :
-*		$to='d/m/Y'
-* ou
-*		$to='d/m/Y H:i:s'
+* Exemples :
+*  $today = date("j, n, Y");       // 10, 3, 2001
+*  $today = date("Y-m-d");         // 2001-03-10
+*  $today = date("Y-m-d H:i:s");   // 2001-03-10 17:16:18 (format DATETIME MySQL)
 *
 *******************************************************/
 
+// Convertit une date d'un format vers un autre.
 function dateChangeFormat($dateIn, $from, $to){
+    // Si la date en entrée n'est pas vide :
     if($dateIn != ''){
+        // Parse la date selon le format d'origine.
         $dateOut = DateTime::createFromFormat($from, $dateIn);
+        // Retourne la date formatée selon le format de sortie demandé.
         return $dateOut->format($to);
     }else{
-        return "";	// Si aucune date en entrée
+        // Si aucune date en entrée, retourne une chaîne vide.
+        return "";
     }
 }
 ?>
