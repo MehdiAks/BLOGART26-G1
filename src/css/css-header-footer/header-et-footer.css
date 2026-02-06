@@ -267,6 +267,10 @@
             color: #fff;
         }
 
+        .site-footer .btn-contact-footer {
+            color: #8a0a27;
+        }
+
         .site-footer .btn-contact-footer:is(:hover, :focus-visible) {
             background-color: #fff;
             color: #8a0a27;
