@@ -21,6 +21,24 @@ function ensure_upload_dir(string $path): void
     }
 }
 
+function team_upload_dir(): string
+{
+    $baseDir = realpath(__DIR__ . '/../../');
+    if ($baseDir === false) {
+        $baseDir = dirname(__DIR__, 2);
+    }
+    return rtrim($baseDir, '/') . '/src/uploads/photos-equipes/';
+}
+
+function uploads_root_dir(): string
+{
+    $baseDir = realpath(__DIR__ . '/../../');
+    if ($baseDir === false) {
+        $baseDir = dirname(__DIR__, 2);
+    }
+    return rtrim($baseDir, '/') . '/src/uploads/';
+}
+
 function normalize_upload_path(?string $path): ?string
 {
     if (!$path) {
@@ -41,9 +59,29 @@ function sanitize_code_equipe(string $codeEquipe): string
     return $sanitized !== '' ? $sanitized : 'equipe';
 }
 
+function upload_error_message(int $errorCode): string
+{
+    return match ($errorCode) {
+        UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'Le fichier est trop volumineux.',
+        UPLOAD_ERR_PARTIAL => 'Le fichier a été envoyé partiellement.',
+        UPLOAD_ERR_NO_FILE => 'Aucun fichier n’a été envoyé.',
+        UPLOAD_ERR_NO_TMP_DIR => 'Dossier temporaire manquant.',
+        UPLOAD_ERR_CANT_WRITE => 'Impossible d’écrire le fichier sur le disque.',
+        UPLOAD_ERR_EXTENSION => 'Envoi stoppé par une extension PHP.',
+        default => 'Erreur lors de l’envoi du fichier.',
+    };
+}
+
 function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, array &$errors): ?string
 {
-    if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== 0) {
+    if (!isset($_FILES[$fileKey])) {
+        return null;
+    }
+
+    if ($_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
+        if ($_FILES[$fileKey]['error'] !== UPLOAD_ERR_NO_FILE) {
+            $errors[] = upload_error_message($_FILES[$fileKey]['error']);
+        }
         return null;
     }
 
@@ -98,7 +136,7 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
 
     $codeEquipeSafe = sanitize_code_equipe($codeEquipe);
     $fileName = $codeEquipeSafe . '-' . $suffix . '.' . $extension;
-    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
+    $uploadDir = team_upload_dir();
     ensure_upload_dir($uploadDir);
     $destination = $uploadDir . $fileName;
 
@@ -118,7 +156,7 @@ function process_equipe_upload(string $fileKey, string $codeEquipe, string $suff
 function rename_team_photo_variants(string $oldCode, string $newCode, string $suffix): void
 {
     $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'];
-    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
+    $uploadDir = team_upload_dir();
     foreach ($extensions as $extension) {
         $oldPath = $uploadDir . $oldCode . '-' . $suffix . '.' . $extension;
         $newPath = $uploadDir . $newCode . '-' . $suffix . '.' . $extension;
@@ -132,7 +170,7 @@ function rename_team_photo_variants(string $oldCode, string $newCode, string $su
 function delete_team_photo_variants(string $codeEquipe, string $suffix): void
 {
     $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'];
-    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
+    $uploadDir = team_upload_dir();
     foreach ($extensions as $extension) {
         $path = $uploadDir . $codeEquipe . '-' . $suffix . '.' . $extension;
         if (file_exists($path)) {
@@ -182,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($ba_bec_photoEquipeUploaded) {
             $oldRelative = normalize_upload_path($ba_bec_photoEquipe);
             if ($oldRelative) {
-                $oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $oldRelative;
+                $oldPath = uploads_root_dir() . $oldRelative;
                 if (file_exists($oldPath)) {
                     unlink($oldPath);
                 }
@@ -196,8 +234,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $safeCode = sanitize_code_equipe($ba_bec_codeEquipe);
                     $targetRelative = 'photos-equipes/' . $safeCode . '-photo-equipe.' . $extension;
                     if ($oldRelative !== $targetRelative) {
-                        $oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $oldRelative;
-                        $newDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
+                        $oldPath = uploads_root_dir() . $oldRelative;
+                        $newDir = team_upload_dir();
                         if (!is_dir($newDir)) {
                             mkdir($newDir, 0755, true);
                         }
@@ -215,7 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($ba_bec_photoStaffUploaded) {
             $oldRelative = normalize_upload_path($ba_bec_photoStaff);
             if ($oldRelative) {
-                $oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $oldRelative;
+                $oldPath = uploads_root_dir() . $oldRelative;
                 if (file_exists($oldPath)) {
                     unlink($oldPath);
                 }
@@ -229,8 +267,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $safeCode = sanitize_code_equipe($ba_bec_codeEquipe);
                     $targetRelative = 'photos-equipes/' . $safeCode . '-photo-staff.' . $extension;
                     if ($oldRelative !== $targetRelative) {
-                        $oldPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $oldRelative;
-                        $newDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
+                        $oldPath = uploads_root_dir() . $oldRelative;
+                        $newDir = team_upload_dir();
                         if (!is_dir($newDir)) {
                             mkdir($newDir, 0755, true);
                         }
