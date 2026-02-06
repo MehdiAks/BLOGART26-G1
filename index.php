@@ -241,6 +241,7 @@ foreach ($matches as $match) {
         'matchTime' => $match['matchTime'] ?? '',
         'location' => $match['location'] ?? 'Gymnase Barbey',
         'becTeam' => $match['teamName'] ?? 'BEC',
+        'teamCode' => $teamCode,
     ];
 }
 
@@ -303,6 +304,67 @@ if (!$becMatchesAvailable) {
             animation: none;
         }
     }
+
+    .home-matches-section {
+        background: #7a0019;
+        color: #ffffff;
+        padding: 2rem;
+        border-radius: 1.5rem;
+    }
+
+    .home-matches-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .home-matches-section p {
+        font-size: 0.95rem;
+    }
+
+    .home-matches-section .text-body-secondary {
+        color: rgba(255, 255, 255, 0.75) !important;
+    }
+
+    .home-matches-section .card {
+        background: transparent;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .home-matches-section .card .text-body-secondary {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .home-match-card h3 {
+        font-size: 1rem;
+    }
+
+    .home-match-logos {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .home-match-logo {
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .home-match-logo img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .home-match-vs {
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.85;
+    }
 </style>
 <section class="home-hero full-bleed">
     <div class="home-hero-content text-start">
@@ -324,9 +386,9 @@ if (!$becMatchesAvailable) {
         </div>
     </section>
 
-    <section class="home-section">
-        <h2 class="fw-bold mb-4">Nos prochains matchs à Barbey !</h2>
-        <p class="text-body-secondary mb-4">Retrouvez nos équipes à domicile, à Barbey.</p>
+    <section class="home-section home-matches-section">
+        <h2 class="fw-bold mb-3">Nos prochains matchs à Barbey !</h2>
+        <p class="text-body-secondary mb-4">Matchs à domicile à Barbey.</p>
         <div class="row g-4">
             <?php if (!$becMatchesAvailable): ?>
                 <div class="col-12">
@@ -361,8 +423,20 @@ if (!$becMatchesAvailable) {
                                             <?php echo htmlspecialchars($label); ?>
                                         </span>
                                     <?php endif; ?>
+                                    <?php
+                                    $becTeamKey = $normalizeClubKey($match['becTeam'] ?? '');
+                                    $homeKey = $normalizeClubKey($match['teamHome'] ?? '');
+                                    $awayKey = $normalizeClubKey($match['teamAway'] ?? '');
+                                    $teamCodeLabel = $match['teamCode'] ?? '';
+                                    $displayHome = ($homeKey !== '' && $homeKey === $becTeamKey && $teamCodeLabel !== '')
+                                        ? $teamCodeLabel
+                                        : ($match['teamHome'] ?? '');
+                                    $displayAway = ($awayKey !== '' && $awayKey === $becTeamKey && $teamCodeLabel !== '')
+                                        ? $teamCodeLabel
+                                        : ($match['teamAway'] ?? '');
+                                    ?>
                                     <h3 class="h5 mb-2">
-                                        <?php echo htmlspecialchars($match['teamHome']); ?> vs. <?php echo htmlspecialchars($match['teamAway']); ?>
+                                        <?php echo htmlspecialchars($displayHome); ?> vs. <?php echo htmlspecialchars($displayAway); ?>
                                     </h3>
                                     <?php
                                     $homeLogo = $resolveTeamLogo($match['teamHome'], $match['becTeam']);
@@ -387,7 +461,7 @@ if (!$becMatchesAvailable) {
                                 <?php else: ?>
                                     <span class="badge text-bg-secondary mb-2">Match à venir</span>
                                     <h3 class="h5 mb-2">Planning en cours</h3>
-                                    <p class="mb-1 text-body-secondary">Nous publierons bientôt les prochains matchs à Barbey.</p>
+                                    <p class="mb-1 text-body-secondary">Planning des prochains matchs en cours.</p>
                                 <?php endif; ?>
                             </div>
                         </article>
