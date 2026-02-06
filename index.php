@@ -68,6 +68,18 @@ $formatMatchDate = static function (string $matchDate): string {
         return $matchDate;
     }
 
+    $capitalizeFirst = static function (string $value): string {
+        if ($value === '') {
+            return $value;
+        }
+        if (function_exists('mb_substr') && function_exists('mb_strtoupper')) {
+            $first = mb_strtoupper(mb_substr($value, 0, 1, 'UTF-8'), 'UTF-8');
+            $rest = mb_substr($value, 1, null, 'UTF-8');
+            return $first . $rest;
+        }
+        return ucfirst($value);
+    };
+
     if (class_exists('IntlDateFormatter')) {
         $formatter = new IntlDateFormatter(
             'fr_FR',
@@ -79,7 +91,7 @@ $formatMatchDate = static function (string $matchDate): string {
         );
         $formatted = $formatter->format($date);
         if ($formatted !== false) {
-            return $formatted;
+            return $capitalizeFirst($formatted);
         }
     }
 
@@ -171,6 +183,7 @@ try {
             m.scoreAdversaire AS scoreAdversaire,
             m.clubAdversaire AS clubAdversaire,
             m.numEquipeAdverse AS numEquipeAdverse,
+            m.source AS source,
             m.codeEquipe AS teamCode,
             e.nomEquipe AS teamName
         FROM `MATCH` m
@@ -240,6 +253,7 @@ foreach ($matches as $match) {
         'matchDate' => $match['matchDate'],
         'matchTime' => $match['matchTime'] ?? '',
         'location' => $match['location'] ?? 'Gymnase Barbey',
+        'source' => $match['source'] ?? '',
         'becTeam' => $match['teamName'] ?? 'BEC',
         'teamCode' => $teamCode,
     ];
@@ -345,8 +359,8 @@ if (!$becMatchesAvailable) {
     }
 
     .home-match-logo {
-        width: 64px;
-        height: 64px;
+        width: 88px;
+        height: 88px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -364,6 +378,11 @@ if (!$becMatchesAvailable) {
         letter-spacing: 0.08em;
         text-transform: uppercase;
         opacity: 0.85;
+    }
+
+    .home-match-info {
+        margin-bottom: 0;
+        line-height: 1.2;
     }
 </style>
 <section class="home-hero full-bleed">
@@ -387,8 +406,7 @@ if (!$becMatchesAvailable) {
     </section>
 
     <section class="home-section home-matches-section">
-        <h2 class="fw-bold mb-3">Nos prochains matchs à Barbey !</h2>
-        <p class="text-body-secondary mb-4">Matchs à domicile à Barbey.</p>
+        <h2 class="fw-bold mb-3 text-center">Nos prochains matchs à Barbey !</h2>
         <div class="row g-4">
             <?php if (!$becMatchesAvailable): ?>
                 <div class="col-12">
@@ -435,12 +453,16 @@ if (!$becMatchesAvailable) {
                                         ? $teamCodeLabel
                                         : ($match['teamAway'] ?? '');
                                     ?>
-                                    <h3 class="h5 mb-2">
+                                    <h3 class="h5 mb-2 text-center">
                                         <?php echo htmlspecialchars($displayHome); ?> vs. <?php echo htmlspecialchars($displayAway); ?>
                                     </h3>
                                     <?php
                                     $homeLogo = $resolveTeamLogo($match['teamHome'], $match['becTeam']);
                                     $awayLogo = $resolveTeamLogo($match['teamAway'], $match['becTeam']);
+                                    $location = trim((string) ($match['location'] ?? ''));
+                                    $locationLower = function_exists('mb_strtolower')
+                                        ? mb_strtolower($location, 'UTF-8')
+                                        : strtolower($location);
                                     ?>
                                     <div class="home-match-logos justify-content-center my-3">
                                         <div class="home-match-logo">
@@ -451,13 +473,22 @@ if (!$becMatchesAvailable) {
                                             <img src="<?php echo htmlspecialchars($awayLogo); ?>" alt="Logo <?php echo htmlspecialchars($match['teamAway']); ?>">
                                         </div>
                                     </div>
-                                    <p class="mb-1 text-center">
+                                    <p class="home-match-info text-center">
                                         <strong><?php echo htmlspecialchars($formatMatchDate($match['matchDate'])); ?></strong>
                                     </p>
                                     <?php if ($formatMatchTime($match['matchTime']) !== ''): ?>
-                                        <p class="mb-1 text-center"><?php echo htmlspecialchars($formatMatchTime($match['matchTime'])); ?></p>
+                                        <p class="home-match-info text-center"><?php echo htmlspecialchars($formatMatchTime($match['matchTime'])); ?></p>
                                     <?php endif; ?>
-                                    <p class="mb-0 text-center text-body-secondary"><?php echo htmlspecialchars($match['location']); ?></p>
+                                    <?php if ($location !== '' && $locationLower !== 'domicile'): ?>
+                                        <p class="home-match-info text-center text-body-secondary"><?php echo htmlspecialchars($location); ?></p>
+                                    <?php endif; ?>
+                                    <?php if (!empty($match['source'])): ?>
+                                        <div class="text-center mt-3">
+                                            <a class="btn btn-outline-light btn-sm" href="<?php echo htmlspecialchars($match['source']); ?>" target="_blank" rel="noopener noreferrer">
+                                                En savoir plus
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
                                 <?php else: ?>
                                     <span class="badge text-bg-secondary mb-2">Match à venir</span>
                                     <h3 class="h5 mb-2">Planning en cours</h3>
