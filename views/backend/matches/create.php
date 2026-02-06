@@ -15,7 +15,10 @@ include '../../../header.php';
 sql_connect();
 
 $ba_bec_equipes = sql_select('EQUIPE', 'codeEquipe, nomEquipe', null, null, 'nomEquipe ASC');
-$ba_bec_clubs = $DB->query('SELECT DISTINCT clubAdversaire FROM `MATCH` WHERE clubAdversaire <> "" ORDER BY clubAdversaire ASC')->fetchAll(PDO::FETCH_COLUMN);
+$ba_bec_clubs = array_column(
+    sql_select('`MATCH`', 'DISTINCT clubAdversaire', "clubAdversaire <> ''", null, 'clubAdversaire ASC'),
+    'clubAdversaire'
+);
 $ba_bec_defaultSaison = '2025-2026';
 $ba_bec_form = [
     'saison' => $_GET['saison'] ?? $ba_bec_defaultSaison,

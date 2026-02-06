@@ -56,17 +56,22 @@ $ba_bec_clubs = [];
 $ba_bec_categories = [];
 $ba_bec_sections = [];
 $ba_bec_niveaux = [];
-try {
-    $ba_bec_clubs = $DB->query("SELECT DISTINCT club FROM EQUIPE WHERE club <> '' ORDER BY club ASC")->fetchAll(PDO::FETCH_COLUMN);
-    $ba_bec_categories = $DB->query("SELECT DISTINCT categorie FROM EQUIPE WHERE categorie <> '' ORDER BY categorie ASC")->fetchAll(PDO::FETCH_COLUMN);
-    $ba_bec_sections = $DB->query("SELECT DISTINCT section FROM EQUIPE WHERE section <> '' ORDER BY section ASC")->fetchAll(PDO::FETCH_COLUMN);
-    $ba_bec_niveaux = $DB->query("SELECT DISTINCT niveau FROM EQUIPE WHERE niveau <> '' ORDER BY niveau ASC")->fetchAll(PDO::FETCH_COLUMN);
-} catch (PDOException $exception) {
-    $ba_bec_clubs = [];
-    $ba_bec_categories = [];
-    $ba_bec_sections = [];
-    $ba_bec_niveaux = [];
-}
+$ba_bec_clubs = array_column(
+    sql_select('EQUIPE', 'DISTINCT club', "club <> ''", null, 'club ASC'),
+    'club'
+);
+$ba_bec_categories = array_column(
+    sql_select('EQUIPE', 'DISTINCT categorie', "categorie <> ''", null, 'categorie ASC'),
+    'categorie'
+);
+$ba_bec_sections = array_column(
+    sql_select('EQUIPE', 'DISTINCT section', "section <> ''", null, 'section ASC'),
+    'section'
+);
+$ba_bec_niveaux = array_column(
+    sql_select('EQUIPE', 'DISTINCT niveau', "niveau <> ''", null, 'niveau ASC'),
+    'niveau'
+);
 
 function ba_bec_photo_url(string $codeEquipe, string $suffix): ?string
 {

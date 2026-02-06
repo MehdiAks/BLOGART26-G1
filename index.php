@@ -94,6 +94,66 @@ $formatMatchTime = static function (?string $matchTime): string {
     return $time ? $time->format('H\hi') : $matchTime;
 };
 
+$logoDirectory = $_SERVER['DOCUMENT_ROOT'] . '/src/images/logo/logo-adversaire';
+$logoWebBase = ROOT_URL . '/src/images/logo/logo-adversaire';
+$becLogoUrl = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
+$defaultLogoUrl = ROOT_URL . '/src/images/logo/team-default.svg';
+
+$normalizeClubKey = static function (string $name): string {
+    $name = trim($name);
+    if ($name === '') {
+        return '';
+    }
+    $name = preg_replace('/\s+\d+$/', '', $name);
+    $name = preg_replace('/\s+/', ' ', $name);
+    $transliterated = iconv('UTF-8', 'ASCII//TRANSLIT', $name);
+    if ($transliterated !== false) {
+        $name = $transliterated;
+    }
+    $name = strtoupper($name);
+    $name = preg_replace('/[^A-Z0-9]+/', '_', $name);
+    return trim($name, '_');
+};
+
+$buildLogoMap = static function () use ($logoDirectory, $logoWebBase, $normalizeClubKey): array {
+    static $logoMap = null;
+    if (is_array($logoMap)) {
+        return $logoMap;
+    }
+    $logoMap = [];
+    if (!is_dir($logoDirectory)) {
+        return $logoMap;
+    }
+    $files = glob($logoDirectory . '/*.{png,PNG,jpg,JPG,jpeg,JPEG,avif,AVIF,webp,WEBP,svg,SVG}', GLOB_BRACE) ?: [];
+    foreach ($files as $file) {
+        $baseName = pathinfo($file, PATHINFO_FILENAME);
+        $key = $normalizeClubKey($baseName);
+        if ($key === '' || isset($logoMap[$key])) {
+            continue;
+        }
+        $logoMap[$key] = $logoWebBase . '/' . basename($file);
+    }
+    return $logoMap;
+};
+
+$resolveClubLogo = static function (?string $clubName) use ($normalizeClubKey, $buildLogoMap, $defaultLogoUrl): string {
+    $key = $normalizeClubKey((string) $clubName);
+    if ($key === '') {
+        return $defaultLogoUrl;
+    }
+    $logoMap = $buildLogoMap();
+    return $logoMap[$key] ?? $defaultLogoUrl;
+};
+
+$resolveTeamLogo = static function (string $teamName, string $becTeamName) use ($normalizeClubKey, $resolveClubLogo, $becLogoUrl): string {
+    $normalizedTeam = $normalizeClubKey($teamName);
+    $normalizedBec = $normalizeClubKey($becTeamName);
+    if ($normalizedTeam !== '' && $normalizedTeam === $normalizedBec) {
+        return $becLogoUrl;
+    }
+    return $resolveClubLogo($teamName);
+};
+
 $clubIdentifiers = [
     'bec',
     'bordeaux',
@@ -111,6 +171,7 @@ try {
             m.scoreAdversaire AS scoreAdversaire,
             m.clubAdversaire AS clubAdversaire,
             m.numEquipeAdverse AS numEquipeAdverse,
+            m.codeEquipe AS teamCode,
             e.nomEquipe AS teamName
         FROM `MATCH` m
         INNER JOIN EQUIPE e ON m.codeEquipe = e.codeEquipe
@@ -151,12 +212,17 @@ foreach ($matches as $match) {
     $opponent = $buildOpponent($match);
     $teamHome = $isHome ? ($match['teamName'] ?? 'BEC') : $opponent;
     $teamAway = $isHome ? $opponent : ($match['teamName'] ?? 'BEC');
+    $teamCode = strtoupper(trim((string) ($match['teamCode'] ?? '')));
     $teamHomeName = strtolower($teamHome);
     $teamAwayName = strtolower($teamAway);
     $key = null;
-    if ($teamHomeName !== '' && (str_contains($teamHomeName, 'sf1') || str_contains($teamHomeName, 'sénior 1') || str_contains($teamHomeName, 'senior 1'))) {
+    if ($teamCode === 'SF1') {
         $key = 'SF1';
-    } elseif ($teamHomeName !== '' && (str_contains($teamHomeName, 'sg1') || str_contains($teamHomeName, 'sénior 1') || str_contains($teamHomeName, 'senior 1'))) {
+    } elseif ($teamCode === 'SG1') {
+        $key = 'SG1';
+    } elseif ($teamHomeName !== '' && (str_contains($teamHomeName, 'sf1') || str_contains($teamHomeName, 'filles 1') || str_contains($teamHomeName, 'fille 1'))) {
+        $key = 'SF1';
+    } elseif ($teamHomeName !== '' && (str_contains($teamHomeName, 'sg1') || str_contains($teamHomeName, 'garçons 1') || str_contains($teamHomeName, 'garcons 1') || str_contains($teamHomeName, 'garcon 1'))) {
         $key = 'SG1';
     }
 
@@ -169,12 +235,12 @@ foreach ($matches as $match) {
     }
 
     $nextMatches[$key] = [
-        'label' => $key === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
         'teamHome' => $teamHome,
         'teamAway' => $teamAway,
         'matchDate' => $match['matchDate'],
         'matchTime' => $match['matchTime'] ?? '',
         'location' => $match['location'] ?? 'Gymnase Barbey',
+        'becTeam' => $match['teamName'] ?? 'BEC',
     ];
 }
 
@@ -286,22 +352,38 @@ if (!$becMatchesAvailable) {
                 ?>
                 <?php foreach ($matchCards as $match): ?>
                     <div class="col-12 col-lg-6">
-                        <article class="card h-100 border-0 shadow-sm">
+                        <article class="card h-100 border-0 shadow-sm home-match-card">
                             <div class="card-body">
                                 <?php if ($match): ?>
-                                    <span class="badge <?php echo $match['badge']; ?> mb-2">
-                                        <?php echo htmlspecialchars($match['label']); ?>
-                                    </span>
+                                    <?php $label = $match['label'] ?? ''; ?>
+                                    <?php if ($label !== ''): ?>
+                                        <span class="badge <?php echo $match['badge']; ?> mb-2">
+                                            <?php echo htmlspecialchars($label); ?>
+                                        </span>
+                                    <?php endif; ?>
                                     <h3 class="h5 mb-2">
                                         <?php echo htmlspecialchars($match['teamHome']); ?> vs. <?php echo htmlspecialchars($match['teamAway']); ?>
                                     </h3>
-                                    <p class="mb-1">
+                                    <?php
+                                    $homeLogo = $resolveTeamLogo($match['teamHome'], $match['becTeam']);
+                                    $awayLogo = $resolveTeamLogo($match['teamAway'], $match['becTeam']);
+                                    ?>
+                                    <div class="home-match-logos justify-content-center my-3">
+                                        <div class="home-match-logo">
+                                            <img src="<?php echo htmlspecialchars($homeLogo); ?>" alt="Logo <?php echo htmlspecialchars($match['teamHome']); ?>">
+                                        </div>
+                                        <span class="home-match-vs">vs</span>
+                                        <div class="home-match-logo">
+                                            <img src="<?php echo htmlspecialchars($awayLogo); ?>" alt="Logo <?php echo htmlspecialchars($match['teamAway']); ?>">
+                                        </div>
+                                    </div>
+                                    <p class="mb-1 text-center">
                                         <strong><?php echo htmlspecialchars($formatMatchDate($match['matchDate'])); ?></strong>
-                                        <?php if ($formatMatchTime($match['matchTime']) !== ''): ?>
-                                            • <?php echo htmlspecialchars($formatMatchTime($match['matchTime'])); ?>
-                                        <?php endif; ?>
                                     </p>
-                                    <p class="mb-0 text-body-secondary"><?php echo htmlspecialchars($match['location']); ?></p>
+                                    <?php if ($formatMatchTime($match['matchTime']) !== ''): ?>
+                                        <p class="mb-1 text-center"><?php echo htmlspecialchars($formatMatchTime($match['matchTime'])); ?></p>
+                                    <?php endif; ?>
+                                    <p class="mb-0 text-center text-body-secondary"><?php echo htmlspecialchars($match['location']); ?></p>
                                 <?php else: ?>
                                     <span class="badge text-bg-secondary mb-2">Match à venir</span>
                                     <h3 class="h5 mb-2">Planning en cours</h3>

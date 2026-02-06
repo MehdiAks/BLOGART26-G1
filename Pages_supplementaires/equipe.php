@@ -318,17 +318,19 @@ if (!$coachLead && !empty($assistantCoaches)) {
                     <div class="team-profile-gallery">
                         <div class="team-profile-photo">
                             <p class="team-profile-label">Photo équipe</p>
-                            <?php if ($teamPhotoUrl) : ?>
-                                <img src="<?php echo htmlspecialchars($teamPhotoUrl); ?>" alt="<?php echo htmlspecialchars($teamName); ?>">
-                            <?php else : ?>
+                            <?php if ($teamPhotoUrl): ?>
+                                <img src="<?php echo htmlspecialchars($teamPhotoUrl); ?>"
+                                    alt="<?php echo htmlspecialchars($teamName); ?>">
+                            <?php else: ?>
                                 <span class="team-profile-placeholder">Photo d'équipe à venir</span>
                             <?php endif; ?>
                         </div>
                         <div class="team-profile-photo">
                             <p class="team-profile-label">Photo staff</p>
-                            <?php if ($staffPhotoUrl) : ?>
-                                <img src="<?php echo htmlspecialchars($staffPhotoUrl); ?>" alt="Photo du staff <?php echo htmlspecialchars($teamName); ?>">
-                            <?php else : ?>
+                            <?php if ($staffPhotoUrl): ?>
+                                <img src="<?php echo htmlspecialchars($staffPhotoUrl); ?>"
+                                    alt="Photo du staff <?php echo htmlspecialchars($teamName); ?>">
+                            <?php else: ?>
                                 <span class="team-profile-placeholder">Photo du staff à venir</span>
                             <?php endif; ?>
                         </div>
@@ -353,9 +355,12 @@ if (!$coachLead && !empty($assistantCoaches)) {
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h3 class="h6 text-uppercase text-muted">Matchs joués</h3>
-                        <p class="mb-1"><strong>Domicile :</strong> <?php echo htmlspecialchars((string) $stats['home']['matches']); ?></p>
-                        <p class="mb-1"><strong>Extérieur :</strong> <?php echo htmlspecialchars((string) $stats['away']['matches']); ?></p>
-                        <p class="mb-0"><strong>Total :</strong> <?php echo htmlspecialchars((string) $stats['total']['matches']); ?></p>
+                        <p class="mb-1"><strong>Domicile :</strong>
+                            <?php echo htmlspecialchars((string) $stats['home']['matches']); ?></p>
+                        <p class="mb-1"><strong>Extérieur :</strong>
+                            <?php echo htmlspecialchars((string) $stats['away']['matches']); ?></p>
+                        <p class="mb-0"><strong>Total :</strong>
+                            <?php echo htmlspecialchars((string) $stats['total']['matches']); ?></p>
                     </div>
                 </div>
             </div>
@@ -363,9 +368,12 @@ if (!$coachLead && !empty($assistantCoaches)) {
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h3 class="h6 text-uppercase text-muted">Points marqués</h3>
-                        <p class="mb-1"><strong>Domicile :</strong> <?php echo htmlspecialchars((string) $stats['home']['pointsFor']); ?></p>
-                        <p class="mb-1"><strong>Extérieur :</strong> <?php echo htmlspecialchars((string) $stats['away']['pointsFor']); ?></p>
-                        <p class="mb-0"><strong>Total :</strong> <?php echo htmlspecialchars((string) $stats['total']['pointsFor']); ?></p>
+                        <p class="mb-1"><strong>Domicile :</strong>
+                            <?php echo htmlspecialchars((string) $stats['home']['pointsFor']); ?></p>
+                        <p class="mb-1"><strong>Extérieur :</strong>
+                            <?php echo htmlspecialchars((string) $stats['away']['pointsFor']); ?></p>
+                        <p class="mb-0"><strong>Total :</strong>
+                            <?php echo htmlspecialchars((string) $stats['total']['pointsFor']); ?></p>
                     </div>
                 </div>
             </div>
@@ -373,9 +381,12 @@ if (!$coachLead && !empty($assistantCoaches)) {
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h3 class="h6 text-uppercase text-muted">Points encaissés</h3>
-                        <p class="mb-1"><strong>Domicile :</strong> <?php echo htmlspecialchars((string) $stats['home']['pointsAgainst']); ?></p>
-                        <p class="mb-1"><strong>Extérieur :</strong> <?php echo htmlspecialchars((string) $stats['away']['pointsAgainst']); ?></p>
-                        <p class="mb-0"><strong>Total :</strong> <?php echo htmlspecialchars((string) $stats['total']['pointsAgainst']); ?></p>
+                        <p class="mb-1"><strong>Domicile :</strong>
+                            <?php echo htmlspecialchars((string) $stats['home']['pointsAgainst']); ?></p>
+                        <p class="mb-1"><strong>Extérieur :</strong>
+                            <?php echo htmlspecialchars((string) $stats['away']['pointsAgainst']); ?></p>
+                        <p class="mb-0"><strong>Total :</strong>
+                            <?php echo htmlspecialchars((string) $stats['total']['pointsAgainst']); ?></p>
                     </div>
                 </div>
             </div>
@@ -391,17 +402,18 @@ if (!$coachLead && !empty($assistantCoaches)) {
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h3 class="h6 text-uppercase text-muted">Meilleure différence</h3>
-                        <?php if ($stats['bestWin']) : ?>
-                            <p class="mb-1"><strong>+<?php echo htmlspecialchars((string) $stats['bestWin']['diff']); ?></strong></p>
-                            <?php if (!empty($stats['bestWin']['opponent'])) : ?>
+                        <?php if ($stats['bestWin']): ?>
+                            <p class="mb-1">
+                                <strong>+<?php echo htmlspecialchars((string) $stats['bestWin']['diff']); ?></strong></p>
+                            <?php if (!empty($stats['bestWin']['opponent'])): ?>
                                 <p class="mb-0 text-muted">
                                     <?php echo htmlspecialchars($stats['bestWin']['opponent']); ?>
-                                    <?php if (!empty($stats['bestWin']['date'])) : ?>
+                                    <?php if (!empty($stats['bestWin']['date'])): ?>
                                         · <?php echo htmlspecialchars($stats['bestWin']['date']); ?>
                                     <?php endif; ?>
                                 </p>
                             <?php endif; ?>
-                        <?php else : ?>
+                        <?php else: ?>
                             <p class="mb-0 text-muted">Aucune victoire enregistrée.</p>
                         <?php endif; ?>
                     </div>
@@ -447,7 +459,7 @@ if (!$coachLead && !empty($assistantCoaches)) {
 
     <section class="team-detail-section">
         <h2>Prochain match</h2>
-        <?php if ($nextMatch) : ?>
+        <?php if ($nextMatch): ?>
             <article class="match-highlight">
                 <div class="match-clubs">
                     <div class="match-team">
@@ -459,19 +471,22 @@ if (!$coachLead && !empty($assistantCoaches)) {
                     </div>
                 </div>
                 <div class="match-details">
-                    <p><?php echo htmlspecialchars($nextMatch['dateMatch'] ?? ''); ?><?php echo !empty($nextMatch['heureMatch']) ? ' · ' . htmlspecialchars($nextMatch['heureMatch']) : ''; ?></p>
+                    <p><?php echo htmlspecialchars($nextMatch['dateMatch'] ?? ''); ?><?php echo !empty($nextMatch['heureMatch']) ? ' · ' . htmlspecialchars($nextMatch['heureMatch']) : ''; ?>
+                    </p>
                     <p class="text-muted"><?php echo htmlspecialchars($nextMatch['lieuMatch'] ?? 'Lieu à confirmer'); ?></p>
                 </div>
             </article>
-        <?php else : ?>
+        <?php else: ?>
             <p class="text-muted">Aucun match à venir.</p>
         <?php endif; ?>
 
-        <?php if (!empty($nextMatchOthers)) : ?>
+        <?php if (!empty($nextMatchOthers)): ?>
             <div class="match-upcoming">
-                <?php foreach ($nextMatchOthers as $match) : ?>
+                <?php foreach ($nextMatchOthers as $match): ?>
                     <article class="match-card">
-                        <p class="match-card-opponent"><?php echo htmlspecialchars(($match['teamHome'] ?? '') . ' vs ' . ($match['teamAway'] ?? '')); ?></p>
+                        <p class="match-card-opponent">
+                            <?php echo htmlspecialchars(($match['teamHome'] ?? '') . ' vs ' . ($match['teamAway'] ?? '')); ?>
+                        </p>
                         <p class="match-card-date"><?php echo htmlspecialchars($match['dateMatch'] ?? ''); ?></p>
                     </article>
                 <?php endforeach; ?>
@@ -484,24 +499,25 @@ if (!$coachLead && !empty($assistantCoaches)) {
         <div class="staff-grid">
             <article class="staff-card">
                 <h3>Coach principal</h3>
-                <?php if ($coachLead) : ?>
+                <?php if ($coachLead): ?>
                     <p><?php echo htmlspecialchars($coachLead['prenomPersonnel'] . ' ' . $coachLead['nomPersonnel']); ?></p>
-                    <?php if (!empty($coachLead['libRolePersonnel'])) : ?>
+                    <?php if (!empty($coachLead['libRolePersonnel'])): ?>
                         <p class="text-muted"><?php echo htmlspecialchars($coachLead['libRolePersonnel']); ?></p>
                     <?php endif; ?>
-                <?php else : ?>
+                <?php else: ?>
                     <p class="text-muted">Aucun coach renseigné.</p>
                 <?php endif; ?>
             </article>
             <article class="staff-card">
                 <h3>Assistant</h3>
-                <?php if (!empty($assistantCoaches)) : ?>
+                <?php if (!empty($assistantCoaches)): ?>
                     <ul>
-                        <?php foreach ($assistantCoaches as $assistant) : ?>
-                            <li><?php echo htmlspecialchars($assistant['prenomPersonnel'] . ' ' . $assistant['nomPersonnel']); ?></li>
+                        <?php foreach ($assistantCoaches as $assistant): ?>
+                            <li><?php echo htmlspecialchars($assistant['prenomPersonnel'] . ' ' . $assistant['nomPersonnel']); ?>
+                            </li>
                         <?php endforeach; ?>
                     </ul>
-                <?php else : ?>
+                <?php else: ?>
                     <p class="text-muted">Aucun assistant renseigné.</p>
                 <?php endif; ?>
             </article>
@@ -510,11 +526,11 @@ if (!$coachLead && !empty($assistantCoaches)) {
 
     <section class="team-detail-section">
         <h2>Joueurs</h2>
-        <?php if (empty($players)) : ?>
+        <?php if (empty($players)): ?>
             <p class="text-muted">Aucun joueur renseigné.</p>
-        <?php else : ?>
+        <?php else: ?>
             <div class="players-grid">
-                <?php foreach ($players as $player) : ?>
+                <?php foreach ($players as $player): ?>
                     <?php
                     $playerPhoto = $player['urlPhotoJoueur'] ?? '';
                     $playerPhotoUrl = '';
@@ -527,13 +543,15 @@ if (!$coachLead && !empty($assistantCoaches)) {
                     <article class="player-card">
                         <h3><?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?></h3>
                         <div class="player-photo">
-                            <?php if ($playerPhotoUrl) : ?>
-                                <img src="<?php echo htmlspecialchars($playerPhotoUrl); ?>" alt="<?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>" loading="lazy">
-                            <?php else : ?>
+                            <?php if ($playerPhotoUrl): ?>
+                                <img src="<?php echo htmlspecialchars($playerPhotoUrl); ?>"
+                                    alt="<?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>"
+                                    loading="lazy">
+                            <?php else: ?>
                                 <span class="player-photo-placeholder">Photo à venir</span>
                             <?php endif; ?>
                         </div>
-                        <?php if (!empty($player['posteJoueur'])) : ?>
+                        <?php if (!empty($player['posteJoueur'])): ?>
                             <p class="text-muted"><?php echo htmlspecialchars(format_poste((int) $player['posteJoueur'])); ?></p>
                         <?php endif; ?>
                     </article>

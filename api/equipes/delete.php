@@ -18,7 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_numEquipe = (int) ($_POST['numEquipe'] ?? 0);
 
     if ($ba_bec_numEquipe > 0) {
-        sql_delete('EQUIPE', "numEquipe = '$ba_bec_numEquipe'");
+        $ba_bec_result = sql_delete('EQUIPE', "numEquipe = '$ba_bec_numEquipe'");
+        if ($ba_bec_result['success']) {
+            flash_success();
+        } elseif (!empty($ba_bec_result['constraint']) || sql_is_foreign_key_error($ba_bec_result['message'] ?? '', $ba_bec_result['code'] ?? null)) {
+            flash_delete_impossible('Suppression impossible : cette équipe est utilisée dans d’autres tables (joueurs, matchs, staff).');
+        } else {
+            flash_error();
+        }
     }
 
     header('Location: ../../views/backend/equipes/list.php');

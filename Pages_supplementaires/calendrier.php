@@ -11,6 +11,66 @@ sql_connect();
 
 $becMatchesAvailable = true;
 
+$logoDirectory = $_SERVER['DOCUMENT_ROOT'] . '/src/images/logo/logo-adversaire';
+$logoWebBase = ROOT_URL . '/src/images/logo/logo-adversaire';
+$becLogoUrl = ROOT_URL . '/src/images/logo/logo-bec/logo.png';
+$defaultLogoUrl = ROOT_URL . '/src/images/logo/team-default.svg';
+
+$normalizeClubKey = static function (string $name): string {
+    $name = trim($name);
+    if ($name === '') {
+        return '';
+    }
+    $name = preg_replace('/\s+\d+$/', '', $name);
+    $name = preg_replace('/\s+/', ' ', $name);
+    $transliterated = iconv('UTF-8', 'ASCII//TRANSLIT', $name);
+    if ($transliterated !== false) {
+        $name = $transliterated;
+    }
+    $name = strtoupper($name);
+    $name = preg_replace('/[^A-Z0-9]+/', '_', $name);
+    return trim($name, '_');
+};
+
+$buildLogoMap = static function () use ($logoDirectory, $logoWebBase, $normalizeClubKey): array {
+    static $logoMap = null;
+    if (is_array($logoMap)) {
+        return $logoMap;
+    }
+    $logoMap = [];
+    if (!is_dir($logoDirectory)) {
+        return $logoMap;
+    }
+    $files = glob($logoDirectory . '/*.{png,PNG,jpg,JPG,jpeg,JPEG,avif,AVIF,webp,WEBP,svg,SVG}', GLOB_BRACE) ?: [];
+    foreach ($files as $file) {
+        $baseName = pathinfo($file, PATHINFO_FILENAME);
+        $key = $normalizeClubKey($baseName);
+        if ($key === '' || isset($logoMap[$key])) {
+            continue;
+        }
+        $logoMap[$key] = $logoWebBase . '/' . basename($file);
+    }
+    return $logoMap;
+};
+
+$resolveClubLogo = static function (?string $clubName) use ($normalizeClubKey, $buildLogoMap, $defaultLogoUrl): string {
+    $key = $normalizeClubKey((string) $clubName);
+    if ($key === '') {
+        return $defaultLogoUrl;
+    }
+    $logoMap = $buildLogoMap();
+    return $logoMap[$key] ?? $defaultLogoUrl;
+};
+
+$resolveTeamLogo = static function (string $teamName, string $becTeamName) use ($normalizeClubKey, $resolveClubLogo, $becLogoUrl): string {
+    $normalizedTeam = $normalizeClubKey($teamName);
+    $normalizedBec = $normalizeClubKey($becTeamName);
+    if ($normalizedTeam !== '' && $normalizedTeam === $normalizedBec) {
+        return $becLogoUrl;
+    }
+    return $resolveClubLogo($teamName);
+};
+
 $matchesQuery = "SELECT
         m.numMatch AS numMatch,
         m.dateMatch AS matchDate,
@@ -86,7 +146,7 @@ if ($becMatchesAvailable) {
     }
 }
 
-$renderMatchCard = static function (array $ba_bec_match): string {
+$renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo): string {
     $matchDate = new DateTime($ba_bec_match['matchDate']);
     $displayDate = $matchDate->format('d/m/Y');
     $displayTime = '';
@@ -99,10 +159,13 @@ $renderMatchCard = static function (array $ba_bec_match): string {
         $score = (int) $ba_bec_match['scoreHome'] . ' - ' . (int) $ba_bec_match['scoreAway'];
     }
 
+    $homeLogo = $resolveTeamLogo($ba_bec_match['teamHome'], $ba_bec_match['teamName'] ?? '');
+    $awayLogo = $resolveTeamLogo($ba_bec_match['teamAway'], $ba_bec_match['teamName'] ?? '');
+
     ob_start();
     ?>
     <div class="col-12">
-        <article class="match-card">
+        <article class="match-card" style="--match-home-logo: url('<?php echo htmlspecialchars($homeLogo); ?>'); --match-away-logo: url('<?php echo htmlspecialchars($awayLogo); ?>');">
             <header class="match-card__header">
                 <div>
                     <p class="match-card__competition"><?php echo htmlspecialchars($ba_bec_match['teamName'] ?? 'Match'); ?></p>
@@ -117,6 +180,7 @@ $renderMatchCard = static function (array $ba_bec_match): string {
             <div class="wrapper">
                 <div class="match-card__team">
                     <span>Domicile</span>
+                    <img class="match-card__logo" src="<?php echo htmlspecialchars($homeLogo); ?>" alt="Logo <?php echo htmlspecialchars($ba_bec_match['teamHome']); ?>">
                     <strong><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></strong>
                 </div>
                 <div class="match-card__score">
@@ -124,6 +188,7 @@ $renderMatchCard = static function (array $ba_bec_match): string {
                 </div>
                 <div class="match-card__team">
                     <span>Extérieur</span>
+                    <img class="match-card__logo" src="<?php echo htmlspecialchars($awayLogo); ?>" alt="Logo <?php echo htmlspecialchars($ba_bec_match['teamAway']); ?>">
                     <strong><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></strong>
                 </div>
             </div>

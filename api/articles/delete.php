@@ -53,6 +53,11 @@ $ba_bec_delete_result = sql_delete('ARTICLE', "numArt = '$ba_bec_numArt'");
 // Redirection après la suppression
 if ($ba_bec_motcle_result['success'] && $ba_bec_delete_result['success']) {
     flash_success();
+} elseif (
+    (!empty($ba_bec_motcle_result['constraint']) || sql_is_foreign_key_error($ba_bec_motcle_result['message'] ?? '', $ba_bec_motcle_result['code'] ?? null))
+    || (!empty($ba_bec_delete_result['constraint']) || sql_is_foreign_key_error($ba_bec_delete_result['message'] ?? '', $ba_bec_delete_result['code'] ?? null))
+) {
+    flash_delete_impossible('Suppression impossible : cet article est utilisé dans d’autres données.');
 } else {
     flash_error();
 }
