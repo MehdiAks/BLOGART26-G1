@@ -36,7 +36,7 @@
                 <div class="col-lg-4">
                     <div class="ratio ratio-4x3 rounded-4 overflow-hidden shadow-sm">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2829.921341579605!2d-0.5763837240139745!3d44.82316707598102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd5527ba88e01e2d%3A0xf8bc9e94e84c6e71!2s51%20Rue%20Pauline%20Kergomard%2C%2033800%20Bordeaux!5e0!3m2!1sfr!2sfr!4v1769782356902!5m2!1sfr!2sfr"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387.73473039224695!2d-0.5620506434721906!3d44.827972032339!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd55264b1f8d16e7%3A0x60bae14b3c5cbd38!2s8%20Cr%20Barbey%2C%2033800%20Bordeaux!5e0!3m2!1sfr!2sfr!4v1770375688862!5m2!1sfr!2sfr""
                             style="border:0;"
                             allowfullscreen=""
                             loading="lazy"

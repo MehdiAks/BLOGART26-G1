@@ -64,7 +64,7 @@
             font-weight: 700;
             color: var(--bec-dark);
             padding-right: 60px;
-            margin-top: 20px;
+            margin-top: 0;
         }
 
         .site-header {
@@ -91,6 +91,7 @@
             display: flex;
             gap: 60px;
             justify-content: center;
+            align-items: center;
         }
 
         .site-header .header-nav {
@@ -245,23 +246,55 @@
         }
 
         .btn-contact-footer {
-            background-color:#ddd;
+            background-color: #fff;
+            color: #8a0a27;
             font-size: 18px;
             padding: 12px 24px;
-            border: none;
+            border: 2px solid #fff;
             border-radius: 6px;
         }
 
 
         .site-footer {
-            background-color: #fff;
+            background-color: #8a0a27;
+            text-align: center;
         }
 
         .site-footer a,
         .site-footer h3,
         .site-footer h4,
         .site-footer p {
-            color: var(--bec-dark);
+            color: #fff;
+        }
+
+        .site-footer .btn-contact-footer:is(:hover, :focus-visible) {
+            background-color: #fff;
+            color: #8a0a27;
+            border-color: #fff;
+        }
+
+        .site-footer .row {
+            justify-content: center;
+        }
+
+        .site-footer .col-lg-5,
+        .site-footer .col-lg-4 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .site-footer .ratio {
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .site-footer .d-flex {
+            justify-content: center;
+        }
+
+        .site-footer .list-unstyled {
+            align-items: center;
         }
 
         .site-footer a {
@@ -624,6 +657,8 @@
 
         .header-compte-wrapper {
             margin-left: auto;
+            display: flex;
+            align-items: center;
         }
 
         .header-compte-menu {
@@ -828,12 +863,25 @@
 
 
         .btn-compte {
-            background-color:#ddd;
-            font-size: 18px;
-            padding: 12px 20px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 6px;
+            font-size: 16px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #8a0a27;
+            border-color: #8a0a27;
+            color: #fff;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-compte:hover,
+        .btn-compte:focus {
+            background-color: #8a0a27;
+            border-color: #8a0a27;
+            color: #fff;
+            transform: scale(1.05);
         }
 
 
