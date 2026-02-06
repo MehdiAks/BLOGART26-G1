@@ -414,21 +414,6 @@ if (!$coachLead && !empty($assistantCoaches)) {
                 <?php endif; ?>
             </article>
         </div>
-        <?php if (!empty($otherCoaches)) : ?>
-            <div class="staff-extra">
-                <h3>Encadrement supplémentaire</h3>
-                <ul>
-                    <?php foreach ($otherCoaches as $coach) : ?>
-                        <li>
-                            <?php echo htmlspecialchars($coach['prenomPersonnel'] . ' ' . $coach['nomPersonnel']); ?>
-                            <?php if (!empty($coach['libRolePersonnel'])) : ?>
-                                <span class="text-muted">(<?php echo htmlspecialchars($coach['libRolePersonnel']); ?>)</span>
-                            <?php endif; ?>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
     </section>
 
     <section class="team-detail-section">
