@@ -88,6 +88,15 @@
     gap: 12px;
 }
 
+.home-match-card {
+    background-color: #67081d;
+    color: #fff;
+}
+
+.home-match-card .text-body-secondary {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
 .home-match-logo {
     width: 56px;
     height: 56px;
