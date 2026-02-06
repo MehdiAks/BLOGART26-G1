@@ -1,5 +1,5 @@
 <?php
-// ctrl saisies form
+// Fonction utilitaire pour échapper les valeurs provenant des formulaires.
 function sql_escape($value){
     if(is_array($value)){
         foreach($value as $key => $val){
@@ -10,7 +10,7 @@ function sql_escape($value){
     }
     return $value;
 }
-// load scripts CRUD
+// Charge les scripts CRUD et helpers SQL.
 require_once __DIR__ . '/connect.php';
 require_once __DIR__ . '/create_table.php';
 require_once __DIR__ . '/error.php';
