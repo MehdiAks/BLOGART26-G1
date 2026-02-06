@@ -828,12 +828,12 @@
 
 
         .btn-compte {
-            background-color:#ddd;
             font-size: 18px;
-            padding: 12px 20px;
             margin-top: 20px;
-            border: none;
-            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
 
