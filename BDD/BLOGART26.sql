@@ -60,6 +60,24 @@ CREATE TABLE `ARTICLE` (
   `numThem` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `BOUTIQUE`
+--
+
+CREATE TABLE `BOUTIQUE` (
+  `numArtBoutique` int NOT NULL,
+  `libArtBoutique` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descArtBoutique` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `couleursArtBoutique` json DEFAULT NULL,
+  `taillesArtBoutique` json DEFAULT NULL,
+  `prixAdulteArtBoutique` decimal(10,2) DEFAULT NULL,
+  `prixEnfantArtBoutique` decimal(10,2) DEFAULT NULL,
+  `urlPhotosArtBoutique` json DEFAULT NULL,
+  `categorieArtBoutique` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `ARTICLE`
 --
@@ -686,6 +704,12 @@ ALTER TABLE `ARTICLE`
   ADD KEY `FK_ASSOCIATION_1` (`numThem`);
 
 --
+-- Index pour la table `BOUTIQUE`
+--
+ALTER TABLE `BOUTIQUE`
+  ADD PRIMARY KEY (`numArtBoutique`);
+
+--
 -- Index pour la table `CATEGORIE_EQUIPE`
 --
 ALTER TABLE `CATEGORIE_EQUIPE`
@@ -882,6 +906,12 @@ ALTER TABLE `AFFECTATION_PERSONNEL_EQUIPE`
 --
 ALTER TABLE `ARTICLE`
   MODIFY `numArt` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT pour la table `BOUTIQUE`
+--
+ALTER TABLE `BOUTIQUE`
+  MODIFY `numArtBoutique` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `CATEGORIE_EQUIPE`
