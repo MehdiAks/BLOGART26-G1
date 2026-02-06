@@ -398,14 +398,14 @@ if (!$becMatchesAvailable) {
     </div>
 </section>
 <div class="container py-5 home-main-surface home-main-surface--hidden">
-    <section class="home-section">
+    <section class="home-section text-center">
         <h1 class="fw-bold mb-3">Bienvenue au BEC</h1>
         <p class="lead mb-4">
             Bordeaux n'est pas seulement son miroir d'eau ou encore ses cannelés. C'est aussi une ville de sport et de talent ! <br>
             Ce blog permet de suivre toute l'actualité du Bordeaux Etudiant Club, les jours de matchs, les résultats, les évènements, les joueurs, ...
             <br>Le but ? Mettre en valeur la section basket du club, partager les performances de l'équipe ainsi que ses valeurs du sport.
         </p>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 justify-content-center">
             <a class="btn btn-primary" href="actualites.php">Voir les actualités</a>
             <a class="btn btn-outline-secondary" href="contact.php">Nous contacter</a>
         </div>
