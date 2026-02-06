@@ -1,12 +1,16 @@
 <?php
+// Gestionnaire de création de schémas pour les tables SQL.
 function sql_create_table($table){
     global $DB;
 
+    // S'assure que la connexion PDO est initialisée.
     if(!$DB){
         sql_connect();
     }
 
+    // Normalise le nom de table pour l'index des schémas.
     $table = strtoupper($table);
+    // Définition des schémas disponibles (par domaine fonctionnel).
     $schemas = [
         'EQUIPE' => [
             "CREATE TABLE IF NOT EXISTS `CLUB` (
@@ -230,11 +234,13 @@ function sql_create_table($table){
         ],
     ];
 
+    // Si aucun schéma n'est défini, on sort proprement.
     if(!isset($schemas[$table])){
         return false;
     }
 
     try{
+        // Exécute toutes les requêtes de création associées.
         $schema = $schemas[$table];
         if (is_array($schema)) {
             foreach ($schema as $statement) {
@@ -245,6 +251,7 @@ function sql_create_table($table){
         }
         return true;
     }catch(PDOException $exception){
+        // En cas d'erreur, on signale l'échec.
         return false;
     }
 }
