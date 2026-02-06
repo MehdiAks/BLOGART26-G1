@@ -41,7 +41,7 @@ $ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
                         <th>Prénom</th>
                         <th>Nom</th>
                         <th>Photo</th>
-                        <th>Coach</th>
+                        <th>Staff équipe</th>
                         <th>Direction</th>
                         <th>Commission technique</th>
                         <th>Commission animation</th>
@@ -64,18 +64,54 @@ $ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?php if (!empty($ba_bec_benevole['estCoach'])): ?>
-                                        Oui<?php if (!empty($ba_bec_benevole['numEquipeCoachee']) && !empty($ba_bec_team_map[$ba_bec_benevole['numEquipeCoachee']])): ?>
-                                            (<?php echo htmlspecialchars($ba_bec_team_map[$ba_bec_benevole['numEquipeCoachee']]); ?>)
+                                    <?php if (!empty($ba_bec_benevole['estStaffEquipe'])): ?>
+                                        Oui
+                                        <?php if (!empty($ba_bec_benevole['numEquipeStaff']) && !empty($ba_bec_team_map[$ba_bec_benevole['numEquipeStaff']])): ?>
+                                            (<?php echo htmlspecialchars($ba_bec_team_map[$ba_bec_benevole['numEquipeStaff']]); ?>)
+                                        <?php endif; ?>
+                                        <?php if (!empty($ba_bec_benevole['roleStaffEquipe'])): ?>
+                                            - <?php echo htmlspecialchars($ba_bec_benevole['roleStaffEquipe']); ?>
                                         <?php endif; ?>
                                     <?php else: ?>
                                         Non
                                     <?php endif; ?>
                                 </td>
-                                <td><?php echo !empty($ba_bec_benevole['estDirection']) ? 'Oui' : 'Non'; ?></td>
-                                <td><?php echo !empty($ba_bec_benevole['estCommissionTechnique']) ? 'Oui' : 'Non'; ?></td>
-                                <td><?php echo !empty($ba_bec_benevole['estCommissionAnimation']) ? 'Oui' : 'Non'; ?></td>
-                                <td><?php echo !empty($ba_bec_benevole['estCommissionCommunication']) ? 'Oui' : 'Non'; ?></td>
+                                <td>
+                                    <?php if (!empty($ba_bec_benevole['estDirection'])): ?>
+                                        Oui<?php if (!empty($ba_bec_benevole['posteDirection'])): ?>
+                                            (<?php echo htmlspecialchars($ba_bec_benevole['posteDirection']); ?>)
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        Non
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if (!empty($ba_bec_benevole['estCommissionTechnique'])): ?>
+                                        Oui<?php if (!empty($ba_bec_benevole['posteCommissionTechnique'])): ?>
+                                            (<?php echo htmlspecialchars($ba_bec_benevole['posteCommissionTechnique']); ?>)
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        Non
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if (!empty($ba_bec_benevole['estCommissionAnimation'])): ?>
+                                        Oui<?php if (!empty($ba_bec_benevole['posteCommissionAnimation'])): ?>
+                                            (<?php echo htmlspecialchars($ba_bec_benevole['posteCommissionAnimation']); ?>)
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        Non
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if (!empty($ba_bec_benevole['estCommissionCommunication'])): ?>
+                                        Oui<?php if (!empty($ba_bec_benevole['posteCommissionCommunication'])): ?>
+                                            (<?php echo htmlspecialchars($ba_bec_benevole['posteCommissionCommunication']); ?>)
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        Non
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <a href="edit.php?numPersonnel=<?= htmlspecialchars($ba_bec_benevole['numPersonnel']); ?>" class="btn btn-primary">Edit</a>
                                     <a href="delete.php?numPersonnel=<?= htmlspecialchars($ba_bec_benevole['numPersonnel']); ?>" class="btn btn-danger">Delete</a>

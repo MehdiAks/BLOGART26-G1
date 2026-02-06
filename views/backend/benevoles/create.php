@@ -43,12 +43,12 @@ $ba_bec_teams = sql_select('EQUIPE', 'numEquipe, libEquipe', null, null, 'libEqu
                 <div class="form-group mt-3">
                     <label class="form-label d-block">Rôles</label>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="estCoach" name="estCoach" value="1" />
-                        <label class="form-check-label" for="estCoach">Coach</label>
+                        <input class="form-check-input" type="checkbox" id="estStaffEquipe" name="estStaffEquipe" value="1" />
+                        <label class="form-check-label" for="estStaffEquipe">Staff équipe</label>
                     </div>
                     <div class="mt-2">
-                        <label for="numEquipeCoachee" class="form-label">Équipe coachée</label>
-                        <select id="numEquipeCoachee" name="numEquipeCoachee" class="form-select">
+                        <label for="numEquipeStaff" class="form-label">Équipe rattachée</label>
+                        <select id="numEquipeStaff" name="numEquipeStaff" class="form-select">
                             <option value="">Sélectionner une équipe</option>
                             <?php foreach ($ba_bec_teams as $ba_bec_team): ?>
                                 <option value="<?php echo htmlspecialchars($ba_bec_team['numEquipe']); ?>">
@@ -57,21 +57,46 @@ $ba_bec_teams = sql_select('EQUIPE', 'numEquipe, libEquipe', null, null, 'libEqu
                             <?php endforeach; ?>
                         </select>
                     </div>
+                    <div class="mt-2">
+                        <label for="roleStaffEquipe" class="form-label">Rôle staff équipe</label>
+                        <input id="roleStaffEquipe" name="roleStaffEquipe" class="form-control" type="text"
+                            placeholder="Ex: Coach, assistant coach, analyste vidéo" />
+                    </div>
                     <div class="form-check mt-2">
                         <input class="form-check-input" type="checkbox" id="estDirection" name="estDirection" value="1" />
                         <label class="form-check-label" for="estDirection">Direction</label>
+                    </div>
+                    <div class="mt-2">
+                        <label for="posteDirection" class="form-label">Poste en direction</label>
+                        <input id="posteDirection" name="posteDirection" class="form-control" type="text"
+                            placeholder="Ex: Président, Trésorier" />
                     </div>
                     <div class="form-check mt-2">
                         <input class="form-check-input" type="checkbox" id="estCommissionTechnique" name="estCommissionTechnique" value="1" />
                         <label class="form-check-label" for="estCommissionTechnique">Commission technique</label>
                     </div>
+                    <div class="mt-2">
+                        <label for="posteCommissionTechnique" class="form-label">Poste commission technique</label>
+                        <input id="posteCommissionTechnique" name="posteCommissionTechnique" class="form-control" type="text"
+                            placeholder="Ex: Responsable technique" />
+                    </div>
                     <div class="form-check mt-2">
                         <input class="form-check-input" type="checkbox" id="estCommissionAnimation" name="estCommissionAnimation" value="1" />
                         <label class="form-check-label" for="estCommissionAnimation">Commission animation</label>
                     </div>
+                    <div class="mt-2">
+                        <label for="posteCommissionAnimation" class="form-label">Poste commission animation</label>
+                        <input id="posteCommissionAnimation" name="posteCommissionAnimation" class="form-control" type="text"
+                            placeholder="Ex: Responsable animations" />
+                    </div>
                     <div class="form-check mt-2">
                         <input class="form-check-input" type="checkbox" id="estCommissionCommunication" name="estCommissionCommunication" value="1" />
                         <label class="form-check-label" for="estCommissionCommunication">Commission communication</label>
+                    </div>
+                    <div class="mt-2">
+                        <label for="posteCommissionCommunication" class="form-label">Poste commission communication</label>
+                        <input id="posteCommissionCommunication" name="posteCommissionCommunication" class="form-control" type="text"
+                            placeholder="Ex: Responsable communication" />
                     </div>
                 </div>
                 <div class="form-group mt-3">
