@@ -23,7 +23,7 @@ if (!$ba_bec_numMemb) {
 // Étape 2: imposer une requête POST pour la suppression.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error'] = 'Requête invalide.';
-    header('Location: ' . ROOT_URL . '/compte.php');
+    header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
     exit();
 }
 
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $ba_bec_confirm = isset($_POST['confirmDeleteAccount']) ? (int) $_POST['confirmDeleteAccount'] : 0;
 if ($ba_bec_confirm !== 1) {
     $_SESSION['error'] = 'Vous devez confirmer la suppression de votre compte.';
-    header('Location: ' . ROOT_URL . '/compte.php');
+    header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
     exit();
 }
 
@@ -39,7 +39,7 @@ if ($ba_bec_confirm !== 1) {
 $ba_bec_recaptcha = verifyRecaptcha($_POST['g-recaptcha-response'] ?? '', 'delete-account');
 if (!$ba_bec_recaptcha['valid']) {
     $_SESSION['error'] = $ba_bec_recaptcha['message'] ?: 'Échec de la vérification reCAPTCHA.';
-    header('Location: ' . ROOT_URL . '/compte.php');
+    header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
     exit();
 }
 
@@ -47,7 +47,7 @@ if (!$ba_bec_recaptcha['valid']) {
 $ba_bec_member = sql_select('MEMBRE', 'numMemb', "numMemb = $ba_bec_numMemb")[0] ?? null;
 if (!$ba_bec_member) {
     $_SESSION['error'] = 'Compte introuvable.';
-    header('Location: ' . ROOT_URL . '/compte.php');
+    header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
     exit();
 }
 

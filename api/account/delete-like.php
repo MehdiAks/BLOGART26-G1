@@ -23,7 +23,7 @@ if (!$ba_bec_numMemb) {
 // Étape 2: vérifier la méthode HTTP.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['error'] = 'Requête invalide.';
-    header('Location: ' . ROOT_URL . '/compte.php');
+    header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
     exit();
 }
 
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $ba_bec_numArt = isset($_POST['numArt']) ? (int) $_POST['numArt'] : 0;
 if ($ba_bec_numArt <= 0) {
     $_SESSION['error'] = 'Like introuvable.';
-    header('Location: ' . ROOT_URL . '/compte.php');
+    header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
     exit();
 }
 
@@ -39,14 +39,14 @@ if ($ba_bec_numArt <= 0) {
 $ba_bec_like = sql_select('LIKEART', 'numArt', "numArt = $ba_bec_numArt AND numMemb = $ba_bec_numMemb")[0] ?? null;
 if (!$ba_bec_like) {
     $_SESSION['error'] = 'Vous ne pouvez pas supprimer ce like.';
-    header('Location: ' . ROOT_URL . '/compte.php');
+    header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
     exit();
 }
 
 // Étape 5: suppression et retour utilisateur.
 sql_delete('LIKEART', "numArt = $ba_bec_numArt AND numMemb = $ba_bec_numMemb");
 $_SESSION['success'] = 'Votre like a été supprimé.';
-header('Location: ' . ROOT_URL . '/compte.php');
+header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
 exit();
 
 ?>
