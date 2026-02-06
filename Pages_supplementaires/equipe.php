@@ -189,10 +189,11 @@ $teamMatches = array_map(
 );
 
 $bannerImage = ROOT_URL . '/src/images/background/background-index-4.webp';
+$defaultTeamImage = ROOT_URL . '/src/images/image-defaut.jpeg';
 
 $teamName = $team['nomEquipe'] ?? '';
-$teamPhotoUrl = ba_bec_team_photo_url($team['photoDLequipe'] ?? '');
-$staffPhotoUrl = ba_bec_team_photo_url($team['photoStaff'] ?? '');
+$teamPhotoUrl = ba_bec_team_photo_url($team['photoDLequipe'] ?? '') ?: $defaultTeamImage;
+$staffPhotoUrl = ba_bec_team_photo_url($team['photoStaff'] ?? '') ?: $defaultTeamImage;
 
 $stats = [
     'home' => ['matches' => 0, 'pointsFor' => 0, 'pointsAgainst' => 0],
@@ -351,21 +352,13 @@ if (!$coachLead && !empty($assistantCoaches)) {
                     <div class="team-profile-gallery">
                         <div class="team-profile-photo">
                             <p class="team-profile-label">Photo équipe</p>
-                            <?php if ($teamPhotoUrl): ?>
-                                <img src="<?php echo htmlspecialchars($teamPhotoUrl); ?>"
-                                    alt="<?php echo htmlspecialchars($teamName); ?>">
-                            <?php else: ?>
-                                <span class="team-profile-placeholder">Photo d'équipe à venir</span>
-                            <?php endif; ?>
+                            <img src="<?php echo htmlspecialchars($teamPhotoUrl); ?>"
+                                alt="<?php echo htmlspecialchars($teamName); ?>">
                         </div>
                         <div class="team-profile-photo">
                             <p class="team-profile-label">Photo staff</p>
-                            <?php if ($staffPhotoUrl): ?>
-                                <img src="<?php echo htmlspecialchars($staffPhotoUrl); ?>"
-                                    alt="Photo du staff <?php echo htmlspecialchars($teamName); ?>">
-                            <?php else: ?>
-                                <span class="team-profile-placeholder">Photo du staff à venir</span>
-                            <?php endif; ?>
+                            <img src="<?php echo htmlspecialchars($staffPhotoUrl); ?>"
+                                alt="Photo du staff <?php echo htmlspecialchars($teamName); ?>">
                         </div>
                     </div>
                 </div>
