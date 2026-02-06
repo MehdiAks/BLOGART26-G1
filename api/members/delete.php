@@ -41,6 +41,8 @@ if (empty($ba_bec_numMemb)) {
 $ba_bec_delete_result = sql_delete('MEMBRE', "numMemb = $ba_bec_numMemb");
 if ($ba_bec_delete_result['success']) {
     flash_success();
+} elseif (!empty($ba_bec_delete_result['constraint']) || sql_is_foreign_key_error($ba_bec_delete_result['message'] ?? '', $ba_bec_delete_result['code'] ?? null)) {
+    flash_delete_impossible('Suppression impossible : ce membre est utilisé dans d’autres données.');
 } else {
     flash_error();
 }

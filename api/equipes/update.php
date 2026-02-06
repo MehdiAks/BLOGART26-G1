@@ -319,33 +319,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($ba_bec_errors)) {
-        $updateEquipe = $DB->prepare(
-            'UPDATE EQUIPE
-                SET codeEquipe = :codeEquipe,
-                    nomEquipe = :nomEquipe,
-                    club = :club,
-                    categorie = :categorie,
-                    section = :section,
-                    niveau = :niveau,
-                    descriptionEquipe = :descriptionEquipe,
-                    photoDLequipe = :photoEquipe,
-                    photoStaff = :photoStaff
-             WHERE numEquipe = :numEquipe'
-        );
-        $updateEquipe->execute([
-            ':codeEquipe' => $ba_bec_codeEquipe,
-            ':nomEquipe' => $ba_bec_nomEquipe,
-            ':club' => $ba_bec_club,
-            ':categorie' => $ba_bec_categorieEquipe !== '' ? $ba_bec_categorieEquipe : 'Non renseigné',
-            ':section' => $ba_bec_sectionEquipe !== '' ? $ba_bec_sectionEquipe : 'Non renseigné',
-            ':niveau' => $ba_bec_niveauEquipe !== '' ? $ba_bec_niveauEquipe : 'Non renseigné',
-            ':descriptionEquipe' => $ba_bec_descriptionEquipe !== '' ? $ba_bec_descriptionEquipe : null,
-            ':photoEquipe' => $ba_bec_photoEquipe,
-            ':photoStaff' => $ba_bec_photoStaff,
-            ':numEquipe' => $ba_bec_numEquipe,
-        ]);
-        header('Location: ../../views/backend/equipes/list.php');
-        exit();
+        try {
+            $updateEquipe = $DB->prepare(
+                'UPDATE EQUIPE
+                    SET codeEquipe = :codeEquipe,
+                        nomEquipe = :nomEquipe,
+                        club = :club,
+                        categorie = :categorie,
+                        section = :section,
+                        niveau = :niveau,
+                        descriptionEquipe = :descriptionEquipe,
+                        photoDLequipe = :photoEquipe,
+                        photoStaff = :photoStaff
+                 WHERE numEquipe = :numEquipe'
+            );
+            $updateEquipe->execute([
+                ':codeEquipe' => $ba_bec_codeEquipe,
+                ':nomEquipe' => $ba_bec_nomEquipe,
+                ':club' => $ba_bec_club,
+                ':categorie' => $ba_bec_categorieEquipe !== '' ? $ba_bec_categorieEquipe : 'Non renseigné',
+                ':section' => $ba_bec_sectionEquipe !== '' ? $ba_bec_sectionEquipe : 'Non renseigné',
+                ':niveau' => $ba_bec_niveauEquipe !== '' ? $ba_bec_niveauEquipe : 'Non renseigné',
+                ':descriptionEquipe' => $ba_bec_descriptionEquipe !== '' ? $ba_bec_descriptionEquipe : null,
+                ':photoEquipe' => $ba_bec_photoEquipe,
+                ':photoStaff' => $ba_bec_photoStaff,
+                ':numEquipe' => $ba_bec_numEquipe,
+            ]);
+            header('Location: ../../views/backend/equipes/list.php');
+            exit();
+        } catch (PDOException $ba_bec_exception) {
+            if (sql_is_foreign_key_error($ba_bec_exception->getMessage(), (string) $ba_bec_exception->getCode())) {
+                $ba_bec_errors[] = 'Modification impossible : cette équipe est utilisée dans d’autres tables (joueurs, matchs, staff).';
+            } else {
+                $ba_bec_errors[] = 'Une erreur est survenue lors de la modification. Merci de réessayer.';
+            }
+        }
     }
 }
 ?>
