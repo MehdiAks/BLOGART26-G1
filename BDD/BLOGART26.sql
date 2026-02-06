@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : ven. 06 fév. 2026 à 04:12
+-- Généré le : ven. 06 fév. 2026 à 08:54
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.28
 
@@ -148,6 +148,20 @@ CREATE TABLE `EQUIPE` (
   `photoStaff` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Déchargement des données de la table `EQUIPE`
+--
+
+INSERT INTO `EQUIPE` (`numEquipe`, `codeEquipe`, `nomEquipe`, `club`, `categorie`, `section`, `niveau`, `descriptionEquipe`, `photoDLequipe`, `photoStaff`) VALUES
+(2, 'SEN1', 'Seniors 1', 'Bordeaux étudiant club', 'Senior', 'Masculin', 'Régional 1', 'Équipe fanion senior 1', NULL, NULL),
+(3, 'SEN2', 'Seniors 2', 'Bordeaux étudiant club', 'Senior', 'Masculin', 'Régional 2', 'Équipe senior 2', NULL, NULL),
+(4, 'SEN3', 'Seniors 3', 'Bordeaux étudiant club', 'Senior', 'Masculin', 'Départemental 1', 'Équipe senior 3', NULL, NULL),
+(5, 'SEN4', 'Seniors 4', 'Bordeaux étudiant club', 'Senior', 'Masculin', 'Départemental 2', 'Équipe senior 4', NULL, NULL),
+(6, 'SEN5', 'Seniors 5', 'Bordeaux étudiant club', 'Senior', 'Féminin', 'Régional 1', 'Équipe senior féminine 1', NULL, NULL),
+(7, 'SEN6', 'Seniors 6', 'Bordeaux étudiant club', 'Senior', 'Féminin', 'Régional 2', 'Équipe senior féminine 2', NULL, NULL),
+(8, 'SEN7', 'Seniors 7', 'Bordeaux étudiant club', 'Senior', 'Féminin', 'Départemental 1', 'Équipe senior féminine 3', NULL, NULL),
+(1, 'SG3', 'Séniors garçons 3', 'Bordeaux étudiant club', 'Senior', 'Masculine', 'Départementale 3', 'adasda', 'photos-equipes/SG3-photo-equipe.jpg', 'photos-equipes/SG3-photo-staff.jpg');
+
 -- --------------------------------------------------------
 
 --
@@ -167,6 +181,83 @@ CREATE TABLE `JOUEUR` (
   `dateRecrutement` date DEFAULT NULL,
   `clubsPrecedents` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `JOUEUR`
+--
+
+INSERT INTO `JOUEUR` (`numJoueur`, `surnomJoueur`, `prenomJoueur`, `nomJoueur`, `urlPhotoJoueur`, `dateNaissance`, `codeEquipe`, `posteJoueur`, `numeroMaillot`, `dateRecrutement`, `clubsPrecedents`) VALUES
+(1, 'Mehdikops', 'Mehdi', 'Afankous', NULL, '1291-03-18', 'SG3', 1, 1, '2025-09-01', NULL),
+(2, 'SEN1-J01', 'Alex', 'Durand', NULL, '1997-03-12', 'SEN1', 1, 1, '2022-07-01', NULL),
+(3, 'SEN1-J02', 'Hugo', 'Martin', NULL, '1996-05-20', 'SEN1', 2, 2, '2021-07-01', NULL),
+(4, 'SEN1-J03', 'Lucas', 'Petit', NULL, '1998-01-04', 'SEN1', 3, 3, '2020-07-01', NULL),
+(5, 'SEN1-J04', 'Nolan', 'Bernard', NULL, '1995-09-10', 'SEN1', 4, 4, '2019-07-01', NULL),
+(6, 'SEN1-J05', 'Maxime', 'Robert', NULL, '1994-11-16', 'SEN1', 5, 5, '2020-08-15', NULL),
+(7, 'SEN1-J06', 'Theo', 'Richard', NULL, '1997-02-21', 'SEN1', 6, 6, '2023-07-01', NULL),
+(8, 'SEN1-J07', 'Enzo', 'Dubois', NULL, '1996-06-18', 'SEN1', 7, 7, '2022-07-01', NULL),
+(9, 'SEN1-J08', 'Paul', 'Moreau', NULL, '1999-08-30', 'SEN1', 8, 8, '2021-08-01', NULL),
+(10, 'SEN1-J09', 'Louis', 'Fournier', NULL, '1993-12-02', 'SEN1', 9, 9, '2020-07-01', NULL),
+(11, 'SEN1-J10', 'Jules', 'Girard', NULL, '1998-04-15', 'SEN1', 10, 10, '2019-07-01', NULL),
+(12, 'SEN2-J01', 'Antoine', 'Leroy', NULL, '1996-02-14', 'SEN2', 1, 1, '2022-07-01', NULL),
+(13, 'SEN2-J02', 'Thomas', 'Roux', NULL, '1995-07-19', 'SEN2', 2, 2, '2021-07-01', NULL),
+(14, 'SEN2-J03', 'Adrien', 'David', NULL, '1997-09-25', 'SEN2', 3, 3, '2020-07-01', NULL),
+(15, 'SEN2-J04', 'Bastien', 'Bertrand', NULL, '1994-01-07', 'SEN2', 4, 4, '2019-07-01', NULL),
+(16, 'SEN2-J05', 'Florian', 'Morel', NULL, '1996-11-03', 'SEN2', 5, 5, '2020-08-15', NULL),
+(17, 'SEN2-J06', 'Quentin', 'Simon', NULL, '1998-05-11', 'SEN2', 6, 6, '2023-07-01', NULL),
+(18, 'SEN2-J07', 'Romain', 'Laurent', NULL, '1997-03-22', 'SEN2', 7, 7, '2022-07-01', NULL),
+(19, 'SEN2-J08', 'Nathan', 'Lefevre', NULL, '1999-12-08', 'SEN2', 8, 8, '2021-08-01', NULL),
+(20, 'SEN2-J09', 'Kylian', 'Michel', NULL, '1993-06-29', 'SEN2', 9, 9, '2020-07-01', NULL),
+(21, 'SEN2-J10', 'Loic', 'Garcia', NULL, '1998-10-17', 'SEN2', 10, 10, '2019-07-01', NULL),
+(22, 'SEN3-J01', 'Mathis', 'Perrin', NULL, '1996-03-09', 'SEN3', 1, 1, '2022-07-01', NULL),
+(23, 'SEN3-J02', 'Yann', 'Robin', NULL, '1995-05-28', 'SEN3', 2, 2, '2021-07-01', NULL),
+(24, 'SEN3-J03', 'Evan', 'Clement', NULL, '1997-01-19', 'SEN3', 3, 3, '2020-07-01', NULL),
+(25, 'SEN3-J04', 'Sacha', 'Morin', NULL, '1994-08-13', 'SEN3', 4, 4, '2019-07-01', NULL),
+(26, 'SEN3-J05', 'Dylan', 'Roche', NULL, '1996-12-05', 'SEN3', 5, 5, '2020-08-15', NULL),
+(27, 'SEN3-J06', 'Noe', 'Schmitt', NULL, '1998-04-27', 'SEN3', 6, 6, '2023-07-01', NULL),
+(28, 'SEN3-J07', 'Eliot', 'Henry', NULL, '1997-02-16', 'SEN3', 7, 7, '2022-07-01', NULL),
+(29, 'SEN3-J08', 'Malo', 'Boyer', NULL, '1999-09-01', 'SEN3', 8, 8, '2021-08-01', NULL),
+(30, 'SEN3-J09', 'Gabriel', 'Giraud', NULL, '1993-07-23', 'SEN3', 9, 9, '2020-07-01', NULL),
+(31, 'SEN3-J10', 'Leo', 'Chevalier', NULL, '1998-10-30', 'SEN3', 10, 10, '2019-07-01', NULL),
+(32, 'SEN4-J01', 'Hugo', 'Masson', NULL, '1996-02-11', 'SEN4', 1, 1, '2022-07-01', NULL),
+(33, 'SEN4-J02', 'Tom', 'Garnier', NULL, '1995-06-14', 'SEN4', 2, 2, '2021-07-01', NULL),
+(34, 'SEN4-J03', 'Noah', 'Riviere', NULL, '1997-01-26', 'SEN4', 3, 3, '2020-07-01', NULL),
+(35, 'SEN4-J04', 'Axel', 'Barbier', NULL, '1994-09-06', 'SEN4', 4, 4, '2019-07-01', NULL),
+(36, 'SEN4-J05', 'Liam', 'Marchand', NULL, '1996-11-21', 'SEN4', 5, 5, '2020-08-15', NULL),
+(37, 'SEN4-J06', 'Nils', 'Charpentier', NULL, '1998-05-09', 'SEN4', 6, 6, '2023-07-01', NULL),
+(38, 'SEN4-J07', 'Ethan', 'Rolland', NULL, '1997-03-18', 'SEN4', 7, 7, '2022-07-01', NULL),
+(39, 'SEN4-J08', 'Aaron', 'Aubert', NULL, '1999-12-12', 'SEN4', 8, 8, '2021-08-01', NULL),
+(40, 'SEN4-J09', 'Kevin', 'Guillot', NULL, '1993-06-03', 'SEN4', 9, 9, '2020-07-01', NULL),
+(41, 'SEN4-J10', 'Simon', 'Bouvier', NULL, '1998-10-25', 'SEN4', 10, 10, '2019-07-01', NULL),
+(42, 'SEN5-J01', 'Emma', 'Dupont', NULL, '1998-03-07', 'SEN5', 1, 1, '2022-07-01', NULL),
+(43, 'SEN5-J02', 'Lea', 'Lemaire', NULL, '1997-05-18', 'SEN5', 2, 2, '2021-07-01', NULL),
+(44, 'SEN5-J03', 'Chloe', 'Lopez', NULL, '1999-02-12', 'SEN5', 3, 3, '2020-07-01', NULL),
+(45, 'SEN5-J04', 'Manon', 'Fontaine', NULL, '1996-09-03', 'SEN5', 4, 4, '2019-07-01', NULL),
+(46, 'SEN5-J05', 'Ines', 'Lambert', NULL, '1998-11-30', 'SEN5', 5, 5, '2020-08-15', NULL),
+(47, 'SEN5-J06', 'Sarah', 'Muller', NULL, '1997-04-19', 'SEN5', 6, 6, '2023-07-01', NULL),
+(48, 'SEN5-J07', 'Louna', 'Perez', NULL, '1999-06-22', 'SEN5', 7, 7, '2022-07-01', NULL),
+(49, 'SEN5-J08', 'Camille', 'Colin', NULL, '1998-12-10', 'SEN5', 8, 8, '2021-08-01', NULL),
+(50, 'SEN5-J09', 'Julie', 'Arnaud', NULL, '1996-07-29', 'SEN5', 9, 9, '2020-07-01', NULL),
+(51, 'SEN5-J10', 'Alyssa', 'Renaud', NULL, '1999-10-26', 'SEN5', 10, 10, '2019-07-01', NULL),
+(52, 'SEN6-J01', 'Laura', 'Roy', NULL, '1998-02-05', 'SEN6', 1, 1, '2022-07-01', NULL),
+(53, 'SEN6-J02', 'Clara', 'Gomez', NULL, '1997-05-27', 'SEN6', 2, 2, '2021-07-01', NULL),
+(54, 'SEN6-J03', 'Lucie', 'Allard', NULL, '1999-01-21', 'SEN6', 3, 3, '2020-07-01', NULL),
+(55, 'SEN6-J04', 'Elena', 'Gaudin', NULL, '1996-08-11', 'SEN6', 4, 4, '2019-07-01', NULL),
+(56, 'SEN6-J05', 'Nina', 'Baron', NULL, '1998-12-19', 'SEN6', 5, 5, '2020-08-15', NULL),
+(57, 'SEN6-J06', 'Maeva', 'Hernandez', NULL, '1997-04-23', 'SEN6', 6, 6, '2023-07-01', NULL),
+(58, 'SEN6-J07', 'Romane', 'Navarro', NULL, '1999-06-09', 'SEN6', 7, 7, '2022-07-01', NULL),
+(59, 'SEN6-J08', 'Elise', 'Vidal', NULL, '1998-12-02', 'SEN6', 8, 8, '2021-08-01', NULL),
+(60, 'SEN6-J09', 'Pauline', 'Brun', NULL, '1996-07-16', 'SEN6', 9, 9, '2020-07-01', NULL),
+(61, 'SEN6-J10', 'Lina', 'Moulin', NULL, '1999-10-20', 'SEN6', 10, 10, '2019-07-01', NULL),
+(62, 'SEN7-J01', 'Marie', 'Picard', NULL, '1998-02-01', 'SEN7', 1, 1, '2022-07-01', NULL),
+(63, 'SEN7-J02', 'Anais', 'Roy', NULL, '1997-05-15', 'SEN7', 2, 2, '2021-07-01', NULL),
+(64, 'SEN7-J03', 'Jade', 'Roger', NULL, '1999-01-13', 'SEN7', 3, 3, '2020-07-01', NULL),
+(65, 'SEN7-J04', 'Lola', 'Berger', NULL, '1996-08-21', 'SEN7', 4, 4, '2019-07-01', NULL),
+(66, 'SEN7-J05', 'Zoe', 'Lemoine', NULL, '1998-12-09', 'SEN7', 5, 5, '2020-08-15', NULL),
+(67, 'SEN7-J06', 'Mila', 'Rousseau', NULL, '1997-04-30', 'SEN7', 6, 6, '2023-07-01', NULL),
+(68, 'SEN7-J07', 'Alix', 'Faure', NULL, '1999-06-07', 'SEN7', 7, 7, '2022-07-01', NULL),
+(69, 'SEN7-J08', 'Agathe', 'Morel', NULL, '1998-12-28', 'SEN7', 8, 8, '2021-08-01', NULL),
+(70, 'SEN7-J09', 'Maya', 'Poirier', NULL, '1996-07-13', 'SEN7', 9, 9, '2020-07-01', NULL),
+(71, 'SEN7-J10', 'Elsa', 'Leroux', NULL, '1999-10-18', 'SEN7', 10, 10, '2019-07-01', NULL);
 
 -- --------------------------------------------------------
 
@@ -212,8 +303,18 @@ CREATE TABLE `MATCH` (
   `heureMatch` time DEFAULT NULL,
   `lieuMatch` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `scoreBec` int DEFAULT NULL,
-  `scoreAdversaire` int DEFAULT NULL
+  `scoreAdversaire` int DEFAULT NULL,
+  `source` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `MATCH`
+--
+
+INSERT INTO `MATCH` (`numMatch`, `codeEquipe`, `clubAdversaire`, `numEquipeAdverse`, `saison`, `phase`, `journee`, `dateMatch`, `heureMatch`, `lieuMatch`, `scoreBec`, `scoreAdversaire`, `source`) VALUES
+(1, 'SG3', 'Union st bruno', NULL, '2025 - 2026', 'Saison réguliere', 'J3', '2026-02-07', '12:30:00', 'Domicile', 50, 32, NULL),
+(2, 'SG3', 'Union st bruno', NULL, '2025-2026', 'Saison régulière', 'J3', '2026-02-21', '09:53:00', 'Domicile', 12, 2, NULL),
+(3, 'SG3', 'Union st bruno', NULL, '2025-2026', 'Saison régulière', 'J3', '2026-02-28', '09:53:00', 'Extérieur', 12, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -327,6 +428,47 @@ CREATE TABLE `PERSONNEL` (
   `estCommissionCommunication` tinyint(1) NOT NULL DEFAULT '0',
   `posteCommissionCommunication` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `PERSONNEL`
+--
+
+INSERT INTO `PERSONNEL` (`numPersonnel`, `surnomPersonnel`, `prenomPersonnel`, `nomPersonnel`, `urlPhotoPersonnel`, `emailPersonnel`, `telephonePersonnel`, `estStaffEquipe`, `numEquipeStaff`, `roleStaffEquipe`, `estDirection`, `posteDirection`, `estCommissionTechnique`, `posteCommissionTechnique`, `estCommissionAnimation`, `posteCommissionAnimation`, `estCommissionCommunication`, `posteCommissionCommunication`) VALUES
+(26, 'ANIM-BEN1', 'Sandra', 'Collet', NULL, 'animation1@bec.fr', '0610000011', 0, NULL, NULL, 0, NULL, 0, NULL, 1, 'Membre commission animation', 0, NULL),
+(27, 'ANIM-BEN2', 'Guillaume', 'Pages', NULL, 'animation2@bec.fr', '0610000012', 0, NULL, NULL, 0, NULL, 0, NULL, 1, 'Membre commission animation', 0, NULL),
+(28, 'ANIM-BEN3', 'Alexia', 'Fabre', NULL, 'animation3@bec.fr', '0610000013', 0, NULL, NULL, 0, NULL, 0, NULL, 1, 'Membre commission animation', 0, NULL),
+(29, 'ANIM-BEN4', 'Vincent', 'Archer', NULL, 'animation4@bec.fr', '0610000014', 0, NULL, NULL, 0, NULL, 0, NULL, 1, 'Membre commission animation', 0, NULL),
+(30, 'ANIM-BEN5', 'Marine', 'Gallet', NULL, 'animation5@bec.fr', '0610000015', 0, NULL, NULL, 0, NULL, 0, NULL, 1, 'Membre commission animation', 0, NULL),
+(3, 'ASST-SEN1', 'Marc', 'Assistant', NULL, 'assistant.sen1@bec.fr', '0600000002', 1, 'SEN1', 'Assistant coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(5, 'ASST-SEN2', 'Romain', 'Assistant', NULL, 'assistant.sen2@bec.fr', '0600000004', 1, 'SEN2', 'Assistant coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(7, 'ASST-SEN3', 'Florian', 'Assistant', NULL, 'assistant.sen3@bec.fr', '0600000006', 1, 'SEN3', 'Assistant coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(9, 'ASST-SEN4', 'Quentin', 'Assistant', NULL, 'assistant.sen4@bec.fr', '0600000008', 1, 'SEN4', 'Assistant coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(11, 'ASST-SEN5', 'Julie', 'Assistant', NULL, 'assistant.sen5@bec.fr', '0600000010', 1, 'SEN5', 'Assistant coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(13, 'ASST-SEN6', 'Emma', 'Assistant', NULL, 'assistant.sen6@bec.fr', '0600000012', 1, 'SEN6', 'Assistant coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(15, 'ASST-SEN7', 'Chloe', 'Assistant', NULL, 'assistant.sen7@bec.fr', '0600000014', 1, 'SEN7', 'Assistant coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(2, 'COACH-SEN1', 'Pierre', 'Coach', NULL, 'coach.sen1@bec.fr', '0600000001', 1, 'SEN1', 'Coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(4, 'COACH-SEN2', 'Julien', 'Coach', NULL, 'coach.sen2@bec.fr', '0600000003', 1, 'SEN2', 'Coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(6, 'COACH-SEN3', 'Nicolas', 'Coach', NULL, 'coach.sen3@bec.fr', '0600000005', 1, 'SEN3', 'Coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(8, 'COACH-SEN4', 'Baptiste', 'Coach', NULL, 'coach.sen4@bec.fr', '0600000007', 1, 'SEN4', 'Coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(10, 'COACH-SEN5', 'Sophie', 'Coach', NULL, 'coach.sen5@bec.fr', '0600000009', 1, 'SEN5', 'Coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(12, 'COACH-SEN6', 'Claire', 'Coach', NULL, 'coach.sen6@bec.fr', '0600000011', 1, 'SEN6', 'Coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(14, 'COACH-SEN7', 'Laura', 'Coach', NULL, 'coach.sen7@bec.fr', '0600000013', 1, 'SEN7', 'Coach', 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(31, 'COM-BEN1', 'Caroline', 'Vallin', NULL, 'com1@bec.fr', '0610000016', 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 1, 'Membre commission communication'),
+(32, 'COM-BEN2', 'Anthony', 'Blanc', NULL, 'com2@bec.fr', '0610000017', 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 1, 'Membre commission communication'),
+(33, 'COM-BEN3', 'Laura', 'Vigne', NULL, 'com3@bec.fr', '0610000018', 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 1, 'Membre commission communication'),
+(34, 'COM-BEN4', 'Jeremy', 'Tessier', NULL, 'com4@bec.fr', '0610000019', 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 1, 'Membre commission communication'),
+(35, 'COM-BEN5', 'Pauline', 'Serre', NULL, 'com5@bec.fr', '0610000020', 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 1, 'Membre commission communication'),
+(16, 'DIR-BEN1', 'Nathalie', 'Perrier', NULL, 'direction1@bec.fr', '0610000001', 0, NULL, NULL, 1, 'Membre direction', 0, NULL, 0, NULL, 0, NULL),
+(17, 'DIR-BEN2', 'Olivier', 'Lemoine', NULL, 'direction2@bec.fr', '0610000002', 0, NULL, NULL, 1, 'Membre direction', 0, NULL, 0, NULL, 0, NULL),
+(18, 'DIR-BEN3', 'Sonia', 'Marin', NULL, 'direction3@bec.fr', '0610000003', 0, NULL, NULL, 1, 'Membre direction', 0, NULL, 0, NULL, 0, NULL),
+(19, 'DIR-BEN4', 'Eric', 'Legrand', NULL, 'direction4@bec.fr', '0610000004', 0, NULL, NULL, 1, 'Membre direction', 0, NULL, 0, NULL, 0, NULL),
+(20, 'DIR-BEN5', 'Isabelle', 'Noel', NULL, 'direction5@bec.fr', '0610000005', 0, NULL, NULL, 1, 'Membre direction', 0, NULL, 0, NULL, 0, NULL),
+(1, 'mehdiafankous', 'mehdi', 'afankous', '/src/uploads/photos-benevoles/af.mehdi.jpg', NULL, NULL, 1, 'SG3', 'coach', 1, 'président', 1, 'responsable technique', 1, 'annimateur', 1, 'community manager'),
+(21, 'TECH-BEN1', 'Damien', 'Perrot', NULL, 'tech1@bec.fr', '0610000006', 0, NULL, NULL, 0, NULL, 1, 'Membre commission technique', 0, NULL, 0, NULL),
+(22, 'TECH-BEN2', 'Laurent', 'Benoit', NULL, 'tech2@bec.fr', '0610000007', 0, NULL, NULL, 0, NULL, 1, 'Membre commission technique', 0, NULL, 0, NULL),
+(23, 'TECH-BEN3', 'Celine', 'Guerin', NULL, 'tech3@bec.fr', '0610000008', 0, NULL, NULL, 0, NULL, 1, 'Membre commission technique', 0, NULL, 0, NULL),
+(24, 'TECH-BEN4', 'Pascal', 'Leger', NULL, 'tech4@bec.fr', '0610000009', 0, NULL, NULL, 0, NULL, 1, 'Membre commission technique', 0, NULL, 0, NULL),
+(25, 'TECH-BEN5', 'Marion', 'Jacquet', NULL, 'tech5@bec.fr', '0610000010', 0, NULL, NULL, 0, NULL, 1, 'Membre commission technique', 0, NULL, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -498,19 +640,19 @@ ALTER TABLE `COMMENT`
 -- AUTO_INCREMENT pour la table `EQUIPE`
 --
 ALTER TABLE `EQUIPE`
-  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT;
+  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `JOUEUR`
 --
 ALTER TABLE `JOUEUR`
-  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT;
+  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT pour la table `MATCH`
 --
 ALTER TABLE `MATCH`
-  MODIFY `numMatch` int NOT NULL AUTO_INCREMENT;
+  MODIFY `numMatch` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `MEMBRE`
@@ -528,7 +670,7 @@ ALTER TABLE `MOTCLE`
 -- AUTO_INCREMENT pour la table `PERSONNEL`
 --
 ALTER TABLE `PERSONNEL`
-  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT;
+  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT pour la table `STATUT`
