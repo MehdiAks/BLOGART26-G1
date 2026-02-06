@@ -3,17 +3,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
 
-function render_missing_table_page(PDOException $exception): void
+function is_missing_table(PDOException $exception): bool
 {
     $errorInfo = $exception->errorInfo ?? [];
-    $isMissingTable = $exception->getCode() === '42S02'
-        || (isset($errorInfo[1]) && (int) $errorInfo[1] === 1146);
 
-    if ($isMissingTable) {
-        http_response_code(404);
-        require_once 'erreur404.php';
-        exit;
-    }
+    return $exception->getCode() === '42S02'
+        || (isset($errorInfo[1]) && (int) $errorInfo[1] === 1146);
 }
 
 $dbAvailable = getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_DATABASE');
@@ -36,8 +31,12 @@ if ($dbAvailable) {
         $staffStmt->execute();
         $staff = $staffStmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $exception) {
-        render_missing_table_page($exception);
-        throw $exception;
+        if (is_missing_table($exception)) {
+            $branches = [];
+            $staff = [];
+        } else {
+            throw $exception;
+        }
     }
 } else {
     $branches = [];
