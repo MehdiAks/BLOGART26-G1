@@ -143,6 +143,9 @@
             font: inherit;
             color: var(--bec-dark);
             cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            box-shadow: none;
         }
 
         .site-header .header-nav .submenu-list a {
