@@ -377,12 +377,18 @@ if (!$becMatchesAvailable) {
         font-weight: 600;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        opacity: 0.85;
+        color: #ffffff;
+        opacity: 1;
     }
 
     .home-match-info {
         margin-bottom: 0;
         line-height: 1.2;
+    }
+
+    .home-matches-section .btn-outline-light {
+        color: #ffffff;
+        border-color: #ffffff;
     }
 </style>
 <section class="home-hero full-bleed">
