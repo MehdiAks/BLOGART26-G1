@@ -64,7 +64,7 @@
             font-weight: 700;
             color: var(--bec-dark);
             padding-right: 60px;
-            margin-top: 20px;
+            margin-top: 0;
         }
 
         .site-header {
@@ -91,6 +91,7 @@
             display: flex;
             gap: 60px;
             justify-content: center;
+            align-items: center;
         }
 
         .site-header .header-nav {
@@ -624,6 +625,8 @@
 
         .header-compte-wrapper {
             margin-left: auto;
+            display: flex;
+            align-items: center;
         }
 
         .header-compte-menu {
@@ -828,8 +831,9 @@
 
 
         .btn-compte {
-            font-size: 18px;
-            margin-top: 20px;
+            font-size: 16px;
+            padding: 6px 16px;
+            border-radius: 999px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
