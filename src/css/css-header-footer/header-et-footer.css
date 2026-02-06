@@ -834,6 +834,18 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            background-color: #8a0a27;
+            border-color: #8a0a27;
+            color: #fff;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-compte:hover,
+        .btn-compte:focus {
+            background-color: #8a0a27;
+            border-color: #8a0a27;
+            color: #fff;
+            transform: scale(1.05);
         }
 
 
