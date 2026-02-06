@@ -1,5 +1,5 @@
 /* Commentaire: Feuille de style pour fonts. */
-/* @font-face {
+@font-face {
     font-family: "Epilogue";
     src:
     local("Epilogue"),
@@ -17,7 +17,7 @@ body {
     color: var(--primary-color);
     font-size: 18px;
     font-family: "Epilogue", sans-serif;
-} */
+}
 
 
 h1,
