@@ -26,6 +26,7 @@ $ba_bec_clubAdversaire = ctrlSaisies($_POST['clubAdversaire'] ?? '');
 $ba_bec_numeroEquipeAdverse = (int) ($_POST['numeroEquipeAdverse'] ?? 0);
 $ba_bec_scoreBec = ctrlSaisies($_POST['scoreBec'] ?? '');
 $ba_bec_scoreAdversaire = ctrlSaisies($_POST['scoreAdversaire'] ?? '');
+$ba_bec_createRetour = isset($_POST['createRetour']);
 
 if ($ba_bec_codeEquipe === '' || $ba_bec_saison === '' || $ba_bec_phase === '' || $ba_bec_journee === '' || $ba_bec_dateMatch === '' || $ba_bec_clubAdversaire === '') {
     header('Location: ../../views/backend/matches/create.php?error=missing');
@@ -55,5 +56,40 @@ $matchStmt->execute([
     ':scoreBec' => $ba_bec_scoreBecValue,
     ':scoreAdversaire' => $ba_bec_scoreAdversaireValue,
 ]);
+
+if ($ba_bec_createRetour) {
+    $ba_bec_lieuRetour = $ba_bec_lieuValue;
+    if ($ba_bec_lieuValue === 'Domicile') {
+        $ba_bec_lieuRetour = 'Extérieur';
+    } elseif ($ba_bec_lieuValue === 'Extérieur') {
+        $ba_bec_lieuRetour = 'Domicile';
+    }
+
+    $ba_bec_dateRetour = $ba_bec_dateMatch;
+    if ($ba_bec_dateMatch !== '') {
+        $ba_bec_dateObj = DateTime::createFromFormat('Y-m-d', $ba_bec_dateMatch);
+        if ($ba_bec_dateObj instanceof DateTime) {
+            $ba_bec_dateObj->modify('+7 days');
+            $ba_bec_dateRetour = $ba_bec_dateObj->format('Y-m-d');
+        }
+    }
+
+    $ba_bec_query = http_build_query([
+        'codeEquipe' => $ba_bec_codeEquipe,
+        'saison' => $ba_bec_saison,
+        'phase' => $ba_bec_phase,
+        'journee' => $ba_bec_journee,
+        'dateMatch' => $ba_bec_dateRetour,
+        'heureMatch' => $ba_bec_heureMatch,
+        'lieuMatch' => $ba_bec_lieuRetour,
+        'clubAdversaire' => $ba_bec_clubAdversaire,
+        'numeroEquipeAdverse' => $ba_bec_numeroEquipeAdverseValue,
+        'scoreBec' => $ba_bec_scoreBec,
+        'scoreAdversaire' => $ba_bec_scoreAdversaire,
+    ]);
+
+    header('Location: ../../views/backend/matches/create.php?' . $ba_bec_query);
+    exit;
+}
 
 header('Location: ../../views/backend/matches/list.php');
