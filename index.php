@@ -596,20 +596,35 @@ if (!$becMatchesAvailable) {
 
         let current = 0;
         const durationMs = Number.parseInt(element.dataset.duration || "2500", 10);
-        const safeDuration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : 2;
-        const minStepTime = 0.5;
-        const stepTime = Math.max(minStepTime, Math.floor(safeDuration / Math.max(1, target)));
+        const safeDuration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : 2500;
+        const minStepTime = 16;
+        const normalStepTime = Math.max(minStepTime, Math.floor(safeDuration / Math.max(1, target)));
+        const fastStepTime = Math.max(8, Math.floor(normalStepTime * 0.4));
+        const midStepTime = Math.max(12, Math.floor(normalStepTime * 0.7));
+        const halfTarget = Math.floor(target * 0.5);
+        const threeQuarterTarget = Math.floor(target * 0.75);
 
-        const timerId = setInterval(() => {
-            current += 1;
-            if (current >= target) {
-                current = target;
-                element.textContent = formatNumber(current, targetText);
-                clearInterval(timerId);
-                return;
+        const tick = () => {
+            let step = 1;
+            let delay = normalStepTime;
+
+            if (current < halfTarget) {
+                step = 10;
+                delay = fastStepTime;
+            } else if (current < threeQuarterTarget) {
+                step = 2;
+                delay = midStepTime;
             }
+
+            current = Math.min(target, current + step);
             element.textContent = formatNumber(current, targetText);
-        }, stepTime);
+
+            if (current < target) {
+                setTimeout(tick, delay);
+            }
+        };
+
+        tick();
     }
 
     function triggerCounter(element) {
