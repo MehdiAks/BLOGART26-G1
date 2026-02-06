@@ -13,6 +13,7 @@ include '../../../header.php'; // Contient le header et l'appel à config.php
 $ba_bec_filter_numMemb = isset($_GET['numMemb']) ? trim($_GET['numMemb']) : '';
 $ba_bec_filter_numArt = isset($_GET['numArt']) ? trim($_GET['numArt']) : '';
 $ba_bec_filter_likeA = isset($_GET['likeA']) ? trim($_GET['likeA']) : '';
+$ba_bec_filter_pseudo = isset($_GET['pseudo']) ? trim($_GET['pseudo']) : '';
 
 $ba_bec_filters = [];
 if ($ba_bec_filter_numMemb !== '' && ctype_digit($ba_bec_filter_numMemb)) {
@@ -23,6 +24,10 @@ if ($ba_bec_filter_numArt !== '' && ctype_digit($ba_bec_filter_numArt)) {
 }
 if (in_array($ba_bec_filter_likeA, ['0', '1'], true)) {
     $ba_bec_filters[] = 'l.likeA = ' . intval($ba_bec_filter_likeA);
+}
+if ($ba_bec_filter_pseudo !== '') {
+    $ba_bec_pseudo_safe = sql_escape($ba_bec_filter_pseudo);
+    $ba_bec_filters[] = "m.pseudoMemb LIKE '%" . $ba_bec_pseudo_safe . "%'";
 }
 
 $ba_bec_sort_key = isset($_GET['sort']) ? $_GET['sort'] : 'user';
@@ -80,6 +85,10 @@ $ba_bec_likes = sql_select(
                         <option value="1" <?php echo $ba_bec_filter_likeA === '1' ? 'selected' : ''; ?>>Like</option>
                         <option value="0" <?php echo $ba_bec_filter_likeA === '0' ? 'selected' : ''; ?>>Dislike</option>
                     </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="pseudo" class="form-label">Pseudo</label>
+                    <input type="text" name="pseudo" id="pseudo" class="form-control" value="<?php echo htmlspecialchars($ba_bec_filter_pseudo, ENT_QUOTES, 'UTF-8'); ?>">
                 </div>
                 <div class="col-md-3">
                     <label for="sort" class="form-label">Trier par</label>
