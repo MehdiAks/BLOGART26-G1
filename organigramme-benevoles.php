@@ -26,7 +26,10 @@ if ($dbAvailable) {
 
         $staffStmt = $DB->prepare(
             'SELECT numPersonnel, prenomPersonnel, nomPersonnel, urlPhotoPersonnel,
-                    estDirection, estCommissionTechnique, estCommissionAnimation, estCommissionCommunication
+                    estDirection, posteDirection,
+                    estCommissionTechnique, posteCommissionTechnique,
+                    estCommissionAnimation, posteCommissionAnimation,
+                    estCommissionCommunication, posteCommissionCommunication
                 FROM PERSONNEL
                 WHERE estDirection = 1
                     OR estCommissionTechnique = 1
@@ -61,16 +64,32 @@ $roleLabels = [
 
 foreach ($staff as $member) {
     if (!empty($member['estDirection'])) {
-        $staffByBranch['Bureau'][] = array_merge($member, ['libPoste' => $roleLabels['Bureau']]);
+        $poste = trim((string) ($member['posteDirection'] ?? ''));
+        $staffByBranch['Bureau'][] = array_merge(
+            $member,
+            ['libPoste' => $poste !== '' ? $poste : $roleLabels['Bureau']]
+        );
     }
     if (!empty($member['estCommissionTechnique'])) {
-        $staffByBranch['Équipe technique'][] = array_merge($member, ['libPoste' => $roleLabels['Équipe technique']]);
+        $poste = trim((string) ($member['posteCommissionTechnique'] ?? ''));
+        $staffByBranch['Équipe technique'][] = array_merge(
+            $member,
+            ['libPoste' => $poste !== '' ? $poste : $roleLabels['Équipe technique']]
+        );
     }
     if (!empty($member['estCommissionAnimation'])) {
-        $staffByBranch['Équipe animation'][] = array_merge($member, ['libPoste' => $roleLabels['Équipe animation']]);
+        $poste = trim((string) ($member['posteCommissionAnimation'] ?? ''));
+        $staffByBranch['Équipe animation'][] = array_merge(
+            $member,
+            ['libPoste' => $poste !== '' ? $poste : $roleLabels['Équipe animation']]
+        );
     }
     if (!empty($member['estCommissionCommunication'])) {
-        $staffByBranch['Équipe communication'][] = array_merge($member, ['libPoste' => $roleLabels['Équipe communication']]);
+        $poste = trim((string) ($member['posteCommissionCommunication'] ?? ''));
+        $staffByBranch['Équipe communication'][] = array_merge(
+            $member,
+            ['libPoste' => $poste !== '' ? $poste : $roleLabels['Équipe communication']]
+        );
     }
 }
 
