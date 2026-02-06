@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row gy-4 align-items-start">
                 <div class="col-lg-5">
-                    <a class="btn-contact-footer" href="<?php echo ROOT_URL . '/contact.php'; ?>">Contactez-nous :)</a>
+                    <a class="btn-contact-footer" href="<?php echo ROOT_URL . '/contact.php'; ?>">Contactez-nous :</a>
                     <p class="mb-1">
                         <a href="mailto:secretariat@bec-bordeaux?subject=Demande%20de%20contact%20depuis%20le%20site%20BEC%20Bordeaux">
                             secretariat@bec-bordeaux
