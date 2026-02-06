@@ -13,7 +13,6 @@
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
-include '../../header.php';
 
 function ensure_upload_dir(string $path): void
 {
@@ -188,6 +187,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+<?php include '../../header.php'; ?>
 
 <div class="container">
     <div class="row">
