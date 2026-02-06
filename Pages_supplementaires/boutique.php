@@ -1,0 +1,116 @@
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+
+$pageStyles = [
+    ROOT_URL . '/src/css/boutique.css',
+];
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
+
+$ba_bec_articles = sql_select('boutique', '*', null, null, 'numArtBoutique');
+
+$formatPrice = static function (?float $price): string {
+    if ($price === null) {
+        return '';
+    }
+    return number_format($price, 2, ',', ' ') . ' €';
+};
+
+$formatList = static function ($value): string {
+    if ($value === null || $value === '') {
+        return '';
+    }
+    if (is_array($value)) {
+        return implode(', ', $value);
+    }
+    if (is_string($value)) {
+        $decoded = json_decode($value, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return implode(', ', $decoded);
+        }
+        return $value;
+    }
+    return '';
+};
+
+$extractImage = static function ($value): string {
+    if (empty($value)) {
+        return '';
+    }
+    if (is_array($value)) {
+        return $value[0] ?? '';
+    }
+    if (is_string($value)) {
+        $decoded = json_decode($value, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return $decoded[0] ?? '';
+        }
+        return $value;
+    }
+    return '';
+};
+?>
+
+<section class="boutique-page">
+    <div class="boutique-hero">
+        <h1>La boutique du BEC</h1>
+        <p>Découvrez nos articles officiels. Toutes les tenues sont disponibles du XS au XXL pour équiper petits et grands supporters.</p>
+    </div>
+
+    <?php if (empty($ba_bec_articles)): ?>
+        <div class="boutique-note">
+            Aucun article n'est disponible pour le moment.
+        </div>
+    <?php endif; ?>
+
+    <div class="boutique-grid">
+        <?php foreach ($ba_bec_articles as $article): ?>
+            <?php
+            $imageName = $extractImage($article['urlPhotoArtBoutique'] ?? '');
+            $imageUrl = $imageName ? ROOT_URL . '/src/images/article-boutique/' . htmlspecialchars($imageName) : '';
+            $adultPrice = $article['prixAdulteArtBoutique'] ?? null;
+            $childPrice = $article['prixEnfantArtBoutique'] ?? null;
+            $colors = $formatList($article['couleursArtBoutique'] ?? '');
+            $sizes = $formatList($article['taillesArtBoutique'] ?? '');
+            ?>
+            <article class="boutique-card">
+                <div class="boutique-card__media">
+                    <?php if ($imageUrl): ?>
+                        <img src="<?php echo $imageUrl; ?>" alt="<?php echo htmlspecialchars($article['libArtBoutique']); ?>">
+                    <?php else: ?>
+                        Image à venir
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <div class="boutique-card__category">
+                        <?php echo htmlspecialchars($article['categorieArtBoutique'] ?? 'Boutique'); ?>
+                    </div>
+                    <h2 class="boutique-card__title"><?php echo htmlspecialchars($article['libArtBoutique']); ?></h2>
+                    <?php if (!empty($article['descArtBoutique'])): ?>
+                        <p class="mb-2"><?php echo htmlspecialchars($article['descArtBoutique']); ?></p>
+                    <?php endif; ?>
+                    <div class="boutique-card__details">
+                        <?php if (!empty($colors)): ?>
+                            <span><strong>Couleurs :</strong> <?php echo htmlspecialchars($colors); ?></span>
+                        <?php endif; ?>
+                        <?php if (!empty($sizes)): ?>
+                            <span><strong>Tailles :</strong> <?php echo htmlspecialchars($sizes); ?></span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="boutique-card__prices">
+                    <?php if ($childPrice !== null && $childPrice !== ''): ?>
+                        <span><span>Adulte</span><span><?php echo $formatPrice((float) $adultPrice); ?></span></span>
+                        <span><span>Enfant</span><span><?php echo $formatPrice((float) $childPrice); ?></span></span>
+                    <?php else: ?>
+                        <span><span>Prix</span><span><?php echo $formatPrice((float) $adultPrice); ?></span></span>
+                    <?php endif; ?>
+                </div>
+            </article>
+        <?php endforeach; ?>
+    </div>
+</section>
+
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
+?>

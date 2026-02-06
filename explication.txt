@@ -1,0 +1,704 @@
+# Explication détaillée du dépôt Blog-ART-BEC
+
+Ce document décrit chaque dossier et fichier présents dans le dépôt, leur utilité, pourquoi ils sont utilisés, et à quels autres fichiers ils sont reliés. Les liens indiqués sont basés sur la structure et les conventions PHP du projet (inclusions, routes, assets, etc.).
+
+## Racine du dépôt
+
+- `.`
+  - **Utilité :** Racine du projet.
+  - **Pourquoi :** Point d’entrée logique pour l’ensemble des fichiers.
+  - **Lié à :** Tous les sous-dossiers et fichiers ci-dessous.
+
+- `.env`
+  - **Utilité :** Variables d’environnement locales (credentials, configuration).
+  - **Pourquoi :** Séparer les secrets et paramètres locaux du code.
+  - **Lié à :** `config.php`, `includes/libs/DotEnv.php` (chargement des variables).
+
+- `.env.example`
+  - **Utilité :** Exemple de variables d’environnement.
+  - **Pourquoi :** Aider à configurer `.env` sans exposer de secrets.
+  - **Lié à :** `.env` (copie/modèle).
+
+- `.gitignore`
+  - **Utilité :** Liste des fichiers à ignorer par Git.
+  - **Pourquoi :** Éviter de versionner des fichiers locaux/sensibles.
+  - **Lié à :** Le fonctionnement de Git pour ce dépôt.
+
+- `.DS_Store`
+  - **Utilité :** Fichier macOS de métadonnées Finder.
+  - **Pourquoi :** Créé automatiquement par macOS (souvent à ignorer).
+  - **Lié à :** Aucune logique applicative.
+
+- `README.md`
+  - **Utilité :** Documentation du projet (setup, architecture).
+  - **Pourquoi :** Présenter le projet et ses dossiers.
+  - **Lié à :** Tous les dossiers listés dans l’architecture.
+
+- `README_Gpe.md`
+  - **Utilité :** Documentation complémentaire (groupe/projet).
+  - **Pourquoi :** Conserver des infos de contexte.
+  - **Lié à :** Le reste du dépôt (document de référence).
+
+- `index.php`
+  - **Utilité :** Page d’accueil (point d’entrée web).
+  - **Pourquoi :** Route principale d’un site PHP.
+  - **Lié à :** `header.php`, `footer.php`, `src/css/*`, `src/images/*`.
+
+- `actualites.php`
+  - **Utilité :** Page “actualités”.
+  - **Pourquoi :** Afficher les actualités du site.
+  - **Lié à :** `header.php`, `footer.php`, `src/css/styleactu.css`, `api/articles/*`.
+
+- `article.php`
+  - **Utilité :** Page de détail d’un article.
+  - **Pourquoi :** Afficher un article spécifique.
+  - **Lié à :** `api/articles/*`, `functions/*`, `src/css/stylearticle.css`.
+
+- `anciens-et-amis.php`
+  - **Utilité :** Page “anciens et amis”.
+  - **Pourquoi :** Contenu éditorial spécifique.
+  - **Lié à :** `header.php`, `footer.php`, `src/css/*`.
+
+- `Pages_supplementaires/notre-histoire.php`
+  - **Utilité :** Page “notre histoire”.
+  - **Pourquoi :** Contenu institutionnel.
+  - **Lié à :** `header.php`, `footer.php`, `src/css/*`.
+
+- `contact.php`
+  - **Utilité :** Page de contact.
+  - **Pourquoi :** Permettre de joindre l’organisation.
+  - **Lié à :** `header.php`, `footer.php`, `src/css/*`.
+
+- `Pages_supplementaires/compte.php`
+  - **Utilité :** Page de compte utilisateur.
+  - **Pourquoi :** Afficher/gestion des infos compte.
+  - **Lié à :** `api/members/*`, `api/security/*`, `functions/security.php`.
+
+- `config.php`
+  - **Utilité :** Configuration globale PHP (connexion DB, constantes, etc.).
+  - **Pourquoi :** Centraliser les réglages.
+  - **Lié à :** `config/*`, `includes/libs/DotEnv.php`, `functions/*`.
+
+- `header.php`
+  - **Utilité :** En-tête commun des pages.
+  - **Pourquoi :** Réutiliser la même structure HTML.
+  - **Lié à :** Toutes les pages PHP frontales, `src/css/*`.
+
+- `footer.php`
+  - **Utilité :** Pied de page commun.
+  - **Pourquoi :** Réutiliser un footer unique.
+  - **Lié à :** Toutes les pages PHP frontales.
+
+- `testpouralvin.txt`
+  - **Utilité :** Fichier texte de test.
+  - **Pourquoi :** Probable test interne.
+  - **Lié à :** Aucun usage applicatif connu.
+
+- `explication.txt`
+  - **Utilité :** Ce document d’explication.
+  - **Pourquoi :** Documenter la structure du projet.
+  - **Lié à :** L’ensemble des fichiers listés.
+
+## Dossier `BDD`
+
+- `BDD/`
+  - **Utilité :** Scripts SQL de base de données.
+  - **Pourquoi :** Créer et peupler la base.
+  - **Lié à :** `config.php`, `functions/query/*`.
+
+- `BDD/CreateDbBlogArt26.sql`
+  - **Utilité :** Script de création de la base.
+  - **Pourquoi :** Initialiser le schéma.
+  - **Lié à :** `BDD/JeuEssaiBlogArt26_OK.sql`, `config.php`.
+
+- `BDD/JeuEssaiBlogArt26_OK.sql`
+  - **Utilité :** Données de test (jeu d’essai).
+  - **Pourquoi :** Peupler la base pour développer/tester.
+  - **Lié à :** `BDD/CreateDbBlogArt26.sql`.
+
+- `BDD/.DS_Store`
+  - **Utilité :** Métadonnées macOS.
+  - **Pourquoi :** Créé automatiquement.
+  - **Lié à :** Aucun.
+
+## Dossier `api`
+
+- `api/`
+  - **Utilité :** Endpoints PHP (CRUD, auth, etc.).
+  - **Pourquoi :** Séparer la logique d’API des vues.
+  - **Lié à :** `functions/query/*`, `functions/*`, `config.php`.
+
+- `api/articles/`
+  - **Utilité :** API pour la ressource “articles”.
+  - **Pourquoi :** Gérer création, mise à jour, suppression.
+  - **Lié à :** `views/backend/articles/*`, `article.php`.
+
+  - `api/articles/create.php` — crée un article (lié à `functions/query/insert.php`).
+  - `api/articles/update.php` — met à jour un article (lié à `functions/query/update.php`).
+  - `api/articles/delete.php` — supprime un article (lié à `functions/query/delete.php`).
+  - `api/articles/.DS_Store` — métadonnées macOS.
+
+- `api/comments/`
+  - **Utilité :** API pour les commentaires.
+  - **Pourquoi :** Gérer CRUD des commentaires.
+  - **Lié à :** `views/backend/comments/*`, `views/frontend/comments/*`.
+
+  - `api/comments/create.php` — crée un commentaire (lié à `functions/query/insert.php`).
+  - `api/comments/update.php` — met à jour un commentaire (lié à `functions/query/update.php`).
+  - `api/comments/delete.php` — supprime un commentaire (lié à `functions/query/delete.php`).
+
+- `api/thematiques/`
+  - **Utilité :** API pour les thématiques.
+  - **Pourquoi :** Gérer CRUD des thématiques.
+  - **Lié à :** `views/backend/thematiques/*`.
+
+  - `api/thematiques/create.php` — crée une thématique (lié à `functions/query/insert.php`).
+  - `api/thematiques/update.php` — met à jour une thématique (lié à `functions/query/update.php`).
+  - `api/thematiques/delete.php` — supprime une thématique (lié à `functions/query/delete.php`).
+
+- `api/statuts/`
+  - **Utilité :** API pour les statuts.
+  - **Pourquoi :** Gérer CRUD des statuts.
+  - **Lié à :** `views/backend/statuts/*`.
+
+  - `api/statuts/create.php`
+  - `api/statuts/update.php`
+  - `api/statuts/delete.php`
+
+- `api/members/`
+  - **Utilité :** API pour les membres/utilisateurs.
+  - **Pourquoi :** Gérer CRUD des membres.
+  - **Lié à :** `Pages_supplementaires/compte.php`, `views/backend/members/*`.
+
+  - `api/members/create.php`
+  - `api/members/update.php`
+  - `api/members/delete.php`
+
+- `api/keywords/`
+  - **Utilité :** API pour mots-clés.
+  - **Pourquoi :** Gérer CRUD des mots-clés.
+  - **Lié à :** `views/backend/keywords/*`.
+
+  - `api/keywords/create.php`
+  - `api/keywords/update.php`
+  - `api/keywords/delete.php`
+
+- `api/likes/`
+  - **Utilité :** API pour likes/dislikes.
+  - **Pourquoi :** Gérer les réactions.
+  - **Lié à :** `article.php`, `views/backend/likes/*`.
+
+  - `api/likes/create.php`
+  - `api/likes/update.php`
+  - `api/likes/delete.php`
+
+- `api/security/`
+  - **Utilité :** API d’authentification.
+  - **Pourquoi :** Login/signup/logout.
+  - **Lié à :** `Pages_supplementaires/compte.php`, `views/backend/security/*`.
+
+  - `api/security/login.php`
+  - `api/security/signup.php`
+  - `api/security/disconnect.php`
+  - `api/security/.DS_Store`
+
+- `api/.DS_Store`
+  - **Utilité :** Métadonnées macOS.
+  - **Pourquoi :** Créé automatiquement.
+  - **Lié à :** Aucun.
+
+## Dossier `config`
+
+- `config/`
+  - **Utilité :** Fichiers de configuration du projet.
+  - **Pourquoi :** Centraliser la config.
+  - **Lié à :** `config.php`.
+
+- `config/defines.php`
+  - **Utilité :** Constantes et définitions globales.
+  - **Pourquoi :** Réutiliser des constantes partout.
+  - **Lié à :** `config.php`, `functions/global.inc.php`.
+
+- `config/debug.php`
+  - **Utilité :** Paramètres de debug.
+  - **Pourquoi :** Activer logs/erreurs.
+  - **Lié à :** `config.php`.
+
+- `config/security.php`
+  - **Utilité :** Réglages de sécurité/cookies.
+  - **Pourquoi :** Protéger l’accès.
+  - **Lié à :** `api/security/*`, `functions/security.php`.
+
+## Dossier `includes`
+
+- `includes/`
+  - **Utilité :** Bibliothèques incluses.
+  - **Pourquoi :** Partager du code externe.
+  - **Lié à :** `config.php`, pages PHP.
+
+- `includes/libs/`
+  - **Utilité :** Librairies PHP.
+  - **Pourquoi :** Fonctionnalités partagées.
+  - **Lié à :** `config.php`.
+
+- `includes/libs/DotEnv.php`
+  - **Utilité :** Chargement de variables d’environnement.
+  - **Pourquoi :** Lire `.env`.
+  - **Lié à :** `.env`, `config.php`.
+
+- `includes/libs/cookie-consent.php`
+  - **Utilité :** Bannière/consentement cookies.
+  - **Pourquoi :** Conformité RGPD.
+  - **Lié à :** `header.php`, `views/frontend/rgpd/*`.
+
+## Dossier `functions`
+
+- `functions/`
+  - **Utilité :** Fonctions PHP communes.
+  - **Pourquoi :** Factoriser la logique.
+  - **Lié à :** `api/*`, `views/*`, pages racine.
+
+- `functions/global.inc.php`
+  - **Utilité :** Inclusion globale de fonctions.
+  - **Pourquoi :** Charger les helpers partout.
+  - **Lié à :** `functions/*`.
+
+- `functions/data.php`
+  - **Utilité :** Fonctions liées aux données.
+  - **Pourquoi :** Centraliser l’accès DB.
+  - **Lié à :** `functions/query/*`.
+
+- `functions/query/`
+  - **Utilité :** Abstractions CRUD SQL.
+  - **Pourquoi :** Standardiser les requêtes.
+  - **Lié à :** `api/*`, `functions/data.php`.
+
+  - `functions/query/connect.php` — connexion DB.
+  - `functions/query/load.php` — chargement de données.
+  - `functions/query/select.php` — requêtes SELECT.
+  - `functions/query/insert.php` — requêtes INSERT.
+  - `functions/query/update.php` — requêtes UPDATE.
+  - `functions/query/delete.php` — requêtes DELETE.
+  - `functions/query/.DS_Store` — métadonnées macOS.
+
+- `functions/security.php`
+  - **Utilité :** Helpers de sécurité.
+  - **Pourquoi :** Gérer sessions/permissions.
+  - **Lié à :** `api/security/*`, `config/security.php`.
+
+- `functions/ctrlSaisies.php`
+  - **Utilité :** Contrôle/sanitation des saisies.
+  - **Pourquoi :** Sécurité contre injections.
+  - **Lié à :** Formulaires, `api/*`.
+
+- `functions/getExistPseudo.php`
+  - **Utilité :** Vérifier l’existence d’un pseudo.
+  - **Pourquoi :** Éviter doublons.
+  - **Lié à :** `api/members/*`, `api/security/signup.php`.
+
+- `functions/dateChangeFormat.php`
+  - **Utilité :** Formatage des dates.
+  - **Pourquoi :** Affichage cohérent.
+  - **Lié à :** `views/*`, `article.php`.
+
+- `functions/utilErrOn.php`
+  - **Utilité :** Gestion d’erreurs.
+  - **Pourquoi :** Debug/affichage erreurs.
+  - **Lié à :** `config/debug.php`.
+
+- `functions/redirec.php`
+  - **Utilité :** Redirections simples.
+  - **Pourquoi :** Navigation contrôlée.
+  - **Lié à :** `views/backend/*`.
+
+- `functions/redirecmodo.php`
+  - **Utilité :** Redirections spécifiques (modération?).
+  - **Pourquoi :** Navigation backend.
+  - **Lié à :** `views/backend/*`.
+
+- `functions/various.php`
+  - **Utilité :** Fonctions diverses.
+  - **Pourquoi :** Helpers génériques.
+  - **Lié à :** Code PHP global.
+
+- `functions/gfgff`
+  - **Utilité :** Fichier non identifié (probable test).
+  - **Pourquoi :** Artefact de développement.
+  - **Lié à :** Aucun.
+
+- `functions/.DS_Store`
+  - **Utilité :** Métadonnées macOS.
+  - **Pourquoi :** Créé automatiquement.
+  - **Lié à :** Aucun.
+
+## Dossier `src`
+
+- `src/`
+  - **Utilité :** Ressources statiques.
+  - **Pourquoi :** Centraliser assets.
+  - **Lié à :** `header.php`, pages PHP.
+
+- `src/css/`
+  - **Utilité :** Feuilles de style.
+  - **Pourquoi :** Styliser le site.
+  - **Lié à :** `header.php`, pages PHP.
+
+  - `src/css/style.css` — styles globaux.
+  - `src/css/home.css` — styles page d’accueil.
+  - `src/css/stylearticle.css` — styles page article.
+  - `src/css/styleactu.css` — styles page actualités.
+  - `src/css/font.css` — polices.
+
+- `src/images/`
+  - **Utilité :** Images globales.
+  - **Pourquoi :** Assets du site.
+  - **Lié à :** `src/css/*`, pages PHP.
+
+  - `src/images/logo/logo.svg` — logo vectoriel.
+  - `src/images/logoBlogArt.png` — logo PNG.
+  - `src/images/background/*` — fonds d’écran par page.
+  - `src/images/eye-open.png`, `eye-closed.png` — icônes UI.
+  - `src/images/pnglike.png`, `pngdislike.png` — réactions.
+  - `src/images/search.png`, `article.png`, `mmi-bordeaux_*.png`, `fleche-bas.svg` — icônes et visuels.
+  - `.DS_Store` — métadonnées macOS.
+
+- `src/uploads/`
+  - **Utilité :** Images uploadées.
+  - **Pourquoi :** Contenus dynamiques.
+  - **Lié à :** `api/articles/*`, `views/backend/articles/*`.
+
+  - `src/uploads/imgArt1.jpg` … `imgArt8.jpg` — exemples d’images d’articles.
+  - `src/uploads/.DS_Store` — métadonnées macOS.
+
+- `src/videos/`
+  - **Utilité :** Vidéos.
+  - **Pourquoi :** Contenus multimédia.
+  - **Lié à :** Pages front.
+
+  - `src/videos/fond.mp4` — vidéo de fond.
+
+- `src/.DS_Store`
+  - **Utilité :** Métadonnées macOS.
+  - **Pourquoi :** Créé automatiquement.
+  - **Lié à :** Aucun.
+
+## Dossier `views`
+
+- `views/`
+  - **Utilité :** Vues du site (front/back).
+  - **Pourquoi :** Séparer rendu HTML des API.
+  - **Lié à :** `api/*`, `functions/*`.
+
+### `views/backend`
+
+- `views/backend/dashboard.php`
+  - **Utilité :** Tableau de bord admin.
+  - **Pourquoi :** Centraliser la gestion.
+  - **Lié à :** `views/backend/*`.
+
+- `views/backend/articles/`
+  - **Utilité :** Vues admin pour articles.
+  - **Pourquoi :** CRUD interface.
+  - **Lié à :** `api/articles/*`.
+
+  - `list.php`, `create.php`, `edit.php`, `delete.php` — pages CRUD.
+
+- `views/backend/comments/`
+  - **Utilité :** Vues admin pour commentaires.
+  - **Pourquoi :** CRUD interface.
+  - **Lié à :** `api/comments/*`.
+
+  - `list.php`, `create.php`, `edit.php`, `delete.php`.
+
+- `views/backend/thematiques/`
+  - **Utilité :** Vues admin pour thématiques.
+  - **Pourquoi :** CRUD interface.
+  - **Lié à :** `api/thematiques/*`.
+
+  - `list.php`, `create.php`, `edit.php`, `delete.php`.
+
+- `views/backend/statuts/`
+  - **Utilité :** Vues admin pour statuts.
+  - **Pourquoi :** CRUD interface.
+  - **Lié à :** `api/statuts/*`.
+
+  - `list.php`, `create.php`, `edit.php`, `delete.php`.
+
+- `views/backend/members/`
+  - **Utilité :** Vues admin pour membres.
+  - **Pourquoi :** CRUD interface.
+  - **Lié à :** `api/members/*`.
+
+  - `list.php`, `create.php`, `edit.php`, `delete.php`.
+
+- `views/backend/keywords/`
+  - **Utilité :** Vues admin pour mots-clés.
+  - **Pourquoi :** CRUD interface.
+  - **Lié à :** `api/keywords/*`.
+
+  - `list.php`, `create.php`, `edit.php`, `delete.php`.
+
+- `views/backend/likes/`
+  - **Utilité :** Vues admin pour likes.
+  - **Pourquoi :** CRUD interface.
+  - **Lié à :** `api/likes/*`.
+
+  - `list.php`, `create.php`, `edit.php`, `delete.php`.
+
+- `views/backend/security/`
+  - **Utilité :** Vues login/signup admin.
+  - **Pourquoi :** Authentification.
+  - **Lié à :** `api/security/*`.
+
+  - `login.php`, `signup.php`.
+
+- `views/backend/.DS_Store`
+  - **Utilité :** Métadonnées macOS.
+  - **Pourquoi :** Créé automatiquement.
+  - **Lié à :** Aucun.
+
+### `views/frontend`
+
+- `views/frontend/articles/article1.php`
+  - **Utilité :** Exemple d’article front.
+  - **Pourquoi :** Template/maquette.
+  - **Lié à :** `article.php`.
+
+- `views/frontend/comments/commentaire.php`
+  - **Utilité :** Affichage de commentaire.
+  - **Pourquoi :** Template commentaire.
+  - **Lié à :** `api/comments/*`.
+
+- `views/frontend/actors.php`
+  - **Utilité :** Page “actors”.
+  - **Pourquoi :** Contenu éditorial.
+  - **Lié à :** `header.php`, `footer.php`.
+
+- `views/frontend/events.php`
+  - **Utilité :** Page “events”.
+  - **Pourquoi :** Contenu éditorial.
+  - **Lié à :** `header.php`, `footer.php`.
+
+- `views/frontend/movements.php`
+  - **Utilité :** Page “movements”.
+  - **Pourquoi :** Contenu éditorial.
+  - **Lié à :** `header.php`, `footer.php`.
+
+- `views/frontend/original.php`
+  - **Utilité :** Page “original”.
+  - **Pourquoi :** Contenu éditorial.
+  - **Lié à :** `header.php`, `footer.php`.
+
+- `views/frontend/search.php`
+  - **Utilité :** Page de recherche.
+  - **Pourquoi :** Recherche d’articles.
+  - **Lié à :** `api/articles/*`, `functions/query/select.php`.
+
+- `views/frontend/rgpd/`
+  - **Utilité :** Pages légales RGPD.
+  - **Pourquoi :** Conformité légale.
+  - **Lié à :** `includes/libs/cookie-consent.php`.
+
+  - `views/frontend/rgpd/cgu.php`
+  - `views/frontend/rgpd/rgpd.php`
+
+- `views/frontend/.DS_Store`
+  - **Utilité :** Métadonnées macOS.
+  - **Pourquoi :** Créé automatiquement.
+  - **Lié à :** Aucun.
+
+## Dossier `infoleg`
+
+- `infoleg/`
+  - **Utilité :** Pages légales (RGPD, CGU, mentions).
+  - **Pourquoi :** Conformité réglementaire.
+  - **Lié à :** `includes/libs/cookie-consent.php`.
+
+- `infoleg/mentionleg.php`
+  - **Utilité :** Mentions légales.
+  - **Pourquoi :** Obligations légales.
+  - **Lié à :** `header.php`, `footer.php`.
+
+- `infoleg/cgu.php`
+  - **Utilité :** Conditions générales d’utilisation.
+  - **Pourquoi :** Obligations légales.
+  - **Lié à :** `header.php`, `footer.php`.
+
+- `infoleg/rgpd.php`
+  - **Utilité :** Page RGPD.
+  - **Pourquoi :** Informer l’utilisateur.
+  - **Lié à :** `includes/libs/cookie-consent.php`.
+
+## Assets déplacés dans `src`
+
+- `src/css/`
+  - **Utilité :** Feuilles de style partagées.
+  - **Pourquoi :** Centraliser le CSS du site.
+  - **Lié à :** `header.php`, `actualites.php`, `article.php`.
+  - `reset.css`, `style.css`, `variables.css`, `fonts.css`, `system.css`.
+
+- `src/images/`
+  - **Utilité :** Images globales.
+  - **Pourquoi :** Centraliser les visuels.
+  - **Lié à :** `header.php`, `footer.php`.
+  - `logo.png`, `image1.jpg`, `image2.jpg`, `image3.jpg`, `map.png`, `facebook.png`, `instagram.png`.
+
+- `src/fonts/`
+  - **Utilité :** Polices.
+  - **Pourquoi :** Identité visuelle.
+  - **Lié à :** `src/css/fonts.css`.
+
+  - `Epilogue/`, `Montserrat/`.
+
+## Dossier `.git` (métadonnées Git)
+
+- `.git/`
+  - **Utilité :** Historique et configuration Git.
+  - **Pourquoi :** Suivi des versions.
+  - **Lié à :** Tous les fichiers versionnés.
+
+- `.git/HEAD`
+  - **Utilité :** Référence de la branche courante.
+  - **Pourquoi :** Git a besoin de savoir où pointe HEAD.
+  - **Lié à :** `.git/refs/*`.
+
+- `.git/config`
+  - **Utilité :** Configuration Git locale.
+  - **Pourquoi :** Paramètres repo.
+  - **Lié à :** `.git/`.
+
+- `.git/description`
+  - **Utilité :** Description du dépôt (usage interne).
+  - **Pourquoi :** Git hook/serveur.
+  - **Lié à :** `.git/`.
+
+- `.git/index`
+  - **Utilité :** Index (staging area).
+  - **Pourquoi :** Préparation des commits.
+  - **Lié à :** Tous les fichiers suivis.
+
+- `.git/FETCH_HEAD`
+  - **Utilité :** Références des derniers fetch.
+  - **Pourquoi :** Synchronisation remotes.
+  - **Lié à :** `.git/refs/remotes/*`.
+
+- `.git/packed-refs`
+  - **Utilité :** Références compactées.
+  - **Pourquoi :** Optimiser Git.
+  - **Lié à :** `.git/refs/*`.
+
+- `.git/info/`
+  - **Utilité :** Infos internes Git.
+  - **Pourquoi :** Exclusions locales.
+  - **Lié à :** `.git/info/exclude`.
+
+- `.git/info/exclude`
+  - **Utilité :** Ignore local spécifique.
+  - **Pourquoi :** Complément de `.gitignore`.
+  - **Lié à :** `.gitignore`.
+
+- `.git/hooks/`
+  - **Utilité :** Hooks Git.
+  - **Pourquoi :** Scripts automatiques.
+  - **Lié à :** Flux de commits.
+
+  - `applypatch-msg.sample`, `commit-msg.sample`, `fsmonitor-watchman.sample`, `post-update.sample`, `pre-applypatch.sample`, `pre-commit.sample`, `pre-merge-commit.sample`, `pre-push.sample`, `pre-rebase.sample`, `pre-receive.sample`, `prepare-commit-msg.sample`, `push-to-checkout.sample`, `sendemail-validate.sample`, `update.sample` — exemples de hooks Git.
+
+- `.git/logs/`
+  - **Utilité :** Journaux Git.
+  - **Pourquoi :** Historique des mouvements de refs.
+  - **Lié à :** `.git/refs/*`.
+
+  - `.git/logs/HEAD` — log des changements HEAD.
+  - `.git/logs/refs/heads/` — logs des branches locales.
+  - `.git/logs/refs/remotes/` — logs des branches distantes.
+
+- `.git/refs/`
+  - **Utilité :** Références Git (branches/tags).
+  - **Pourquoi :** Pointer vers commits.
+  - **Lié à :** `.git/HEAD`, `.git/packed-refs`.
+
+  - `.git/refs/heads/work` — branche locale “work”.
+  - `.git/refs/tags/` — tags.
+  - `.git/refs/remotes/` — références distantes.
+
+- `.git/objects/`
+  - **Utilité :** Objets Git (commits, arbres, blobs).
+  - **Pourquoi :** Stockage du contenu versionné.
+  - **Lié à :** Historique Git.
+
+  - `.git/objects/pack/pack-338c453b1515cd13555e5d1336ebbe4f79555e25.pack` — pack d’objets compressés.
+  - `.git/objects/pack/pack-338c453b1515cd13555e5d1336ebbe4f79555e25.idx` — index du pack.
+  - `.git/objects/pack/pack-338c453b1515cd13555e5d1336ebbe4f79555e25.rev` — reverse index.
+
+  - Répertoires hash (exemples) : `2c/`, `8d/`, `a3/`, `97/`, `8e/`, `3d/`, `db/`, `f5/`, `50/`, `ba/`, `ac/`, `38/`, `c9/`, `61/`, `f8/`, `a2/`, `d7/`, `41/`, `56/`, `08/`, `c6/`, `9e/`, `80/`, `31/`, `5f/`, `71/`, `20/`, `95/`, `35/`, `24/`, `52/`, `cc/`, `a7/`, `ca/`, `76/`, `72/`, `b0/`, `5c/`, `ce/`, `ab/`, `58/`, `bd/`, `77/`, `43/`, `9c/`, `d4/`, `b7/`, `7b/`, `de/`, `d2/`, `ff/`, `9f/`, `fa/`, `2a/`, `6a/`.
+
+  - Fichiers objets (exemples) :
+    - `.git/objects/2c/2f8ae95abd7cc11f406be7ac7a159a6d0e2b22`
+    - `.git/objects/8d/1d084127d9639bc1efa0e6ab5bbf1957e70a09`
+    - `.git/objects/a3/bef2a91155afcb079732d246bc1b38148e68c5`
+    - `.git/objects/97/98a4b546f34bdc5cc4327094d1456fca0a897a`
+    - `.git/objects/8e/468de180d4d0808be3268e6eca2ada51ceee77`
+    - `.git/objects/8e/64ad5418b7c756dbca16e7318aadf02a4941b7`
+    - `.git/objects/3d/cc8611d9e2d291588730f9b08f004d267ce51a`
+    - `.git/objects/db/c79a075a829e2179ae0b9fc50f00b7698acf29`
+    - `.git/objects/f5/d23801a34a21ac204169879fefc0f49d9e9e9a`
+    - `.git/objects/50/22d188d34755fe5ae4305a38bd5cc371c643cc`
+    - `.git/objects/50/9c596089dedca33b975eb3c6d9a6702df0ea95`
+    - `.git/objects/ba/f69a72aea6b3c542a94cc9297326b3ab3fdd04`
+    - `.git/objects/ac/96d61f36ed27cfa2f7621845b2dffe27793eb2`
+    - `.git/objects/38/e222443887496f4252e5eb8990b09544dd59d3`
+    - `.git/objects/c9/0aa78cbe39efded0572b6f30c8ca25911bf44d`
+    - `.git/objects/61/7580b697602785957131161ced24bc3a356985`
+    - `.git/objects/61/d0a682d7b960c6ab08a2a629f9cb066d731755`
+    - `.git/objects/f8/d46bf2e3fc416435ebefc5868b6623e1576d99`
+    - `.git/objects/a2/2e86abfd4fb61613bc74f0fd505a596c542f6d`
+    - `.git/objects/d7/7dd74053f851c22176f81ab757ed7d4f062110`
+    - `.git/objects/41/bf7bdad3a4447f08c23ccc2ba47f2f7cb60933`
+    - `.git/objects/56/c317c9a81a2b2d5c7401fd7833d9e69924757a`
+    - `.git/objects/08/742b556ea2fc6795819d340d3f7f1871d501cc`
+    - `.git/objects/c6/17c05828de4218d2a61fcd0b3acfca229dfc0f`
+    - `.git/objects/9e/64215cb2e91f286dab9ba49f3963db4467d419`
+    - `.git/objects/80/bb813279c0219989bdcec60cd28ddc6bd9758e`
+    - `.git/objects/31/e61788e8c990c34dea484a06f7afac0eef8ab4`
+    - `.git/objects/5f/ac169604503c597a5a50e45a1ad6ba33a885be`
+    - `.git/objects/71/6ddef4e6b1f4160b0d714ae3453e7327960975`
+    - `.git/objects/20/6c2a08a08c90e5a5f058650e02b3616bf81cfd`
+    - `.git/objects/95/1a4d6eec32dca464e333696fe6c1d4a442297c`
+    - `.git/objects/35/05518adce44ee756c8855bb3ba00b416e857b0`
+    - `.git/objects/24/2d1712611c2918cc0218619007a5ea21aacc0f`
+    - `.git/objects/52/e7fdaa2dbf4d111ddc38238c337350d948f211`
+    - `.git/objects/cc/ece4e63be67661b51da0a53e1d33c4dc91f1c2`
+    - `.git/objects/a7/8667787a10efdec5c214f1c6ea42141265750a`
+    - `.git/objects/ca/70ecffdb07d17bc51803b5974a19889d165631`
+    - `.git/objects/76/a1ea8b6e520432ef6caeb6642d1c1b6a2072a1`
+    - `.git/objects/72/55525eefcc0698b03df3dfe9c4059c0b7e4a1e`
+    - `.git/objects/b0/0f347fa831086d6b39f575c7867b64397eb8e9`
+    - `.git/objects/b0/d935fc6c8a3ac4dfd6f562c291e2e949e3d61e`
+    - `.git/objects/b0/f1b6df69ed9d60c58e339c9872362b3156164c`
+    - `.git/objects/5c/830868595edb97e8d9755d8e127edc8cb5bab5`
+    - `.git/objects/ce/701aaeefbe8d1e79b93210fda845a786e7d8e2`
+    - `.git/objects/ab/f37d40d99999f37eda233bacb152bd66f0b5bc`
+    - `.git/objects/58/2f13342d13e4e013c0132fb83d4c161a68aecd`
+    - `.git/objects/58/18c25b61258c5dc8c35942518aa443af08b1a8`
+    - `.git/objects/bd/46dffd2de5c9a92b8c8222566bf1d538a733e2`
+    - `.git/objects/77/fa4e1ef74260cbc2dc184b1234096be5e4f9d8`
+    - `.git/objects/43/d62a4c563b9cbfed282344d1b1c8364b76d841`
+    - `.git/objects/9c/5210e16ce31ae234cde92e73466c08367091b5`
+    - `.git/objects/d4/484751ef3e5ba87b837679b0b56e37b0191126`
+    - `.git/objects/b7/76399380e1849a8ab1b306e31e986678ab403a`
+    - `.git/objects/7b/3797d2230a671796ee55e84890cf88d2ccd7e7`
+    - `.git/objects/7b/e773b4c7347ea231b2ef3804b9e4def5577652`
+    - `.git/objects/de/e47f425d53049701fd52bdecf03acba3b7ceb5`
+    - `.git/objects/d2/6db8cdabb78c243ae3aade95d5756e991fb91b`
+    - `.git/objects/ff/f526380451436bb1fe430c333dcafdde9c0805`
+    - `.git/objects/9f/77be0f3234177213e7d4aa5e6e0e033fb26c6d`
+    - `.git/objects/fa/6faec47e37c81262023a1f19993e5d043207d8`
+    - `.git/objects/2a/a01f708d0e6974cf698dd0e09155dd46aa385b`
+    - `.git/objects/6a/13cf4ccab951ce0be8c68a423d971e09bdfa6d`
+    - `.git/objects/6a/19ca76a34fe737aaa57d0fc733da66d3c3fe8f`
+
+- `.git/branches/`
+  - **Utilité :** Références de branches (legacy).
+  - **Pourquoi :** Support ancien Git.
+  - **Lié à :** `.git/refs/heads/*`.
