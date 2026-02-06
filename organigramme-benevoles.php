@@ -13,52 +13,65 @@ function is_missing_table(PDOException $exception): bool
 
 $dbAvailable = getenv('DB_HOST') && getenv('DB_USER') && getenv('DB_DATABASE');
 
+$branches = [
+    ['numBranche' => 1, 'libBranche' => 'Bureau'],
+    ['numBranche' => 2, 'libBranche' => 'Équipe technique'],
+    ['numBranche' => 3, 'libBranche' => 'Équipe animation'],
+    ['numBranche' => 4, 'libBranche' => 'Équipe communication'],
+];
+
 if ($dbAvailable) {
     try {
         sql_connect();
 
-        $branchesStmt = $DB->prepare('SELECT numBranche, libBranche FROM BRANCHE_PERSONNEL ORDER BY libBranche ASC');
-        $branchesStmt->execute();
-        $branches = $branchesStmt->fetchAll(PDO::FETCH_ASSOC);
-
         $staffStmt = $DB->prepare(
-            'SELECT p.numPersonnel, p.prenomPersonnel, p.nomPersonnel, p.urlPhotoPersonnel, b.numBranche, b.libBranche, a.libPoste
-                    FROM PERSONNEL p
-                    INNER JOIN AFFECTATION_PERSONNEL a ON p.numPersonnel = a.numPersonnel
-                    INNER JOIN BRANCHE_PERSONNEL b ON a.numBranche = b.numBranche
-                    ORDER BY b.libBranche ASC, p.nomPersonnel ASC'
+            'SELECT numPersonnel, prenomPersonnel, nomPersonnel, urlPhotoPersonnel,
+                    estDirection, estCommissionTechnique, estCommissionAnimation, estCommissionCommunication
+                FROM PERSONNEL
+                WHERE estDirection = 1
+                    OR estCommissionTechnique = 1
+                    OR estCommissionAnimation = 1
+                    OR estCommissionCommunication = 1
+                ORDER BY nomPersonnel ASC, prenomPersonnel ASC'
         );
         $staffStmt->execute();
         $staff = $staffStmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $exception) {
         if (is_missing_table($exception)) {
-            $branches = [];
             $staff = [];
         } else {
             throw $exception;
         }
     }
 } else {
-    $branches = [];
     $staff = [];
 }
 
-if (empty($branches)) {
-    $branches = [
-        ['numBranche' => 0, 'libBranche' => 'Bureau'],
-        ['numBranche' => 0, 'libBranche' => 'Équipe technique'],
-        ['numBranche' => 0, 'libBranche' => 'Équipe animation'],
-        ['numBranche' => 0, 'libBranche' => 'Équipe communication'],
-    ];
+$staffByBranch = [];
+foreach ($branches as $branch) {
+    $staffByBranch[$branch['libBranche']] = [];
 }
 
-$staffByBranch = [];
+$roleLabels = [
+    'Bureau' => 'Membre du bureau',
+    'Équipe technique' => 'Commission technique',
+    'Équipe animation' => 'Commission animation',
+    'Équipe communication' => 'Commission communication',
+];
+
 foreach ($staff as $member) {
-    $branchKey = $member['libBranche'];
-    if (!isset($staffByBranch[$branchKey])) {
-        $staffByBranch[$branchKey] = [];
+    if (!empty($member['estDirection'])) {
+        $staffByBranch['Bureau'][] = array_merge($member, ['libPoste' => $roleLabels['Bureau']]);
     }
-    $staffByBranch[$branchKey][] = $member;
+    if (!empty($member['estCommissionTechnique'])) {
+        $staffByBranch['Équipe technique'][] = array_merge($member, ['libPoste' => $roleLabels['Équipe technique']]);
+    }
+    if (!empty($member['estCommissionAnimation'])) {
+        $staffByBranch['Équipe animation'][] = array_merge($member, ['libPoste' => $roleLabels['Équipe animation']]);
+    }
+    if (!empty($member['estCommissionCommunication'])) {
+        $staffByBranch['Équipe communication'][] = array_merge($member, ['libPoste' => $roleLabels['Équipe communication']]);
+    }
 }
 
 $branchDescriptions = [
