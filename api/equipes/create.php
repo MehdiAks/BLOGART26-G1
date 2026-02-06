@@ -37,11 +37,13 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
     $tmpName = $_FILES[$fileKey]['tmp_name'];
     $name = $_FILES[$fileKey]['name'];
     $size = $_FILES[$fileKey]['size'];
-    $allowedExtensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'];
     $allowedMimeTypes = [
         'image/jpeg',
         'image/png',
         'image/avif',
+        'image/webp',
+        'image/gif',
         'image/svg+xml',
         'image/svg',
         'text/xml',
