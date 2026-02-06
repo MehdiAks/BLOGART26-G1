@@ -35,7 +35,7 @@ if (isset($_GET['numEquipe'])) {
                     </div>
                     <div class="form-group mt-2">
                         <label for="summary">Nom</label>
-                        <input id="summary" name="summary" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_equipe['libEquipe']); ?>" readonly />
+                        <input id="summary" name="summary" class="form-control" type="text" value="<?php echo htmlspecialchars($ba_bec_equipe['nomEquipe']); ?>" readonly />
                     </div>
                     <br />
                     <div class="form-group mt-2">

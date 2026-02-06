@@ -12,10 +12,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
 $ba_bec_benevoles = sql_select('PERSONNEL', '*', null, null, 'nomPersonnel ASC, prenomPersonnel ASC');
-$ba_bec_teams = sql_select('EQUIPE', 'numEquipe, libEquipe', null, null, 'libEquipe ASC');
+$ba_bec_teams = sql_select('EQUIPE', 'codeEquipe, nomEquipe', null, null, 'nomEquipe ASC');
 $ba_bec_team_map = [];
 foreach ($ba_bec_teams as $ba_bec_team) {
-    $ba_bec_team_map[$ba_bec_team['numEquipe']] = $ba_bec_team['libEquipe'];
+    $ba_bec_team_map[$ba_bec_team['codeEquipe']] = $ba_bec_team['nomEquipe'];
 }
 $ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
 ?>

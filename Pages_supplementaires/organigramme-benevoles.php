@@ -110,7 +110,7 @@ function branch_id(string $label): string
 }
 ?>
 
-<?php require_once 'header.php'; ?>
+<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php'; ?>
 
 <section class="club-page">
     <header class="club-header">
@@ -157,5 +157,5 @@ function branch_id(string $label): string
 </section>
 
 <?php
-require_once 'footer.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
 ?>

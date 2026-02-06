@@ -22,13 +22,7 @@ $ba_bec_numEquipe = (int) $_GET['numEquipe'];
 $ba_bec_equipe = null;
 if ($ba_bec_numEquipe) {
     $stmt = $DB->prepare(
-        'SELECT e.*, c.nomClub, ce.libCategorie, se.libSection, ne.libNiveau
-         FROM EQUIPE e
-         INNER JOIN CLUB c ON e.numClub = c.numClub
-         INNER JOIN CATEGORIE_EQUIPE ce ON e.numCategorie = ce.numCategorie
-         INNER JOIN SECTION_EQUIPE se ON e.numSection = se.numSection
-         INNER JOIN NIVEAU_EQUIPE ne ON e.numNiveau = ne.numNiveau
-         WHERE e.numEquipe = :numEquipe'
+        'SELECT * FROM EQUIPE WHERE numEquipe = :numEquipe'
     );
     $stmt->execute([':numEquipe' => $ba_bec_numEquipe]);
     $ba_bec_equipe = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
@@ -39,8 +33,8 @@ if (!$ba_bec_equipe) {
     exit;
 }
 
-$ba_bec_photoEquipe = $ba_bec_equipe['urlPhotoEquipe'] ?? '';
-$ba_bec_photoStaff = $ba_bec_equipe['urlPhotoStaff'] ?? '';
+$ba_bec_photoEquipe = $ba_bec_equipe['photoDLequipe'] ?? '';
+$ba_bec_photoStaff = $ba_bec_equipe['photoStaff'] ?? '';
 
 function ba_bec_equipe_photo_url(?string $path): string
 {
@@ -58,10 +52,21 @@ function ba_bec_equipe_photo_url(?string $path): string
 $ba_bec_photoEquipeUrl = ba_bec_equipe_photo_url($ba_bec_photoEquipe);
 $ba_bec_photoStaffUrl = ba_bec_equipe_photo_url($ba_bec_photoStaff);
 
-$ba_bec_clubs = sql_select('CLUB', 'nomClub', null, null, 'nomClub ASC');
-$ba_bec_categories = sql_select('CATEGORIE_EQUIPE', 'libCategorie', null, null, 'libCategorie ASC');
-$ba_bec_sections = sql_select('SECTION_EQUIPE', 'libSection', null, null, 'libSection ASC');
-$ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNiveau ASC');
+$ba_bec_clubs = [];
+$ba_bec_categories = [];
+$ba_bec_sections = [];
+$ba_bec_niveaux = [];
+try {
+    $ba_bec_clubs = $DB->query("SELECT DISTINCT club FROM EQUIPE WHERE club <> '' ORDER BY club ASC")->fetchAll(PDO::FETCH_COLUMN);
+    $ba_bec_categories = $DB->query("SELECT DISTINCT categorie FROM EQUIPE WHERE categorie <> '' ORDER BY categorie ASC")->fetchAll(PDO::FETCH_COLUMN);
+    $ba_bec_sections = $DB->query("SELECT DISTINCT section FROM EQUIPE WHERE section <> '' ORDER BY section ASC")->fetchAll(PDO::FETCH_COLUMN);
+    $ba_bec_niveaux = $DB->query("SELECT DISTINCT niveau FROM EQUIPE WHERE niveau <> '' ORDER BY niveau ASC")->fetchAll(PDO::FETCH_COLUMN);
+} catch (PDOException $exception) {
+    $ba_bec_clubs = [];
+    $ba_bec_categories = [];
+    $ba_bec_sections = [];
+    $ba_bec_niveaux = [];
+}
 
 function ba_bec_photo_url(string $codeEquipe, string $suffix): ?string
 {
@@ -104,58 +109,52 @@ $ba_bec_photoStaffUrl = $ba_bec_photoStaffUrl ?: ba_bec_photo_url($ba_bec_equipe
                         placeholder="Code équipe (ex: U18F)" required />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="libEquipe">Nom court</label>
-                    <input id="libEquipe" name="libEquipe" class="form-control" type="text"
-                        value="<?php echo htmlspecialchars($ba_bec_equipe['libEquipe']); ?>" placeholder="Nom court..."
+                    <label for="nomEquipe">Nom de l'équipe</label>
+                    <input id="nomEquipe" name="nomEquipe" class="form-control" type="text"
+                        value="<?php echo htmlspecialchars($ba_bec_equipe['nomEquipe']); ?>" placeholder="Nom de l'équipe..."
                         required />
                 </div>
                 <div class="form-group mt-2">
-                    <label for="libEquipeComplet">Nom complet</label>
-                    <input id="libEquipeComplet" name="libEquipeComplet" class="form-control" type="text"
-                        value="<?php echo htmlspecialchars($ba_bec_equipe['libEquipeComplet'] ?? ''); ?>"
-                        placeholder="Nom complet de l'équipe..." />
-                </div>
-                <div class="form-group mt-2">
-                    <label for="nomClub">Club</label>
-                    <input id="nomClub" name="nomClub" class="form-control" type="text" list="clubList"
-                        value="<?php echo htmlspecialchars($ba_bec_equipe['nomClub'] ?? ''); ?>"
-                        placeholder="Club (ex: BEC Basket)" required />
+                    <label for="club">Club</label>
+                    <input id="club" name="club" class="form-control" type="text" list="clubList"
+                        value="<?php echo htmlspecialchars($ba_bec_equipe['club'] ?? ''); ?>"
+                        placeholder="Club (ex: Bordeaux étudiant club)" required />
                     <datalist id="clubList">
                         <?php foreach ($ba_bec_clubs as $ba_bec_club): ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_club['nomClub']); ?>"></option>
+                            <option value="<?php echo htmlspecialchars($ba_bec_club); ?>"></option>
                         <?php endforeach; ?>
                     </datalist>
                 </div>
                 <div class="form-group mt-2">
-                    <label for="categorieEquipe">Catégorie</label>
-                    <input id="categorieEquipe" name="categorieEquipe" class="form-control" type="text" list="categorieList"
-                        value="<?php echo htmlspecialchars($ba_bec_equipe['libCategorie'] ?? ''); ?>"
+                    <label for="categorie">Catégorie</label>
+                    <input id="categorie" name="categorie" class="form-control" type="text" list="categorieList"
+                        value="<?php echo htmlspecialchars($ba_bec_equipe['categorie'] ?? ''); ?>"
                         placeholder="Catégorie (ex: Seniors)" />
                     <datalist id="categorieList">
                         <?php foreach ($ba_bec_categories as $ba_bec_categorie): ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_categorie['libCategorie']); ?>"></option>
+                            <option value="<?php echo htmlspecialchars($ba_bec_categorie); ?>"></option>
                         <?php endforeach; ?>
                     </datalist>
                 </div>
                 <div class="form-group mt-2">
-                    <label for="sectionEquipe">Section</label>
-                    <input id="sectionEquipe" name="sectionEquipe" class="form-control" type="text" list="sectionList"
-                        value="<?php echo htmlspecialchars($ba_bec_equipe['libSection'] ?? ''); ?>"
+                    <label for="section">Section</label>
+                    <input id="section" name="section" class="form-control" type="text" list="sectionList"
+                        value="<?php echo htmlspecialchars($ba_bec_equipe['section'] ?? ''); ?>"
                         placeholder="Section (ex: Féminine)" />
                     <datalist id="sectionList">
                         <?php foreach ($ba_bec_sections as $ba_bec_section): ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_section['libSection']); ?>"></option>
+                            <option value="<?php echo htmlspecialchars($ba_bec_section); ?>"></option>
                         <?php endforeach; ?>
                     </datalist>
                 </div>
                 <div class="form-group mt-2">
-                    <label for="niveauEquipe">Niveau</label>
-                    <input id="niveauEquipe" name="niveauEquipe" class="form-control" type="text" list="niveauList"
-                        value="<?php echo htmlspecialchars($ba_bec_equipe['libNiveau'] ?? ''); ?>"
+                    <label for="niveau">Niveau</label>
+                    <input id="niveau" name="niveau" class="form-control" type="text" list="niveauList"
+                        value="<?php echo htmlspecialchars($ba_bec_equipe['niveau'] ?? ''); ?>"
                         placeholder="Niveau (ex: Régional)" />
                     <datalist id="niveauList">
                         <?php foreach ($ba_bec_niveaux as $ba_bec_niveau): ?>
-                            <option value="<?php echo htmlspecialchars($ba_bec_niveau['libNiveau']); ?>"></option>
+                            <option value="<?php echo htmlspecialchars($ba_bec_niveau); ?>"></option>
                         <?php endforeach; ?>
                     </datalist>
                 </div>
@@ -165,8 +164,8 @@ $ba_bec_photoStaffUrl = $ba_bec_photoStaffUrl ?: ba_bec_photo_url($ba_bec_equipe
                         placeholder="Description de l'équipe..."><?php echo htmlspecialchars($ba_bec_equipe['descriptionEquipe'] ?? ''); ?></textarea>
                 </div>
                 <div class="form-group mt-2">
-                    <label for="photoEquipe">Photo de l'équipe (upload)</label>
-                    <input id="photoEquipe" name="photoEquipe" class="form-control" type="file"
+                    <label for="photoDLequipe">Photo de l'équipe (upload)</label>
+                    <input id="photoDLequipe" name="photoDLequipe" class="form-control" type="file"
                         accept=".png, .jpeg, .jpg, .avif, .svg, .webp, .gif" />
                     <?php if ($ba_bec_photoEquipeUrl): ?>
                         <div class="mt-2">

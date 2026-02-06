@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ba_bec_nextNumPersonnel = (int) $ba_bec_currentMax[0]['maxPersonnel'] + 1;
         }
         $ba_bec_photoValue = $ba_bec_photoPath !== null ? "'" . $ba_bec_photoPath . "'" : 'NULL';
-        $ba_bec_equipeValue = $ba_bec_numEquipeStaff !== '' ? "'" . (int) $ba_bec_numEquipeStaff . "'" : 'NULL';
+        $ba_bec_equipeValue = $ba_bec_numEquipeStaff !== '' ? "'" . $ba_bec_numEquipeStaff . "'" : 'NULL';
         if (!$ba_bec_estStaffEquipe) {
             $ba_bec_equipeValue = 'NULL';
         }

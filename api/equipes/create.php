@@ -110,74 +110,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $ba_bec_codeEquipe = ctrlSaisies($_POST['codeEquipe'] ?? '');
-    $ba_bec_libEquipe = ctrlSaisies($_POST['libEquipe'] ?? '');
-    $ba_bec_libEquipeComplet = ctrlSaisies($_POST['libEquipeComplet'] ?? '');
+    $ba_bec_nomEquipe = ctrlSaisies($_POST['nomEquipe'] ?? '');
+    $ba_bec_club = ctrlSaisies($_POST['club'] ?? '');
     $ba_bec_descriptionEquipe = ctrlSaisies($_POST['descriptionEquipe'] ?? '');
-    $ba_bec_urlPhotoEquipe = ctrlSaisies($_POST['urlPhotoEquipe'] ?? '');
-    $ba_bec_urlPhotoStaff = ctrlSaisies($_POST['urlPhotoStaff'] ?? '');
-    $ba_bec_nomClub = ctrlSaisies($_POST['nomClub'] ?? '');
-    $ba_bec_categorieEquipe = ctrlSaisies($_POST['categorieEquipe'] ?? '');
-    $ba_bec_sectionEquipe = ctrlSaisies($_POST['sectionEquipe'] ?? '');
-    $ba_bec_niveauEquipe = ctrlSaisies($_POST['niveauEquipe'] ?? '');
+    $ba_bec_categorieEquipe = ctrlSaisies($_POST['categorie'] ?? '');
+    $ba_bec_sectionEquipe = ctrlSaisies($_POST['section'] ?? '');
+    $ba_bec_niveauEquipe = ctrlSaisies($_POST['niveau'] ?? '');
 
-    if (empty($ba_bec_errors) && ($ba_bec_libEquipe === '' || $ba_bec_codeEquipe === '')) {
+    if (empty($ba_bec_errors) && ($ba_bec_nomEquipe === '' || $ba_bec_codeEquipe === '')) {
         $ba_bec_errors[] = 'Le code et le nom de l\'équipe sont obligatoires.';
     }
-    if (empty($ba_bec_errors) && $ba_bec_nomClub === '') {
+    if (empty($ba_bec_errors) && $ba_bec_club === '') {
         $ba_bec_errors[] = 'Le club est obligatoire.';
     }
 
     $ba_bec_photoEquipe = null;
     $ba_bec_photoStaff = null;
     if (empty($ba_bec_errors)) {
-        $ba_bec_photoEquipe = process_equipe_upload('photoEquipe', $ba_bec_codeEquipe, 'photo-equipe', $ba_bec_errors);
+        $ba_bec_photoEquipe = process_equipe_upload('photoDLequipe', $ba_bec_codeEquipe, 'photo-equipe', $ba_bec_errors);
         $ba_bec_photoStaff = process_equipe_upload('photoStaff', $ba_bec_codeEquipe, 'photo-staff', $ba_bec_errors);
     }
 
     if (empty($ba_bec_errors)) {
-        $clubStmt = $DB->prepare('SELECT numClub FROM CLUB WHERE nomClub = :nomClub LIMIT 1');
-        $clubStmt->execute([':nomClub' => $ba_bec_nomClub]);
-        $numClub = $clubStmt->fetchColumn();
-        if ($numClub === false) {
-            $insertClub = $DB->prepare('INSERT INTO CLUB (nomClub) VALUES (:nomClub)');
-            $insertClub->execute([':nomClub' => $ba_bec_nomClub]);
-            $numClub = $DB->lastInsertId();
-        }
-
-        $referenceLookup = static function (string $table, string $column, string $value) use ($DB): int {
-            $idColumnMap = [
-                'CATEGORIE_EQUIPE' => 'numCategorie',
-                'SECTION_EQUIPE' => 'numSection',
-                'NIVEAU_EQUIPE' => 'numNiveau',
-            ];
-            $idColumn = $idColumnMap[$table] ?? ("num" . ucfirst(strtolower(str_replace('_', '', $table))));
-            $stmt = $DB->prepare("SELECT {$idColumn} FROM {$table} WHERE {$column} = :value LIMIT 1");
-            $stmt->execute([':value' => $value]);
-            $found = $stmt->fetchColumn();
-            if ($found !== false) {
-                return (int) $found;
-            }
-            $insert = $DB->prepare("INSERT INTO {$table} ({$column}) VALUES (:value)");
-            $insert->execute([':value' => $value]);
-            return (int) $DB->lastInsertId();
-        };
-
-        $numCategorie = $referenceLookup('CATEGORIE_EQUIPE', 'libCategorie', $ba_bec_categorieEquipe !== '' ? $ba_bec_categorieEquipe : 'Non renseigné', 'numCategorie');
-        $numSection = $referenceLookup('SECTION_EQUIPE', 'libSection', $ba_bec_sectionEquipe !== '' ? $ba_bec_sectionEquipe : 'Non renseigné', 'numSection');
-        $numNiveau = $referenceLookup('NIVEAU_EQUIPE', 'libNiveau', $ba_bec_niveauEquipe !== '' ? $ba_bec_niveauEquipe : 'Non renseigné', 'numNiveau');
-
         $insertEquipe = $DB->prepare(
-            'INSERT INTO EQUIPE (numClub, codeEquipe, libEquipe, libEquipeComplet, numCategorie, numSection, numNiveau, descriptionEquipe, urlPhotoEquipe, urlPhotoStaff)
-             VALUES (:numClub, :codeEquipe, :libEquipe, :libEquipeComplet, :numCategorie, :numSection, :numNiveau, :descriptionEquipe, :photoEquipe, :photoStaff)'
+            'INSERT INTO EQUIPE (codeEquipe, nomEquipe, club, categorie, section, niveau, descriptionEquipe, photoDLequipe, photoStaff)
+             VALUES (:codeEquipe, :nomEquipe, :club, :categorie, :section, :niveau, :descriptionEquipe, :photoEquipe, :photoStaff)'
         );
         $insertEquipe->execute([
-            ':numClub' => $numClub,
             ':codeEquipe' => $ba_bec_codeEquipe,
-            ':libEquipe' => $ba_bec_libEquipe,
-            ':libEquipeComplet' => $ba_bec_libEquipeComplet !== '' ? $ba_bec_libEquipeComplet : null,
-            ':numCategorie' => $numCategorie,
-            ':numSection' => $numSection,
-            ':numNiveau' => $numNiveau,
+            ':nomEquipe' => $ba_bec_nomEquipe,
+            ':club' => $ba_bec_club,
+            ':categorie' => $ba_bec_categorieEquipe !== '' ? $ba_bec_categorieEquipe : 'Non renseigné',
+            ':section' => $ba_bec_sectionEquipe !== '' ? $ba_bec_sectionEquipe : 'Non renseigné',
+            ':niveau' => $ba_bec_niveauEquipe !== '' ? $ba_bec_niveauEquipe : 'Non renseigné',
             ':descriptionEquipe' => $ba_bec_descriptionEquipe !== '' ? $ba_bec_descriptionEquipe : null,
             ':photoEquipe' => $ba_bec_photoEquipe,
             ':photoStaff' => $ba_bec_photoStaff,

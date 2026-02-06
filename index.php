@@ -107,13 +107,13 @@ try {
             m.dateMatch AS matchDate,
             m.heureMatch AS matchTime,
             m.lieuMatch AS location,
-            COALESCE(home_team.libEquipe, home_part.nomEquipeAdverse) AS teamHome,
-            COALESCE(away_team.libEquipe, away_part.nomEquipeAdverse) AS teamAway
+            m.scoreBec AS scoreBec,
+            m.scoreAdversaire AS scoreAdversaire,
+            m.clubAdversaire AS clubAdversaire,
+            m.numEquipeAdverse AS numEquipeAdverse,
+            e.nomEquipe AS teamName
         FROM `MATCH` m
-        LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
-        LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
-        LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe
-        LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe
+        INNER JOIN EQUIPE e ON m.codeEquipe = e.codeEquipe
         WHERE m.dateMatch >= CURDATE()
         ORDER BY m.dateMatch ASC, m.heureMatch ASC"
     );
@@ -123,9 +123,36 @@ try {
     $becMatchesAvailable = false;
 }
 
+$resolveMatchSide = static function (?string $location): string {
+    $location = strtolower(trim((string) $location));
+    if ($location === '') {
+        return 'home';
+    }
+    if (str_contains($location, 'exterieur') || str_contains($location, 'extérieur') || str_contains($location, 'away')) {
+        return 'away';
+    }
+    if (str_contains($location, 'domicile') || str_contains($location, 'home') || str_contains($location, 'barbey')) {
+        return 'home';
+    }
+    return 'home';
+};
+
+$buildOpponent = static function (array $match): string {
+    $opponent = trim((string) ($match['clubAdversaire'] ?? ''));
+    if (!empty($match['numEquipeAdverse'])) {
+        $opponent = trim($opponent . ' ' . $match['numEquipeAdverse']);
+    }
+    return $opponent !== '' ? $opponent : 'Adversaire';
+};
+
 foreach ($matches as $match) {
-    $teamHomeName = strtolower((string) ($match['teamHome'] ?? ''));
-    $teamAwayName = strtolower((string) ($match['teamAway'] ?? ''));
+    $side = $resolveMatchSide($match['location'] ?? '');
+    $isHome = $side !== 'away';
+    $opponent = $buildOpponent($match);
+    $teamHome = $isHome ? ($match['teamName'] ?? 'BEC') : $opponent;
+    $teamAway = $isHome ? $opponent : ($match['teamName'] ?? 'BEC');
+    $teamHomeName = strtolower($teamHome);
+    $teamAwayName = strtolower($teamAway);
     $key = null;
     if ($teamHomeName !== '' && (str_contains($teamHomeName, 'sf1') || str_contains($teamHomeName, 'sénior 1') || str_contains($teamHomeName, 'senior 1'))) {
         $key = 'SF1';
@@ -143,8 +170,8 @@ foreach ($matches as $match) {
 
     $nextMatches[$key] = [
         'label' => $key === 'SF1' ? 'Équipe 1 Filles' : 'Équipe 1 Garçons',
-        'teamHome' => $match['teamHome'] ?? 'BEC',
-        'teamAway' => $match['teamAway'] ?? '',
+        'teamHome' => $teamHome,
+        'teamAway' => $teamAway,
         'matchDate' => $match['matchDate'],
         'matchTime' => $match['matchTime'] ?? '',
         'location' => $match['location'] ?? 'Gymnase Barbey',
@@ -156,21 +183,10 @@ if ($becMatchesAvailable) {
     try {
         $homeStatsStmt = $DB->prepare(
             "SELECT
-                SUM(CASE
-                    WHEN home_part.score IS NOT NULL THEN home_part.score
-                    ELSE 0
-                END) AS pointsFor,
-                SUM(CASE
-                    WHEN away_part.score IS NOT NULL THEN away_part.score
-                    ELSE 0
-                END) AS pointsAgainst,
-                SUM(CASE
-                    WHEN home_part.score IS NOT NULL AND away_part.score IS NOT NULL THEN 1
-                    ELSE 0
-                END) AS homeMatchCount
-            FROM `MATCH` m
-            INNER JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
-            INNER JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'"
+                SUM(CASE WHEN scoreBec IS NOT NULL THEN scoreBec ELSE 0 END) AS pointsFor,
+                SUM(CASE WHEN scoreAdversaire IS NOT NULL THEN scoreAdversaire ELSE 0 END) AS pointsAgainst,
+                SUM(CASE WHEN scoreBec IS NOT NULL AND scoreAdversaire IS NOT NULL THEN 1 ELSE 0 END) AS homeMatchCount
+            FROM `MATCH`"
         );
         $homeStatsStmt->execute();
         $homeStats = $homeStatsStmt->fetch(PDO::FETCH_ASSOC) ?: [];
