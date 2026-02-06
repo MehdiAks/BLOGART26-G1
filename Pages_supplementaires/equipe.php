@@ -236,26 +236,59 @@ foreach ($teamMatches as $match) {
     }
 }
 
-$chartMetrics = [
-    [
-        'label' => 'Matchs jouÃ©s',
-        'home' => $stats['home']['matches'],
-        'away' => $stats['away']['matches'],
-        'total' => $stats['total']['matches'],
-    ],
-    [
-        'label' => 'Points marquÃ©s',
-        'home' => $stats['home']['pointsFor'],
-        'away' => $stats['away']['pointsFor'],
-        'total' => $stats['total']['pointsFor'],
-    ],
-    [
-        'label' => 'Points encaissÃ©s',
-        'home' => $stats['home']['pointsAgainst'],
-        'away' => $stats['away']['pointsAgainst'],
-        'total' => $stats['total']['pointsAgainst'],
-    ],
-];
+$totalMatches = (int) $stats['total']['matches'];
+$totalPoints = (int) $stats['total']['pointsFor'];
+$totalWins = (int) $stats['wins'];
+$totalLosses = max(0, $totalMatches - $totalWins);
+
+$recentFor = [];
+$recentAgainst = [];
+foreach ($teamMatches as $match) {
+    $scoreHome = $match['scoreHome'] ?? null;
+    $scoreAway = $match['scoreAway'] ?? null;
+    if ($scoreHome === null || $scoreAway === null) {
+        continue;
+    }
+    $isHome = (bool) ($match['isHome'] ?? false);
+    $pointsFor = $isHome ? $scoreHome : $scoreAway;
+    $pointsAgainst = $isHome ? $scoreAway : $scoreHome;
+    $recentFor[] = (int) $pointsFor;
+    $recentAgainst[] = (int) $pointsAgainst;
+}
+$recentFor = array_reverse(array_slice($recentFor, 0, 10));
+$recentAgainst = array_reverse(array_slice($recentAgainst, 0, 10));
+
+$recentForCumulative = [];
+$recentAgainstCumulative = [];
+$sumFor = 0;
+$sumAgainst = 0;
+foreach ($recentFor as $index => $value) {
+    $sumFor += $value;
+    $sumAgainst += $recentAgainst[$index] ?? 0;
+    $recentForCumulative[] = $sumFor;
+    $recentAgainstCumulative[] = $sumAgainst;
+}
+
+$axisLabels = [];
+$recentCount = count($recentForCumulative);
+if ($recentCount > 0) {
+    if ($recentCount === 1) {
+        $axisLabels[] = ['index' => 1, 'pos' => 0];
+    } else {
+        $indices = [
+            1,
+            (int) round(($recentCount + 1) / 3),
+            (int) round(2 * ($recentCount + 1) / 3),
+            $recentCount,
+        ];
+        $indices = array_values(array_unique($indices));
+        sort($indices);
+        foreach ($indices as $index) {
+            $pos = (($index - 1) / ($recentCount - 1)) * 100;
+            $axisLabels[] = ['index' => $index, 'pos' => $pos];
+        }
+    }
+}
 
 $upcomingMatches = array_values(array_filter(
     $teamMatches,
@@ -422,37 +455,72 @@ if (!$coachLead && !empty($assistantCoaches)) {
         </div>
     </section>
 
-    <section class="team-detail-section">
-        <h2>Graphique domicile vs extérieur</h2>
-        <div class="card h-100 shadow-sm stats-chart-card">
-            <div class="card-body">
-                <div class="stats-chart">
-                    <?php foreach ($chartMetrics as $metric) : ?>
-                        <?php
-                        $homeValue = (int) $metric['home'];
-                        $awayValue = (int) $metric['away'];
-                        $maxValue = max($homeValue, $awayValue, 1);
-                        $homePercent = (int) round(($homeValue / $maxValue) * 100);
-                        $awayPercent = (int) round(($awayValue / $maxValue) * 100);
-                        ?>
-                        <div class="stats-row" style="--home: <?php echo $homePercent; ?>%; --away: <?php echo $awayPercent; ?>%;">
-                            <div class="stats-row-header">
-                                <span class="stats-label"><?php echo htmlspecialchars($metric['label']); ?></span>
-                                <span class="stats-total">Total: <?php echo htmlspecialchars((string) $metric['total']); ?></span>
+    <section class="team-detail-section chart-section">
+        <div class="row g-4">
+            <div class="col-12 col-lg-7">
+                <article class="chart-card h-100">
+                    <div class="chart-header">
+                        <h3>Évolution des points</h3>
+                        <p class="text-body-secondary mb-0">
+                            Courbe personnalisée sur les 10 derniers matchs.
+                        </p>
+                    </div>
+                    <div class="line-chart"
+                        data-for="<?php echo htmlspecialchars(implode(',', $recentForCumulative)); ?>"
+                        data-against="<?php echo htmlspecialchars(implode(',', $recentAgainstCumulative)); ?>">
+                        <div class="line-chart-layout">
+                            <div class="line-chart-y">
+                                <span class="line-y-label" data-y="max"></span>
+                                <span class="line-y-label" data-y="mid"></span>
+                                <span class="line-y-label" data-y="min"></span>
                             </div>
-                            <div class="stats-bars">
-                                <div class="stats-bar stats-bar-home">
-                                    <span>Domicile</span>
-                                    <strong><?php echo htmlspecialchars((string) $homeValue); ?></strong>
-                                </div>
-                                <div class="stats-bar stats-bar-away">
-                                    <span>Extérieur</span>
-                                    <strong><?php echo htmlspecialchars((string) $awayValue); ?></strong>
-                                </div>
+                            <div class="line-chart-frame">
+                                <svg class="line-chart-svg" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
+                                    <path class="line-area line-area-for" d=""></path>
+                                    <path class="line-area line-area-against" d=""></path>
+                                    <path class="line-stroke line-stroke-for" d=""></path>
+                                    <path class="line-stroke line-stroke-against" d=""></path>
+                                </svg>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
+                        <p class="line-chart-empty text-body-secondary mb-0">Aucun match terminé.</p>
+                        <div class="line-chart-axis">
+                            <?php foreach ($axisLabels as $label) : ?>
+                                <span class="line-axis-label" style="--pos: <?php echo number_format((float) $label['pos'], 2, '.', ''); ?>%;">
+                                    <?php echo 'J' . (int) $label['index']; ?>
+                                </span>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="line-chart-legend">
+                            <span><i class="legend-dot legend-for"></i>Points marqués (cumulés)</span>
+                            <span><i class="legend-dot legend-against"></i>Points encaissés (cumulés)</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <div class="col-12 col-lg-5">
+                <article class="chart-card h-100">
+                    <div class="chart-header">
+                        <h3>Victoires / défaites</h3>
+                        <p class="text-body-secondary mb-0">
+                            Répartition des matchs gagnés et perdus.
+                        </p>
+                    </div>
+                    <div class="donut"
+                        role="img"
+                        aria-label="Victoires <?php echo (int) $totalWins; ?>, défaites <?php echo (int) $totalLosses; ?>"
+                        data-wins="<?php echo (int) $totalWins; ?>"
+                        data-losses="<?php echo (int) $totalLosses; ?>">
+                        <div class="donut-center">
+                            <span class="donut-label">Bilan</span>
+                            <strong class="donut-value" data-record><?php echo htmlspecialchars($totalWins . ' - ' . $totalLosses); ?></strong>
+                        </div>
+                    </div>
+                    <div class="donut-legend">
+                        <span><i class="legend-dot legend-wins"></i>Victoires</span>
+                        <span><i class="legend-dot legend-losses"></i>Défaites</span>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
@@ -560,6 +628,107 @@ if (!$coachLead && !empty($assistantCoaches)) {
         <?php endif; ?>
     </section>
 </section>
+
+<script>
+    (function () {
+        const lineCharts = document.querySelectorAll(".line-chart");
+        lineCharts.forEach((chart) => {
+            const forValues = (chart.dataset["for"] || "")
+                .split(",")
+                .map((value) => Number.parseInt(value, 10))
+                .filter((value) => Number.isFinite(value));
+            const againstValues = (chart.dataset.against || "")
+                .split(",")
+                .map((value) => Number.parseInt(value, 10))
+                .filter((value) => Number.isFinite(value));
+
+            const areaFor = chart.querySelector(".line-area-for");
+            const areaAgainst = chart.querySelector(".line-area-against");
+            const lineFor = chart.querySelector(".line-stroke-for");
+            const lineAgainst = chart.querySelector(".line-stroke-against");
+            const yLabelMax = chart.querySelector('.line-y-label[data-y="max"]');
+            const yLabelMid = chart.querySelector('.line-y-label[data-y="mid"]');
+            const yLabelMin = chart.querySelector('.line-y-label[data-y="min"]');
+
+            const hasFor = forValues.length > 0;
+            const hasAgainst = againstValues.length > 0;
+
+            if (!hasFor && !hasAgainst) {
+                chart.classList.add("is-empty");
+                return;
+            }
+
+            chart.classList.remove("is-empty");
+
+            const allValues = [...forValues, ...againstValues];
+            const minValue = Math.min(...allValues);
+            const maxValue = Math.max(...allValues);
+            const range = Math.max(1, maxValue - minValue);
+            const height = 60;
+            const width = 100;
+            const paddingTop = 6;
+            const paddingBottom = 8;
+            const usableHeight = height - paddingTop - paddingBottom;
+
+            const buildPath = (values) => {
+                const count = values.length;
+                if (count === 0) {
+                    return { line: "", area: "" };
+                }
+                const points = values.map((value, index) => {
+                    const x = count === 1 ? width / 2 : (index / (count - 1)) * width;
+                    const y = paddingTop + ((maxValue - value) / range) * usableHeight;
+                    return [x, y];
+                });
+                const linePath = points
+                    .map((point, index) => `${index === 0 ? "M" : "L"} ${point[0].toFixed(2)} ${point[1].toFixed(2)}`)
+                    .join(" ");
+                const baseline = height - paddingBottom;
+                const areaPath = `M ${points[0][0].toFixed(2)} ${baseline.toFixed(2)} ${points
+                    .map((point) => `L ${point[0].toFixed(2)} ${point[1].toFixed(2)}`)
+                    .join(" ")} L ${points[points.length - 1][0].toFixed(2)} ${baseline.toFixed(2)} Z`;
+                return { line: linePath, area: areaPath };
+            };
+
+            if (areaFor && lineFor) {
+                const paths = buildPath(forValues);
+                lineFor.setAttribute("d", paths.line);
+                areaFor.setAttribute("d", paths.area);
+            }
+
+            if (areaAgainst && lineAgainst) {
+                const paths = buildPath(againstValues);
+                lineAgainst.setAttribute("d", paths.line);
+                areaAgainst.setAttribute("d", paths.area);
+            }
+
+            const midValue = Math.round((minValue + maxValue) / 2);
+            if (yLabelMax) {
+                yLabelMax.textContent = maxValue.toLocaleString("fr-FR");
+            }
+            if (yLabelMid) {
+                yLabelMid.textContent = midValue.toLocaleString("fr-FR");
+            }
+            if (yLabelMin) {
+                yLabelMin.textContent = minValue.toLocaleString("fr-FR");
+            }
+        });
+
+        const donuts = document.querySelectorAll(".donut");
+        donuts.forEach((donut) => {
+            const wins = Number.parseInt(donut.dataset.wins || "0", 10) || 0;
+            const losses = Number.parseInt(donut.dataset.losses || "0", 10) || 0;
+            const total = Math.max(wins + losses, 1);
+            const winAngle = Math.round((wins / total) * 360);
+            donut.style.setProperty("--win-angle", `${winAngle}deg`);
+
+            const recordValue = donut.querySelector("[data-record]");
+            if (recordValue) {
+                recordValue.textContent = `${wins} - ${losses}`;
+            }
+        });
+    })();
+</script>
 
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';

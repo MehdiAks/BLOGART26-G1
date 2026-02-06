@@ -484,9 +484,9 @@ if (!$becMatchesAvailable) {
         }
 
         let current = 0;
-        const durationMs = Number.parseInt(element.dataset.duration || "1500", 10);
-        const safeDuration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : 1500;
-        const minStepTime = 16;
+        const durationMs = Number.parseInt(element.dataset.duration || "2500", 10);
+        const safeDuration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : 2;
+        const minStepTime = 0.5;
         const stepTime = Math.max(minStepTime, Math.floor(safeDuration / Math.max(1, target)));
 
         const timerId = setInterval(() => {
