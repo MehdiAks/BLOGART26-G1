@@ -203,8 +203,8 @@ if (function_exists('sql_connect')) {
 
                 <div class="header-compte-wrapper">
                     <details class="header-compte-menu">
-                        <summary class="btn-compte" aria-label="Ouvrir le menu">
-                                Compte
+                        <summary class="btn btn-bec-primary btn-compte" aria-label="Ouvrir le menu">
+                            <?php echo $ba_bec_pseudoMemb ? htmlspecialchars($ba_bec_pseudoMemb) : 'Compte'; ?>
                         </summary>
                         
                         <div class="header-compte-panel">
