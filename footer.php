@@ -20,17 +20,6 @@
                             <img src="<?php echo ROOT_URL . '/src/images/logo/logo-reseaux-sociaux/facebook.png'; ?>" alt="Facebook">
                         </a>
                     </div>
-                    <ul class="list-unstyled d-flex flex-column gap-2">
-                        <li>
-                            <a href="<?php echo ROOT_URL . '/infoleg/cgu.php'; ?>">Conditions d’utilisation</a>
-                        </li>
-                        <li>
-                            <a href="<?php echo ROOT_URL . '/infoleg/mentionleg.php'; ?>">Mentions légales</a>
-                        </li>
-                        <li>
-                            <a href="<?php echo ROOT_URL . '/infoleg/rgpd.php'; ?>">RGPD</a>
-                        </li>
-                    </ul>
                 </div>
 
                 <div class="col-lg-4">
@@ -42,6 +31,17 @@
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="small fst-italic mb-0">
+                        <a href="<?php echo ROOT_URL . '/infoleg/cgu.php'; ?>">Conditions d’utilisation</a>
+                        -
+                        <a href="<?php echo ROOT_URL . '/infoleg/mentionleg.php'; ?>">Mentions légales</a>
+                        -
+                        <a href="<?php echo ROOT_URL . '/infoleg/rgpd.php'; ?>">RGPD</a>
+                    </p>
                 </div>
             </div>
         </div>
