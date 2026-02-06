@@ -13,14 +13,6 @@ include '../../../header.php';
 
 sql_connect();
 
-if (isset($_POST['create_table'])) {
-    $ba_bec_table = strtoupper(trim((string) ($_POST['create_table'] ?? '')));
-    if ($ba_bec_table === 'EQUIPE' && sql_create_table($ba_bec_table)) {
-        header('Location: list.php?table_created=EQUIPE');
-        exit;
-    }
-}
-
 $ba_bec_is_missing_table = sql_is_missing_table('EQUIPE');
 $ba_bec_equipes = [];
 
@@ -71,11 +63,8 @@ if (!$ba_bec_is_missing_table) {
             </div>
 
             <?php if ($ba_bec_is_missing_table) : ?>
-                <div class="alert alert-warning d-flex justify-content-between align-items-center">
-                    <div>La table EQUIPE est manquante. Vous pouvez la créer pour continuer.</div>
-                    <form method="post">
-                        <button type="submit" name="create_table" value="EQUIPE" class="btn btn-warning">Créer la table</button>
-                    </form>
+                <div class="alert alert-warning">
+                    <div>La table EQUIPE est manquante. Veuillez téléchargé la derniere base de donné fournis.</div>
                 </div>
             <?php endif; ?>
 

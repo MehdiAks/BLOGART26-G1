@@ -13,15 +13,6 @@ include '../../../header.php';
 
 sql_connect();
 
-$ba_bec_allowed_tables = ['JOUEUR', 'EQUIPE', 'JOUEUR_AFFECTATION', 'JOUEUR_AFFECTATION_POSTE'];
-if (isset($_POST['create_table'])) {
-    $ba_bec_table = strtoupper(trim((string) ($_POST['create_table'] ?? '')));
-    if (in_array($ba_bec_table, $ba_bec_allowed_tables, true) && sql_create_table($ba_bec_table)) {
-        header('Location: list.php?table_created=' . urlencode($ba_bec_table));
-        exit;
-    }
-}
-
 $ba_bec_is_missing_table = [
     'JOUEUR' => sql_is_missing_table('JOUEUR'),
     'EQUIPE' => sql_is_missing_table('EQUIPE'),
@@ -99,11 +90,8 @@ function format_age(?string $birthDate): string
 
             <?php foreach ($ba_bec_is_missing_table as $ba_bec_table => $ba_bec_missing): ?>
                 <?php if ($ba_bec_missing): ?>
-                    <div class="alert alert-warning d-flex justify-content-between align-items-center">
-                        <div>La table <?php echo htmlspecialchars($ba_bec_missing_table_labels[$ba_bec_table]); ?> est manquante. Vous pouvez la créer pour continuer.</div>
-                        <form method="post">
-                            <button type="submit" name="create_table" value="<?php echo htmlspecialchars($ba_bec_table); ?>" class="btn btn-warning">Créer la table</button>
-                        </form>
+                    <div class="alert alert-warning">
+                        <div>La table <?php echo htmlspecialchars($ba_bec_missing_table_labels[$ba_bec_table]); ?> est manquante. Veuillez téléchargé la derniere base de donné fournis.</div>
                     </div>
                 <?php endif; ?>
             <?php endforeach; ?>
