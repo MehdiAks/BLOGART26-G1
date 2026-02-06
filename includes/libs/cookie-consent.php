@@ -5,12 +5,17 @@
  * et son compte utilisateur en base de données (Table membre).
  */
 
-// Initialisation de la session pour identifier si un utilisateur est connecté
+// Initialisation de la session pour identifier si un utilisateur est connecté.
+// On ne démarre la session que si elle n'existe pas encore afin d'éviter les warnings PHP.
+// Cette session sert ensuite à récupérer l'identifiant de l'utilisateur (user_id) pour
+// savoir si on doit lire/écrire le consentement en base de données.
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Configuration : Nom du cookie et durée de validité (ici 1 an)
+// Configuration : Nom du cookie et durée de validité (ici 1 an).
+// Ces constantes sont utilisées dans toutes les fonctions pour éviter la duplication
+// et garantir la cohérence entre la lecture/écriture du cookie.
 define('COOKIE_DURATION', 365 * 24 * 60 * 60);
 define('COOKIE_NAME', 'bec_cookie_consent');
 
@@ -19,10 +24,14 @@ define('COOKIE_NAME', 'bec_cookie_consent');
    ========================================================================== */
 
 /**
- * Crée ou met à jour le cookie physique sur le navigateur de l'utilisateur
+ * Crée ou met à jour le cookie physique sur le navigateur de l'utilisateur.
+ * Le cookie contient la valeur de consentement (0/1) et est configuré pour être
+ * accessible sur tout le domaine, avec un flag HttpOnly pour limiter l'accès via JS.
  * @param int $consent (0 pour refus, 1 pour acceptation)
  */
 function setConsentCookie(int $consent) {
+    // setcookie() envoie un en-tête HTTP : il faut donc l'appeler avant tout output.
+    // La valeur est convertie en string car les cookies sont stockés en texte.
     setcookie(
         COOKIE_NAME,
         (string) $consent,
@@ -39,12 +48,17 @@ function setConsentCookie(int $consent) {
    ========================================================================== */
 
 /**
- * Récupère le consentement en priorité depuis la BDD (si connecté) sinon via cookie
+ * Récupère le consentement en priorité depuis la BDD (si connecté) sinon via cookie.
+ * Logique générale :
+ * - Si l'utilisateur est connecté, la BDD est la source de vérité.
+ * - Si la BDD n'a pas de valeur, on tente de synchroniser depuis le cookie navigateur.
+ * - Si l'utilisateur est anonyme, le cookie navigateur est la seule source disponible.
  * @param PDO|null $pdo Connexion à la base de données
  */
 function getCookieConsent($pdo) {
     // Sécurité : Si l'objet PDO n'est pas valide, on ne regarde que le cookie navigateur
     if (!$pdo instanceof PDO) {
+        // Sans BDD, on retourne uniquement le cookie s'il existe.
         if (isset($_COOKIE[COOKIE_NAME])) {
             return (int) $_COOKIE[COOKIE_NAME];
         }
@@ -60,6 +74,7 @@ function getCookieConsent($pdo) {
 
         // Si une valeur existe en BDD (différente de vide ou false), on la retourne
         if ($memberConsent !== false && $memberConsent !== null && $memberConsent !== '') {
+            // Valeur BDD trouvée : elle prime sur le cookie navigateur.
             return $memberConsent;
         }
 
@@ -68,6 +83,7 @@ function getCookieConsent($pdo) {
             $cookieConsent = (int) $_COOKIE[COOKIE_NAME];
             
             // On enregistre le choix du cookie dans le compte du membre
+            // pour qu'il soit persisté côté serveur (multi-appareils).
             $stmt = $pdo->prepare(
                 "UPDATE membre 
                  SET cookieMemb = ?, dtMajMemb = NOW() 
@@ -77,12 +93,14 @@ function getCookieConsent($pdo) {
             
             return $cookieConsent;
         }
+        // Ni cookie navigateur ni valeur BDD : l'utilisateur n'a pas encore choisi.
         return null;
     }
 
     // --- CAS 2 : VISITEUR ANONYME (NON CONNECTÉ) ---
     // On se base uniquement sur le cookie du navigateur
     if (isset($_COOKIE[COOKIE_NAME])) {
+        // Visiteur non connecté : la valeur est uniquement celle stockée localement.
         return (int) $_COOKIE[COOKIE_NAME];
     }
 
@@ -94,7 +112,10 @@ function getCookieConsent($pdo) {
    ========================================================================== */
 
 /**
- * Enregistre le choix de l'utilisateur (Acceptation ou Refus)
+ * Enregistre le choix de l'utilisateur (Acceptation ou Refus).
+ * La logique diffère selon que l'utilisateur soit connecté :
+ * - Connecté : on persiste en BDD + on écrit le cookie.
+ * - Anonyme : on écrit uniquement le cookie.
  * @param PDO|null $pdo
  * @param int $consent Valeur du consentement
  */
@@ -106,6 +127,7 @@ function saveCookieConsent($pdo, int $consent) {
 
     // --- SI CONNECTÉ : Sauvegarde BDD + Cookie ---
     if (!empty($_SESSION['user_id'])) {
+        // Mise à jour du profil membre pour conserver une trace durable côté serveur.
         $stmt = $pdo->prepare(
             "UPDATE membre 
              SET cookieMemb = ?, dtMajMemb = NOW() 
@@ -119,5 +141,6 @@ function saveCookieConsent($pdo, int $consent) {
     }
 
     // --- SI ANONYME : Sauvegarde Cookie uniquement ---
+    // Ici, pas de BDD liée à un compte : on se contente de stocker dans le navigateur.
     setConsentCookie($consent);
 }
