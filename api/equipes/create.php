@@ -13,7 +13,6 @@
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
-include '../../header.php';
 
 function ensure_upload_dir(string $path): void
 {
@@ -37,11 +36,13 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
     $tmpName = $_FILES[$fileKey]['tmp_name'];
     $name = $_FILES[$fileKey]['name'];
     $size = $_FILES[$fileKey]['size'];
-    $allowedExtensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'];
     $allowedMimeTypes = [
         'image/jpeg',
         'image/png',
         'image/avif',
+        'image/webp',
+        'image/gif',
         'image/svg+xml',
         'image/svg',
         'text/xml',
@@ -186,6 +187,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+<?php include '../../header.php'; ?>
 
 <div class="container">
     <div class="row">

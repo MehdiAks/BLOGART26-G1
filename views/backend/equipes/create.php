@@ -94,12 +94,12 @@ $ba_bec_niveaux = sql_select('NIVEAU_EQUIPE', 'libNiveau', null, null, 'libNivea
                 <div class="form-group mt-2">
                     <label for="photoEquipe">Photo de l'équipe (upload)</label>
                     <input id="photoEquipe" name="photoEquipe" class="form-control" type="file"
-                        accept=".png, .jpeg, .jpg, .avif, .svg" />
+                        accept=".png, .jpeg, .jpg, .avif, .svg, .webp, .gif" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="photoStaff">Photo staff (upload)</label>
                     <input id="photoStaff" name="photoStaff" class="form-control" type="file"
-                        accept=".png, .jpeg, .jpg, .avif, .svg" />
+                        accept=".png, .jpeg, .jpg, .avif, .svg, .webp, .gif" />
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Créer</button>

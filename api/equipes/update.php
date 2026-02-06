@@ -50,11 +50,13 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
     $tmpName = $_FILES[$fileKey]['tmp_name'];
     $name = $_FILES[$fileKey]['name'];
     $size = $_FILES[$fileKey]['size'];
-    $allowedExtensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'];
     $allowedMimeTypes = [
         'image/jpeg',
         'image/png',
         'image/avif',
+        'image/webp',
+        'image/gif',
         'image/svg+xml',
         'image/svg',
         'text/xml',
@@ -115,7 +117,7 @@ function process_equipe_upload(string $fileKey, string $codeEquipe, string $suff
 
 function rename_team_photo_variants(string $oldCode, string $newCode, string $suffix): void
 {
-    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'];
     $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
     foreach ($extensions as $extension) {
         $oldPath = $uploadDir . $oldCode . '-' . $suffix . '.' . $extension;
@@ -129,7 +131,7 @@ function rename_team_photo_variants(string $oldCode, string $newCode, string $su
 
 function delete_team_photo_variants(string $codeEquipe, string $suffix): void
 {
-    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'];
     $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
     foreach ($extensions as $extension) {
         $path = $uploadDir . $codeEquipe . '-' . $suffix . '.' . $extension;

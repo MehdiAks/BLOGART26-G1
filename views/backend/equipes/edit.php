@@ -69,7 +69,7 @@ function ba_bec_photo_url(string $codeEquipe, string $suffix): ?string
     if ($codeEquipe === '') {
         return null;
     }
-    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg'];
+    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'];
     foreach ($extensions as $extension) {
         $fileName = $codeEquipe . '-' . $suffix . '.' . $extension;
         $path = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/' . $fileName;
@@ -80,8 +80,8 @@ function ba_bec_photo_url(string $codeEquipe, string $suffix): ?string
     return null;
 }
 
-$ba_bec_photoEquipeUrl = ba_bec_photo_url($ba_bec_equipe['codeEquipe'] ?? '', 'photo-equipe');
-$ba_bec_photoStaffUrl = ba_bec_photo_url($ba_bec_equipe['codeEquipe'] ?? '', 'photo-staff');
+$ba_bec_photoEquipeUrl = $ba_bec_photoEquipeUrl ?: ba_bec_photo_url($ba_bec_equipe['codeEquipe'] ?? '', 'photo-equipe');
+$ba_bec_photoStaffUrl = $ba_bec_photoStaffUrl ?: ba_bec_photo_url($ba_bec_equipe['codeEquipe'] ?? '', 'photo-staff');
 ?>
 
 <div class="container">
@@ -167,7 +167,7 @@ $ba_bec_photoStaffUrl = ba_bec_photo_url($ba_bec_equipe['codeEquipe'] ?? '', 'ph
                 <div class="form-group mt-2">
                     <label for="photoEquipe">Photo de l'équipe (upload)</label>
                     <input id="photoEquipe" name="photoEquipe" class="form-control" type="file"
-                        accept=".png, .jpeg, .jpg, .avif, .svg" />
+                        accept=".png, .jpeg, .jpg, .avif, .svg, .webp, .gif" />
                     <?php if ($ba_bec_photoEquipeUrl): ?>
                         <div class="mt-2">
                             <img src="<?php echo htmlspecialchars($ba_bec_photoEquipeUrl); ?>" alt="Photo équipe" style="max-width: 160px;" />
@@ -177,7 +177,7 @@ $ba_bec_photoStaffUrl = ba_bec_photo_url($ba_bec_equipe['codeEquipe'] ?? '', 'ph
                 <div class="form-group mt-2">
                     <label for="photoStaff">Photo staff (upload)</label>
                     <input id="photoStaff" name="photoStaff" class="form-control" type="file"
-                        accept=".png, .jpeg, .jpg, .avif, .svg" />
+                        accept=".png, .jpeg, .jpg, .avif, .svg, .webp, .gif" />
                     <?php if ($ba_bec_photoStaffUrl): ?>
                         <div class="mt-2">
                             <img src="<?php echo htmlspecialchars($ba_bec_photoStaffUrl); ?>" alt="Photo staff" style="max-width: 160px;" />
