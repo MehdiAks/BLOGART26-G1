@@ -179,31 +179,22 @@ INSERT INTO `COMPETITION` (`numCompetition`, `numSaison`, `libCompetition`) VALU
 --
 
 CREATE TABLE `EQUIPE` (
-  `numEquipe` int NOT NULL,
-  `numClub` int NOT NULL,
+  `numEquipe` int NOT NULL AUTO_INCREMENT,
   `codeEquipe` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `libEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `libEquipeComplet` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `numCategorie` int NOT NULL,
-  `numSection` int NOT NULL,
-  `numNiveau` int NOT NULL,
+  `nomEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `club` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Bordeaux étudiant club',
+  `categorie` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `section` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `niveau` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `descriptionEquipe` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `urlPhotoEquipe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `urlPhotoStaff` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `photoDLequipe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `photoStaff` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `EQUIPE`
 --
 
-INSERT INTO `EQUIPE` (`numEquipe`, `numClub`, `codeEquipe`, `libEquipe`, `libEquipeComplet`, `numCategorie`, `numSection`, `numNiveau`, `descriptionEquipe`, `urlPhotoEquipe`, `urlPhotoStaff`) VALUES
-(1, 2, 'SG1', 'Seniors Garçons 1', 'Seniors Garçons 1', 1, 1, 9, 'Équipe seniors garçons 1', NULL, NULL),
-(2, 2, 'SG2', 'Seniors Garçons 2', 'Seniors Garçons 2', 1, 1, 6, 'Équipe seniors garçons 2', NULL, NULL),
-(3, 2, 'SG3', 'Seniors Garçons 3', 'Seniors Garçons 3', 1, 1, 5, 'Équipe seniors garçons 3', NULL, NULL),
-(5, 2, 'SF1', 'Seniors Filles 1', 'Seniors Filles 1', 1, 2, 10, 'Équipe seniors filles', 'photos-equipes/SF1-photo-equipe.jpeg', 'photos-equipes/SF1-photo-staff.jpeg'),
-(6, 2, 'SF2', 'Seniors Filles 2', 'Seniors Filles 2', 1, 2, 9, 'Équipe seniors filles 2', 'photos-equipes/SF2-photo-equipe.jpeg', 'photos-equipes/SF2-photo-staff.jpeg'),
-(7, 2, 'SF3', 'Seniors Filles 3', 'Seniors Filles 3', 1, 2, 8, 'Équipe seniors filles 3', NULL, NULL),
-(9, 2, 'SG4', 'Seniors Garçons 4', 'Seniors Garçons 4', 1, 1, 11, 'Équipe seniors garçons 4', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -212,11 +203,17 @@ INSERT INTO `EQUIPE` (`numEquipe`, `numClub`, `codeEquipe`, `libEquipe`, `libEqu
 --
 
 CREATE TABLE `JOUEUR` (
-  `numJoueur` int NOT NULL,
+  `numJoueur` int NOT NULL AUTO_INCREMENT,
+  `surnomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `prenomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `urlPhotoJoueur` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `dateNaissance` date DEFAULT NULL
+  `dateNaissance` date DEFAULT NULL,
+  `codeEquipe` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `posteJoueur` tinyint UNSIGNED NOT NULL,
+  `numeroMaillot` int DEFAULT NULL,
+  `dateRecrutement` date DEFAULT NULL,
+  `clubsPrecedents` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -328,159 +325,24 @@ INSERT INTO `LIKEART` (`numMemb`, `numArt`, `likeA`) VALUES
 --
 
 CREATE TABLE `MATCH` (
-  `numMatch` int NOT NULL,
-  `numSaison` int NOT NULL,
-  `numCompetition` int NOT NULL,
-  `numPhase` int DEFAULT NULL,
-  `numJournee` int DEFAULT NULL,
+  `numMatch` int NOT NULL AUTO_INCREMENT,
+  `codeEquipe` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `clubAdversaire` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `numEquipeAdverse` int DEFAULT NULL,
+  `saison` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phase` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `journee` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `dateMatch` date NOT NULL,
   `heureMatch` time DEFAULT NULL,
-  `lieuMatch` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `lieuMatch` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `scoreBec` int DEFAULT NULL,
+  `scoreAdversaire` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `MATCH`
 --
 
-INSERT INTO `MATCH` (`numMatch`, `numSaison`, `numCompetition`, `numPhase`, `numJournee`, `dateMatch`, `heureMatch`, `lieuMatch`) VALUES
-(1, 1, 2, NULL, NULL, '2025-09-20', '22:00:00', 'US CHARTRONS BORDEAUX'),
-(2, 1, 2, NULL, NULL, '2025-09-20', '22:00:00', 'BORDEAUX BASTIDE BASKET'),
-(3, 1, 7, NULL, NULL, '2025-09-20', '22:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(4, 1, 3, NULL, NULL, '2025-09-21', '15:00:00', 'ENTENTE SPORTIVE BLANQUEFORT - 2'),
-(5, 1, 6, NULL, NULL, '2025-09-21', '17:00:00', 'BRESSUIRE LE REVEIL'),
-(6, 1, 7, NULL, NULL, '2025-09-21', '17:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(7, 1, 2, NULL, NULL, '2025-09-27', '20:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(8, 1, 7, NULL, NULL, '2025-09-27', '22:00:00', 'US CHARTRONS BORDEAUX'),
-(9, 1, 2, NULL, NULL, '2025-09-27', '22:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(10, 1, 3, NULL, NULL, '2025-09-28', '15:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(11, 1, 6, NULL, NULL, '2025-09-28', '17:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(12, 1, 7, NULL, NULL, '2025-09-28', '17:30:00', 'COTEAUX DU LUY BASKET'),
-(13, 1, 2, NULL, NULL, '2025-10-04', '22:00:00', 'CASTELNAU MEDOC BC'),
-(14, 1, 2, NULL, NULL, '2025-10-04', '22:00:00', 'UNION SAINT BRUNO BORDEAUX'),
-(15, 1, 7, NULL, NULL, '2025-10-04', '22:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(16, 1, 6, NULL, NULL, '2025-10-05', '17:00:00', 'AMICALE LOISIRS CASTILLONNES BASKET'),
-(17, 1, 7, NULL, NULL, '2025-10-05', '17:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(18, 1, 3, NULL, NULL, '2025-10-05', '19:00:00', 'EN - CTC MEDOC ESTUAIRE - LUDON BASKET CLUB - 3'),
-(19, 1, 4, NULL, NULL, '2025-10-05', '19:00:00', 'B.IZON - 2'),
-(20, 1, 2, NULL, NULL, '2025-10-11', '20:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(21, 1, 2, NULL, NULL, '2025-10-11', '22:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(22, 1, 7, NULL, NULL, '2025-10-11', '23:00:00', 'STE EULALIE BASKET BALL'),
-(23, 1, 4, NULL, NULL, '2025-10-12', '15:00:00', 'BC ST AVIT ST NAZAIRE'),
-(24, 1, 6, NULL, NULL, '2025-10-12', '17:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(25, 1, 7, NULL, NULL, '2025-10-12', '17:30:00', 'AS ST DELPHIN - 2'),
-(26, 1, 4, NULL, NULL, '2025-10-19', '15:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(27, 1, 3, NULL, NULL, '2025-10-19', '17:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(28, 1, 7, NULL, NULL, '2025-10-26', '16:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(29, 1, 2, NULL, NULL, '2025-11-01', '21:00:00', 'JSA BORDEAUX BASKET - 2'),
-(30, 1, 2, NULL, NULL, '2025-11-01', '21:00:00', 'AS ST DELPHIN'),
-(31, 1, 7, NULL, NULL, '2025-11-01', '21:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(32, 1, 3, NULL, NULL, '2025-11-02', '15:00:00', 'AS MARTIGNAS - 2'),
-(33, 1, 6, NULL, NULL, '2025-11-02', '16:00:00', 'POUZIOUX VOUNEUIL/BIARD BC'),
-(34, 1, 4, NULL, NULL, '2025-11-02', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(35, 1, 7, NULL, NULL, '2025-11-02', '16:30:00', 'IE - AUCH BASKET CLUB - 1'),
-(36, 1, 3, NULL, NULL, '2025-11-08', '19:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(37, 1, 2, NULL, NULL, '2025-11-08', '21:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(38, 1, 7, NULL, NULL, '2025-11-08', '22:00:00', 'UNION SPORTIVE BREDOISE BASKET - 2'),
-(39, 1, 6, NULL, NULL, '2025-11-09', '14:15:00', 'BORDEAUX ETUDIANTS CLUB'),
-(40, 1, 4, NULL, NULL, '2025-11-09', '16:00:00', 'COUTRAS GUITRES BASKET'),
-(41, 1, 7, NULL, NULL, '2025-11-09', '16:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(42, 1, 7, NULL, NULL, '2025-11-15', '17:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(43, 1, 2, NULL, NULL, '2025-11-15', '19:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(44, 1, 2, NULL, NULL, '2025-11-15', '21:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(45, 1, 6, NULL, NULL, '2025-11-16', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(46, 1, 3, NULL, NULL, '2025-11-16', '16:00:00', 'STADE BORDELAIS'),
-(47, 1, 7, NULL, NULL, '2025-11-16', '16:30:00', 'B. COMMINGES SALIES DU SALAT - 1'),
-(48, 1, 2, NULL, NULL, '2025-11-27', '22:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(49, 1, 2, NULL, NULL, '2025-11-29', '21:00:00', 'ES ST FRONT DE PRADOUX'),
-(50, 1, 7, NULL, NULL, '2025-11-29', '21:30:00', 'SA GAZINET CESTAS'),
-(51, 1, 3, NULL, NULL, '2025-11-30', '14:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(52, 1, 6, NULL, NULL, '2025-11-30', '16:00:00', 'CHAURAY BASKET CLUB - 2'),
-(53, 1, 4, NULL, NULL, '2025-11-30', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(54, 1, 7, NULL, NULL, '2025-11-30', '16:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(55, 1, 7, NULL, NULL, '2025-12-06', '17:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(56, 1, 2, NULL, NULL, '2025-12-06', '19:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(57, 1, 2, NULL, NULL, '2025-12-06', '21:15:00', 'BORDEAUX ETUDIANTS CLUB'),
-(58, 1, 7, NULL, NULL, '2025-12-07', '14:00:00', 'FEYTIAT BASKET 87'),
-(59, 1, 4, NULL, NULL, '2025-12-07', '14:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(60, 1, 6, NULL, NULL, '2025-12-07', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(61, 1, 3, NULL, NULL, '2025-12-07', '16:00:00', 'BASKET CLUB MARCHEPRIME'),
-(62, 1, 7, NULL, NULL, '2025-12-13', '20:00:00', 'US TALENCE'),
-(63, 1, 4, NULL, NULL, '2025-12-13', '20:00:00', 'STE EULALIE BASKET BALL'),
-(64, 1, 2, NULL, NULL, '2025-12-13', '21:00:00', 'ASPTT LIMOGES'),
-(65, 1, 2, NULL, NULL, '2025-12-13', '21:30:00', 'LIMOGES LANDOUGE LOISIRS BASKET'),
-(66, 1, 6, NULL, NULL, '2025-12-14', '16:00:00', 'ASPTT LIMOGES'),
-(67, 1, 3, NULL, NULL, '2025-12-14', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(68, 1, 7, NULL, NULL, '2026-01-10', '21:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(69, 1, 2, NULL, NULL, '2026-01-10', '22:00:00', 'ENTENTE PESSAC BASKET CLUB'),
-(70, 1, 2, NULL, NULL, '2026-01-10', '22:00:00', 'IE - CTC MEDOC ESTUAIRE - AS PIAN MEDOC BASKET'),
-(71, 1, 3, NULL, NULL, '2026-01-11', '14:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(72, 1, 6, NULL, NULL, '2026-01-11', '16:00:00', 'IE - CTC UBVP - VILLENEUVE BASKET CLUB'),
-(73, 1, 4, NULL, NULL, '2026-01-11', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(74, 1, 7, NULL, NULL, '2026-01-11', '16:30:00', 'ELAN CHALOSSAIS'),
-(75, 1, 2, NULL, NULL, '2026-01-17', '19:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(76, 1, 2, NULL, NULL, '2026-01-17', '21:15:00', 'BORDEAUX ETUDIANTS CLUB'),
-(77, 1, 7, NULL, NULL, '2026-01-17', '21:30:00', 'IE - CTC SMB - SAM - SA MERIGNACAIS'),
-(78, 1, 3, NULL, NULL, '2026-01-18', '14:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(79, 1, 6, NULL, NULL, '2026-01-18', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(80, 1, 4, NULL, NULL, '2026-01-18', '16:00:00', 'CA CARBON BLANC OMNISPORT'),
-(81, 1, 7, NULL, NULL, '2026-01-18', '16:30:00', 'ABB CORNEBARRIEU'),
-(82, 1, 7, NULL, NULL, '2026-01-31', '21:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(83, 1, 2, NULL, NULL, '2026-01-31', '21:00:00', 'UNION SPORTIVE TULLE CORREZE'),
-(84, 1, 2, NULL, NULL, '2026-01-31', '22:00:00', 'AYTRE BASKET BALL'),
-(85, 1, 3, NULL, NULL, '2026-02-01', '14:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(86, 1, 6, NULL, NULL, '2026-02-01', '16:00:00', 'AYTRE BASKET BALL'),
-(87, 1, 4, NULL, NULL, '2026-02-01', '16:00:00', 'CA BEGLES - 3'),
-(88, 1, 7, NULL, NULL, '2026-02-01', '16:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(89, 1, 2, NULL, NULL, '2026-02-07', '19:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(90, 1, 2, NULL, NULL, '2026-02-07', '21:15:00', 'BORDEAUX ETUDIANTS CLUB'),
-(91, 1, 7, NULL, NULL, '2026-02-07', '21:30:00', 'LE TAILLAN BASKET - 2'),
-(92, 1, 4, NULL, NULL, '2026-02-08', '14:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(93, 1, 6, NULL, NULL, '2026-02-08', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(94, 1, 3, NULL, NULL, '2026-02-08', '16:00:00', 'AGJA CAUDERAN - 2'),
-(95, 1, 7, NULL, NULL, '2026-02-08', '16:30:00', 'ENTENTE PESSAC BASKET CLUB - 1'),
-(96, 1, 7, NULL, NULL, '2026-02-22', '16:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(97, 1, 2, NULL, NULL, '2026-02-28', '21:00:00', 'CEP POITIERS'),
-(98, 1, 2, NULL, NULL, '2026-02-28', '21:00:00', 'AIXE BC VAL DE VIENNE'),
-(99, 1, 6, NULL, NULL, '2026-03-01', '16:00:00', 'LIMOGES ABC EN LIMOUSIN - 2'),
-(100, 1, 3, NULL, NULL, '2026-03-01', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(101, 1, 4, NULL, NULL, '2026-03-01', '16:00:00', 'CASTELNAU MEDOC BC - 3'),
-(102, 1, 7, NULL, NULL, '2026-03-01', '16:30:00', 'HAGETMAU MOMUY CASTAIGNOS BASKET'),
-(103, 1, 2, NULL, NULL, '2026-03-07', '19:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(104, 1, 2, NULL, NULL, '2026-03-07', '21:15:00', 'BORDEAUX ETUDIANTS CLUB'),
-(105, 1, 6, NULL, NULL, '2026-03-08', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(106, 1, 3, NULL, NULL, '2026-03-08', '16:00:00', 'STADE BORDELAIS'),
-(107, 1, 4, NULL, NULL, '2026-03-08', '16:00:00', 'COUTRAS GUITRES BASKET'),
-(108, 1, 7, NULL, NULL, '2026-03-08', '16:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(109, 1, 6, NULL, NULL, '2026-03-21', '19:00:00', 'CA BRIVE CORREZE SECTION BASKET'),
-(110, 1, 2, NULL, NULL, '2026-03-21', '21:00:00', 'CA BRIVE CORREZE SECTION BASKET'),
-(111, 1, 3, NULL, NULL, '2026-03-21', '21:30:00', 'BOULIAC BASKET CLUB - 2'),
-(112, 1, 4, NULL, NULL, '2026-03-22', '16:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(113, 1, 7, NULL, NULL, '2026-03-22', '16:30:00', 'IE - CTC GRAND DAX BASKET - ADOUR DAX LANDES BASKET'),
-(114, 1, 2, NULL, NULL, '2026-03-28', '21:00:00', 'COGNAC BASKET AVENIR'),
-(115, 1, 2, NULL, NULL, '2026-03-28', '21:00:00', 'IE - CTC DORDOGNE SUD BASKET - US BERGERAC BASKET'),
-(116, 1, 6, NULL, NULL, '2026-03-29', '17:00:00', 'CA BEGLES'),
-(117, 1, 3, NULL, NULL, '2026-03-29', '17:00:00', 'ENTENTE PESSAC BASKET CLUB - 3'),
-(118, 1, 4, NULL, NULL, '2026-03-29', '17:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(119, 1, 7, NULL, NULL, '2026-03-29', '17:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(120, 1, 2, NULL, NULL, '2026-04-04', '20:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(121, 1, 4, NULL, NULL, '2026-04-04', '21:00:00', 'STE EULALIE BASKET BALL'),
-(122, 1, 2, NULL, NULL, '2026-04-04', '22:15:00', 'US CENON RIVE DROITE'),
-(123, 1, 6, NULL, NULL, '2026-04-05', '17:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(124, 1, 3, NULL, NULL, '2026-04-05', '17:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(125, 1, 7, NULL, NULL, '2026-04-05', '17:30:00', 'LE TAILLAN BASKET'),
-(126, 1, 7, NULL, NULL, '2026-04-12', '17:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(127, 1, 7, NULL, NULL, '2026-04-19', '17:30:00', 'BORDEAUX ETUDIANTS CLUB'),
-(128, 1, 2, NULL, NULL, '2026-04-25', '22:00:00', 'BOULAZAC BASKET DORDOGNE - 2'),
-(129, 1, 2, NULL, NULL, '2026-04-25', '22:00:00', 'BEAUNE-RILHAC-BONNAC BASKET'),
-(130, 1, 3, NULL, NULL, '2026-04-26', '15:00:00', 'BLEUETS ILLATS - 2'),
-(131, 1, 6, NULL, NULL, '2026-04-26', '17:00:00', 'UNION SPORTIVE BREDOISE BASKET'),
-(132, 1, 4, NULL, NULL, '2026-04-26', '17:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(133, 1, 2, NULL, NULL, '2026-05-02', '20:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(134, 1, 2, NULL, NULL, '2026-05-02', '22:15:00', 'BORDEAUX ETUDIANTS CLUB'),
-(135, 1, 6, NULL, NULL, '2026-05-03', '17:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(136, 1, 2, NULL, NULL, '2026-05-09', '20:00:00', 'BORDEAUX ETUDIANTS CLUB'),
-(137, 1, 2, NULL, NULL, '2026-05-09', '22:15:00', 'BORDEAUX ETUDIANTS CLUB'),
-(138, 1, 6, NULL, NULL, '2026-05-10', '17:00:00', 'BORDEAUX ETUDIANTS CLUB');
 
 -- --------------------------------------------------------
 
@@ -903,14 +765,15 @@ INSERT INTO `NIVEAU_EQUIPE` (`numNiveau`, `libNiveau`) VALUES
 --
 
 CREATE TABLE `PERSONNEL` (
-  `numPersonnel` int NOT NULL,
+  `numPersonnel` int NOT NULL AUTO_INCREMENT,
+  `surnomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `prenomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `urlPhotoPersonnel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailPersonnel` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `telephonePersonnel` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `estStaffEquipe` tinyint(1) NOT NULL DEFAULT '0',
-  `numEquipeStaff` int DEFAULT NULL,
+  `codeEquipeStaff` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `roleStaffEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `estDirection` tinyint(1) NOT NULL DEFAULT '0',
   `posteDirection` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -926,20 +789,6 @@ CREATE TABLE `PERSONNEL` (
 -- Déchargement des données de la table `PERSONNEL`
 --
 
-INSERT INTO `PERSONNEL` (`numPersonnel`, `prenomPersonnel`, `nomPersonnel`, `urlPhotoPersonnel`, `emailPersonnel`, `telephonePersonnel`, `estStaffEquipe`, `numEquipeStaff`, `roleStaffEquipe`, `estDirection`, `posteDirection`, `estCommissionTechnique`, `posteCommissionTechnique`, `estCommissionAnimation`, `posteCommissionAnimation`, `estCommissionCommunication`, `posteCommissionCommunication`) VALUES
-(20, 'Emmanuel', 'Beigbeder', NULL, NULL, NULL, 0, NULL, NULL, 1, 'Président', 0, NULL, 0, NULL, 0, NULL),
-(21, 'Alexandra', 'Beigbeder', NULL, NULL, NULL, 0, NULL, NULL, 1, 'Vice-présidente', 0, NULL, 0, NULL, 0, NULL),
-(22, 'Stephan', 'Sanglar', NULL, NULL, NULL, 0, NULL, NULL, 1, 'Secrétaire du club', 1, 'Coach SG2/SG3', 0, NULL, 0, NULL),
-(23, 'Freddy', 'Dougoum', NULL, NULL, NULL, 1, 5, 'Coach', 0, NULL, 1, 'Coach SF1', 0, NULL, 0, NULL),
-(24, 'Abdel', 'Krimo', NULL, NULL, NULL, 1, 6, 'Coach', 0, NULL, 1, 'Coach SF2', 0, NULL, 0, NULL),
-(25, 'Alban', 'Moreau', NULL, NULL, NULL, 1, 7, 'Coach', 0, NULL, 1, 'Coach SF3', 0, NULL, 0, NULL),
-(26, 'JR', '', NULL, NULL, NULL, 1, 1, 'Coach', 0, NULL, 1, 'Coach SG1', 0, NULL, 0, NULL),
-(27, 'Alexandre', '', NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 1, 'Membre', 0, NULL),
-(28, 'Zoe', '', NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 1, 'Membre', 0, NULL),
-(29, 'Jéjé', '', NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 1, 'Membre', 0, NULL),
-(30, 'Greg', '', NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 1, 'Membre'),
-(31, 'Martin', 'Damy', NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 1, 'Membre'),
-(32, 'Melissa', '', NULL, NULL, NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 1, 'Membre');
 
 -- --------------------------------------------------------
 
@@ -1143,17 +992,16 @@ ALTER TABLE `COMPETITION`
 -- Index pour la table `EQUIPE`
 --
 ALTER TABLE `EQUIPE`
-  ADD PRIMARY KEY (`numEquipe`),
-  ADD KEY `idx_equipe_club` (`numClub`),
-  ADD KEY `idx_equipe_categorie` (`numCategorie`),
-  ADD KEY `idx_equipe_section` (`numSection`),
-  ADD KEY `idx_equipe_niveau` (`numNiveau`);
+  ADD PRIMARY KEY (`codeEquipe`),
+  ADD UNIQUE KEY `uniq_equipe_num` (`numEquipe`);
 
 --
 -- Index pour la table `JOUEUR`
 --
 ALTER TABLE `JOUEUR`
-  ADD PRIMARY KEY (`numJoueur`);
+  ADD PRIMARY KEY (`surnomJoueur`),
+  ADD UNIQUE KEY `uniq_joueur_num` (`numJoueur`),
+  ADD KEY `idx_joueur_equipe` (`codeEquipe`);
 
 --
 -- Index pour la table `JOUEUR_AFFECTATION`
@@ -1200,10 +1048,7 @@ ALTER TABLE `LIKEART`
 --
 ALTER TABLE `MATCH`
   ADD PRIMARY KEY (`numMatch`),
-  ADD KEY `idx_match_saison` (`numSaison`),
-  ADD KEY `idx_match_competition` (`numCompetition`),
-  ADD KEY `idx_match_phase` (`numPhase`),
-  ADD KEY `idx_match_journee` (`numJournee`);
+  ADD KEY `idx_match_equipe` (`codeEquipe`);
 
 --
 -- Index pour la table `MATCH_PARTICIPANT`
@@ -1246,7 +1091,9 @@ ALTER TABLE `NIVEAU_EQUIPE`
 -- Index pour la table `PERSONNEL`
 --
 ALTER TABLE `PERSONNEL`
-  ADD PRIMARY KEY (`numPersonnel`);
+  ADD PRIMARY KEY (`surnomPersonnel`),
+  ADD UNIQUE KEY `uniq_personnel_num` (`numPersonnel`),
+  ADD KEY `idx_personnel_equipe` (`codeEquipeStaff`);
 
 --
 -- Index pour la table `PHASE_COMPETITION`
@@ -1337,13 +1184,13 @@ ALTER TABLE `COMPETITION`
 -- AUTO_INCREMENT pour la table `EQUIPE`
 --
 ALTER TABLE `EQUIPE`
-  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table `JOUEUR`
 --
 ALTER TABLE `JOUEUR`
-  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table `JOUEUR_AFFECTATION`
@@ -1367,7 +1214,7 @@ ALTER TABLE `JOURNEE`
 -- AUTO_INCREMENT pour la table `MATCH`
 --
 ALTER TABLE `MATCH`
-  MODIFY `numMatch` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
+  MODIFY `numMatch` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table `MATCH_PARTICIPANT`
@@ -1397,7 +1244,7 @@ ALTER TABLE `NIVEAU_EQUIPE`
 -- AUTO_INCREMENT pour la table `PERSONNEL`
 --
 ALTER TABLE `PERSONNEL`
-  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT pour la table `PHASE_COMPETITION`
@@ -1522,12 +1369,17 @@ ALTER TABLE `LIKEART`
 -- Contraintes pour la table `MATCH`
 --
 ALTER TABLE `MATCH`
-  ADD CONSTRAINT `fk_match_competition` FOREIGN KEY (`numCompetition`) REFERENCES `COMPETITION` (`numCompetition`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_match_journee` FOREIGN KEY (`numJournee`) REFERENCES `JOURNEE` (`numJournee`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_match_phase` FOREIGN KEY (`numPhase`) REFERENCES `PHASE_COMPETITION` (`numPhase`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_match_saison` FOREIGN KEY (`numSaison`) REFERENCES `SAISON` (`numSaison`) ON DELETE RESTRICT ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_match_equipe` FOREIGN KEY (`codeEquipe`) REFERENCES `EQUIPE` (`codeEquipe`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
+-- Contraintes pour la table `JOUEUR`
+ALTER TABLE `JOUEUR`
+  ADD CONSTRAINT `fk_joueur_equipe` FOREIGN KEY (`codeEquipe`) REFERENCES `EQUIPE` (`codeEquipe`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Contraintes pour la table `PERSONNEL`
+ALTER TABLE `PERSONNEL`
+  ADD CONSTRAINT `fk_personnel_equipe` FOREIGN KEY (`codeEquipeStaff`) REFERENCES `EQUIPE` (`codeEquipe`) ON DELETE SET NULL ON UPDATE CASCADE;
+
 -- Contraintes pour la table `MATCH_PARTICIPANT`
 --
 ALTER TABLE `MATCH_PARTICIPANT`
