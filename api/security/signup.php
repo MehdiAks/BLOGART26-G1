@@ -1,4 +1,15 @@
 <?php
+/*
+ * Endpoint API: api/security/signup.php
+ * Rôle: créer un nouveau compte membre avec validations métier et sécurité.
+ *
+ * Déroulé détaillé:
+ * 1) Démarre la session et charge la config + helpers de sanitisation.
+ * 2) Récupère les champs de formulaire (identité, login, email) et initialise le tableau d'erreurs.
+ * 3) Valide reCAPTCHA, contraintes sur pseudo/mot de passe/email et consentement RGPD.
+ * 4) Si aucune erreur, hash le mot de passe puis insère le membre en base.
+ * 5) Redirige vers login en succès ou vers le formulaire d'inscription en cas d'erreur.
+ */
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
@@ -18,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_accordMemb = isset($_POST['accordMemb']) ? 1 : 0;
     $ba_bec_numStat = 3;
 
+    // Vérification anti-bot via reCAPTCHA.
     $ba_bec_recaptcha = verifyRecaptcha($_POST['g-recaptcha-response'] ?? '', 'signup');
     if (!$ba_bec_recaptcha['valid']) {
         $_SESSION['errors'][] = $ba_bec_recaptcha['message'] ?: 'Échec de la vérification reCAPTCHA.';
@@ -70,15 +82,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Si aucune erreur
     if (empty($_SESSION['errors'])) {
         try {
+            // Hash du mot de passe et génération de la date de création.
             $ba_bec_hashedPass = password_hash($ba_bec_passMemb, PASSWORD_DEFAULT);
             $ba_bec_dtCreaMemb = date('Y-m-d H:i:s');
 
+            // Insertion du membre en base.
             sql_insert(
                 'MEMBRE',
                 'nomMemb, prenomMemb, pseudoMemb, passMemb, eMailMemb, dtCreaMemb, accordMemb, numStat',
                 "'$ba_bec_nomMemb','$ba_bec_prenomMemb','$ba_bec_pseudoMemb','$ba_bec_hashedPass','$ba_bec_eMailMemb','$ba_bec_dtCreaMemb','$ba_bec_accordMemb','$ba_bec_numStat'"
             );
 
+            // Redirection en succès.
             $_SESSION['success'] = 'Inscription réussie !';
             header('Location: ../../../views/backend/security/login.php');
             exit();
