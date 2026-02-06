@@ -1,9 +1,21 @@
 <?php
+/*
+ * Endpoint API: api/matches/sync.php
+ * Rôle: synchroniser une liste de matchs (JSON) vers la base de données.
+ *
+ * Déroulé détaillé:
+ * 1) Charge la configuration et les helpers nécessaires pour les équipes/statistiques.
+ * 2) Vérifie le token de synchronisation (MATCHES_SYNC_TOKEN) si défini.
+ * 3) Récupère le JSON soit depuis le body POST, soit depuis un flux distant (FFBB_MATCHES_FEED).
+ * 4) Normalise chaque match (dates/équipes/compétition) et crée les références manquantes.
+ * 5) Insère le match et ses participants, puis retourne un bilan JSON (importés/sautés).
+ */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/equipe_stats.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+// Étape 1: sécuriser l'accès via un token partagé (si configuré).
 $expectedToken = getenv('MATCHES_SYNC_TOKEN');
 $providedToken = $_GET['token'] ?? '';
 if (!empty($expectedToken) && !hash_equals($expectedToken, $providedToken)) {
@@ -14,6 +26,7 @@ if (!empty($expectedToken) && !hash_equals($expectedToken, $providedToken)) {
 
 function fetch_remote_payload(string $url): ?string
 {
+    // Préparer un contexte HTTP avec timeout et User-Agent explicite.
     $context = stream_context_create([
         'http' => [
             'timeout' => 15,
@@ -31,6 +44,7 @@ function fetch_remote_payload(string $url): ?string
 
 function parse_date_and_time(?string $dateRaw, ?string $timeRaw): array
 {
+    // Normaliser la date/heure et retourner un tuple [date, heure] ou [null, null].
     $dateRaw = trim((string) $dateRaw);
     $timeRaw = trim((string) $timeRaw);
 
@@ -52,6 +66,7 @@ function parse_date_and_time(?string $dateRaw, ?string $timeRaw): array
 
 function normalize_match(array $item): ?array
 {
+    // Harmoniser les clés attendues (home/away/competition/etc.) en tenant compte des variantes.
     $home = trim((string) ($item['home'] ?? $item['homeTeam'] ?? $item['teamHome'] ?? $item['domicile'] ?? ''));
     $away = trim((string) ($item['away'] ?? $item['awayTeam'] ?? $item['teamAway'] ?? $item['exterieur'] ?? ''));
     $competition = trim((string) ($item['competition'] ?? $item['league'] ?? $item['championship'] ?? ''));
@@ -90,6 +105,7 @@ function normalize_match(array $item): ?array
 
 function ensure_reference(PDO $DB, string $table, string $labelColumn, string $value): int
 {
+    // Obtenir l'identifiant d'une table de référence (ou l'insérer si absent).
     $stmt = $DB->prepare("SELECT {$table}.{$table === 'SAISON' ? 'numSaison' : 'num' . ucfirst(strtolower(str_replace('_', '', $table)))} FROM {$table} WHERE {$labelColumn} = :label LIMIT 1");
     $stmt->execute([':label' => $value]);
     $found = $stmt->fetchColumn();
@@ -105,6 +121,7 @@ function ensure_reference(PDO $DB, string $table, string $labelColumn, string $v
 
 function get_or_create_club(PDO $DB, string $clubName): int
 {
+    // Récupérer ou créer un club (avec un flag club maison basé sur le nom).
     $stmt = $DB->prepare('SELECT numClub FROM CLUB WHERE nomClub = :name LIMIT 1');
     $stmt->execute([':name' => $clubName]);
     $existing = $stmt->fetchColumn();
@@ -135,6 +152,7 @@ function slugify_code(string $value): string
 
 function get_or_create_team(PDO $DB, int $numClub, string $teamName, ?string $teamCode, ?string $sectionLabel): int
 {
+    // Récupérer ou créer une équipe liée à un club et ses références (catégorie/section/niveau).
     $code = $teamCode !== null && $teamCode !== '' ? strtoupper($teamCode) : slugify_code($teamName);
 
     $stmt = $DB->prepare('SELECT numEquipe FROM EQUIPE WHERE numClub = :numClub AND codeEquipe = :code LIMIT 1');
@@ -171,6 +189,7 @@ function get_or_create_team(PDO $DB, int $numClub, string $teamName, ?string $te
 
 function get_current_season(PDO $DB): int
 {
+    // Retourner la saison courante ou en créer une si absente.
     $stmt = $DB->query('SELECT numSaison FROM SAISON WHERE estCourante = 1 ORDER BY dateDebut DESC LIMIT 1');
     $season = $stmt->fetchColumn();
     if ($season !== false) {
@@ -187,6 +206,7 @@ function get_current_season(PDO $DB): int
 
 function get_or_create_competition(PDO $DB, int $numSaison, string $label): int
 {
+    // Retourner la compétition correspondante (par saison) ou l'insérer.
     $stmt = $DB->prepare('SELECT numCompetition FROM COMPETITION WHERE numSaison = :numSaison AND libCompetition = :label LIMIT 1');
     $stmt->execute([':numSaison' => $numSaison, ':label' => $label]);
     $found = $stmt->fetchColumn();
@@ -202,6 +222,7 @@ function get_or_create_competition(PDO $DB, int $numSaison, string $label): int
 
 function get_or_create_phase(PDO $DB, int $numCompetition, string $label): int
 {
+    // Retourner la phase de compétition correspondante ou la créer.
     $stmt = $DB->prepare('SELECT numPhase FROM PHASE_COMPETITION WHERE numCompetition = :numCompetition AND libPhase = :label LIMIT 1');
     $stmt->execute([':numCompetition' => $numCompetition, ':label' => $label]);
     $found = $stmt->fetchColumn();
@@ -217,6 +238,7 @@ function get_or_create_phase(PDO $DB, int $numCompetition, string $label): int
 
 function get_or_create_journee(PDO $DB, int $numPhase, string $journee): int
 {
+    // Retourner la journée correspondante (par libellé/numéro) ou la créer.
     $numero = null;
     if (preg_match('/\d+/', $journee, $matches)) {
         $numero = (int) $matches[0];
@@ -245,6 +267,7 @@ function get_or_create_journee(PDO $DB, int $numPhase, string $journee): int
 
 $payload = null;
 
+// Étape 2: tenter de lire un JSON envoyé dans le body POST.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rawPayload = file_get_contents('php://input');
     if ($rawPayload) {
@@ -252,6 +275,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Étape 3: fallback sur un flux distant configuré via FFBB_MATCHES_FEED.
 if ($payload === null) {
     $feedUrl = getenv('FFBB_MATCHES_FEED');
     if (!empty($feedUrl)) {
@@ -275,11 +299,13 @@ if (!is_array($matches)) {
     exit;
 }
 
+// Étape 4: ouverture de la connexion DB pour les insertions.
 sql_connect();
 
 $inserted = 0;
 $skipped = 0;
 
+// Étape 5: normaliser et importer chaque match un par un.
 foreach ($matches as $matchItem) {
     if (!is_array($matchItem)) {
         $skipped++;
@@ -342,6 +368,7 @@ foreach ($matches as $matchItem) {
     $inserted++;
 }
 
+// Étape 6: retourner le bilan d'import JSON.
 echo json_encode([
     'imported' => $inserted,
     'skipped' => $skipped,
