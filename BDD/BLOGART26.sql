@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : ven. 06 fév. 2026 à 02:39
+-- Généré le : ven. 06 fév. 2026 à 03:50
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.28
 
@@ -24,22 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Structure de la table `AFFECTATION_PERSONNEL_EQUIPE`
---
-
-CREATE TABLE `AFFECTATION_PERSONNEL_EQUIPE` (
-  `numAffectation` int NOT NULL,
-  `numPersonnel` int NOT NULL,
-  `numEquipe` int NOT NULL,
-  `numSaison` int NOT NULL,
-  `numRolePersonnel` int NOT NULL,
-  `dateDebut` date DEFAULT NULL,
-  `dateFin` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `ARTICLE`
 --
 
@@ -47,16 +31,16 @@ CREATE TABLE `ARTICLE` (
   `numArt` int NOT NULL,
   `dtCreaArt` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtMajArt` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `libTitrArt` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `libChapoArt` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `libAccrochArt` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `parag1Art` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `libSsTitr1Art` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `parag2Art` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `libSsTitr2Art` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `parag3Art` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `libConclArt` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `urlPhotArt` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `libTitrArt` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `libChapoArt` text COLLATE utf8mb3_unicode_ci,
+  `libAccrochArt` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `parag1Art` text COLLATE utf8mb3_unicode_ci,
+  `libSsTitr1Art` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `parag2Art` text COLLATE utf8mb3_unicode_ci,
+  `libSsTitr2Art` varchar(100) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `parag3Art` text COLLATE utf8mb3_unicode_ci,
+  `libConclArt` text COLLATE utf8mb3_unicode_ci,
+  `urlPhotArt` varchar(70) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `numThem` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -75,57 +59,16 @@ INSERT INTO `ARTICLE` (`numArt`, `dtCreaArt`, `dtMajArt`, `libTitrArt`, `libChap
 -- --------------------------------------------------------
 
 --
--- Structure de la table `CATEGORIE_EQUIPE`
---
-
-CREATE TABLE `CATEGORIE_EQUIPE` (
-  `numCategorie` int NOT NULL,
-  `libCategorie` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `CATEGORIE_EQUIPE`
---
-
-INSERT INTO `CATEGORIE_EQUIPE` (`numCategorie`, `libCategorie`) VALUES
-(1, 'Seniors'),
-(2, 'Minime');
-
--- --------------------------------------------------------
-
---
--- Structure de la table `CLUB`
---
-
-CREATE TABLE `CLUB` (
-  `numClub` int NOT NULL,
-  `nomClub` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `villeClub` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `estClubMaison` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `CLUB`
---
-
-INSERT INTO `CLUB` (`numClub`, `nomClub`, `villeClub`, `estClubMaison`) VALUES
-(1, 'Bordeaux étudiant club', NULL, 0),
-(2, 'BEC Basket', 'Bordeaux', 1),
-(3, 'test', NULL, 0);
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `COMMENT`
 --
 
 CREATE TABLE `COMMENT` (
   `numCom` int NOT NULL,
   `dtCreaCom` datetime DEFAULT CURRENT_TIMESTAMP,
-  `libCom` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `libCom` text COLLATE utf8mb3_unicode_ci NOT NULL,
   `dtModCom` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `attModOK` tinyint(1) DEFAULT '0',
-  `notifComKOAff` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `notifComKOAff` text COLLATE utf8mb3_unicode_ci,
   `dtDelLogCom` datetime DEFAULT NULL,
   `delLogiq` tinyint(1) DEFAULT '0',
   `numArt` int NOT NULL,
@@ -145,32 +88,7 @@ INSERT INTO `COMMENT` (`numCom`, `dtCreaCom`, `libCom`, `dtModCom`, `attModOK`, 
 (6, '2020-11-06 11:20:31', 'Trop cool comme article', NULL, 0, NULL, NULL, 0, 1, 3),
 (7, '2020-11-08 08:41:12', 'Trop cool comme article', NULL, 0, NULL, NULL, 0, 1, 3),
 (8, '2020-11-18 08:41:12', 'De la daube cet article', '2024-01-09 21:03:48', 0, 'Trop insultant', '2024-01-12 09:03:48', 1, 1, 3),
-(9, '2022-10-09 12:07:09', 'Un super article', '2026-02-05 20:30:54', 1, '', NULL, 0, 4, 2);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `COMPETITION`
---
-
-CREATE TABLE `COMPETITION` (
-  `numCompetition` int NOT NULL,
-  `numSaison` int NOT NULL,
-  `libCompetition` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `COMPETITION`
---
-
-INSERT INTO `COMPETITION` (`numCompetition`, `numSaison`, `libCompetition`) VALUES
-(1, 1, 'Championnat Seniors Garçons 1'),
-(2, 1, 'Championnat Seniors Garçons 2'),
-(3, 1, 'Championnat Seniors Garçons 3'),
-(4, 1, 'Championnat Seniors Garçons 4'),
-(5, 1, 'Championnat Seniors Filles 1'),
-(6, 1, 'Championnat Seniors Filles 2'),
-(7, 1, 'Championnat Seniors Filles 3');
+(9, '2022-10-09 12:07:09', 'Un super article', '2024-01-09 21:03:48', 0, '', NULL, 0, 4, 2);
 
 -- --------------------------------------------------------
 
@@ -179,7 +97,7 @@ INSERT INTO `COMPETITION` (`numCompetition`, `numSaison`, `libCompetition`) VALU
 --
 
 CREATE TABLE `EQUIPE` (
-  `numEquipe` int NOT NULL AUTO_INCREMENT,
+  `numEquipe` int NOT NULL,
   `codeEquipe` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `club` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Bordeaux étudiant club',
@@ -191,11 +109,6 @@ CREATE TABLE `EQUIPE` (
   `photoStaff` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table `EQUIPE`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -203,7 +116,7 @@ CREATE TABLE `EQUIPE` (
 --
 
 CREATE TABLE `JOUEUR` (
-  `numJoueur` int NOT NULL AUTO_INCREMENT,
+  `numJoueur` int NOT NULL,
   `surnomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `prenomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomJoueur` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -215,82 +128,6 @@ CREATE TABLE `JOUEUR` (
   `dateRecrutement` date DEFAULT NULL,
   `clubsPrecedents` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `JOUEUR_AFFECTATION`
---
-
-CREATE TABLE `JOUEUR_AFFECTATION` (
-  `numAffectation` int NOT NULL,
-  `numJoueur` int NOT NULL,
-  `numEquipe` int NOT NULL,
-  `numSaison` int NOT NULL,
-  `numPoste` int DEFAULT NULL,
-  `numMaillot` int DEFAULT NULL,
-  `dateDebut` date DEFAULT NULL,
-  `dateFin` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `JOUEUR_AFFECTATION_POSTE`
---
-
-CREATE TABLE `JOUEUR_AFFECTATION_POSTE` (
-  `numAffectation` int NOT NULL,
-  `numPoste` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `JOUEUR_CLUB`
---
-
-CREATE TABLE `JOUEUR_CLUB` (
-  `numJoueurClub` int NOT NULL,
-  `numJoueur` int NOT NULL,
-  `numClub` int NOT NULL,
-  `dateDebut` date DEFAULT NULL,
-  `dateFin` date DEFAULT NULL,
-  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `JOURNEE`
---
-
-CREATE TABLE `JOURNEE` (
-  `numJournee` int NOT NULL,
-  `numPhase` int NOT NULL,
-  `libJournee` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `numeroJournee` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `JOURNEE`
---
-
-INSERT INTO `JOURNEE` (`numJournee`, `numPhase`, `libJournee`, `numeroJournee`) VALUES
-(1, 1, 'Journée 1 - Seniors Garçons 1', 1),
-(2, 1, 'Journée 2 - Seniors Garçons 1', 2),
-(3, 2, 'Journée 1 - Seniors Garçons 2', 1),
-(4, 2, 'Journée 2 - Seniors Garçons 2', 2),
-(5, 3, 'Journée 1 - Seniors Garçons 3', 1),
-(6, 3, 'Journée 2 - Seniors Garçons 3', 2),
-(7, 4, 'Journée 1 - Seniors Garçons 4', 1),
-(8, 4, 'Journée 2 - Seniors Garçons 4', 2),
-(9, 5, 'Journée 1 - Seniors Filles 1', 1),
-(10, 5, 'Journée 2 - Seniors Filles 1', 2),
-(11, 6, 'Journée 1 - Seniors Filles 2', 1),
-(12, 6, 'Journée 2 - Seniors Filles 2', 2),
-(13, 7, 'Journée 1 - Seniors Filles 3', 1),
-(14, 7, 'Journée 2 - Seniors Filles 3', 2);
 
 -- --------------------------------------------------------
 
@@ -325,7 +162,7 @@ INSERT INTO `LIKEART` (`numMemb`, `numArt`, `likeA`) VALUES
 --
 
 CREATE TABLE `MATCH` (
-  `numMatch` int NOT NULL AUTO_INCREMENT,
+  `numMatch` int NOT NULL,
   `codeEquipe` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `clubAdversaire` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `numEquipeAdverse` int DEFAULT NULL,
@@ -339,309 +176,6 @@ CREATE TABLE `MATCH` (
   `scoreAdversaire` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table `MATCH`
---
-
-
--- --------------------------------------------------------
-
---
--- Structure de la table `MATCH_PARTICIPANT`
---
-
-CREATE TABLE `MATCH_PARTICIPANT` (
-  `numMatchParticipant` int NOT NULL,
-  `numMatch` int NOT NULL,
-  `numEquipe` int DEFAULT NULL,
-  `cote` enum('domicile','exterieur') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `score` int DEFAULT NULL,
-  `nomEquipeAdverse` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `numeroEquipeAdverse` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `MATCH_PARTICIPANT`
---
-
-INSERT INTO `MATCH_PARTICIPANT` (`numMatchParticipant`, `numMatch`, `numEquipe`, `cote`, `score`, `nomEquipeAdverse`, `numeroEquipeAdverse`) VALUES
-(1, 1, 2, 'exterieur', 43, NULL, NULL),
-(2, 1, NULL, 'domicile', 81, 'US CHARTRONS BORDEAUX', NULL),
-(3, 2, 2, 'exterieur', 67, NULL, NULL),
-(4, 2, NULL, 'domicile', 60, 'BORDEAUX BASTIDE BASKET', NULL),
-(5, 3, 7, 'domicile', 64, NULL, NULL),
-(6, 3, NULL, 'exterieur', 50, 'SA GAZINET CESTAS', NULL),
-(7, 4, 3, 'exterieur', 102, NULL, NULL),
-(8, 4, NULL, 'domicile', 48, 'ENTENTE SPORTIVE BLANQUEFORT - 2', NULL),
-(9, 5, 6, 'exterieur', NULL, NULL, NULL),
-(10, 5, NULL, 'domicile', NULL, 'BRESSUIRE LE REVEIL', NULL),
-(11, 6, 7, 'domicile', 75, NULL, NULL),
-(12, 6, NULL, 'exterieur', 40, 'ABB CORNEBARRIEU', NULL),
-(13, 7, 2, 'domicile', 69, NULL, NULL),
-(14, 7, NULL, 'exterieur', 88, 'UNION SPORTIVE TULLE CORREZE', NULL),
-(15, 8, 7, 'exterieur', 79, NULL, NULL),
-(16, 8, NULL, 'domicile', 33, 'US CHARTRONS BORDEAUX', NULL),
-(17, 9, 2, 'domicile', 68, NULL, NULL),
-(18, 9, NULL, 'exterieur', 52, 'AYTRE BASKET BALL', NULL),
-(19, 10, 3, 'domicile', 61, NULL, NULL),
-(20, 10, NULL, 'exterieur', 60, 'STADE BORDELAIS', NULL),
-(21, 11, 6, 'domicile', 52, NULL, NULL),
-(22, 11, NULL, 'exterieur', 57, 'AYTRE BASKET BALL', NULL),
-(23, 12, 7, 'exterieur', 72, NULL, NULL),
-(24, 12, NULL, 'domicile', 76, 'COTEAUX DU LUY BASKET', NULL),
-(25, 13, 2, 'exterieur', 90, NULL, NULL),
-(26, 13, NULL, 'domicile', 105, 'CASTELNAU MEDOC BC', NULL),
-(27, 14, 2, 'exterieur', 52, NULL, NULL),
-(28, 14, NULL, 'domicile', 70, 'UNION SAINT BRUNO BORDEAUX', NULL),
-(29, 15, 7, 'domicile', 45, NULL, NULL),
-(30, 15, NULL, 'exterieur', 52, 'US TALENCE', NULL),
-(31, 16, 6, 'exterieur', 52, NULL, NULL),
-(32, 16, NULL, 'domicile', 47, 'AMICALE LOISIRS CASTILLONNES BASKET', NULL),
-(33, 17, 7, 'domicile', 82, NULL, NULL),
-(34, 17, NULL, 'exterieur', 62, 'ENTENTE PESSAC BASKET CLUB - 1', NULL),
-(35, 18, 3, 'exterieur', 72, NULL, NULL),
-(36, 18, NULL, 'domicile', 49, 'EN - CTC MEDOC ESTUAIRE - LUDON BASKET CLUB - 3', NULL),
-(37, 19, 9, 'exterieur', 34, NULL, NULL),
-(38, 19, NULL, 'domicile', 41, 'B.IZON - 2', NULL),
-(39, 20, 2, 'domicile', 73, NULL, NULL),
-(40, 20, NULL, 'exterieur', 64, 'AIXE BC VAL DE VIENNE', NULL),
-(41, 21, 2, 'domicile', 57, NULL, NULL),
-(42, 21, NULL, 'exterieur', 67, 'CEP POITIERS', NULL),
-(43, 22, 7, 'exterieur', 57, NULL, NULL),
-(44, 22, NULL, 'domicile', 60, 'STE EULALIE BASKET BALL', NULL),
-(45, 23, 9, 'exterieur', 63, NULL, NULL),
-(46, 23, NULL, 'domicile', 57, 'BC ST AVIT ST NAZAIRE', NULL),
-(47, 24, 6, 'domicile', 49, NULL, NULL),
-(48, 24, NULL, 'exterieur', 53, 'LIMOGES ABC EN LIMOUSIN - 2', NULL),
-(49, 25, 7, 'exterieur', 74, NULL, NULL),
-(50, 25, NULL, 'domicile', 73, 'AS ST DELPHIN - 2', NULL),
-(51, 26, 9, 'domicile', 46, NULL, NULL),
-(52, 26, NULL, 'exterieur', 49, 'COUTRAS GUITRES BASKET', NULL),
-(53, 27, 3, 'domicile', 83, NULL, NULL),
-(54, 27, NULL, 'exterieur', 64, 'BASKET CLUB MARCHEPRIME', NULL),
-(55, 28, 7, 'domicile', 69, NULL, NULL),
-(56, 28, NULL, 'exterieur', 53, 'HAGETMAU MOMUY CASTAIGNOS BASKET', NULL),
-(57, 29, 2, 'exterieur', 72, NULL, NULL),
-(58, 29, NULL, 'domicile', 57, 'JSA BORDEAUX BASKET - 2', NULL),
-(59, 30, 2, 'exterieur', 62, NULL, NULL),
-(60, 30, NULL, 'domicile', 75, 'AS ST DELPHIN', NULL),
-(61, 31, 7, 'domicile', 54, NULL, NULL),
-(62, 31, NULL, 'exterieur', 42, 'IE - CTC SMB - SAM - SA MERIGNACAIS', NULL),
-(63, 32, 3, 'exterieur', 53, NULL, NULL),
-(64, 32, NULL, 'domicile', 31, 'AS MARTIGNAS - 2', NULL),
-(65, 33, 6, 'exterieur', 46, NULL, NULL),
-(66, 33, NULL, 'domicile', 76, 'POUZIOUX VOUNEUIL/BIARD BC', NULL),
-(67, 34, 9, 'domicile', 38, NULL, NULL),
-(68, 34, NULL, 'exterieur', 58, 'STE EULALIE BASKET BALL', NULL),
-(69, 35, 7, 'exterieur', 75, NULL, NULL),
-(70, 35, NULL, 'domicile', 42, 'IE - AUCH BASKET CLUB - 1', NULL),
-(71, 36, 3, 'domicile', 111, NULL, NULL),
-(72, 36, NULL, 'exterieur', 42, 'ENTENTE SPORTIVE BLANQUEFORT - 2', NULL),
-(73, 37, 2, 'domicile', 79, NULL, NULL),
-(74, 37, NULL, 'exterieur', 65, 'CA BRIVE CORREZE SECTION BASKET', NULL),
-(75, 38, 7, 'exterieur', 48, NULL, NULL),
-(76, 38, NULL, 'domicile', 58, 'UNION SPORTIVE BREDOISE BASKET - 2', NULL),
-(77, 39, 6, 'domicile', 54, NULL, NULL),
-(78, 39, NULL, 'exterieur', 45, 'CA BRIVE CORREZE SECTION BASKET', NULL),
-(79, 40, 9, 'exterieur', 34, NULL, NULL),
-(80, 40, NULL, 'domicile', 48, 'COUTRAS GUITRES BASKET', NULL),
-(81, 41, 7, 'domicile', 95, NULL, NULL),
-(82, 41, NULL, 'exterieur', 43, 'IE - CTC GRAND DAX BASKET - ADOUR DAX LANDES BASKET', NULL),
-(83, 42, 7, 'domicile', 49, NULL, NULL),
-(84, 42, NULL, 'exterieur', 52, 'LE TAILLAN BASKET - 2', NULL),
-(85, 43, 2, 'domicile', 81, NULL, NULL),
-(86, 43, NULL, 'exterieur', 55, 'IE - CTC DORDOGNE SUD BASKET - US BERGERAC BASKET', NULL),
-(87, 44, 2, 'domicile', 74, NULL, NULL),
-(88, 44, NULL, 'exterieur', 66, 'COGNAC BASKET AVENIR', NULL),
-(89, 45, 6, 'domicile', 42, NULL, NULL),
-(90, 45, NULL, 'exterieur', 58, 'CA BEGLES', NULL),
-(91, 46, 3, 'exterieur', 58, NULL, NULL),
-(92, 46, NULL, 'domicile', 66, 'STADE BORDELAIS', NULL),
-(93, 47, 7, 'exterieur', 89, NULL, NULL),
-(94, 47, NULL, 'domicile', 84, 'B. COMMINGES SALIES DU SALAT - 1', NULL),
-(95, 48, 2, 'domicile', 77, NULL, NULL),
-(96, 48, NULL, 'exterieur', 69, 'US CENON RIVE DROITE', NULL),
-(97, 49, 2, 'exterieur', 74, NULL, NULL),
-(98, 49, NULL, 'domicile', 61, 'ES ST FRONT DE PRADOUX', NULL),
-(99, 50, 7, 'exterieur', 54, NULL, NULL),
-(100, 50, NULL, 'domicile', 41, 'SA GAZINET CESTAS', NULL),
-(101, 51, 3, 'domicile', 75, NULL, NULL),
-(102, 51, NULL, 'exterieur', 60, 'EN - CTC MEDOC ESTUAIRE - LUDON BASKET CLUB - 3', NULL),
-(103, 52, 6, 'exterieur', 52, NULL, NULL),
-(104, 52, NULL, 'domicile', 42, 'CHAURAY BASKET CLUB - 2', NULL),
-(105, 53, 9, 'domicile', 51, NULL, NULL),
-(106, 53, NULL, 'exterieur', 28, 'B.IZON - 2', NULL),
-(107, 54, 7, 'domicile', 86, NULL, NULL),
-(108, 54, NULL, 'exterieur', 40, 'LE TAILLAN BASKET', NULL),
-(109, 55, 7, 'domicile', 65, NULL, NULL),
-(110, 55, NULL, 'exterieur', 46, 'US CHARTRONS BORDEAUX', NULL),
-(111, 56, 2, 'domicile', 63, NULL, NULL),
-(112, 56, NULL, 'exterieur', 70, 'BEAUNE-RILHAC-BONNAC BASKET', NULL),
-(113, 57, 2, 'domicile', 71, NULL, NULL),
-(114, 57, NULL, 'exterieur', 57, 'BOULAZAC BASKET DORDOGNE - 2', NULL),
-(115, 58, 7, 'exterieur', 82, NULL, NULL),
-(116, 58, NULL, 'domicile', 53, 'FEYTIAT BASKET 87', NULL),
-(117, 59, 9, 'domicile', 59, NULL, NULL),
-(118, 59, NULL, 'exterieur', 56, 'BC ST AVIT ST NAZAIRE', NULL),
-(119, 60, 6, 'domicile', 43, NULL, NULL),
-(120, 60, NULL, 'exterieur', 49, 'UNION SPORTIVE BREDOISE BASKET', NULL),
-(121, 61, 3, 'exterieur', 69, NULL, NULL),
-(122, 61, NULL, 'domicile', 64, 'BASKET CLUB MARCHEPRIME', NULL),
-(123, 62, 7, 'exterieur', 66, NULL, NULL),
-(124, 62, NULL, 'domicile', 71, 'US TALENCE', NULL),
-(125, 63, 9, 'exterieur', 48, NULL, NULL),
-(126, 63, NULL, 'domicile', 60, 'STE EULALIE BASKET BALL', NULL),
-(127, 64, 2, 'exterieur', 85, NULL, NULL),
-(128, 64, NULL, 'domicile', 68, 'ASPTT LIMOGES', NULL),
-(129, 65, 2, 'exterieur', 68, NULL, NULL),
-(130, 65, NULL, 'domicile', 83, 'LIMOGES LANDOUGE LOISIRS BASKET', NULL),
-(131, 66, 6, 'exterieur', 58, NULL, NULL),
-(132, 66, NULL, 'domicile', 79, 'ASPTT LIMOGES', NULL),
-(133, 67, 3, 'domicile', 68, NULL, NULL),
-(134, 67, NULL, 'exterieur', 54, 'AS MARTIGNAS - 2', NULL),
-(135, 68, 7, 'domicile', 46, NULL, NULL),
-(136, 68, NULL, 'exterieur', 39, 'STE EULALIE BASKET BALL', NULL),
-(137, 69, 2, 'exterieur', 60, NULL, NULL),
-(138, 69, NULL, 'domicile', 70, 'ENTENTE PESSAC BASKET CLUB', NULL),
-(139, 70, 2, 'exterieur', 62, NULL, NULL),
-(140, 70, NULL, 'domicile', 84, 'IE - CTC MEDOC ESTUAIRE - AS PIAN MEDOC BASKET', NULL),
-(141, 71, 3, 'domicile', 77, NULL, NULL),
-(142, 71, NULL, 'exterieur', 71, 'STADE BORDELAIS', NULL),
-(143, 72, 6, 'exterieur', 54, NULL, NULL),
-(144, 72, NULL, 'domicile', 49, 'IE - CTC UBVP - VILLENEUVE BASKET CLUB', NULL),
-(145, 73, 9, 'domicile', 36, NULL, NULL),
-(146, 73, NULL, 'exterieur', 51, 'COUTRAS GUITRES BASKET', NULL),
-(147, 74, 7, 'exterieur', 66, NULL, NULL),
-(148, 74, NULL, 'domicile', 70, 'ELAN CHALOSSAIS', NULL),
-(149, 75, 2, 'domicile', 65, NULL, NULL),
-(150, 75, NULL, 'exterieur', 62, 'BORDEAUX BASTIDE BASKET', NULL),
-(151, 76, 2, 'domicile', 72, NULL, NULL),
-(152, 76, NULL, 'exterieur', 85, 'US CHARTRONS BORDEAUX', NULL),
-(153, 77, 7, 'exterieur', 49, NULL, NULL),
-(154, 77, NULL, 'domicile', 51, 'IE - CTC SMB - SAM - SA MERIGNACAIS', NULL),
-(155, 78, 3, 'domicile', 50, NULL, NULL),
-(156, 78, NULL, 'exterieur', 81, 'BOULIAC BASKET CLUB - 2', NULL),
-(157, 79, 6, 'domicile', 67, NULL, NULL),
-(158, 79, NULL, 'exterieur', 46, 'BRESSUIRE LE REVEIL', NULL),
-(159, 80, 9, 'exterieur', 42, NULL, NULL),
-(160, 80, NULL, 'domicile', 82, 'CA CARBON BLANC OMNISPORT', NULL),
-(161, 81, 7, 'exterieur', 85, NULL, NULL),
-(162, 81, NULL, 'domicile', 65, 'ABB CORNEBARRIEU', NULL),
-(163, 82, 7, 'domicile', 58, NULL, NULL),
-(164, 82, NULL, 'exterieur', 54, 'UNION SPORTIVE BREDOISE BASKET - 2', NULL),
-(165, 83, 2, 'exterieur', 68, NULL, NULL),
-(166, 83, NULL, 'domicile', 77, 'UNION SPORTIVE TULLE CORREZE', NULL),
-(167, 84, 2, 'exterieur', 56, NULL, NULL),
-(168, 84, NULL, 'domicile', 68, 'AYTRE BASKET BALL', NULL),
-(169, 85, 3, 'domicile', 72, NULL, NULL),
-(170, 85, NULL, 'exterieur', 63, 'ENTENTE PESSAC BASKET CLUB - 3', NULL),
-(171, 86, 6, 'exterieur', 54, NULL, NULL),
-(172, 86, NULL, 'domicile', 67, 'AYTRE BASKET BALL', NULL),
-(173, 87, 9, 'exterieur', 36, NULL, NULL),
-(174, 87, NULL, 'domicile', 67, 'CA BEGLES - 3', NULL),
-(175, 88, 7, 'domicile', 57, NULL, NULL),
-(176, 88, NULL, 'exterieur', 59, 'COTEAUX DU LUY BASKET', NULL),
-(177, 89, 2, 'domicile', NULL, NULL, NULL),
-(178, 89, NULL, 'exterieur', NULL, 'UNION SAINT BRUNO BORDEAUX', NULL),
-(179, 90, 2, 'domicile', NULL, NULL, NULL),
-(180, 90, NULL, 'exterieur', NULL, 'CASTELNAU MEDOC BC', NULL),
-(181, 91, 7, 'exterieur', NULL, NULL, NULL),
-(182, 91, NULL, 'domicile', NULL, 'LE TAILLAN BASKET - 2', NULL),
-(183, 92, 9, 'domicile', NULL, NULL, NULL),
-(184, 92, NULL, 'exterieur', NULL, 'STE EULALIE BASKET BALL', NULL),
-(185, 93, 6, 'domicile', NULL, NULL, NULL),
-(186, 93, NULL, 'exterieur', NULL, 'AMICALE LOISIRS CASTILLONNES BASKET', NULL),
-(187, 94, 3, 'exterieur', NULL, NULL, NULL),
-(188, 94, NULL, 'domicile', NULL, 'AGJA CAUDERAN - 2', NULL),
-(189, 95, 7, 'exterieur', NULL, NULL, NULL),
-(190, 95, NULL, 'domicile', NULL, 'ENTENTE PESSAC BASKET CLUB - 1', NULL),
-(191, 96, 7, 'domicile', NULL, NULL, NULL),
-(192, 96, NULL, 'exterieur', NULL, 'AS ST DELPHIN - 2', NULL),
-(193, 97, 2, 'exterieur', NULL, NULL, NULL),
-(194, 97, NULL, 'domicile', NULL, 'CEP POITIERS', NULL),
-(195, 98, 2, 'exterieur', NULL, NULL, NULL),
-(196, 98, NULL, 'domicile', NULL, 'AIXE BC VAL DE VIENNE', NULL),
-(197, 99, 6, 'exterieur', NULL, NULL, NULL),
-(198, 99, NULL, 'domicile', NULL, 'LIMOGES ABC EN LIMOUSIN - 2', NULL),
-(199, 100, 3, 'domicile', NULL, NULL, NULL),
-(200, 100, NULL, 'exterieur', NULL, 'BLEUETS ILLATS - 2', NULL),
-(201, 101, 9, 'exterieur', NULL, NULL, NULL),
-(202, 101, NULL, 'domicile', NULL, 'CASTELNAU MEDOC BC - 3', NULL),
-(203, 102, 7, 'exterieur', NULL, NULL, NULL),
-(204, 102, NULL, 'domicile', NULL, 'HAGETMAU MOMUY CASTAIGNOS BASKET', NULL),
-(205, 103, 2, 'domicile', NULL, NULL, NULL),
-(206, 103, NULL, 'exterieur', NULL, 'AS ST DELPHIN', NULL),
-(207, 104, 2, 'domicile', NULL, NULL, NULL),
-(208, 104, NULL, 'exterieur', NULL, 'JSA BORDEAUX BASKET - 2', NULL),
-(209, 105, 6, 'domicile', NULL, NULL, NULL),
-(210, 105, NULL, 'exterieur', NULL, 'POUZIOUX VOUNEUIL/BIARD BC', NULL),
-(211, 106, 3, 'exterieur', NULL, NULL, NULL),
-(212, 106, NULL, 'domicile', NULL, 'STADE BORDELAIS', NULL),
-(213, 107, 9, 'exterieur', NULL, NULL, NULL),
-(214, 107, NULL, 'domicile', NULL, 'COUTRAS GUITRES BASKET', NULL),
-(215, 108, 7, 'domicile', NULL, NULL, NULL),
-(216, 108, NULL, 'exterieur', NULL, 'IE - AUCH BASKET CLUB - 1', NULL),
-(217, 109, 6, 'exterieur', NULL, NULL, NULL),
-(218, 109, NULL, 'domicile', NULL, 'CA BRIVE CORREZE SECTION BASKET', NULL),
-(219, 110, 2, 'exterieur', NULL, NULL, NULL),
-(220, 110, NULL, 'domicile', NULL, 'CA BRIVE CORREZE SECTION BASKET', NULL),
-(221, 111, 3, 'exterieur', NULL, NULL, NULL),
-(222, 111, NULL, 'domicile', NULL, 'BOULIAC BASKET CLUB - 2', NULL),
-(223, 112, 9, 'domicile', NULL, NULL, NULL),
-(224, 112, NULL, 'exterieur', NULL, 'CA CARBON BLANC OMNISPORT', NULL),
-(225, 113, 7, 'exterieur', NULL, NULL, NULL),
-(226, 113, NULL, 'domicile', NULL, 'IE - CTC GRAND DAX BASKET - ADOUR DAX LANDES BASKET', NULL),
-(227, 114, 2, 'exterieur', NULL, NULL, NULL),
-(228, 114, NULL, 'domicile', NULL, 'COGNAC BASKET AVENIR', NULL),
-(229, 115, 2, 'exterieur', NULL, NULL, NULL),
-(230, 115, NULL, 'domicile', NULL, 'IE - CTC DORDOGNE SUD BASKET - US BERGERAC BASKET', NULL),
-(231, 116, 6, 'exterieur', NULL, NULL, NULL),
-(232, 116, NULL, 'domicile', NULL, 'CA BEGLES', NULL),
-(233, 117, 3, 'exterieur', NULL, NULL, NULL),
-(234, 117, NULL, 'domicile', NULL, 'ENTENTE PESSAC BASKET CLUB - 3', NULL),
-(235, 118, 9, 'domicile', NULL, NULL, NULL),
-(236, 118, NULL, 'exterieur', NULL, 'CA BEGLES - 3', NULL),
-(237, 119, 7, 'domicile', NULL, NULL, NULL),
-(238, 119, NULL, 'exterieur', NULL, 'B. COMMINGES SALIES DU SALAT - 1', NULL),
-(239, 120, 2, 'domicile', NULL, NULL, NULL),
-(240, 120, NULL, 'exterieur', NULL, 'ES ST FRONT DE PRADOUX', NULL),
-(241, 121, 9, 'exterieur', NULL, NULL, NULL),
-(242, 121, NULL, 'domicile', NULL, 'STE EULALIE BASKET BALL', NULL),
-(243, 122, 2, 'exterieur', NULL, NULL, NULL),
-(244, 122, NULL, 'domicile', NULL, 'US CENON RIVE DROITE', NULL),
-(245, 123, 6, 'domicile', NULL, NULL, NULL),
-(246, 123, NULL, 'exterieur', NULL, 'CHAURAY BASKET CLUB - 2', NULL),
-(247, 124, 3, 'domicile', NULL, NULL, NULL),
-(248, 124, NULL, 'exterieur', NULL, 'AGJA CAUDERAN - 2', NULL),
-(249, 125, 7, 'exterieur', NULL, NULL, NULL),
-(250, 125, NULL, 'domicile', NULL, 'LE TAILLAN BASKET', NULL),
-(251, 126, 7, 'domicile', NULL, NULL, NULL),
-(252, 126, NULL, 'exterieur', NULL, 'FEYTIAT BASKET 87', NULL),
-(253, 127, 7, 'domicile', NULL, NULL, NULL),
-(254, 127, NULL, 'exterieur', NULL, 'ELAN CHALOSSAIS', NULL),
-(255, 128, 2, 'exterieur', NULL, NULL, NULL),
-(256, 128, NULL, 'domicile', NULL, 'BOULAZAC BASKET DORDOGNE - 2', NULL),
-(257, 129, 2, 'exterieur', NULL, NULL, NULL),
-(258, 129, NULL, 'domicile', NULL, 'BEAUNE-RILHAC-BONNAC BASKET', NULL),
-(259, 130, 3, 'exterieur', NULL, NULL, NULL),
-(260, 130, NULL, 'domicile', NULL, 'BLEUETS ILLATS - 2', NULL),
-(261, 131, 6, 'exterieur', NULL, NULL, NULL),
-(262, 131, NULL, 'domicile', NULL, 'UNION SPORTIVE BREDOISE BASKET', NULL),
-(263, 132, 9, 'domicile', NULL, NULL, NULL),
-(264, 132, NULL, 'exterieur', NULL, 'CASTELNAU MEDOC BC - 3', NULL),
-(265, 133, 2, 'domicile', NULL, NULL, NULL),
-(266, 133, NULL, 'exterieur', NULL, 'LIMOGES LANDOUGE LOISIRS BASKET', NULL),
-(267, 134, 2, 'domicile', NULL, NULL, NULL),
-(268, 134, NULL, 'exterieur', NULL, 'ASPTT LIMOGES', NULL),
-(269, 135, 6, 'domicile', NULL, NULL, NULL),
-(270, 135, NULL, 'exterieur', NULL, 'ASPTT LIMOGES', NULL),
-(271, 136, 2, 'domicile', NULL, NULL, NULL),
-(272, 136, NULL, 'exterieur', NULL, 'IE - CTC MEDOC ESTUAIRE - AS PIAN MEDOC BASKET', NULL),
-(273, 137, 2, 'domicile', NULL, NULL, NULL),
-(274, 137, NULL, 'exterieur', NULL, 'ENTENTE PESSAC BASKET CLUB', NULL),
-(275, 138, 6, 'domicile', NULL, NULL, NULL),
-(276, 138, NULL, 'exterieur', NULL, 'IE - CTC UBVP - VILLENEUVE BASKET CLUB', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -650,15 +184,15 @@ INSERT INTO `MATCH_PARTICIPANT` (`numMatchParticipant`, `numMatch`, `numEquipe`,
 
 CREATE TABLE `MEMBRE` (
   `numMemb` int NOT NULL,
-  `prenomMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `nomMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `pseudoMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `passMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `eMailMemb` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `prenomMemb` varchar(70) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `nomMemb` varchar(70) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `pseudoMemb` varchar(70) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `passMemb` varchar(70) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `eMailMemb` varchar(100) COLLATE utf8mb3_unicode_ci NOT NULL,
   `dtCreaMemb` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtMajMemb` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `accordMemb` tinyint(1) DEFAULT '1',
-  `cookieMemb` varchar(70) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `cookieMemb` varchar(70) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `numStat` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -670,7 +204,7 @@ INSERT INTO `MEMBRE` (`numMemb`, `prenomMemb`, `nomMemb`, `pseudoMemb`, `passMem
 (1, 'Freddie', 'Mercury', 'Admin99', '12345678', 'freddie.mercury@gmail.com', '2019-05-29 10:13:43', NULL, 1, NULL, 1),
 (2, 'Phil', 'Collins', 'Phil09', '12345678', 'phil.collins@gmail.com', '2020-01-09 10:13:43', NULL, 1, NULL, 2),
 (3, 'Julie', 'La Rousse', 'juju1989', '12345678', 'julie.larousse@gmail.com', '2020-03-15 14:33:23', '2024-01-12 14:36:48', 1, NULL, 3),
-(5, 'Mehdi', 'Afankous', 'Afanpeak', '$2y$10$Nbf7NVBHaBbCM5wY6nUBledLfReHjQRWIMVrtUc5VWm5XfUN4NWBK', 'afantastik041@gmail.com', '2026-02-06 00:59:43', '2026-02-06 02:00:40', 1, '1', 1);
+(4, 'David', 'Bowie', 'dav33B', '12345678', 'david.bowie@gmail.com', '2020-07-19 13:13:13', NULL, 1, NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -680,7 +214,7 @@ INSERT INTO `MEMBRE` (`numMemb`, `prenomMemb`, `nomMemb`, `pseudoMemb`, `passMem
 
 CREATE TABLE `MOTCLE` (
   `numMotCle` int NOT NULL,
-  `libMotCle` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
+  `libMotCle` varchar(60) COLLATE utf8mb3_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
@@ -733,39 +267,11 @@ INSERT INTO `MOTCLEARTICLE` (`numArt`, `numMotCle`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `NIVEAU_EQUIPE`
---
-
-CREATE TABLE `NIVEAU_EQUIPE` (
-  `numNiveau` int NOT NULL,
-  `libNiveau` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `NIVEAU_EQUIPE`
---
-
-INSERT INTO `NIVEAU_EQUIPE` (`numNiveau`, `libNiveau`) VALUES
-(1, 'Niveau 1'),
-(2, 'Niveau 2'),
-(3, 'Niveau 3'),
-(4, 'Niveau 4'),
-(5, 'Départementale 3'),
-(6, 'Régionale 2'),
-(7, 'Pré-national'),
-(8, 'Pré-régionale'),
-(9, 'Pré-nationale'),
-(10, 'Nationale 3'),
-(11, 'Départementale 4');
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `PERSONNEL`
 --
 
 CREATE TABLE `PERSONNEL` (
-  `numPersonnel` int NOT NULL AUTO_INCREMENT,
+  `numPersonnel` int NOT NULL,
   `surnomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `prenomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nomPersonnel` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -785,117 +291,6 @@ CREATE TABLE `PERSONNEL` (
   `posteCommissionCommunication` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table `PERSONNEL`
---
-
-
--- --------------------------------------------------------
-
---
--- Structure de la table `PHASE_COMPETITION`
---
-
-CREATE TABLE `PHASE_COMPETITION` (
-  `numPhase` int NOT NULL,
-  `numCompetition` int NOT NULL,
-  `libPhase` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ordrePhase` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `PHASE_COMPETITION`
---
-
-INSERT INTO `PHASE_COMPETITION` (`numPhase`, `numCompetition`, `libPhase`, `ordrePhase`) VALUES
-(1, 1, 'Phase régulière', 1),
-(2, 2, 'Phase régulière', 1),
-(3, 3, 'Phase régulière', 1),
-(4, 4, 'Phase régulière', 1),
-(5, 5, 'Phase régulière', 1),
-(6, 6, 'Phase régulière', 1),
-(7, 7, 'Phase régulière', 1);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `POSTE`
---
-
-CREATE TABLE `POSTE` (
-  `numPoste` int NOT NULL,
-  `libPoste` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `POSTE`
---
-
-INSERT INTO `POSTE` (`numPoste`, `libPoste`) VALUES
-(1, 'Poste 2 : arrière (shooting guard)');
-
--- --------------------------------------------------------
-
---
--- Structure de la table `ROLE_PERSONNEL`
---
-
-CREATE TABLE `ROLE_PERSONNEL` (
-  `numRolePersonnel` int NOT NULL,
-  `libRolePersonnel` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `ROLE_PERSONNEL`
---
-
-INSERT INTO `ROLE_PERSONNEL` (`numRolePersonnel`, `libRolePersonnel`) VALUES
-(1, 'Membre du bureau'),
-(2, 'Coach'),
-(3, 'Commission technique'),
-(4, 'Team animation'),
-(5, 'Team communication');
-
--- --------------------------------------------------------
-
---
--- Structure de la table `SAISON`
---
-
-CREATE TABLE `SAISON` (
-  `numSaison` int NOT NULL,
-  `libSaison` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `dateDebut` date DEFAULT NULL,
-  `dateFin` date DEFAULT NULL,
-  `estCourante` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `SAISON`
---
-
-INSERT INTO `SAISON` (`numSaison`, `libSaison`, `dateDebut`, `dateFin`, `estCourante`) VALUES
-(1, '2025-2026', '2025-09-01', '2026-06-30', 1);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `SECTION_EQUIPE`
---
-
-CREATE TABLE `SECTION_EQUIPE` (
-  `numSection` int NOT NULL,
-  `libSection` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `SECTION_EQUIPE`
---
-
-INSERT INTO `SECTION_EQUIPE` (`numSection`, `libSection`) VALUES
-(1, 'Garçons'),
-(2, 'Filles');
-
 -- --------------------------------------------------------
 
 --
@@ -904,7 +299,7 @@ INSERT INTO `SECTION_EQUIPE` (`numSection`, `libSection`) VALUES
 
 CREATE TABLE `STATUT` (
   `numStat` int NOT NULL,
-  `libStat` varchar(25) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `libStat` varchar(25) COLLATE utf8mb3_unicode_ci NOT NULL,
   `dtCreaStat` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -925,7 +320,7 @@ INSERT INTO `STATUT` (`numStat`, `libStat`, `dtCreaStat`) VALUES
 
 CREATE TABLE `THEMATIQUE` (
   `numThem` int NOT NULL,
-  `libThem` varchar(60) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL
+  `libThem` varchar(60) COLLATE utf8mb3_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
@@ -943,34 +338,12 @@ INSERT INTO `THEMATIQUE` (`numThem`, `libThem`) VALUES
 --
 
 --
--- Index pour la table `AFFECTATION_PERSONNEL_EQUIPE`
---
-ALTER TABLE `AFFECTATION_PERSONNEL_EQUIPE`
-  ADD PRIMARY KEY (`numAffectation`),
-  ADD KEY `idx_affectation_personnel` (`numPersonnel`),
-  ADD KEY `idx_affectation_equipe` (`numEquipe`),
-  ADD KEY `idx_affectation_saison` (`numSaison`),
-  ADD KEY `idx_affectation_role` (`numRolePersonnel`);
-
---
 -- Index pour la table `ARTICLE`
 --
 ALTER TABLE `ARTICLE`
   ADD PRIMARY KEY (`numArt`),
   ADD KEY `ARTICLE_FK` (`numArt`),
   ADD KEY `FK_ASSOCIATION_1` (`numThem`);
-
---
--- Index pour la table `CATEGORIE_EQUIPE`
---
-ALTER TABLE `CATEGORIE_EQUIPE`
-  ADD PRIMARY KEY (`numCategorie`);
-
---
--- Index pour la table `CLUB`
---
-ALTER TABLE `CLUB`
-  ADD PRIMARY KEY (`numClub`);
 
 --
 -- Index pour la table `COMMENT`
@@ -980,13 +353,6 @@ ALTER TABLE `COMMENT`
   ADD KEY `COMMENT_FK` (`numCom`),
   ADD KEY `FK_ASSOCIATION_2` (`numArt`),
   ADD KEY `FK_ASSOCIATION_3` (`numMemb`);
-
---
--- Index pour la table `COMPETITION`
---
-ALTER TABLE `COMPETITION`
-  ADD PRIMARY KEY (`numCompetition`),
-  ADD KEY `idx_competition_saison` (`numSaison`);
 
 --
 -- Index pour la table `EQUIPE`
@@ -1004,38 +370,6 @@ ALTER TABLE `JOUEUR`
   ADD KEY `idx_joueur_equipe` (`codeEquipe`);
 
 --
--- Index pour la table `JOUEUR_AFFECTATION`
---
-ALTER TABLE `JOUEUR_AFFECTATION`
-  ADD PRIMARY KEY (`numAffectation`),
-  ADD KEY `idx_affectation_joueur` (`numJoueur`),
-  ADD KEY `idx_affectation_equipe` (`numEquipe`),
-  ADD KEY `idx_affectation_saison` (`numSaison`),
-  ADD KEY `idx_affectation_poste` (`numPoste`);
-
---
--- Index pour la table `JOUEUR_AFFECTATION_POSTE`
---
-ALTER TABLE `JOUEUR_AFFECTATION_POSTE`
-  ADD PRIMARY KEY (`numAffectation`,`numPoste`),
-  ADD KEY `idx_affectation_poste_poste` (`numPoste`);
-
---
--- Index pour la table `JOUEUR_CLUB`
---
-ALTER TABLE `JOUEUR_CLUB`
-  ADD PRIMARY KEY (`numJoueurClub`),
-  ADD KEY `idx_joueur_club_joueur` (`numJoueur`),
-  ADD KEY `idx_joueur_club_club` (`numClub`);
-
---
--- Index pour la table `JOURNEE`
---
-ALTER TABLE `JOURNEE`
-  ADD PRIMARY KEY (`numJournee`),
-  ADD KEY `idx_journee_phase` (`numPhase`);
-
---
 -- Index pour la table `LIKEART`
 --
 ALTER TABLE `LIKEART`
@@ -1049,14 +383,6 @@ ALTER TABLE `LIKEART`
 ALTER TABLE `MATCH`
   ADD PRIMARY KEY (`numMatch`),
   ADD KEY `idx_match_equipe` (`codeEquipe`);
-
---
--- Index pour la table `MATCH_PARTICIPANT`
---
-ALTER TABLE `MATCH_PARTICIPANT`
-  ADD PRIMARY KEY (`numMatchParticipant`),
-  ADD KEY `idx_match_participant_match` (`numMatch`),
-  ADD KEY `idx_match_participant_equipe` (`numEquipe`);
 
 --
 -- Index pour la table `MEMBRE`
@@ -1082,49 +408,12 @@ ALTER TABLE `MOTCLEARTICLE`
   ADD KEY `MOTCLEARTICLE2_FK` (`numMotCle`);
 
 --
--- Index pour la table `NIVEAU_EQUIPE`
---
-ALTER TABLE `NIVEAU_EQUIPE`
-  ADD PRIMARY KEY (`numNiveau`);
-
---
 -- Index pour la table `PERSONNEL`
 --
 ALTER TABLE `PERSONNEL`
   ADD PRIMARY KEY (`surnomPersonnel`),
   ADD UNIQUE KEY `uniq_personnel_num` (`numPersonnel`),
   ADD KEY `idx_personnel_equipe` (`numEquipeStaff`);
-
---
--- Index pour la table `PHASE_COMPETITION`
---
-ALTER TABLE `PHASE_COMPETITION`
-  ADD PRIMARY KEY (`numPhase`),
-  ADD KEY `idx_phase_competition` (`numCompetition`);
-
---
--- Index pour la table `POSTE`
---
-ALTER TABLE `POSTE`
-  ADD PRIMARY KEY (`numPoste`);
-
---
--- Index pour la table `ROLE_PERSONNEL`
---
-ALTER TABLE `ROLE_PERSONNEL`
-  ADD PRIMARY KEY (`numRolePersonnel`);
-
---
--- Index pour la table `SAISON`
---
-ALTER TABLE `SAISON`
-  ADD PRIMARY KEY (`numSaison`);
-
---
--- Index pour la table `SECTION_EQUIPE`
---
-ALTER TABLE `SECTION_EQUIPE`
-  ADD PRIMARY KEY (`numSection`);
 
 --
 -- Index pour la table `STATUT`
@@ -1145,28 +434,10 @@ ALTER TABLE `THEMATIQUE`
 --
 
 --
--- AUTO_INCREMENT pour la table `AFFECTATION_PERSONNEL_EQUIPE`
---
-ALTER TABLE `AFFECTATION_PERSONNEL_EQUIPE`
-  MODIFY `numAffectation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
-
---
 -- AUTO_INCREMENT pour la table `ARTICLE`
 --
 ALTER TABLE `ARTICLE`
-  MODIFY `numArt` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT pour la table `CATEGORIE_EQUIPE`
---
-ALTER TABLE `CATEGORIE_EQUIPE`
-  MODIFY `numCategorie` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT pour la table `CLUB`
---
-ALTER TABLE `CLUB`
-  MODIFY `numClub` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `numArt` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `COMMENT`
@@ -1175,106 +446,40 @@ ALTER TABLE `COMMENT`
   MODIFY `numCom` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT pour la table `COMPETITION`
---
-ALTER TABLE `COMPETITION`
-  MODIFY `numCompetition` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
 -- AUTO_INCREMENT pour la table `EQUIPE`
 --
 ALTER TABLE `EQUIPE`
-  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `JOUEUR`
 --
 ALTER TABLE `JOUEUR`
-  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-
---
--- AUTO_INCREMENT pour la table `JOUEUR_AFFECTATION`
---
-ALTER TABLE `JOUEUR_AFFECTATION`
-  MODIFY `numAffectation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT pour la table `JOUEUR_CLUB`
---
-ALTER TABLE `JOUEUR_CLUB`
-  MODIFY `numJoueurClub` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `JOURNEE`
---
-ALTER TABLE `JOURNEE`
-  MODIFY `numJournee` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `MATCH`
 --
 ALTER TABLE `MATCH`
-  MODIFY `numMatch` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-
---
--- AUTO_INCREMENT pour la table `MATCH_PARTICIPANT`
---
-ALTER TABLE `MATCH_PARTICIPANT`
-  MODIFY `numMatchParticipant` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=277;
+  MODIFY `numMatch` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `MEMBRE`
 --
 ALTER TABLE `MEMBRE`
-  MODIFY `numMemb` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `numMemb` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `MOTCLE`
 --
 ALTER TABLE `MOTCLE`
-  MODIFY `numMotCle` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- AUTO_INCREMENT pour la table `NIVEAU_EQUIPE`
---
-ALTER TABLE `NIVEAU_EQUIPE`
-  MODIFY `numNiveau` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `numMotCle` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT pour la table `PERSONNEL`
 --
 ALTER TABLE `PERSONNEL`
-  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-
---
--- AUTO_INCREMENT pour la table `PHASE_COMPETITION`
---
-ALTER TABLE `PHASE_COMPETITION`
-  MODIFY `numPhase` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT pour la table `POSTE`
---
-ALTER TABLE `POSTE`
-  MODIFY `numPoste` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT pour la table `ROLE_PERSONNEL`
---
-ALTER TABLE `ROLE_PERSONNEL`
-  MODIFY `numRolePersonnel` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT pour la table `SAISON`
---
-ALTER TABLE `SAISON`
-  MODIFY `numSaison` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT pour la table `SECTION_EQUIPE`
---
-ALTER TABLE `SECTION_EQUIPE`
-  MODIFY `numSection` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `STATUT`
@@ -1286,20 +491,11 @@ ALTER TABLE `STATUT`
 -- AUTO_INCREMENT pour la table `THEMATIQUE`
 --
 ALTER TABLE `THEMATIQUE`
-  MODIFY `numThem` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `numThem` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Contraintes pour les tables déchargées
 --
-
---
--- Contraintes pour la table `AFFECTATION_PERSONNEL_EQUIPE`
---
-ALTER TABLE `AFFECTATION_PERSONNEL_EQUIPE`
-  ADD CONSTRAINT `fk_affectation_personnel` FOREIGN KEY (`numPersonnel`) REFERENCES `PERSONNEL` (`numPersonnel`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_affectation_personnel_equipe` FOREIGN KEY (`numEquipe`) REFERENCES `EQUIPE` (`numEquipe`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_affectation_personnel_role` FOREIGN KEY (`numRolePersonnel`) REFERENCES `ROLE_PERSONNEL` (`numRolePersonnel`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_affectation_personnel_saison` FOREIGN KEY (`numSaison`) REFERENCES `SAISON` (`numSaison`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `ARTICLE`
@@ -1315,48 +511,10 @@ ALTER TABLE `COMMENT`
   ADD CONSTRAINT `FK_ASSOCIATION_3` FOREIGN KEY (`numMemb`) REFERENCES `MEMBRE` (`numMemb`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
--- Contraintes pour la table `COMPETITION`
+-- Contraintes pour la table `JOUEUR`
 --
-ALTER TABLE `COMPETITION`
-  ADD CONSTRAINT `fk_competition_saison` FOREIGN KEY (`numSaison`) REFERENCES `SAISON` (`numSaison`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `EQUIPE`
---
-ALTER TABLE `EQUIPE`
-  ADD CONSTRAINT `fk_equipe_categorie` FOREIGN KEY (`numCategorie`) REFERENCES `CATEGORIE_EQUIPE` (`numCategorie`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_equipe_club` FOREIGN KEY (`numClub`) REFERENCES `CLUB` (`numClub`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_equipe_niveau` FOREIGN KEY (`numNiveau`) REFERENCES `NIVEAU_EQUIPE` (`numNiveau`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_equipe_section` FOREIGN KEY (`numSection`) REFERENCES `SECTION_EQUIPE` (`numSection`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `JOUEUR_AFFECTATION`
---
-ALTER TABLE `JOUEUR_AFFECTATION`
-  ADD CONSTRAINT `fk_affectation_equipe` FOREIGN KEY (`numEquipe`) REFERENCES `EQUIPE` (`numEquipe`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_affectation_joueur` FOREIGN KEY (`numJoueur`) REFERENCES `JOUEUR` (`numJoueur`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_affectation_poste` FOREIGN KEY (`numPoste`) REFERENCES `POSTE` (`numPoste`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_affectation_saison` FOREIGN KEY (`numSaison`) REFERENCES `SAISON` (`numSaison`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `JOUEUR_AFFECTATION_POSTE`
---
-ALTER TABLE `JOUEUR_AFFECTATION_POSTE`
-  ADD CONSTRAINT `fk_affectation_poste_affectation` FOREIGN KEY (`numAffectation`) REFERENCES `JOUEUR_AFFECTATION` (`numAffectation`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_affectation_poste_poste` FOREIGN KEY (`numPoste`) REFERENCES `POSTE` (`numPoste`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `JOUEUR_CLUB`
---
-ALTER TABLE `JOUEUR_CLUB`
-  ADD CONSTRAINT `fk_joueur_club_club` FOREIGN KEY (`numClub`) REFERENCES `CLUB` (`numClub`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_joueur_club_joueur` FOREIGN KEY (`numJoueur`) REFERENCES `JOUEUR` (`numJoueur`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `JOURNEE`
---
-ALTER TABLE `JOURNEE`
-  ADD CONSTRAINT `fk_journee_phase` FOREIGN KEY (`numPhase`) REFERENCES `PHASE_COMPETITION` (`numPhase`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `JOUEUR`
+  ADD CONSTRAINT `fk_joueur_equipe` FOREIGN KEY (`codeEquipe`) REFERENCES `EQUIPE` (`codeEquipe`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `LIKEART`
@@ -1372,21 +530,6 @@ ALTER TABLE `MATCH`
   ADD CONSTRAINT `fk_match_equipe` FOREIGN KEY (`codeEquipe`) REFERENCES `EQUIPE` (`codeEquipe`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `JOUEUR`
-ALTER TABLE `JOUEUR`
-  ADD CONSTRAINT `fk_joueur_equipe` FOREIGN KEY (`codeEquipe`) REFERENCES `EQUIPE` (`codeEquipe`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- Contraintes pour la table `PERSONNEL`
-ALTER TABLE `PERSONNEL`
-  ADD CONSTRAINT `fk_personnel_equipe` FOREIGN KEY (`numEquipeStaff`) REFERENCES `EQUIPE` (`codeEquipe`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- Contraintes pour la table `MATCH_PARTICIPANT`
---
-ALTER TABLE `MATCH_PARTICIPANT`
-  ADD CONSTRAINT `fk_match_participant_equipe` FOREIGN KEY (`numEquipe`) REFERENCES `EQUIPE` (`numEquipe`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_match_participant_match` FOREIGN KEY (`numMatch`) REFERENCES `MATCH` (`numMatch`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Contraintes pour la table `MEMBRE`
 --
 ALTER TABLE `MEMBRE`
@@ -1400,10 +543,10 @@ ALTER TABLE `MOTCLEARTICLE`
   ADD CONSTRAINT `FK_MotCleArt2` FOREIGN KEY (`numArt`) REFERENCES `ARTICLE` (`numArt`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
--- Contraintes pour la table `PHASE_COMPETITION`
+-- Contraintes pour la table `PERSONNEL`
 --
-ALTER TABLE `PHASE_COMPETITION`
-  ADD CONSTRAINT `fk_phase_competition` FOREIGN KEY (`numCompetition`) REFERENCES `COMPETITION` (`numCompetition`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `PERSONNEL`
+  ADD CONSTRAINT `fk_personnel_equipe` FOREIGN KEY (`numEquipeStaff`) REFERENCES `EQUIPE` (`codeEquipe`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
