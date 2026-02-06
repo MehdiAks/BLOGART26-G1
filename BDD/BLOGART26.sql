@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : ven. 06 fév. 2026 à 01:08
+-- Généré le : ven. 06 fév. 2026 à 01:23
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.28
 
@@ -266,7 +266,7 @@ INSERT INTO `EQUIPE` (`numEquipe`, `numClub`, `codeEquipe`, `libEquipe`, `libEqu
 (1, 2, 'SG1', 'Seniors Garçons 1', 'Seniors Garçons 1', 1, 1, 1, 'Équipe seniors garçons 1', NULL, NULL),
 (2, 2, 'SG2', 'Seniors Garçons 2', 'Seniors Garçons 2', 1, 1, 2, 'Équipe seniors garçons 2', NULL, NULL),
 (3, 2, 'SG3', 'Seniors Garçons 3', 'Seniors Garçons 3', 1, 1, 3, 'Équipe seniors garçons 3', NULL, NULL),
-(5, 2, 'SF1', 'Seniors Filles 1', 'Seniors Filles 1', 1, 2, 1, 'Équipe seniors filles', 'photos-equipes/SF1-photo-equipe.jpg', 'photos-equipes/SF1-photo-staff.jpg'),
+(5, 2, 'SF1', 'Seniors Filles 1', 'Seniors Filles 1', 1, 2, 1, 'Équipe seniors filles', 'photos-equipes/SF1-photo-equipe.jpeg', 'photos-equipes/SF1-photo-staff.jpeg'),
 (6, 2, 'SF2', 'Seniors Filles 2', 'Seniors Filles 2', 1, 2, 2, 'Équipe seniors filles 2', 'photos-equipes/SF2-photo-equipe.jpeg', 'photos-equipes/SF2-photo-staff.jpeg'),
 (7, 2, 'SF3', 'Seniors Filles 3', 'Seniors Filles 3', 1, 2, 3, 'Équipe seniors filles 3', NULL, NULL),
 (8, 2, 'U15F', 'Minime Feminin', 'Minime Feminin', 2, 2, 5, NULL, NULL, NULL);
@@ -291,7 +291,7 @@ CREATE TABLE `JOUEUR` (
 
 INSERT INTO `JOUEUR` (`numJoueur`, `prenomJoueur`, `nomJoueur`, `urlPhotoJoueur`, `dateNaissance`) VALUES
 (1, 'test', 'testefsdf', 'photos-joueurs/TE.test.jpg', '2001-03-01'),
-(2, 'Jean guillaume', 'biard', 'photos-joueurs/BI.jeanguillaume.jpeg', '2001-01-01');
+(3, 'ugo', 'lapouyage', 'photos-joueurs/LA.ugo.jpeg', '2002-12-01');
 
 -- --------------------------------------------------------
 
@@ -316,7 +316,7 @@ CREATE TABLE `JOUEUR_AFFECTATION` (
 
 INSERT INTO `JOUEUR_AFFECTATION` (`numAffectation`, `numJoueur`, `numEquipe`, `numSaison`, `numPoste`, `numMaillot`, `dateDebut`, `dateFin`) VALUES
 (1, 1, 6, 1, 1, 1, '2025-02-01', NULL),
-(2, 2, 3, 1, 1, 1, '2025-01-01', NULL);
+(3, 3, 5, 1, 1, 1, '0025-09-01', NULL);
 
 -- --------------------------------------------------------
 
@@ -566,42 +566,37 @@ CREATE TABLE `PERSONNEL` (
   `urlPhotoPersonnel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailPersonnel` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `telephonePersonnel` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `estStaffEquipe` tinyint(1) NOT NULL DEFAULT '0',
-  `numEquipeStaff` int DEFAULT NULL,
-  `roleStaffEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `estCoach` tinyint(1) NOT NULL DEFAULT '0',
+  `numEquipeCoachee` int DEFAULT NULL,
   `estDirection` tinyint(1) NOT NULL DEFAULT '0',
-  `posteDirection` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `estCommissionTechnique` tinyint(1) NOT NULL DEFAULT '0',
-  `posteCommissionTechnique` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `estCommissionAnimation` tinyint(1) NOT NULL DEFAULT '0',
-  `posteCommissionAnimation` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `estCommissionCommunication` tinyint(1) NOT NULL DEFAULT '0',
-  `posteCommissionCommunication` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `estCommissionCommunication` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `PERSONNEL`
 --
 
-INSERT INTO `PERSONNEL` (`numPersonnel`, `prenomPersonnel`, `nomPersonnel`, `urlPhotoPersonnel`, `emailPersonnel`, `telephonePersonnel`, `estStaffEquipe`, `numEquipeStaff`, `roleStaffEquipe`, `estDirection`, `posteDirection`, `estCommissionTechnique`, `posteCommissionTechnique`, `estCommissionAnimation`, `posteCommissionAnimation`, `estCommissionCommunication`, `posteCommissionCommunication`) VALUES
-(1, 'Mehdi', 'Afankous', '/src/uploads/photos-benevoles/af.mehdi.jpeg', NULL, NULL, 0, NULL, NULL, 1, NULL, 0, NULL, 0, NULL, 0, NULL),
-(2, 'Alex', 'Martin', NULL, 'alex.martin@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(3, 'Camille', 'Durand', NULL, 'camille.durand@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(4, 'Yanis', 'Bernard', NULL, 'yanis.bernard@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(5, 'Lina', 'Lopez', NULL, 'coach.sg1@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(6, 'Hugo', 'Petit', NULL, 'coach.sg2@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(7, 'Sarah', 'Morel', NULL, 'coach.sg3@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(9, 'Chloé', 'Lefevre', NULL, 'coach.sf1@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(10, 'Emma', 'Garnier', NULL, 'coach.sf2@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(11, 'Lucas', 'Nguyen', NULL, 'coach.sf3@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(12, 'Marie', 'Blanc', NULL, 'commission1@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(13, 'Nicolas', 'Faure', NULL, 'commission2@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(14, 'Julie', 'Renard', '/src/uploads/photos-benevoles/re.julie.jpg', 'animation1@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 1, NULL, 0, NULL, 0, NULL),
-(15, 'Omar', 'Perrin', NULL, 'animation2@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(16, 'Lea', 'Benoit', NULL, 'communication1@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(17, 'Theo', 'Carre', NULL, 'communication2@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
-(18, 'Mehdi', 'Afankous', '/src/uploads/photos-benevoles/af.mehdi.jpeg', NULL, NULL, 0, NULL, NULL, 1, NULL, 0, NULL, 0, NULL, 0, NULL),
-(19, 'test', 'test', '/src/uploads/photos-benevoles/te.test.jpg', NULL, NULL, 0, NULL, NULL, 0, NULL, 1, NULL, 0, NULL, 0, NULL);
+INSERT INTO `PERSONNEL` (`numPersonnel`, `prenomPersonnel`, `nomPersonnel`, `urlPhotoPersonnel`, `emailPersonnel`, `telephonePersonnel`, `estCoach`, `numEquipeCoachee`, `estDirection`, `estCommissionTechnique`, `estCommissionAnimation`, `estCommissionCommunication`) VALUES
+(1, 'Mehdi', 'Afankous', '/src/uploads/photos-benevoles/af.mehdi.jpeg', NULL, NULL, 0, NULL, 1, 0, 0, 0),
+(2, 'Alex', 'Martin', NULL, 'alex.martin@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(3, 'Camille', 'Durand', NULL, 'camille.durand@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(4, 'Yanis', 'Bernard', NULL, 'yanis.bernard@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(5, 'Lina', 'Lopez', NULL, 'coach.sg1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(6, 'Hugo', 'Petit', NULL, 'coach.sg2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(7, 'Sarah', 'Morel', NULL, 'coach.sg3@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(9, 'Chloé', 'Lefevre', NULL, 'coach.sf1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(10, 'Emma', 'Garnier', NULL, 'coach.sf2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(11, 'Lucas', 'Nguyen', NULL, 'coach.sf3@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(12, 'Marie', 'Blanc', NULL, 'commission1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(13, 'Nicolas', 'Faure', NULL, 'commission2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(14, 'Julie', 'Renard', '/src/uploads/photos-benevoles/re.julie.jpg', 'animation1@becbasket.test', NULL, 0, NULL, 0, 1, 0, 0),
+(15, 'Omar', 'Perrin', NULL, 'animation2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(16, 'Lea', 'Benoit', NULL, 'communication1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(17, 'Theo', 'Carre', NULL, 'communication2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(18, 'Mehdi', 'Afankous', '/src/uploads/photos-benevoles/af.mehdi.jpeg', NULL, NULL, 0, NULL, 1, 0, 0, 0),
+(19, 'test', 'test', '/src/uploads/photos-benevoles/te.test.jpg', NULL, NULL, 0, NULL, 0, 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1005,13 +1000,13 @@ ALTER TABLE `EQUIPE`
 -- AUTO_INCREMENT pour la table `JOUEUR`
 --
 ALTER TABLE `JOUEUR`
-  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `JOUEUR_AFFECTATION`
 --
 ALTER TABLE `JOUEUR_AFFECTATION`
-  MODIFY `numAffectation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `numAffectation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `JOUEUR_CLUB`
