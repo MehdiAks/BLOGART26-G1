@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : jeu. 05 fév. 2026 à 19:40
+-- Généré le : ven. 06 fév. 2026 à 01:08
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.28
 
@@ -45,70 +45,60 @@ INSERT INTO `AFFECTATION_PERSONNEL_EQUIPE` (`numAffectation`, `numPersonnel`, `n
 (1, 2, 1, 1, 1, '2025-09-01', NULL),
 (2, 2, 2, 1, 1, '2025-09-01', NULL),
 (3, 2, 3, 1, 1, '2025-09-01', NULL),
-(4, 2, 4, 1, 1, '2025-09-01', NULL),
 (5, 2, 5, 1, 1, '2025-09-01', NULL),
 (6, 2, 6, 1, 1, '2025-09-01', NULL),
 (7, 2, 7, 1, 1, '2025-09-01', NULL),
 (8, 3, 1, 1, 1, '2025-09-01', NULL),
 (9, 3, 2, 1, 1, '2025-09-01', NULL),
 (10, 3, 3, 1, 1, '2025-09-01', NULL),
-(11, 3, 4, 1, 1, '2025-09-01', NULL),
 (12, 3, 5, 1, 1, '2025-09-01', NULL),
 (13, 3, 6, 1, 1, '2025-09-01', NULL),
 (14, 3, 7, 1, 1, '2025-09-01', NULL),
 (15, 4, 1, 1, 1, '2025-09-01', NULL),
 (16, 4, 2, 1, 1, '2025-09-01', NULL),
 (17, 4, 3, 1, 1, '2025-09-01', NULL),
-(18, 4, 4, 1, 1, '2025-09-01', NULL),
 (19, 4, 5, 1, 1, '2025-09-01', NULL),
 (20, 4, 6, 1, 1, '2025-09-01', NULL),
 (21, 4, 7, 1, 1, '2025-09-01', NULL),
 (22, 5, 1, 1, 2, '2025-09-01', NULL),
 (23, 6, 2, 1, 2, '2025-09-01', NULL),
 (24, 7, 3, 1, 2, '2025-09-01', NULL),
-(25, 8, 4, 1, 2, '2025-09-01', NULL),
 (26, 9, 5, 1, 2, '2025-09-01', NULL),
 (27, 10, 6, 1, 2, '2025-09-01', NULL),
 (28, 11, 7, 1, 2, '2025-09-01', NULL),
 (29, 12, 1, 1, 3, '2025-09-01', NULL),
 (30, 12, 2, 1, 3, '2025-09-01', NULL),
 (31, 12, 3, 1, 3, '2025-09-01', NULL),
-(32, 12, 4, 1, 3, '2025-09-01', NULL),
 (33, 12, 5, 1, 3, '2025-09-01', NULL),
 (34, 12, 6, 1, 3, '2025-09-01', NULL),
 (35, 12, 7, 1, 3, '2025-09-01', NULL),
 (36, 13, 1, 1, 3, '2025-09-01', NULL),
 (37, 13, 2, 1, 3, '2025-09-01', NULL),
 (38, 13, 3, 1, 3, '2025-09-01', NULL),
-(39, 13, 4, 1, 3, '2025-09-01', NULL),
 (40, 13, 5, 1, 3, '2025-09-01', NULL),
 (41, 13, 6, 1, 3, '2025-09-01', NULL),
 (42, 13, 7, 1, 3, '2025-09-01', NULL),
 (43, 14, 1, 1, 4, '2025-09-01', NULL),
 (44, 14, 2, 1, 4, '2025-09-01', NULL),
 (45, 14, 3, 1, 4, '2025-09-01', NULL),
-(46, 14, 4, 1, 4, '2025-09-01', NULL),
 (47, 14, 5, 1, 4, '2025-09-01', NULL),
 (48, 14, 6, 1, 4, '2025-09-01', NULL),
 (49, 14, 7, 1, 4, '2025-09-01', NULL),
 (50, 15, 1, 1, 4, '2025-09-01', NULL),
 (51, 15, 2, 1, 4, '2025-09-01', NULL),
 (52, 15, 3, 1, 4, '2025-09-01', NULL),
-(53, 15, 4, 1, 4, '2025-09-01', NULL),
 (54, 15, 5, 1, 4, '2025-09-01', NULL),
 (55, 15, 6, 1, 4, '2025-09-01', NULL),
 (56, 15, 7, 1, 4, '2025-09-01', NULL),
 (57, 16, 1, 1, 5, '2025-09-01', NULL),
 (58, 16, 2, 1, 5, '2025-09-01', NULL),
 (59, 16, 3, 1, 5, '2025-09-01', NULL),
-(60, 16, 4, 1, 5, '2025-09-01', NULL),
 (61, 16, 5, 1, 5, '2025-09-01', NULL),
 (62, 16, 6, 1, 5, '2025-09-01', NULL),
 (63, 16, 7, 1, 5, '2025-09-01', NULL),
 (64, 17, 1, 1, 5, '2025-09-01', NULL),
 (65, 17, 2, 1, 5, '2025-09-01', NULL),
 (66, 17, 3, 1, 5, '2025-09-01', NULL),
-(67, 17, 4, 1, 5, '2025-09-01', NULL),
 (68, 17, 5, 1, 5, '2025-09-01', NULL),
 (69, 17, 6, 1, 5, '2025-09-01', NULL),
 (70, 17, 7, 1, 5, '2025-09-01', NULL);
@@ -146,8 +136,7 @@ INSERT INTO `ARTICLE` (`numArt`, `dtCreaArt`, `dtMajArt`, `libTitrArt`, `libChap
 (3, '2019-11-09 10:34:20', NULL, 'Le Lion bleu de Bordeaux, star des réseaux sociaux', 'Surplombant la place Stalingrad, anciennement place du Pont, et faisant fièrement face au pont de Pierre, le Lion bleu de Xavier Veilhan fait depuis 2005 l’objet de toutes les convoitises.', 'En France, toute construction d’un bâtiment public a pour but d’accueillir du monde', 'En France, depuis 1951 et l’arrêté des « 1% artistique », toute construction d’un bâtiment public ayant pour but d’accueillir du monde doit prévoir 1% de son budget total pour financer des œuvres d’art aux abords du bâtiment. En construisant les lignes de tramway, la ville de Bordeaux et sa métropole ont donc mis en place le programme « L’art dans la ville ». Supervisé par le directeur du Centre Georges-Pompidou, cette initiative a pu débloquer plusieurs millions d’euros depuis 2000 pour la réalisation d’une quinzaine d’œuvres. Parmi ces œuvres, nous pouvons noter « La maison aux personnages » place Amélie Raba Léon, les affiches « Aux bord’eaux » présentes dans toutes les stations ou bien le fameux Lion bleu bordelais. Mise en place et vissée sur les pavés de la rive droite le 30 juin 2005, cette sculpture en plastique mesure 6 mètres de haut. Elle va de pair avec la mise en service de la première ligne de tramway dans Bordeaux, la ligne A, qui traverse le pont de Pierre et la place Stalingrad. En décalage total par rapport au style architectural très XVIIIème de la ville, cette œuvre a d’abord été massivement rejetée par les habitants du quartier, mais ils l’ont désormais adoptée.', 'Un symbole de la rive droite', 'On n’imagine pas la place Stalingrad sans cet imposant félin coloré. Ce lion bleu est devenu l\'emblème de cette place et, pour les habitants de la rive gauche, c’est le symbole de « l’autre rive », c’est la première chose que l’on voit en traversant la Garonne depuis le quartier de Saint-Michel. Ce lion bleu, on s’y abrite, on s’y donne rendez-vous, on s’en sert de repère et les écoliers y prennent souvent leur premier cours d’art contemporain. Ce lion bleu n’est pour certain qu’un gros point azur pixelisé à l’horizon, mais pour d’autres c’est un symbole, un mirage, comme un gros jouet qu\'on ne perd jamais. Et ce gros jouet, des centaines d’internautes se le sont attribué et en parlent sur Instagram via le #lionbleu. Ils postent régulièrement des photos de lui, toujours dans la même posture, veillant sur la ville de Bordeaux. D’objet d’art à star du net, il n’y a qu’un pas. Et ce pas, le Lion de Veilhan l’a franchi comme il franchirait la Garonne pour rejoindre le centre-ville bordelais. En plus de son esthétique remarquable, son créateur n’a pas omis de lui donner un sens propre en prenant en compte l’environnement qui entoure cette statue bestiale.', 'Un tremplin pour Xavier Veilhan', 'L\'artiste plasticien à l’origine du Lion bleu, diplômé de l\'EnsAD-Paris (École Nationale Supérieure des Arts Décoratifs) et officier de l’Ordre des Arts et des Lettres, n’a pas choisi une figure animalière pour rien. La place Stalingrad est un hommage à la victoire de l’armée soviétique durant la Seconde Guerre Mondiale. Xavier Veilhan souhaitait donc offrir à ce lieu une œuvre monumentale qui renforce son identité. À l’instar du Lion de Belfort de Bartholdi, il a donc choisi cet animal pour ses valeurs de force tranquille, se battant pour la justice avec puissance mais intelligence. Il déclarait, avant sa construction, vouloir quelque chose de totémique, à la fois dominant et protecteur. Il ne reste plus qu’à espérer qu’il seconde Bordeaux et ses habitants dans leur quotidien futur. Le sculpteur du Lion a vu sa côte mondiale grimper suite à la réalisation de cette œuvre. Il a, depuis, pu exposer un Carrosse violet à Versailles en 2009, un Skateur bleu en Corée du Sud en 2014, ou encore Romy, une femme jaune, devant la gare de Lille en 2019.', 'Espérons que cet élan de créativité se poursuive et que, par la suite, Xavier Veilhan réutilise cette couleur qui nous est si chère, le bleu.', 'imgArt23.jpg', 4),
 (4, '2020-01-12 18:21:21', NULL, 'Nicolas Caraty : médiateur culturel plein de bon sens !', 'Le lundi 21 février, nous avons eu la chance de rencontrer Nicolas Caraty, un médiateur culturel non-voyant du musée d\'Aquitaine. Cette entrevue a vu le jour suite à des questionnements sur l’art et les sculptures, ainsi que leur accessibilité. Nous en avons appris plus sur son parcours professionnel, et comment il s’est retrouvé au musée d’Aquitaine. Et nous avons également échangé longuement au sujet de l’accès à la culture pour tout le monde, ce qui nous a mené à discuter de son projet sensationnel : le parcours sensoriel !', 'Nicolas Caraty, lui, son parcours sensoriel', 'Toucher des œuvres du musée d’Aquitaine, c’est possible ! Et ce en grande partie grâce à lui ! Nicolas Caraty a débuté sa carrière professionnelle en tant qu’accordeur de piano sur Paris. Assez vite, il s’est vite questionné sur l’accès à la culture pour les personnes en situation de handicap. Il va par la suite travailler 3 ans chez « Toucher pour connaître », association concevant des expositions adaptées et retranscrit les journaux écrits en cassettes audio. À la suite de cette expérience, il change totalement de secteur et s’oriente vers la vente par correspondance et le suivi client chez Les 3 Suisses. Il occupe ce poste pendant près de 8 ans avant de le quitter et se diriger vers le musée d’Aquitaine de Bordeaux. Recruté en 2007 en tant que stagiaire chargé de la médiation culturelle, il est un an plus tard titularisé par la mairie de Bordeaux et occupe encore ce poste aujourd’hui. Nicolas est un amoureux de l’art, sa déclinaison préférée est celle de la musique. Amateur de piano et de guitare depuis son jeune âge, il se tourne de plus en plus vers le synthétiseur. Et c’est sans compter son attrait pour le cinéma, la peinture, le théâtre, l’écriture, et bien évidemment la sculpture.', 'L’art et l’handicap', '« L’art permet d’exprimer les choses, mais parfois la difficulté c’est d’y avoir accès. ». Cette phrase entendue durant l’interview nous a particulièrement marqués. Il est vrai que nous avons tous les jours l’occasion de prêter attention à la culture, néanmoins certaines personnes en situation de handicap (notamment visuel ou auditif) peuvent parfois trouver difficile l’accès à cette dernière. Bien sûr, comme nous l’explique Nicolas, le handicap ne signifie pas forcément que la culture devient totalement inaccessible. Lui-même est un musicien avéré comme évoqué plus tôt. Il nous a d’ailleurs expliqué un fait intéressant sur la découverte des sculptures : « Quand vous êtes non-voyant, vous faites une exploration partielle de l\'œuvre avec vos mains qui sont capables d’explorer ces détails. Au fur et à mesure vous êtes aptes à reconstituer l\'œuvre dans l’espace, en allant donc du détail vers la globalité ». Ce qui, lorsqu’on y réfléchit bien, est une découverte totalement opposée à celle d’une personne voyante qui, elle, voit la sculpture d’abord dans sa globalité, puis vient ensuite chercher les détails en la touchant. Donc tout est en réalité une question de perspectives et de méthodes.', 'Le parcours sensoriel', 'C’est là qu’entre en jeu le fameux parcours sensoriel ! Il s’agit d’un chemin pédagogique installé dans le musée d\'Aquitaine. Comme son nom l\'indique, il permet de faire découvrir diverses œuvres en faisant appel au plus de sens possible pour les rendre accessibles. Plusieurs initiatives sont prises en compte pour se faire, telles que la production d’audio-descriptions associées à plusieurs tableaux (contant le contexte, l’histoire de ces derniers, illustrés par des effets sonores). Et il faut évoquer les nombreuses sculptures reproduites à l’identique avec des matières très similaires à celles d\'origine. Il est question de reproduction de masques africains en bois, de sculptures en pierre… Nicolas nous a montré une reproduction d’une statue de bronze représentant le Roi Louis XV, réalisée grâce à une modélisation 3D. Il a également pris le temps de nous faire toucher d’autres ouvrages, notamment une reproduction de la Vénus à la corne, ainsi que des pierres taillées de la préhistoire. Ce parcours sensoriel permet donc à la fois de conserver en bon état les vestiges du passé, tout en proposant une offre permanente de visite culturelle aux personnes en situation de handicap.', 'Le patrimoine culturel de Bordeaux devient plus accessible puisque de nombreux efforts sont faits pour soutenir cette cause. Mais selon Nicolas, il faut continuer sur ce chemin. À présent, l’objectif majeur est de diffuser l’information. À notre échelle, nous pouvons partager nos connaissances culturelles avec autrui. Il faut aussi réfléchir à un moyen d’adapter ces services pour les rendre accessibles au maximum. D’après Nicolas : « Si on fait vivre cette découverte non pas par des connaissances encyclopédiques mais plutôt par la notion de plaisir, les gens seront plus à l’aise. Il ne faut pas les mettre en situation d’échec, mais plutôt les guider, les amener à découvrir les œuvres par eux-mêmes, et alors là il sera plus aisé de les mener vers des connaissances plus théoriques ».', 'imgArt24.jpeg', 2),
 (5, '2022-03-04 12:28:00', NULL, 'La sculpture Sanna va-t-elle nous quitter ?', 'Depuis presque dix ans, la sculpture Sanna trône sur la place de la comédie. Visage emblématique et intriguant que l’on apprécie contempler. Aujourd’hui, il est possible qu’elle ne devienne plus qu’un souvenir… La ville de Bordeaux a toujours été investie dans la culture et l\'accès à l’art, c’est pourquoi le sujet de la sculpture Sanna fait polémique au sein de la ville.', 'Quelle histoire se cache derrière ce visage ?', 'La demoiselle de fonte a été érigée en 2013 par Jaume Plensa dans le cadre d’une exposition bordelaise, Sanna était accompagnée de sa « sœur » Paula, qui elle, était placée devant la cathédrale de Bordeaux. Jaume Plensa est un artiste Catalan qui a réalisé onze autres œuvres, exposées à travers la ville. Mais, celles-ci ont été retirées. Actuellement, c’est un particulier anonyme qui possède la sculpture Sanna, il laisse à la municipalité de Bordeaux un délai de 5 ans pour la conserver sur la place de la Comédie. Elle partirait à priori en 2027. Ce serait donc le départ d’une œuvre extravagante et surtout emblématique de la ville de Bordeaux.', 'Une demoiselle de fonte, d’âme et d’or', 'Sanna est une sculpture figurative monumentale faite entièrement de fonte, il s’agit du visage d’une jeune fille qui paraît particulièrement apaisée, comme si elle était endormie. Cette impression de plénitude est due aux yeux fermés de la jeune fille et à son expression imperturbable, comme si elle n’allait jamais les rouvrir. Sous certaines perspectives, Sanna peut adopter différents styles : de face son visage est parfaitement droit et bien proportionné mais de côté son visage semble difforme. Aussi, nous pouvons voir évoluer les couleurs de la demoiselle de fonte au fur et à mesure des années. En effet, la sculpture rouille et sa teinte varie en fonction du temps. Sanna se situe devant le grand théâtre sur la place de la Comédie, son style particulier qui marie la grossièreté du fer et la finesse des traits, se combine parfaitement avec l’opéra par ses formes imposantes et travaillées. Pour l’artiste, Jaume Plensa, le visage est « le miroir de l’âme ». Par conséquent, l\'œuvre permet aux bordelais d’acquérir un instant de paix de l’esprit en plein cœur de la ville.', 'L\'achat de la statue', 'En plus de son aspect artistique, la sculpture de Sanna génère évidemment aussi un certain engouement affectant son aspect économique. En effet, en 2014 après l’exposition de Jaume Plensa, Bordeaux fait une levée de fond pour racheter la sculpture. La ville a besoin de récolter 150 000 € auprès des habitants et prévoit ensuite de compléter cette récolte en sortant également un minimum de 150 000 € de sa poche. Effectivement, la valeur financière de l\'œuvre varie entre 300 000 € et 500 000 €. Malheureusement, les dons étant trop faibles, la récolte n\'aboutit pas à un résultat concluant. Seulement 44 000 € ont été récoltés ce qui n’a absolument pas été suffisant pour que la municipalité prenne en charge le reste de l’achat. Fort heureusement en 2015, un particulier anonyme achète la statue et signe un contrat avec la municipalité de Bordeaux pour la laisser 6 ans de plus sur la place de la Comédie. Plus récemment encore, le 8 février 2022, la ville de Bordeaux a annoncé officiellement qu’un autre accord avait été approuvé, permettant à la sculpture de rester sur la place et surtout dans nos cœurs jusqu’en 2027.', 'Finalement, cette sculpture reste encore parmi nous pendant un bon moment. Cette demoiselle de fonte au vécu poétique ayant rythmé la vie de beaucoup de bordelais continuera donc de le faire ces cinq prochaines années. Et cette affaire d’argent plutôt compliquée pour la mairie de Bordeaux lui a tout de même permis de conserver ce bien grâce à l’aide de ce fameux acheteur anonyme. Nous vous suggérons donc d’aller une fois encore apprécier sa présence avant son départ imminent ! Avec l’équipe de rédaction, nous nous demandions si vous aussi vous aviez des anecdotes croustillantes à raconter sur ce visage fait de métaux. Qu’est-ce qu’elle vous fait ressentir ? Êtes-vous heureux d’apprendre qu’elle reste à nos côtés encore longtemps vous aussi ? Nous avons hâte de lire vos réponses en commentaire !', 'imgArt25.jpeg', 4),
-(6, '2023-12-04 10:08:30', '2024-05-10 18:04:20', 'Comment le sang bleu a dominé le symbole de Bordeaux ?', 'Tout au long de son histoire Bordeaux a connu de nombreuses façon d’être représentée, ou comment ses armoiries ont été les images de son occupation anglaise, de sa domination royale et de la prospérité moderne qu’elle connaît au 21ème siècle.', 'Avez-vous déjà vu l’emblématique blason de Bordeaux ?', 'Ce symbole qui à plusieurs reprises, s’est vu transformer par la noblesse anglaise. Celui provenant du Moyen âge tardif sous la conquête française est le plus connu puisque c’est une représentation symbolique et figurée grâce auquelle on peut deviner l’histoire entremêlée de la ville. Trois couleurs dominent cet écusson : le jaune, le rouge et le bleu. Dessus on peut y reconnaître différentes formes dont des « meubles » qui représentent des éléments précis. Situé au sommet de l’écu bordelais, semblable à un ciel bleu nuit, étoilé de fleurs de lys, se trouve le Chef d’azur semé de France symbole des rois de France. Au-dessous, sur un fond rouge sang, un Léopard d’or et non un Lion, représentant la province de la Guyenne, survole une forteresse. Ce n’est pas une simple forteresse idéale mais l\'un des monuments phare de Bordeaux : la Grosse-Cloche, reproduite sous des traits stylisés. Elle est fortifiée de deux tours aujourd’hui disparus. Comme débordant à flot, la mer d’azur ondoyé de sable d’argent incarnant la Garonne se voit surmonté d’un croissant d’argent qui fait évidemment allusion à la forme semi-circulaire du port de la Lune.', 'Un blason malmené aux bleus visibles', 'Si la première représentation connue du blason français de Bordeaux se trouve dans l’ouvrage de Gabriel de Tareda nommé Tracté contre la peste de 1519. Ce ne fut pas la première version à voir le jour. La ville fut influencée par le sang bleu anglais, la monarchie provenant d’Angleterre, pendant 300 ans, cette situation impactant le reflet de Bordeaux : son Blason. Richard Cœur de Lion a façonné un écu à son image afin d\'asseoir sa domination, ainsi se fut trois Léopards d’or qui logeaient au sommet du blason. Ce n’est qu’en 1453 grâce à la reconquête française, que le blason pris sa forme définitive, celle qu’on connaît, arborant finalement le symbole des rois français à la place. Plus tard une dernière version apparu : deux antilopes enchaînées et à collier fleurdelisé, ainsi qu’une couronne murale représentant une muraille encadre le blason français. Ce sont des supports d’armoiries inusitées en France, au Moyen-Âge. Une devise y est aussi inscrite « Lilia sola regunt lunam unda castra leonem » retranscrit « les lys règnent seuls sur la lune, les ondes, la forteresse et le lion » faisant allusion à la domination du roi de France sur Bordeaux, après la période d’occupation anglaise.', 'Le bleu roi toujours au devant du tableau bordelais', 'Malgré la confuse histoire ce blason des plus symboliques, la grande ville qu’est Bordeaux ne peut se décider à l’utiliser pour se représenter en ces temps modernes. Pour résoudre cette affaire de grande envergure la mairie a choisi un logo neutre tout en gardant un symbole représentatif : le port de la lune. En effet le logo-type de la ville est constitué de trois croissants entrelacés qu’on appelle aussi le chiffre de Bordeaux, de couleur blanc nacré sur fond rouge bordeaux. Il n’est pas impossible qu’elles figurent sur certaines reliure de livre et sur la fontaine Saint-Projet de la rue Sainte-Catherine. Gravé dans la pierre, fondue dans le métal ou sur le verre des bouteilles « bordelaises » on retrouve ce symbole sur tous les produits provenant de la ville. Le trio lunaire est également surmonté du nom de la ville sur fond bleu roi. Cette couleur qui a su se faire une place dans l’histoire de Bordeaux, représente autant la royauté que le fleuve bordelais. Et aujourd’hui à l’époque où l’homme s’élève grâce aux nouvelles technologies qui nous permettent de nombreux exploits, on peut enfin poser un nom sur ce bleu qui nous a guidé tous ces siècles et lui rendre hommage : Le Bleu 072 C.', 'Si la ville de Bordeaux a sa charte graphique et son propre logo elle n’est pas la seule, on retrouve nombreux logo tout aussi caractéristique s’inspirant de l’histoire, comme les logos d’Aquitaine, de l’Union Bordeaux-Bègles ou des bleus de Bordeaux : les Girondins !', 'imgArt20.jpeg', 3),
-(7, '2026-02-05 20:29:13', NULL, 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', 'test', NULL, 2);
+(6, '2023-12-04 10:08:30', '2024-05-10 18:04:20', 'Comment le sang bleu a dominé le symbole de Bordeaux ?', 'Tout au long de son histoire Bordeaux a connu de nombreuses façon d’être représentée, ou comment ses armoiries ont été les images de son occupation anglaise, de sa domination royale et de la prospérité moderne qu’elle connaît au 21ème siècle.', 'Avez-vous déjà vu l’emblématique blason de Bordeaux ?', 'Ce symbole qui à plusieurs reprises, s’est vu transformer par la noblesse anglaise. Celui provenant du Moyen âge tardif sous la conquête française est le plus connu puisque c’est une représentation symbolique et figurée grâce auquelle on peut deviner l’histoire entremêlée de la ville. Trois couleurs dominent cet écusson : le jaune, le rouge et le bleu. Dessus on peut y reconnaître différentes formes dont des « meubles » qui représentent des éléments précis. Situé au sommet de l’écu bordelais, semblable à un ciel bleu nuit, étoilé de fleurs de lys, se trouve le Chef d’azur semé de France symbole des rois de France. Au-dessous, sur un fond rouge sang, un Léopard d’or et non un Lion, représentant la province de la Guyenne, survole une forteresse. Ce n’est pas une simple forteresse idéale mais l\'un des monuments phare de Bordeaux : la Grosse-Cloche, reproduite sous des traits stylisés. Elle est fortifiée de deux tours aujourd’hui disparus. Comme débordant à flot, la mer d’azur ondoyé de sable d’argent incarnant la Garonne se voit surmonté d’un croissant d’argent qui fait évidemment allusion à la forme semi-circulaire du port de la Lune.', 'Un blason malmené aux bleus visibles', 'Si la première représentation connue du blason français de Bordeaux se trouve dans l’ouvrage de Gabriel de Tareda nommé Tracté contre la peste de 1519. Ce ne fut pas la première version à voir le jour. La ville fut influencée par le sang bleu anglais, la monarchie provenant d’Angleterre, pendant 300 ans, cette situation impactant le reflet de Bordeaux : son Blason. Richard Cœur de Lion a façonné un écu à son image afin d\'asseoir sa domination, ainsi se fut trois Léopards d’or qui logeaient au sommet du blason. Ce n’est qu’en 1453 grâce à la reconquête française, que le blason pris sa forme définitive, celle qu’on connaît, arborant finalement le symbole des rois français à la place. Plus tard une dernière version apparu : deux antilopes enchaînées et à collier fleurdelisé, ainsi qu’une couronne murale représentant une muraille encadre le blason français. Ce sont des supports d’armoiries inusitées en France, au Moyen-Âge. Une devise y est aussi inscrite « Lilia sola regunt lunam unda castra leonem » retranscrit « les lys règnent seuls sur la lune, les ondes, la forteresse et le lion » faisant allusion à la domination du roi de France sur Bordeaux, après la période d’occupation anglaise.', 'Le bleu roi toujours au devant du tableau bordelais', 'Malgré la confuse histoire ce blason des plus symboliques, la grande ville qu’est Bordeaux ne peut se décider à l’utiliser pour se représenter en ces temps modernes. Pour résoudre cette affaire de grande envergure la mairie a choisi un logo neutre tout en gardant un symbole représentatif : le port de la lune. En effet le logo-type de la ville est constitué de trois croissants entrelacés qu’on appelle aussi le chiffre de Bordeaux, de couleur blanc nacré sur fond rouge bordeaux. Il n’est pas impossible qu’elles figurent sur certaines reliure de livre et sur la fontaine Saint-Projet de la rue Sainte-Catherine. Gravé dans la pierre, fondue dans le métal ou sur le verre des bouteilles « bordelaises » on retrouve ce symbole sur tous les produits provenant de la ville. Le trio lunaire est également surmonté du nom de la ville sur fond bleu roi. Cette couleur qui a su se faire une place dans l’histoire de Bordeaux, représente autant la royauté que le fleuve bordelais. Et aujourd’hui à l’époque où l’homme s’élève grâce aux nouvelles technologies qui nous permettent de nombreux exploits, on peut enfin poser un nom sur ce bleu qui nous a guidé tous ces siècles et lui rendre hommage : Le Bleu 072 C.', 'Si la ville de Bordeaux a sa charte graphique et son propre logo elle n’est pas la seule, on retrouve nombreux logo tout aussi caractéristique s’inspirant de l’histoire, comme les logos d’Aquitaine, de l’Union Bordeaux-Bègles ou des bleus de Bordeaux : les Girondins !', 'imgArt20.jpeg', 3);
 
 -- --------------------------------------------------------
 
@@ -165,7 +154,8 @@ CREATE TABLE `CATEGORIE_EQUIPE` (
 --
 
 INSERT INTO `CATEGORIE_EQUIPE` (`numCategorie`, `libCategorie`) VALUES
-(1, 'Seniors');
+(1, 'Seniors'),
+(2, 'Minime');
 
 -- --------------------------------------------------------
 
@@ -186,7 +176,8 @@ CREATE TABLE `CLUB` (
 
 INSERT INTO `CLUB` (`numClub`, `nomClub`, `villeClub`, `estClubMaison`) VALUES
 (1, 'Bordeaux étudiant club', NULL, 0),
-(2, 'BEC Basket', 'Bordeaux', 1);
+(2, 'BEC Basket', 'Bordeaux', 1),
+(3, 'test', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -275,10 +266,10 @@ INSERT INTO `EQUIPE` (`numEquipe`, `numClub`, `codeEquipe`, `libEquipe`, `libEqu
 (1, 2, 'SG1', 'Seniors Garçons 1', 'Seniors Garçons 1', 1, 1, 1, 'Équipe seniors garçons 1', NULL, NULL),
 (2, 2, 'SG2', 'Seniors Garçons 2', 'Seniors Garçons 2', 1, 1, 2, 'Équipe seniors garçons 2', NULL, NULL),
 (3, 2, 'SG3', 'Seniors Garçons 3', 'Seniors Garçons 3', 1, 1, 3, 'Équipe seniors garçons 3', NULL, NULL),
-(4, 2, 'SG4', 'Seniors Garçons 4', 'Seniors Garçons 4', 1, 1, 4, 'Équipe seniors garçons 4', NULL, NULL),
-(5, 2, 'SF1', 'Seniors Filles 1', 'Seniors Filles 1', 1, 2, 1, 'Équipe seniors filles 1', NULL, NULL),
-(6, 2, 'SF2', 'Seniors Filles 2', 'Seniors Filles 2', 1, 2, 2, 'Équipe seniors filles 2', NULL, NULL),
-(7, 2, 'SF3', 'Seniors Filles 3', 'Seniors Filles 3', 1, 2, 3, 'Équipe seniors filles 3', NULL, NULL);
+(5, 2, 'SF1', 'Seniors Filles 1', 'Seniors Filles 1', 1, 2, 1, 'Équipe seniors filles', 'photos-equipes/SF1-photo-equipe.jpg', 'photos-equipes/SF1-photo-staff.jpg'),
+(6, 2, 'SF2', 'Seniors Filles 2', 'Seniors Filles 2', 1, 2, 2, 'Équipe seniors filles 2', 'photos-equipes/SF2-photo-equipe.jpeg', 'photos-equipes/SF2-photo-staff.jpeg'),
+(7, 2, 'SF3', 'Seniors Filles 3', 'Seniors Filles 3', 1, 2, 3, 'Équipe seniors filles 3', NULL, NULL),
+(8, 2, 'U15F', 'Minime Feminin', 'Minime Feminin', 2, 2, 5, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -293,6 +284,14 @@ CREATE TABLE `JOUEUR` (
   `urlPhotoJoueur` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `dateNaissance` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `JOUEUR`
+--
+
+INSERT INTO `JOUEUR` (`numJoueur`, `prenomJoueur`, `nomJoueur`, `urlPhotoJoueur`, `dateNaissance`) VALUES
+(1, 'test', 'testefsdf', 'photos-joueurs/TE.test.jpg', '2001-03-01'),
+(2, 'Jean guillaume', 'biard', 'photos-joueurs/BI.jeanguillaume.jpeg', '2001-01-01');
 
 -- --------------------------------------------------------
 
@@ -311,6 +310,14 @@ CREATE TABLE `JOUEUR_AFFECTATION` (
   `dateFin` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Déchargement des données de la table `JOUEUR_AFFECTATION`
+--
+
+INSERT INTO `JOUEUR_AFFECTATION` (`numAffectation`, `numJoueur`, `numEquipe`, `numSaison`, `numPoste`, `numMaillot`, `dateDebut`, `dateFin`) VALUES
+(1, 1, 6, 1, 1, 1, '2025-02-01', NULL),
+(2, 2, 3, 1, 1, 1, '2025-01-01', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -321,6 +328,13 @@ CREATE TABLE `JOUEUR_AFFECTATION_POSTE` (
   `numAffectation` int NOT NULL,
   `numPoste` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `JOUEUR_AFFECTATION_POSTE`
+--
+
+INSERT INTO `JOUEUR_AFFECTATION_POSTE` (`numAffectation`, `numPoste`) VALUES
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -457,7 +471,7 @@ INSERT INTO `MEMBRE` (`numMemb`, `prenomMemb`, `nomMemb`, `pseudoMemb`, `passMem
 (1, 'Freddie', 'Mercury', 'Admin99', '12345678', 'freddie.mercury@gmail.com', '2019-05-29 10:13:43', NULL, 1, NULL, 1),
 (2, 'Phil', 'Collins', 'Phil09', '12345678', 'phil.collins@gmail.com', '2020-01-09 10:13:43', NULL, 1, NULL, 2),
 (3, 'Julie', 'La Rousse', 'juju1989', '12345678', 'julie.larousse@gmail.com', '2020-03-15 14:33:23', '2024-01-12 14:36:48', 1, NULL, 3),
-(4, 'David', 'Bowie', 'dav33B', '12345678', 'david.bowie@gmail.com', '2020-07-19 13:13:13', NULL, 1, NULL, 3);
+(5, 'Mehdi', 'Afankous', 'Afanpeak', '$2y$10$Nbf7NVBHaBbCM5wY6nUBledLfReHjQRWIMVrtUc5VWm5XfUN4NWBK', 'afantastik041@gmail.com', '2026-02-06 00:59:43', '2026-02-06 02:00:40', 1, '1', 1);
 
 -- --------------------------------------------------------
 
@@ -515,9 +529,7 @@ INSERT INTO `MOTCLEARTICLE` (`numArt`, `numMotCle`) VALUES
 (5, 1),
 (5, 6),
 (6, 1),
-(6, 6),
-(7, 1),
-(7, 2);
+(6, 6);
 
 -- --------------------------------------------------------
 
@@ -538,7 +550,8 @@ INSERT INTO `NIVEAU_EQUIPE` (`numNiveau`, `libNiveau`) VALUES
 (1, 'Niveau 1'),
 (2, 'Niveau 2'),
 (3, 'Niveau 3'),
-(4, 'Niveau 4');
+(4, 'Niveau 4'),
+(5, 'Départementale 3');
 
 -- --------------------------------------------------------
 
@@ -573,17 +586,17 @@ INSERT INTO `PERSONNEL` (`numPersonnel`, `prenomPersonnel`, `nomPersonnel`, `url
 (5, 'Lina', 'Lopez', NULL, 'coach.sg1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
 (6, 'Hugo', 'Petit', NULL, 'coach.sg2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
 (7, 'Sarah', 'Morel', NULL, 'coach.sg3@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(8, 'Noah', 'Roux', NULL, 'coach.sg4@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
 (9, 'Chloé', 'Lefevre', NULL, 'coach.sf1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
 (10, 'Emma', 'Garnier', NULL, 'coach.sf2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
 (11, 'Lucas', 'Nguyen', NULL, 'coach.sf3@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
 (12, 'Marie', 'Blanc', NULL, 'commission1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
 (13, 'Nicolas', 'Faure', NULL, 'commission2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(14, 'Julie', 'Renard', NULL, 'animation1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
+(14, 'Julie', 'Renard', '/src/uploads/photos-benevoles/re.julie.jpg', 'animation1@becbasket.test', NULL, 0, NULL, 0, 1, 0, 0),
 (15, 'Omar', 'Perrin', NULL, 'animation2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
 (16, 'Lea', 'Benoit', NULL, 'communication1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
 (17, 'Theo', 'Carre', NULL, 'communication2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(18, 'Mehdi', 'Afankous', '/src/uploads/photos-benevoles/af.mehdi.jpeg', NULL, NULL, 0, NULL, 1, 0, 0, 0);
+(18, 'Mehdi', 'Afankous', '/src/uploads/photos-benevoles/af.mehdi.jpeg', NULL, NULL, 0, NULL, 1, 0, 0, 0),
+(19, 'test', 'test', '/src/uploads/photos-benevoles/te.test.jpg', NULL, NULL, 0, NULL, 0, 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -621,6 +634,13 @@ CREATE TABLE `POSTE` (
   `numPoste` int NOT NULL,
   `libPoste` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `POSTE`
+--
+
+INSERT INTO `POSTE` (`numPoste`, `libPoste`) VALUES
+(1, 'Poste 2 : arrière (shooting guard)');
 
 -- --------------------------------------------------------
 
@@ -950,13 +970,13 @@ ALTER TABLE `ARTICLE`
 -- AUTO_INCREMENT pour la table `CATEGORIE_EQUIPE`
 --
 ALTER TABLE `CATEGORIE_EQUIPE`
-  MODIFY `numCategorie` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `numCategorie` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `CLUB`
 --
 ALTER TABLE `CLUB`
-  MODIFY `numClub` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `numClub` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `COMMENT`
@@ -974,19 +994,19 @@ ALTER TABLE `COMPETITION`
 -- AUTO_INCREMENT pour la table `EQUIPE`
 --
 ALTER TABLE `EQUIPE`
-  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `numEquipe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `JOUEUR`
 --
 ALTER TABLE `JOUEUR`
-  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT;
+  MODIFY `numJoueur` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `JOUEUR_AFFECTATION`
 --
 ALTER TABLE `JOUEUR_AFFECTATION`
-  MODIFY `numAffectation` int NOT NULL AUTO_INCREMENT;
+  MODIFY `numAffectation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `JOUEUR_CLUB`
@@ -1016,7 +1036,7 @@ ALTER TABLE `MATCH_PARTICIPANT`
 -- AUTO_INCREMENT pour la table `MEMBRE`
 --
 ALTER TABLE `MEMBRE`
-  MODIFY `numMemb` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `numMemb` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `MOTCLE`
@@ -1028,13 +1048,13 @@ ALTER TABLE `MOTCLE`
 -- AUTO_INCREMENT pour la table `NIVEAU_EQUIPE`
 --
 ALTER TABLE `NIVEAU_EQUIPE`
-  MODIFY `numNiveau` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `numNiveau` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `PERSONNEL`
 --
 ALTER TABLE `PERSONNEL`
-  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `numPersonnel` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT pour la table `PHASE_COMPETITION`
@@ -1046,7 +1066,7 @@ ALTER TABLE `PHASE_COMPETITION`
 -- AUTO_INCREMENT pour la table `POSTE`
 --
 ALTER TABLE `POSTE`
-  MODIFY `numPoste` int NOT NULL AUTO_INCREMENT;
+  MODIFY `numPoste` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `ROLE_PERSONNEL`
