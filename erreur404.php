@@ -28,13 +28,17 @@ require_once 'header.php';
     height: auto;
 }
 .error404-image{
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+    display: block;
     max-width: 180px;
     width: 100%;
     height: auto;
     z-index: 1;
+}
+.error404-image-wrapper{
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+    margin-bottom: 24px;
 }
 </style>
 
@@ -46,7 +50,9 @@ require_once 'header.php';
 <br>
 <a href="<?php echo ROOT_URL . '/index.php'; ?>"><button class="bouton">Revenir à l'accueil</button></a>
 <br>
-<img class="error404-image" src="<?php echo ROOT_URL . '/src/images/error404.png'; ?>" alt="Illustration erreur 404">
+<div class="error404-image-wrapper">
+    <img class="error404-image" src="<?php echo ROOT_URL . '/src/images/error404.png'; ?>" alt="Illustration erreur 404">
+</div>
 
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
