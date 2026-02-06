@@ -28,7 +28,15 @@ $ba_bec_missing_table_labels = [
 ];
 
 $ba_bec_players = [];
+$ba_bec_sort = isset($_GET['tri']) ? (string) $_GET['tri'] : 'nom';
+$ba_bec_allowed_sorts = ['nom', 'equipe'];
+if (!in_array($ba_bec_sort, $ba_bec_allowed_sorts, true)) {
+    $ba_bec_sort = 'nom';
+}
 if (!in_array(true, $ba_bec_is_missing_table, true)) {
+    $orderBy = $ba_bec_sort === 'equipe'
+        ? 'e.libEquipe IS NULL, e.libEquipe ASC, j.nomJoueur ASC, j.prenomJoueur ASC'
+        : 'j.nomJoueur ASC, j.prenomJoueur ASC';
     $playersQuery = "SELECT
             j.numJoueur,
             j.prenomJoueur,
@@ -59,7 +67,7 @@ if (!in_array(true, $ba_bec_is_missing_table, true)) {
             a.numMaillot,
             s.libSaison,
             e.libEquipe
-        ORDER BY j.nomJoueur ASC";
+        ORDER BY {$orderBy}";
     $ba_bec_players = $DB->query($playersQuery)->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -97,6 +105,18 @@ function format_age(?string $birthDate): string
             <?php endforeach; ?>
 
             <h1>Liste des joueurs</h1>
+            <form method="get" class="row g-3 align-items-end mb-3">
+                <div class="col-md-4">
+                    <label for="tri" class="form-label">Trier par</label>
+                    <select name="tri" id="tri" class="form-select">
+                        <option value="nom" <?php echo $ba_bec_sort === 'nom' ? 'selected' : ''; ?>>Nom</option>
+                        <option value="equipe" <?php echo $ba_bec_sort === 'equipe' ? 'selected' : ''; ?>>Équipe</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Appliquer</button>
+                </div>
+            </form>
             <?php if (empty($ba_bec_players)) : ?>
                 <div class="alert alert-info">Aucun joueur trouvé.</div>
             <?php else : ?>
@@ -114,7 +134,19 @@ function format_age(?string $birthDate): string
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $ba_bec_current_team = null; ?>
                         <?php foreach ($ba_bec_players as $ba_bec_player): ?>
+                            <?php if ($ba_bec_sort === 'equipe') : ?>
+                                <?php $ba_bec_team_label = $ba_bec_player['libEquipe'] ?? 'Non affecté'; ?>
+                                <?php if ($ba_bec_team_label !== $ba_bec_current_team) : ?>
+                                    <tr class="table-secondary">
+                                        <td colspan="8">
+                                            <strong><?php echo htmlspecialchars($ba_bec_team_label); ?></strong>
+                                        </td>
+                                    </tr>
+                                    <?php $ba_bec_current_team = $ba_bec_team_label; ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($ba_bec_player['numJoueur']); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_player['prenomJoueur'] . ' ' . $ba_bec_player['nomJoueur']); ?></td>
