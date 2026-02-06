@@ -21,15 +21,44 @@ function ensure_upload_dir(string $path): void
     }
 }
 
+function team_upload_dir(): string
+{
+    $baseDir = realpath(__DIR__ . '/../../');
+    if ($baseDir === false) {
+        $baseDir = dirname(__DIR__, 2);
+    }
+    return rtrim($baseDir, '/') . '/src/uploads/photos-equipes/';
+}
+
 function sanitize_code_equipe(string $codeEquipe): string
 {
     $sanitized = preg_replace('/[^A-Za-z0-9_-]+/', '', $codeEquipe);
     return $sanitized !== '' ? $sanitized : 'equipe';
 }
 
+function upload_error_message(int $errorCode): string
+{
+    return match ($errorCode) {
+        UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'Le fichier est trop volumineux.',
+        UPLOAD_ERR_PARTIAL => 'Le fichier a été envoyé partiellement.',
+        UPLOAD_ERR_NO_FILE => 'Aucun fichier n’a été envoyé.',
+        UPLOAD_ERR_NO_TMP_DIR => 'Dossier temporaire manquant.',
+        UPLOAD_ERR_CANT_WRITE => 'Impossible d’écrire le fichier sur le disque.',
+        UPLOAD_ERR_EXTENSION => 'Envoi stoppé par une extension PHP.',
+        default => 'Erreur lors de l’envoi du fichier.',
+    };
+}
+
 function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, array &$errors): ?string
 {
-    if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== 0) {
+    if (!isset($_FILES[$fileKey])) {
+        return null;
+    }
+
+    if ($_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
+        if ($_FILES[$fileKey]['error'] !== UPLOAD_ERR_NO_FILE) {
+            $errors[] = upload_error_message($_FILES[$fileKey]['error']);
+        }
         return null;
     }
 
@@ -84,7 +113,7 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
 
     $codeEquipeSafe = sanitize_code_equipe($codeEquipe);
     $fileName = $codeEquipeSafe . '-' . $suffix . '.' . $extension;
-    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/';
+    $uploadDir = team_upload_dir();
     ensure_upload_dir($uploadDir);
     $destination = $uploadDir . $fileName;
 
