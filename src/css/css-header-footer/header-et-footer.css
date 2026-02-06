@@ -246,23 +246,55 @@
         }
 
         .btn-contact-footer {
-            background-color:#ddd;
+            background-color: #fff;
+            color: #8a0a27;
             font-size: 18px;
             padding: 12px 24px;
-            border: none;
+            border: 2px solid #fff;
             border-radius: 6px;
         }
 
 
         .site-footer {
-            background-color: #fff;
+            background-color: #8a0a27;
+            text-align: center;
         }
 
         .site-footer a,
         .site-footer h3,
         .site-footer h4,
         .site-footer p {
-            color: var(--bec-dark);
+            color: #fff;
+        }
+
+        .site-footer .btn-contact-footer:is(:hover, :focus-visible) {
+            background-color: #fff;
+            color: #8a0a27;
+            border-color: #fff;
+        }
+
+        .site-footer .row {
+            justify-content: center;
+        }
+
+        .site-footer .col-lg-5,
+        .site-footer .col-lg-4 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .site-footer .ratio {
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .site-footer .d-flex {
+            justify-content: center;
+        }
+
+        .site-footer .list-unstyled {
+            align-items: center;
         }
 
         .site-footer a {
