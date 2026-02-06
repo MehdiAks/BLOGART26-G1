@@ -69,7 +69,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                 <div class="card-body">
                     <h2 class="h5 mb-3">Accès rapide</h2>
                     <div class="d-grid gap-2">
-                        <a class="btn btn-outline-primary" href="<?php echo ROOT_URL . '/compte.php'; ?>">Mon compte</a>
+                        <a class="btn btn-outline-primary" href="<?php echo ROOT_URL . '/Pages_supplementaires/compte.php'; ?>">Mon compte</a>
                         <?php if ($ba_bec_numStat === 1 || $ba_bec_numStat === 2): ?>
                             <a class="btn btn-outline-secondary" href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>">Panneau admin</a>
                         <?php endif; ?>

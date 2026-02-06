@@ -59,7 +59,7 @@ Ce document décrit chaque dossier et fichier présents dans le dépôt, leur ut
   - **Pourquoi :** Contenu éditorial spécifique.
   - **Lié à :** `header.php`, `footer.php`, `src/css/*`.
 
-- `notre-histoire.php`
+- `Pages_supplementaires/notre-histoire.php`
   - **Utilité :** Page “notre histoire”.
   - **Pourquoi :** Contenu institutionnel.
   - **Lié à :** `header.php`, `footer.php`, `src/css/*`.
@@ -69,7 +69,7 @@ Ce document décrit chaque dossier et fichier présents dans le dépôt, leur ut
   - **Pourquoi :** Permettre de joindre l’organisation.
   - **Lié à :** `header.php`, `footer.php`, `src/css/*`.
 
-- `compte.php`
+- `Pages_supplementaires/compte.php`
   - **Utilité :** Page de compte utilisateur.
   - **Pourquoi :** Afficher/gestion des infos compte.
   - **Lié à :** `api/members/*`, `api/security/*`, `functions/security.php`.
@@ -168,7 +168,7 @@ Ce document décrit chaque dossier et fichier présents dans le dépôt, leur ut
 - `api/members/`
   - **Utilité :** API pour les membres/utilisateurs.
   - **Pourquoi :** Gérer CRUD des membres.
-  - **Lié à :** `compte.php`, `views/backend/members/*`.
+  - **Lié à :** `Pages_supplementaires/compte.php`, `views/backend/members/*`.
 
   - `api/members/create.php`
   - `api/members/update.php`
@@ -195,7 +195,7 @@ Ce document décrit chaque dossier et fichier présents dans le dépôt, leur ut
 - `api/security/`
   - **Utilité :** API d’authentification.
   - **Pourquoi :** Login/signup/logout.
-  - **Lié à :** `compte.php`, `views/backend/security/*`.
+  - **Lié à :** `Pages_supplementaires/compte.php`, `views/backend/security/*`.
 
   - `api/security/login.php`
   - `api/security/signup.php`
