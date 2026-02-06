@@ -5,7 +5,7 @@ $pageStyles = [
     ROOT_URL . '/src/css/nos-partenaires.css',
 ];
 
-require_once 'header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 ?> 
 
 <main class="container py-5" id="Nospartenaires">

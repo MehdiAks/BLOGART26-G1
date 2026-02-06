@@ -22,25 +22,25 @@ if (!in_array($ba_bec_perPage, $ba_bec_allowedPerPage, true)) {
 $ba_bec_page = max(1, (int) ($_GET['page'] ?? 1));
 $ba_bec_offset = ($ba_bec_page - 1) * $ba_bec_perPage;
 
-$ba_bec_whereClause = $ba_bec_showAll ? '' : 'WHERE (home_part.score IS NULL OR away_part.score IS NULL)';
+$ba_bec_whereClause = $ba_bec_showAll ? '' : 'WHERE (m.scoreBec IS NULL OR m.scoreAdversaire IS NULL)';
 $ba_bec_order = 'ORDER BY m.dateMatch ASC, m.heureMatch ASC';
 $ba_bec_limit = 'LIMIT ' . $ba_bec_offset . ', ' . $ba_bec_perPage;
 
 $ba_bec_select = "SELECT
         m.numMatch AS numMatch,
-        c.libCompetition AS competition,
+        m.saison AS saison,
+        m.phase AS phase,
+        m.journee AS journee,
         m.dateMatch AS matchDate,
         m.heureMatch AS matchTime,
-        COALESCE(home_team.libEquipe, home_part.nomEquipeAdverse) AS teamHome,
-        COALESCE(away_team.libEquipe, away_part.nomEquipeAdverse) AS teamAway,
-        home_part.score AS scoreHome,
-        away_part.score AS scoreAway
+        m.lieuMatch AS location,
+        m.scoreBec AS scoreBec,
+        m.scoreAdversaire AS scoreAdversaire,
+        m.clubAdversaire AS clubAdversaire,
+        m.numEquipeAdverse AS numEquipeAdverse,
+        e.nomEquipe AS teamName
     FROM `MATCH` m
-    INNER JOIN COMPETITION c ON m.numCompetition = c.numCompetition
-    LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
-    LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
-    LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe
-    LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe
+    INNER JOIN EQUIPE e ON m.codeEquipe = e.codeEquipe
     {$ba_bec_whereClause}
     {$ba_bec_order}
     {$ba_bec_limit}";
@@ -52,11 +52,7 @@ try {
     $ba_bec_matches = [];
 }
 
-$ba_bec_totalQuery = "SELECT COUNT(*) AS total
-    FROM `MATCH` m
-    LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
-    LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
-    {$ba_bec_whereClause}";
+$ba_bec_totalQuery = "SELECT COUNT(*) AS total FROM `MATCH` m {$ba_bec_whereClause}";
 $ba_bec_totalRow = $DB->query($ba_bec_totalQuery)->fetch(PDO::FETCH_ASSOC);
 $ba_bec_total = $ba_bec_totalRow['total'] ?? 0;
 $ba_bec_hasNextPage = ($ba_bec_offset + $ba_bec_perPage) < $ba_bec_total;
@@ -77,6 +73,28 @@ $ba_bec_formatTime = static function ($time): string {
         return (string) $time;
     }
     return date('H:i', $timestamp);
+};
+
+$ba_bec_resolveSide = static function (?string $location): string {
+    $location = strtolower(trim((string) $location));
+    if ($location === '') {
+        return 'home';
+    }
+    if (str_contains($location, 'exterieur') || str_contains($location, 'extérieur') || str_contains($location, 'away')) {
+        return 'away';
+    }
+    if (str_contains($location, 'domicile') || str_contains($location, 'home') || str_contains($location, 'barbey')) {
+        return 'home';
+    }
+    return 'home';
+};
+
+$ba_bec_buildOpponent = static function (array $match): string {
+    $opponent = trim((string) ($match['clubAdversaire'] ?? ''));
+    if (!empty($match['numEquipeAdverse'])) {
+        $opponent = trim($opponent . ' ' . $match['numEquipeAdverse']);
+    }
+    return $opponent !== '' ? $opponent : 'Adversaire';
 };
 ?>
 
@@ -102,7 +120,8 @@ $ba_bec_formatTime = static function ($time): string {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Compétition</th>
+                        <th>Saison</th>
+                        <th>Phase</th>
                         <th>Date</th>
                         <th>Heure</th>
                         <th>Domicile</th>
@@ -113,16 +132,26 @@ $ba_bec_formatTime = static function ($time): string {
                 </thead>
                 <tbody>
                     <?php foreach ($ba_bec_matches as $ba_bec_match) { ?>
+                        <?php
+                        $side = $ba_bec_resolveSide($ba_bec_match['location'] ?? '');
+                        $opponent = $ba_bec_buildOpponent($ba_bec_match);
+                        $isHome = $side !== 'away';
+                        $teamHome = $isHome ? ($ba_bec_match['teamName'] ?? 'BEC') : $opponent;
+                        $teamAway = $isHome ? $opponent : ($ba_bec_match['teamName'] ?? 'BEC');
+                        $scoreHome = $isHome ? ($ba_bec_match['scoreBec'] ?? null) : ($ba_bec_match['scoreAdversaire'] ?? null);
+                        $scoreAway = $isHome ? ($ba_bec_match['scoreAdversaire'] ?? null) : ($ba_bec_match['scoreBec'] ?? null);
+                        ?>
                         <tr>
                             <td><?php echo $ba_bec_match['numMatch']; ?></td>
-                            <td><?php echo htmlspecialchars($ba_bec_match['competition'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($ba_bec_match['saison'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($ba_bec_match['phase'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($ba_bec_match['matchDate'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($ba_bec_formatTime($ba_bec_match['matchTime'] ?? '')); ?></td>
-                            <td><?php echo htmlspecialchars($ba_bec_match['teamHome'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($ba_bec_match['teamAway'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($teamHome); ?></td>
+                            <td><?php echo htmlspecialchars($teamAway); ?></td>
                             <td>
-                                <?php if ($ba_bec_match['scoreHome'] !== null && $ba_bec_match['scoreAway'] !== null) : ?>
-                                    <?php echo (int) $ba_bec_match['scoreHome']; ?> - <?php echo (int) $ba_bec_match['scoreAway']; ?>
+                                <?php if ($scoreHome !== null && $scoreAway !== null) : ?>
+                                    <?php echo (int) $scoreHome; ?> - <?php echo (int) $scoreAway; ?>
                                 <?php else : ?>
                                     À compléter
                                 <?php endif; ?>

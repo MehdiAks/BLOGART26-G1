@@ -11,7 +11,7 @@ function render_missing_table_page(PDOException $exception): void
 
     if ($isMissingTable) {
         http_response_code(404);
-        require_once 'erreur404.php';
+        require_once $_SERVER['DOCUMENT_ROOT'] . '/erreur404.php';
         exit;
     }
 }
@@ -33,10 +33,40 @@ function ba_bec_team_photo_url(?string $path): string
     return ROOT_URL . '/src/uploads/photos-equipes/' . ltrim($path, '/');
 }
 
+function format_poste(?int $poste): string
+{
+    $labels = [
+        1 => 'Meneur',
+        2 => 'Arrière',
+        3 => 'Ailier',
+        4 => 'Ailier fort',
+        5 => 'Pivot',
+    ];
+    if (!$poste) {
+        return 'Poste non renseigné';
+    }
+    return $labels[$poste] ?? ('Poste ' . $poste);
+}
+
+function resolve_match_side(?string $location): string
+{
+    $location = strtolower(trim((string) $location));
+    if ($location === '') {
+        return 'home';
+    }
+    if (str_contains($location, 'exterieur') || str_contains($location, 'extérieur') || str_contains($location, 'away')) {
+        return 'away';
+    }
+    if (str_contains($location, 'domicile') || str_contains($location, 'home') || str_contains($location, 'barbey')) {
+        return 'home';
+    }
+    return 'home';
+}
+
 $teamId = filter_input(INPUT_GET, 'numEquipe', FILTER_VALIDATE_INT);
 if (!$teamId) {
     http_response_code(404);
-    require_once 'erreur404.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/erreur404.php';
     exit;
 }
 
@@ -45,80 +75,56 @@ $team = null;
 $players = [];
 $coaches = [];
 $teamMatches = [];
-$currentSeasonId = null;
 
 if ($dbAvailable) {
     try {
         sql_connect();
 
-        $currentSeasonStmt = $DB->query('SELECT numSaison FROM SAISON WHERE estCourante = 1 ORDER BY dateDebut DESC LIMIT 1');
-        $currentSeasonId = $currentSeasonStmt ? $currentSeasonStmt->fetchColumn() : null;
-
         $teamStmt = $DB->prepare(
-            'SELECT e.numEquipe, e.libEquipe, e.libEquipeComplet, e.descriptionEquipe, e.urlPhotoEquipe, e.urlPhotoStaff,
-                    c.libCategorie, s.libSection, n.libNiveau
-             FROM EQUIPE e
-             INNER JOIN CATEGORIE_EQUIPE c ON e.numCategorie = c.numCategorie
-             INNER JOIN SECTION_EQUIPE s ON e.numSection = s.numSection
-             INNER JOIN NIVEAU_EQUIPE n ON e.numNiveau = n.numNiveau
-             WHERE e.numEquipe = :teamId'
+            'SELECT numEquipe, codeEquipe, nomEquipe, descriptionEquipe, photoDLequipe, photoStaff, categorie, section, niveau
+             FROM EQUIPE
+             WHERE numEquipe = :teamId'
         );
         $teamStmt->execute(['teamId' => $teamId]);
         $team = $teamStmt->fetch(PDO::FETCH_ASSOC) ?: null;
 
         if (!$team) {
             http_response_code(404);
-            require_once 'erreur404.php';
+            require_once $_SERVER['DOCUMENT_ROOT'] . '/erreur404.php';
             exit;
         }
 
         $playersStmt = $DB->prepare(
-            'SELECT j.prenomJoueur, j.nomJoueur, p.libPoste, j.urlPhotoJoueur
-             FROM JOUEUR_AFFECTATION ja
-             INNER JOIN JOUEUR j ON ja.numJoueur = j.numJoueur
-             LEFT JOIN POSTE p ON ja.numPoste = p.numPoste
-             WHERE ja.numEquipe = :teamId' . ($currentSeasonId ? ' AND ja.numSaison = :numSaison' : '') .
-            ' ORDER BY j.nomJoueur ASC'
+            'SELECT prenomJoueur, nomJoueur, posteJoueur, urlPhotoJoueur
+             FROM JOUEUR
+             WHERE codeEquipe = :codeEquipe
+             ORDER BY nomJoueur ASC'
         );
-        $params = ['teamId' => $teamId];
-        if ($currentSeasonId) {
-            $params['numSaison'] = $currentSeasonId;
-        }
-        $playersStmt->execute($params);
+        $playersStmt->execute(['codeEquipe' => $team['codeEquipe']]);
         $players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);
 
         $coachesStmt = $DB->prepare(
-            'SELECT p.prenomPersonnel, p.nomPersonnel, rp.libRolePersonnel
-             FROM AFFECTATION_PERSONNEL_EQUIPE ape
-             INNER JOIN PERSONNEL p ON ape.numPersonnel = p.numPersonnel
-             INNER JOIN ROLE_PERSONNEL rp ON ape.numRolePersonnel = rp.numRolePersonnel
-             WHERE ape.numEquipe = :teamId' . ($currentSeasonId ? ' AND ape.numSaison = :numSaison' : '') .
-            ' ORDER BY p.nomPersonnel ASC'
+            'SELECT prenomPersonnel, nomPersonnel, roleStaffEquipe AS libRolePersonnel
+             FROM PERSONNEL
+             WHERE estStaffEquipe = 1 AND numEquipeStaff = :codeEquipe
+             ORDER BY nomPersonnel ASC'
         );
-        $coachParams = ['teamId' => $teamId];
-        if ($currentSeasonId) {
-            $coachParams['numSaison'] = $currentSeasonId;
-        }
-        $coachesStmt->execute($coachParams);
+        $coachesStmt->execute(['codeEquipe' => $team['codeEquipe']]);
         $coaches = $coachesStmt->fetchAll(PDO::FETCH_ASSOC);
 
         $matchesStmt = $DB->prepare(
             'SELECT m.dateMatch, m.heureMatch, m.lieuMatch,
-                    home_part.score AS scoreHome,
-                    away_part.score AS scoreAway,
-                    COALESCE(home_team.libEquipe, home_part.nomEquipeAdverse) AS teamHome,
-                    COALESCE(away_team.libEquipe, away_part.nomEquipeAdverse) AS teamAway,
-                    home_part.numEquipe AS homeEquipe,
-                    away_part.numEquipe AS awayEquipe
+                    m.scoreBec AS scoreBec,
+                    m.scoreAdversaire AS scoreAdversaire,
+                    m.clubAdversaire AS clubAdversaire,
+                    m.numEquipeAdverse AS numEquipeAdverse,
+                    e.nomEquipe AS teamName
              FROM `MATCH` m
-             LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = "domicile"
-             LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = "exterieur"
-             LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe
-             LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe
-             WHERE home_part.numEquipe = :teamId OR away_part.numEquipe = :teamId
+             INNER JOIN EQUIPE e ON m.codeEquipe = e.codeEquipe
+             WHERE m.codeEquipe = :codeEquipe
              ORDER BY m.dateMatch DESC, m.heureMatch DESC'
         );
-        $matchesStmt->execute(['teamId' => $teamId]);
+        $matchesStmt->execute(['codeEquipe' => $team['codeEquipe']]);
         $teamMatches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $exception) {
         render_missing_table_page($exception);
@@ -127,36 +133,66 @@ if ($dbAvailable) {
 } else {
     $team = [
         'numEquipe' => $teamId,
-        'libEquipe' => 'Équipe du BEC',
-        'libEquipeComplet' => 'Seniors filles - National 3',
-        'libCategorie' => 'Seniors',
-        'libSection' => 'Championnat régional',
-        'libNiveau' => 'Niveau 1',
+        'codeEquipe' => 'BEC',
+        'nomEquipe' => 'Équipe du BEC',
+        'categorie' => 'Seniors',
+        'section' => 'Championnat régional',
+        'niveau' => 'Niveau 1',
         'descriptionEquipe' => 'Une équipe engagée et soudée qui défend fièrement les couleurs du BEC tout au long de la saison.',
-        'urlPhotoEquipe' => '',
-        'urlPhotoStaff' => '',
+        'photoDLequipe' => '',
+        'photoStaff' => '',
     ];
     $players = [
-        ['prenomJoueur' => 'Léo', 'nomJoueur' => 'Martin', 'libPoste' => 'Meneur'],
-        ['prenomJoueur' => 'Amélie', 'nomJoueur' => 'Durand', 'libPoste' => 'Ailière'],
-        ['prenomJoueur' => 'Hugo', 'nomJoueur' => 'Bernard', 'libPoste' => 'Pivot'],
-        ['prenomJoueur' => 'Sara', 'nomJoueur' => 'Lopez', 'libPoste' => 'Arrière'],
+        ['prenomJoueur' => 'Léo', 'nomJoueur' => 'Martin', 'posteJoueur' => 1],
+        ['prenomJoueur' => 'Amélie', 'nomJoueur' => 'Durand', 'posteJoueur' => 3],
+        ['prenomJoueur' => 'Hugo', 'nomJoueur' => 'Bernard', 'posteJoueur' => 5],
+        ['prenomJoueur' => 'Sara', 'nomJoueur' => 'Lopez', 'posteJoueur' => 2],
     ];
     $coaches = [
         ['prenomPersonnel' => 'Camille', 'nomPersonnel' => 'Roche', 'libRolePersonnel' => 'Coach'],
         ['prenomPersonnel' => 'Paul', 'nomPersonnel' => 'Girard', 'libRolePersonnel' => 'Assistant'],
     ];
     $teamMatches = [
-        ['teamHome' => 'BEC', 'teamAway' => 'US Talence', 'scoreHome' => 82, 'scoreAway' => 68, 'dateMatch' => '2024-10-05'],
-        ['teamHome' => 'Union Saint-Bruno', 'teamAway' => 'BEC', 'scoreHome' => 79, 'scoreAway' => 74, 'dateMatch' => '2024-10-12'],
+        ['teamHome' => 'BEC', 'teamAway' => 'US Talence', 'scoreHome' => 82, 'scoreAway' => 68, 'dateMatch' => '2024-10-05', 'isHome' => true],
+        ['teamHome' => 'Union Saint-Bruno', 'teamAway' => 'BEC', 'scoreHome' => 79, 'scoreAway' => 74, 'dateMatch' => '2024-10-12', 'isHome' => false],
     ];
 }
 
+$teamMatches = array_map(
+    static function (array $match) use ($team): array {
+        if (empty($team) || empty($team['nomEquipe'])) {
+            return $match;
+        }
+        $opponent = trim((string) ($match['clubAdversaire'] ?? ''));
+        if (!empty($match['numEquipeAdverse'])) {
+            $opponent = trim($opponent . ' ' . $match['numEquipeAdverse']);
+        }
+        if ($opponent === '') {
+            $opponent = 'Adversaire';
+        }
+        $side = resolve_match_side($match['lieuMatch'] ?? '');
+        $isHome = $side === 'home';
+        $teamHome = $isHome ? $team['nomEquipe'] : $opponent;
+        $teamAway = $isHome ? $opponent : $team['nomEquipe'];
+        $scoreHome = $isHome ? ($match['scoreBec'] ?? null) : ($match['scoreAdversaire'] ?? null);
+        $scoreAway = $isHome ? ($match['scoreAdversaire'] ?? null) : ($match['scoreBec'] ?? null);
+
+        return array_merge($match, [
+            'teamHome' => $teamHome,
+            'teamAway' => $teamAway,
+            'scoreHome' => $scoreHome,
+            'scoreAway' => $scoreAway,
+            'isHome' => $isHome,
+        ]);
+    },
+    $teamMatches
+);
+
 $bannerImage = ROOT_URL . '/src/images/background/background-index-4.webp';
 
-$teamName = $team['libEquipeComplet'] ?: $team['libEquipe'];
-$teamPhotoUrl = ba_bec_team_photo_url($team['urlPhotoEquipe'] ?? '');
-$staffPhotoUrl = ba_bec_team_photo_url($team['urlPhotoStaff'] ?? '');
+$teamName = $team['nomEquipe'] ?? '';
+$teamPhotoUrl = ba_bec_team_photo_url($team['photoDLequipe'] ?? '');
+$staffPhotoUrl = ba_bec_team_photo_url($team['photoStaff'] ?? '');
 
 $stats = [
     'home' => ['matches' => 0, 'pointsFor' => 0, 'pointsAgainst' => 0],
@@ -173,7 +209,7 @@ foreach ($teamMatches as $match) {
         continue;
     }
 
-    $isHome = ($match['homeEquipe'] ?? null) == $teamId;
+    $isHome = (bool) ($match['isHome'] ?? false);
     $locationKey = $isHome ? 'home' : 'away';
     $pointsFor = $isHome ? $scoreHome : $scoreAway;
     $pointsAgainst = $isHome ? $scoreAway : $scoreHome;
@@ -236,19 +272,19 @@ if (!$coachLead && !empty($assistantCoaches)) {
 }
 ?>
 
-<?php require_once 'header.php'; ?>
+<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php'; ?>
 
 <section class="team-detail">
     <header class="team-detail-header">
         <div class="team-detail-banner" style="background-image: url('<?php echo htmlspecialchars($bannerImage); ?>');">
             <div class="team-detail-banner-content">
                 <p class="team-detail-category">
-                    <?php echo htmlspecialchars($team['libCategorie'] ?: 'Catégorie non renseignée'); ?>
+                    <?php echo htmlspecialchars($team['categorie'] ?: 'Catégorie non renseignée'); ?>
                 </p>
                 <h1><?php echo htmlspecialchars($teamName); ?></h1>
                 <p class="team-detail-meta">
-                    <?php echo htmlspecialchars($team['libSection'] ?: 'Section non renseignée'); ?> ·
-                    <?php echo htmlspecialchars($team['libNiveau'] ?: 'Niveau non renseigné'); ?>
+                    <?php echo htmlspecialchars($team['section'] ?: 'Section non renseignée'); ?> ·
+                    <?php echo htmlspecialchars($team['niveau'] ?: 'Niveau non renseigné'); ?>
                 </p>
             </div>
         </div>
@@ -441,8 +477,8 @@ if (!$coachLead && !empty($assistantCoaches)) {
                                 <span class="player-photo-placeholder">Photo à venir</span>
                             <?php endif; ?>
                         </div>
-                        <?php if (!empty($player['libPoste'])) : ?>
-                            <p class="text-muted"><?php echo htmlspecialchars($player['libPoste']); ?></p>
+                        <?php if (!empty($player['posteJoueur'])) : ?>
+                            <p class="text-muted"><?php echo htmlspecialchars(format_poste((int) $player['posteJoueur'])); ?></p>
                         <?php endif; ?>
                     </article>
                 <?php endforeach; ?>
@@ -452,5 +488,5 @@ if (!$coachLead && !empty($assistantCoaches)) {
 </section>
 
 <?php
-require_once 'footer.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
 ?>

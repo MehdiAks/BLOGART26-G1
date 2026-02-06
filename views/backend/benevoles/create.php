@@ -11,7 +11,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
-$ba_bec_teams = sql_select('EQUIPE', 'numEquipe, libEquipe', null, null, 'libEquipe ASC');
+$ba_bec_teams = sql_select('EQUIPE', 'codeEquipe, nomEquipe', null, null, 'nomEquipe ASC');
 ?>
 
 <div class="container">
@@ -51,8 +51,8 @@ $ba_bec_teams = sql_select('EQUIPE', 'numEquipe, libEquipe', null, null, 'libEqu
                         <select id="numEquipeStaff" name="numEquipeStaff" class="form-select">
                             <option value="">Sélectionner une équipe</option>
                             <?php foreach ($ba_bec_teams as $ba_bec_team): ?>
-                                <option value="<?php echo htmlspecialchars($ba_bec_team['numEquipe']); ?>">
-                                    <?php echo htmlspecialchars($ba_bec_team['libEquipe']); ?>
+                                <option value="<?php echo htmlspecialchars($ba_bec_team['codeEquipe']); ?>">
+                                    <?php echo htmlspecialchars($ba_bec_team['nomEquipe']); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>

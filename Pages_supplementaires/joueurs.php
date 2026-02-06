@@ -3,7 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
 
-require_once 'header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
 sql_connect();
 
@@ -15,27 +15,12 @@ try {
             j.nomJoueur,
             j.urlPhotoJoueur,
             j.dateNaissance,
-            a.numMaillot,
-            p.libPoste,
-            s.libSaison,
-            e.libEquipe,
-            clubs.clubsPrecedents
+            j.numeroMaillot,
+            j.posteJoueur,
+            j.clubsPrecedents,
+            e.nomEquipe
         FROM JOUEUR j
-        LEFT JOIN (
-            SELECT numJoueur, MAX(numAffectation) AS latestAffectation
-            FROM JOUEUR_AFFECTATION
-            GROUP BY numJoueur
-        ) latest ON j.numJoueur = latest.numJoueur
-        LEFT JOIN JOUEUR_AFFECTATION a ON a.numAffectation = latest.latestAffectation
-        LEFT JOIN POSTE p ON a.numPoste = p.numPoste
-        LEFT JOIN SAISON s ON a.numSaison = s.numSaison
-        LEFT JOIN EQUIPE e ON a.numEquipe = e.numEquipe
-        LEFT JOIN (
-            SELECT jc.numJoueur, GROUP_CONCAT(c.nomClub ORDER BY c.nomClub SEPARATOR ', ') AS clubsPrecedents
-            FROM JOUEUR_CLUB jc
-            INNER JOIN CLUB c ON jc.numClub = c.numClub
-            GROUP BY jc.numJoueur
-        ) clubs ON clubs.numJoueur = j.numJoueur
+        LEFT JOIN EQUIPE e ON j.codeEquipe = e.codeEquipe
         ORDER BY j.nomJoueur ASC";
 
     $playersStmt = $DB->prepare($playersQuery);
@@ -79,6 +64,21 @@ function format_clubs(?string $clubs): string
     }
     return $clubs;
 }
+
+function format_poste(?int $poste): string
+{
+    $labels = [
+        1 => 'Meneur',
+        2 => 'Arrière',
+        3 => 'Ailier',
+        4 => 'Ailier fort',
+        5 => 'Pivot',
+    ];
+    if (!$poste) {
+        return 'Non renseigné';
+    }
+    return $labels[$poste] ?? ('Poste ' . $poste);
+}
 ?>
 
 <section class="club-page">
@@ -100,14 +100,13 @@ function format_clubs(?string $clubs): string
                         <h2 class="club-card-title">
                             <?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>
                         </h2>
-                        <p class="club-card-meta">Numéro : <?php echo htmlspecialchars($player['numMaillot'] ?? 'Non renseigné'); ?></p>
-                        <p class="club-card-meta">Poste : <?php echo htmlspecialchars($player['libPoste'] ?? 'Non renseigné'); ?></p>
+                        <p class="club-card-meta">Numéro : <?php echo htmlspecialchars($player['numeroMaillot'] ?? 'Non renseigné'); ?></p>
+                        <p class="club-card-meta">Poste : <?php echo htmlspecialchars(format_poste($player['posteJoueur'] ?? null)); ?></p>
                         <p class="club-card-meta">Âge : <?php echo htmlspecialchars(format_age($player['dateNaissance'])); ?></p>
-                        <p class="club-card-meta">Saison : <?php echo htmlspecialchars($player['libSaison'] ?? 'Non renseignée'); ?></p>
-                        <?php if (!empty($player['libEquipe'])) : ?>
-                            <p class="club-card-meta">Équipe : <?php echo htmlspecialchars($player['libEquipe']); ?></p>
+                        <?php if (!empty($player['nomEquipe'])) : ?>
+                            <p class="club-card-meta">Équipe : <?php echo htmlspecialchars($player['nomEquipe']); ?></p>
                         <?php endif; ?>
-                        <p class="club-card-meta">Clubs précédents : <?php echo htmlspecialchars(format_clubs($player['clubsPrecedents'])); ?></p>
+                        <p class="club-card-meta">Clubs précédents : <?php echo htmlspecialchars(format_clubs($player['clubsPrecedents'] ?? null)); ?></p>
                     </div>
                 </article>
             <?php endforeach; ?>
@@ -115,4 +114,4 @@ function format_clubs(?string $clubs): string
     <?php endif; ?>
 </section>
 
-<?php require_once 'footer.php'; ?>
+<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php'; ?>

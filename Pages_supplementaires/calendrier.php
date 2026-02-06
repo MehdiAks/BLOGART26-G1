@@ -5,7 +5,7 @@ $pageStyles = [
     ROOT_URL . '/src/css/matches.css',
 ];
 
-require_once 'header.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
 sql_connect();
 
@@ -13,20 +13,16 @@ $becMatchesAvailable = true;
 
 $matchesQuery = "SELECT
         m.numMatch AS numMatch,
-        c.libCompetition AS competition,
         m.dateMatch AS matchDate,
         m.heureMatch AS matchTime,
         m.lieuMatch AS location,
-        COALESCE(home_team.libEquipe, home_part.nomEquipeAdverse) AS teamHome,
-        COALESCE(away_team.libEquipe, away_part.nomEquipeAdverse) AS teamAway,
-        home_part.score AS scoreHome,
-        away_part.score AS scoreAway
+        m.scoreBec AS scoreBec,
+        m.scoreAdversaire AS scoreAdversaire,
+        m.clubAdversaire AS clubAdversaire,
+        m.numEquipeAdverse AS numEquipeAdverse,
+        e.nomEquipe AS teamName
     FROM `MATCH` m
-    INNER JOIN COMPETITION c ON m.numCompetition = c.numCompetition
-    LEFT JOIN MATCH_PARTICIPANT home_part ON m.numMatch = home_part.numMatch AND home_part.cote = 'domicile'
-    LEFT JOIN MATCH_PARTICIPANT away_part ON m.numMatch = away_part.numMatch AND away_part.cote = 'exterieur'
-    LEFT JOIN EQUIPE home_team ON home_part.numEquipe = home_team.numEquipe
-    LEFT JOIN EQUIPE away_team ON away_part.numEquipe = away_team.numEquipe
+    INNER JOIN EQUIPE e ON m.codeEquipe = e.codeEquipe
     WHERE m.dateMatch BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
     ORDER BY m.dateMatch ASC, m.heureMatch ASC";
 $lastUpdateQuery = "SELECT MAX(dateMatch) AS lastUpdate FROM `MATCH`";
@@ -40,35 +36,38 @@ try {
     $becMatchesAvailable = false;
 }
 
-$clubIdentifiers = [
-    'bec',
-    'bordeaux',
-    'etudiant',
-];
-
-$resolveClubSide = static function (array $match) use ($clubIdentifiers): string {
-    $home = (string) ($match['teamHome'] ?? '');
-    $away = (string) ($match['teamAway'] ?? '');
-
-    foreach ($clubIdentifiers as $identifier) {
-        if ($identifier !== '' && stripos($home, $identifier) !== false) {
-            return 'home';
-        }
+$resolveMatchSide = static function (string $location): string {
+    $location = strtolower(trim($location));
+    if ($location === '') {
+        return 'home';
     }
-
-    foreach ($clubIdentifiers as $identifier) {
-        if ($identifier !== '' && stripos($away, $identifier) !== false) {
-            return 'away';
-        }
+    if (str_contains($location, 'exterieur') || str_contains($location, 'extérieur') || str_contains($location, 'away')) {
+        return 'away';
     }
+    if (str_contains($location, 'domicile') || str_contains($location, 'home') || str_contains($location, 'barbey')) {
+        return 'home';
+    }
+    return 'home';
+};
 
-    return 'unknown';
+$buildOpponent = static function (array $match): string {
+    $opponent = trim((string) ($match['clubAdversaire'] ?? ''));
+    if (!empty($match['numEquipeAdverse'])) {
+        $opponent = trim($opponent . ' ' . $match['numEquipeAdverse']);
+    }
+    return $opponent !== '' ? $opponent : 'Adversaire';
 };
 
 $homeMatches = [];
 $awayMatches = [];
 foreach ($allMatches as $ba_bec_match) {
-    $side = $resolveClubSide($ba_bec_match);
+    $side = $resolveMatchSide((string) ($ba_bec_match['location'] ?? ''));
+    $opponent = $buildOpponent($ba_bec_match);
+    $isHome = $side !== 'away';
+    $ba_bec_match['teamHome'] = $isHome ? ($ba_bec_match['teamName'] ?? 'BEC') : $opponent;
+    $ba_bec_match['teamAway'] = $isHome ? $opponent : ($ba_bec_match['teamName'] ?? 'BEC');
+    $ba_bec_match['scoreHome'] = $isHome ? ($ba_bec_match['scoreBec'] ?? null) : ($ba_bec_match['scoreAdversaire'] ?? null);
+    $ba_bec_match['scoreAway'] = $isHome ? ($ba_bec_match['scoreAdversaire'] ?? null) : ($ba_bec_match['scoreBec'] ?? null);
     if ($side === 'away') {
         $awayMatches[] = $ba_bec_match;
     } else {
@@ -106,7 +105,7 @@ $renderMatchCard = static function (array $ba_bec_match): string {
         <article class="match-card">
             <header class="match-card__header">
                 <div>
-                    <p class="match-card__competition"><?php echo htmlspecialchars($ba_bec_match['competition']); ?></p>
+                    <p class="match-card__competition"><?php echo htmlspecialchars($ba_bec_match['teamName'] ?? 'Match'); ?></p>
                     <p class="match-card__date">
                         <?php echo htmlspecialchars($displayDate); ?>
                         <?php if ($displayTime !== ''): ?>
@@ -188,5 +187,5 @@ $renderMatchCard = static function (array $ba_bec_match): string {
 </main>
 
 <?php
-require_once 'footer.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
 ?>

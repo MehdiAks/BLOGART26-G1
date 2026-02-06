@@ -16,15 +16,11 @@ sql_connect();
 $ba_bec_is_missing_table = [
     'JOUEUR' => sql_is_missing_table('JOUEUR'),
     'EQUIPE' => sql_is_missing_table('EQUIPE'),
-    'JOUEUR_AFFECTATION' => sql_is_missing_table('JOUEUR_AFFECTATION'),
-    'JOUEUR_AFFECTATION_POSTE' => sql_is_missing_table('JOUEUR_AFFECTATION_POSTE'),
 ];
 
 $ba_bec_missing_table_labels = [
     'JOUEUR' => 'JOUEUR',
     'EQUIPE' => 'EQUIPE',
-    'JOUEUR_AFFECTATION' => 'JOUEUR_AFFECTATION',
-    'JOUEUR_AFFECTATION_POSTE' => 'JOUEUR_AFFECTATION_POSTE',
 ];
 
 $ba_bec_players = [];
@@ -35,7 +31,7 @@ if (!in_array($ba_bec_sort, $ba_bec_allowed_sorts, true)) {
 }
 if (!in_array(true, $ba_bec_is_missing_table, true)) {
     $orderBy = $ba_bec_sort === 'equipe'
-        ? 'e.libEquipe IS NULL, e.libEquipe ASC, j.nomJoueur ASC, j.prenomJoueur ASC'
+        ? 'e.nomEquipe IS NULL, e.nomEquipe ASC, j.nomJoueur ASC, j.prenomJoueur ASC'
         : 'j.nomJoueur ASC, j.prenomJoueur ASC';
     $playersQuery = "SELECT
             j.numJoueur,
@@ -43,32 +39,28 @@ if (!in_array(true, $ba_bec_is_missing_table, true)) {
             j.nomJoueur,
             j.urlPhotoJoueur,
             j.dateNaissance,
-            a.numMaillot,
-            GROUP_CONCAT(DISTINCT p.libPoste ORDER BY p.libPoste SEPARATOR ', ') AS libPostes,
-            s.libSaison,
-            e.libEquipe
+            j.numeroMaillot,
+            j.posteJoueur,
+            e.nomEquipe
         FROM JOUEUR j
-        LEFT JOIN (
-            SELECT numJoueur, MAX(numAffectation) AS latestAffectation
-            FROM JOUEUR_AFFECTATION
-            GROUP BY numJoueur
-        ) latest ON j.numJoueur = latest.numJoueur
-        LEFT JOIN JOUEUR_AFFECTATION a ON a.numAffectation = latest.latestAffectation
-        LEFT JOIN JOUEUR_AFFECTATION_POSTE ap ON ap.numAffectation = a.numAffectation
-        LEFT JOIN POSTE p ON ap.numPoste = p.numPoste
-        LEFT JOIN SAISON s ON a.numSaison = s.numSaison
-        LEFT JOIN EQUIPE e ON a.numEquipe = e.numEquipe
-        GROUP BY
-            j.numJoueur,
-            j.prenomJoueur,
-            j.nomJoueur,
-            j.urlPhotoJoueur,
-            j.dateNaissance,
-            a.numMaillot,
-            s.libSaison,
-            e.libEquipe
+        LEFT JOIN EQUIPE e ON j.codeEquipe = e.codeEquipe
         ORDER BY {$orderBy}";
     $ba_bec_players = $DB->query($playersQuery)->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function format_poste(?int $poste): string
+{
+    $labels = [
+        1 => 'Meneur',
+        2 => 'Arrière',
+        3 => 'Ailier',
+        4 => 'Ailier fort',
+        5 => 'Pivot',
+    ];
+    if (!$poste) {
+        return 'Non renseigné';
+    }
+    return $labels[$poste] ?? ('Poste ' . $poste);
 }
 
 function format_age(?string $birthDate): string
@@ -127,7 +119,6 @@ function format_age(?string $birthDate): string
                             <th>Nom</th>
                             <th>Âge</th>
                             <th>Équipe</th>
-                            <th>Saison</th>
                             <th>Poste</th>
                             <th>Maillot</th>
                             <th>Actions</th>
@@ -137,10 +128,10 @@ function format_age(?string $birthDate): string
                         <?php $ba_bec_current_team = null; ?>
                         <?php foreach ($ba_bec_players as $ba_bec_player): ?>
                             <?php if ($ba_bec_sort === 'equipe') : ?>
-                                <?php $ba_bec_team_label = $ba_bec_player['libEquipe'] ?? 'Non affecté'; ?>
+                                <?php $ba_bec_team_label = $ba_bec_player['nomEquipe'] ?? 'Non affecté'; ?>
                                 <?php if ($ba_bec_team_label !== $ba_bec_current_team) : ?>
                                     <tr class="table-secondary">
-                                        <td colspan="8">
+                                        <td colspan="7">
                                             <strong><?php echo htmlspecialchars($ba_bec_team_label); ?></strong>
                                         </td>
                                     </tr>
@@ -151,10 +142,9 @@ function format_age(?string $birthDate): string
                                 <td><?php echo htmlspecialchars($ba_bec_player['numJoueur']); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_player['prenomJoueur'] . ' ' . $ba_bec_player['nomJoueur']); ?></td>
                                 <td><?php echo htmlspecialchars(format_age($ba_bec_player['dateNaissance'] ?? null)); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_player['libEquipe'] ?? 'Non affecté'); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_player['libSaison'] ?? 'Non renseignée'); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_player['libPostes'] ?? 'Non renseigné'); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_player['numMaillot'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($ba_bec_player['nomEquipe'] ?? 'Non affecté'); ?></td>
+                                <td><?php echo htmlspecialchars(format_poste($ba_bec_player['posteJoueur'] ?? null)); ?></td>
+                                <td><?php echo htmlspecialchars($ba_bec_player['numeroMaillot'] ?? ''); ?></td>
                                 <td>
                                     <a href="edit.php?numJoueur=<?php echo $ba_bec_player['numJoueur']; ?>" class="btn btn-primary">Edit</a>
                                     <a href="delete.php?numJoueur=<?php echo $ba_bec_player['numJoueur']; ?>" class="btn btn-danger">Delete</a>
