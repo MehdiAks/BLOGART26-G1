@@ -65,6 +65,7 @@ if (function_exists('sql_connect')) {
         </div>
     <?php endif; ?>
     <header class="site-header">
+        <div class="site-header-offset" aria-hidden="true"></div>
         <div class="container d-flex align-items-center justify-content-between flex-wrap gap-3 py-2">
             <a class="navbar-brand d-flex align-items-center gap-2" href="<?php echo ROOT_URL . '/index.php'; ?>">
                 <video class="site-logo" autoplay muted loop playsinline aria-label="BEC" poster="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo.png'; ?>">
