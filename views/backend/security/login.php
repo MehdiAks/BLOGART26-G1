@@ -1,4 +1,11 @@
 <?php
+/*
+ * Vue d'administration (authentification/inscription).
+ * - Cette page expose un formulaire de sécurité pour se connecter, s'inscrire ou réinitialiser un mot de passe.
+ * - Les champs sont validés via les attributs HTML et envoyés vers la route d'authentification dédiée.
+ * - Les messages d'aide guident l'utilisateur sur la procédure à suivre.
+ * - La vue reste passive : elle ne fait que collecter les données et afficher les retours serveur.
+ */
 
 
 session_start();

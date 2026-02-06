@@ -1,3 +1,12 @@
+<!--
+    /*
+     * Vue d'administration pour le module comments.
+     * - Ce gabarit présente l'interface HTML d'une action backend sans logique métier.
+     * - Les liens ou formulaires pointent vers les routes correspondantes du contrôleur.
+     * - Les sections structurent l'écran pour faciliter la navigation et la saisie.
+     * - Les classes utilitaires s'occupent de la mise en page et de la hiérarchie visuelle.
+     */
+-->
 <?
 include '../../../header.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirecmodo.php';

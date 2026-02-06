@@ -1,3 +1,13 @@
+<!--
+    /*
+     * Vue d'administration (suppression) pour le module statuts.
+     * - Cette page sert de confirmation avant la suppression définitive d'un enregistrement.
+     * - L'ID ciblé est transmis par la query string afin de récupérer les détails à afficher.
+     * - Le bouton principal déclenche la route de suppression côté backend.
+     * - Un lien de retour évite la suppression et renvoie vers la liste.
+     * - Aucun traitement métier n'est exécuté ici : la vue décrit seulement l'interface.
+     */
+-->
 <!-- Bootstrap form to create a new statut -->
 <div class="container">
     <div class="row">
