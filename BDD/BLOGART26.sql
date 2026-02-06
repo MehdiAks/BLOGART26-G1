@@ -566,37 +566,42 @@ CREATE TABLE `PERSONNEL` (
   `urlPhotoPersonnel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `emailPersonnel` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `telephonePersonnel` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `estCoach` tinyint(1) NOT NULL DEFAULT '0',
-  `numEquipeCoachee` int DEFAULT NULL,
+  `estStaffEquipe` tinyint(1) NOT NULL DEFAULT '0',
+  `numEquipeStaff` int DEFAULT NULL,
+  `roleStaffEquipe` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `estDirection` tinyint(1) NOT NULL DEFAULT '0',
+  `posteDirection` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `estCommissionTechnique` tinyint(1) NOT NULL DEFAULT '0',
+  `posteCommissionTechnique` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `estCommissionAnimation` tinyint(1) NOT NULL DEFAULT '0',
-  `estCommissionCommunication` tinyint(1) NOT NULL DEFAULT '0'
+  `posteCommissionAnimation` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `estCommissionCommunication` tinyint(1) NOT NULL DEFAULT '0',
+  `posteCommissionCommunication` varchar(160) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `PERSONNEL`
 --
 
-INSERT INTO `PERSONNEL` (`numPersonnel`, `prenomPersonnel`, `nomPersonnel`, `urlPhotoPersonnel`, `emailPersonnel`, `telephonePersonnel`, `estCoach`, `numEquipeCoachee`, `estDirection`, `estCommissionTechnique`, `estCommissionAnimation`, `estCommissionCommunication`) VALUES
-(1, 'Mehdi', 'Afankous', '/src/uploads/photos-benevoles/af.mehdi.jpeg', NULL, NULL, 0, NULL, 1, 0, 0, 0),
-(2, 'Alex', 'Martin', NULL, 'alex.martin@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(3, 'Camille', 'Durand', NULL, 'camille.durand@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(4, 'Yanis', 'Bernard', NULL, 'yanis.bernard@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(5, 'Lina', 'Lopez', NULL, 'coach.sg1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(6, 'Hugo', 'Petit', NULL, 'coach.sg2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(7, 'Sarah', 'Morel', NULL, 'coach.sg3@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(9, 'Chloé', 'Lefevre', NULL, 'coach.sf1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(10, 'Emma', 'Garnier', NULL, 'coach.sf2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(11, 'Lucas', 'Nguyen', NULL, 'coach.sf3@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(12, 'Marie', 'Blanc', NULL, 'commission1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(13, 'Nicolas', 'Faure', NULL, 'commission2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(14, 'Julie', 'Renard', '/src/uploads/photos-benevoles/re.julie.jpg', 'animation1@becbasket.test', NULL, 0, NULL, 0, 1, 0, 0),
-(15, 'Omar', 'Perrin', NULL, 'animation2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(16, 'Lea', 'Benoit', NULL, 'communication1@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(17, 'Theo', 'Carre', NULL, 'communication2@becbasket.test', NULL, 0, NULL, 0, 0, 0, 0),
-(18, 'Mehdi', 'Afankous', '/src/uploads/photos-benevoles/af.mehdi.jpeg', NULL, NULL, 0, NULL, 1, 0, 0, 0),
-(19, 'test', 'test', '/src/uploads/photos-benevoles/te.test.jpg', NULL, NULL, 0, NULL, 0, 1, 0, 0);
+INSERT INTO `PERSONNEL` (`numPersonnel`, `prenomPersonnel`, `nomPersonnel`, `urlPhotoPersonnel`, `emailPersonnel`, `telephonePersonnel`, `estStaffEquipe`, `numEquipeStaff`, `roleStaffEquipe`, `estDirection`, `posteDirection`, `estCommissionTechnique`, `posteCommissionTechnique`, `estCommissionAnimation`, `posteCommissionAnimation`, `estCommissionCommunication`, `posteCommissionCommunication`) VALUES
+(1, 'Mehdi', 'Afankous', '/src/uploads/photos-benevoles/af.mehdi.jpeg', NULL, NULL, 0, NULL, NULL, 1, NULL, 0, NULL, 0, NULL, 0, NULL),
+(2, 'Alex', 'Martin', NULL, 'alex.martin@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(3, 'Camille', 'Durand', NULL, 'camille.durand@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(4, 'Yanis', 'Bernard', NULL, 'yanis.bernard@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(5, 'Lina', 'Lopez', NULL, 'coach.sg1@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(6, 'Hugo', 'Petit', NULL, 'coach.sg2@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(7, 'Sarah', 'Morel', NULL, 'coach.sg3@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(9, 'Chloé', 'Lefevre', NULL, 'coach.sf1@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(10, 'Emma', 'Garnier', NULL, 'coach.sf2@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(11, 'Lucas', 'Nguyen', NULL, 'coach.sf3@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(12, 'Marie', 'Blanc', NULL, 'commission1@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(13, 'Nicolas', 'Faure', NULL, 'commission2@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(14, 'Julie', 'Renard', '/src/uploads/photos-benevoles/re.julie.jpg', 'animation1@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 1, NULL, 0, NULL, 0, NULL),
+(15, 'Omar', 'Perrin', NULL, 'animation2@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(16, 'Lea', 'Benoit', NULL, 'communication1@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(17, 'Theo', 'Carre', NULL, 'communication2@becbasket.test', NULL, 0, NULL, NULL, 0, NULL, 0, NULL, 0, NULL, 0, NULL),
+(18, 'Mehdi', 'Afankous', '/src/uploads/photos-benevoles/af.mehdi.jpeg', NULL, NULL, 0, NULL, NULL, 1, NULL, 0, NULL, 0, NULL, 0, NULL),
+(19, 'test', 'test', '/src/uploads/photos-benevoles/te.test.jpg', NULL, NULL, 0, NULL, NULL, 0, NULL, 1, NULL, 0, NULL, 0, NULL);
 
 -- --------------------------------------------------------
 

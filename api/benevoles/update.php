@@ -20,12 +20,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_numPersonnel = ctrlSaisies($_POST['numPersonnel'] ?? '');
     $ba_bec_prenomPersonnel = ctrlSaisies($_POST['prenomPersonnel'] ?? '');
     $ba_bec_nomPersonnel = ctrlSaisies($_POST['nomPersonnel'] ?? '');
-    $ba_bec_estCoach = !empty($_POST['estCoach']) ? 1 : 0;
-    $ba_bec_numEquipeCoachee = ctrlSaisies($_POST['numEquipeCoachee'] ?? '');
+    $ba_bec_estStaffEquipe = !empty($_POST['estStaffEquipe']) ? 1 : 0;
+    $ba_bec_numEquipeStaff = ctrlSaisies($_POST['numEquipeStaff'] ?? '');
+    $ba_bec_roleStaffEquipe = ctrlSaisies($_POST['roleStaffEquipe'] ?? '');
     $ba_bec_estDirection = !empty($_POST['estDirection']) ? 1 : 0;
+    $ba_bec_posteDirection = ctrlSaisies($_POST['posteDirection'] ?? '');
     $ba_bec_estCommissionTechnique = !empty($_POST['estCommissionTechnique']) ? 1 : 0;
+    $ba_bec_posteCommissionTechnique = ctrlSaisies($_POST['posteCommissionTechnique'] ?? '');
     $ba_bec_estCommissionAnimation = !empty($_POST['estCommissionAnimation']) ? 1 : 0;
+    $ba_bec_posteCommissionAnimation = ctrlSaisies($_POST['posteCommissionAnimation'] ?? '');
     $ba_bec_estCommissionCommunication = !empty($_POST['estCommissionCommunication']) ? 1 : 0;
+    $ba_bec_posteCommissionCommunication = ctrlSaisies($_POST['posteCommissionCommunication'] ?? '');
 
     $ba_bec_photoPath = null;
 
@@ -103,12 +108,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ba_bec_errors[] = 'Le prénom et le nom sont obligatoires.';
     }
 
-    if ($ba_bec_estCoach && $ba_bec_numEquipeCoachee === '') {
-        $ba_bec_errors[] = 'Veuillez sélectionner une équipe coachée.';
+    if ($ba_bec_estStaffEquipe && $ba_bec_numEquipeStaff === '') {
+        $ba_bec_errors[] = 'Veuillez sélectionner une équipe rattachée.';
+    }
+
+    if ($ba_bec_estStaffEquipe && $ba_bec_roleStaffEquipe === '') {
+        $ba_bec_errors[] = 'Veuillez préciser le rôle du staff équipe.';
+    }
+
+    if ($ba_bec_estDirection && $ba_bec_posteDirection === '') {
+        $ba_bec_errors[] = 'Veuillez préciser le poste en direction.';
+    }
+
+    if ($ba_bec_estCommissionTechnique && $ba_bec_posteCommissionTechnique === '') {
+        $ba_bec_errors[] = 'Veuillez préciser le poste en commission technique.';
+    }
+
+    if ($ba_bec_estCommissionAnimation && $ba_bec_posteCommissionAnimation === '') {
+        $ba_bec_errors[] = 'Veuillez préciser le poste en commission animation.';
+    }
+
+    if ($ba_bec_estCommissionCommunication && $ba_bec_posteCommissionCommunication === '') {
+        $ba_bec_errors[] = 'Veuillez préciser le poste en commission communication.';
     }
 
     if (empty($ba_bec_errors)) {
-        if ($ba_bec_estCoach) {
+        if ($ba_bec_estStaffEquipe) {
             $ba_bec_estCommissionTechnique = 1;
         }
         if ($ba_bec_photoPath === null) {
@@ -116,11 +141,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ba_bec_photoPath = $ba_bec_existing[0]['urlPhotoPersonnel'] ?? null;
         }
         $ba_bec_photoValue = $ba_bec_photoPath !== null ? "'" . $ba_bec_photoPath . "'" : 'NULL';
-        $ba_bec_equipeValue = $ba_bec_numEquipeCoachee !== '' ? "'" . (int) $ba_bec_numEquipeCoachee . "'" : 'NULL';
-        if (!$ba_bec_estCoach) {
+        $ba_bec_equipeValue = $ba_bec_numEquipeStaff !== '' ? "'" . (int) $ba_bec_numEquipeStaff . "'" : 'NULL';
+        if (!$ba_bec_estStaffEquipe) {
             $ba_bec_equipeValue = 'NULL';
         }
-        $ba_bec_updates = "prenomPersonnel = '$ba_bec_prenomPersonnel', nomPersonnel = '$ba_bec_nomPersonnel', urlPhotoPersonnel = $ba_bec_photoValue, estCoach = '$ba_bec_estCoach', numEquipeCoachee = $ba_bec_equipeValue, estDirection = '$ba_bec_estDirection', estCommissionTechnique = '$ba_bec_estCommissionTechnique', estCommissionAnimation = '$ba_bec_estCommissionAnimation', estCommissionCommunication = '$ba_bec_estCommissionCommunication'";
+        $ba_bec_roleStaffValue = $ba_bec_roleStaffEquipe !== '' ? "'" . $ba_bec_roleStaffEquipe . "'" : 'NULL';
+        if (!$ba_bec_estStaffEquipe) {
+            $ba_bec_roleStaffValue = 'NULL';
+        }
+        $ba_bec_posteDirectionValue = $ba_bec_posteDirection !== '' ? "'" . $ba_bec_posteDirection . "'" : 'NULL';
+        $ba_bec_posteCommissionTechniqueValue = $ba_bec_posteCommissionTechnique !== '' ? "'" . $ba_bec_posteCommissionTechnique . "'" : 'NULL';
+        $ba_bec_posteCommissionAnimationValue = $ba_bec_posteCommissionAnimation !== '' ? "'" . $ba_bec_posteCommissionAnimation . "'" : 'NULL';
+        $ba_bec_posteCommissionCommunicationValue = $ba_bec_posteCommissionCommunication !== '' ? "'" . $ba_bec_posteCommissionCommunication . "'" : 'NULL';
+        if (!$ba_bec_estDirection) {
+            $ba_bec_posteDirectionValue = 'NULL';
+        }
+        if (!$ba_bec_estCommissionTechnique) {
+            $ba_bec_posteCommissionTechniqueValue = 'NULL';
+        }
+        if (!$ba_bec_estCommissionAnimation) {
+            $ba_bec_posteCommissionAnimationValue = 'NULL';
+        }
+        if (!$ba_bec_estCommissionCommunication) {
+            $ba_bec_posteCommissionCommunicationValue = 'NULL';
+        }
+        $ba_bec_updates = "prenomPersonnel = '$ba_bec_prenomPersonnel', nomPersonnel = '$ba_bec_nomPersonnel', urlPhotoPersonnel = $ba_bec_photoValue, estStaffEquipe = '$ba_bec_estStaffEquipe', numEquipeStaff = $ba_bec_equipeValue, roleStaffEquipe = $ba_bec_roleStaffValue, estDirection = '$ba_bec_estDirection', posteDirection = $ba_bec_posteDirectionValue, estCommissionTechnique = '$ba_bec_estCommissionTechnique', posteCommissionTechnique = $ba_bec_posteCommissionTechniqueValue, estCommissionAnimation = '$ba_bec_estCommissionAnimation', posteCommissionAnimation = $ba_bec_posteCommissionAnimationValue, estCommissionCommunication = '$ba_bec_estCommissionCommunication', posteCommissionCommunication = $ba_bec_posteCommissionCommunicationValue";
         sql_update('PERSONNEL', $ba_bec_updates, "numPersonnel = '$ba_bec_numPersonnel'");
         header('Location: ../../views/backend/benevoles/list.php');
         exit();
