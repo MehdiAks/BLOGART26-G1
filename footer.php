@@ -144,7 +144,7 @@
             let currentY = 0;
             let targetX = 0;
             let targetY = 0;
-            const offset = { x: 18, y: 18 };
+            const offset = { x: 0, y: 0 };
             let isVisible = false;
 
             const update = () => {
