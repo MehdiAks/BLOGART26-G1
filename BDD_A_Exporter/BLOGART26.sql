@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:8889
--- Généré le : ven. 06 fév. 2026 à 14:35
+-- Généré le : ven. 06 fév. 2026 à 14:50
 -- Version du serveur : 8.0.44
 -- Version de PHP : 8.3.28
 
@@ -53,16 +53,16 @@ INSERT INTO `ARTICLE` (`numArt`, `dtCreaArt`, `dtMajArt`, `libTitrArt`, `libChap
 (18, '2026-02-06 10:50:00', '2026-02-06 15:08:58', 'Les jeunes du BEC en pleine progression', 'Les équipes jeunes continuent d’apprendre et de progresser match après match.', 'Un week-end riche en apprentissage.', 'Tout au long du week-end, les jeunes licenciés ont disputé plusieurs rencontres avec sérieux et implication.', 'Former dans la durée', 'Les coachs ont mis l’accent sur les fondamentaux, la communication et le respect des consignes collectives.', 'Un cadre rassurant', 'Parents et bénévoles ont accompagné les équipes, créant une ambiance positive et encourageante.', 'Ces rencontres confirment l’importance de la formation au sein du BEC.', 'imgArt2.jpg', 2),
 (19, '2026-02-06 11:00:00', '2026-02-06 15:09:13', 'Week-end décisif pour les SF1', 'Les Séniors Filles 1 s’apprêtent à disputer une rencontre importante.', 'Un match clé pour le classement.', 'Les SF1 abordent ce week-end avec sérieux et détermination face à un adversaire direct.', 'Une préparation rigoureuse', 'Le groupe travaille avec intensité à l’entraînement afin d’aborder cette rencontre dans les meilleures conditions.', 'Un soutien attendu', 'Le public aura un rôle essentiel pour pousser les joueuses et créer une ambiance favorable.', 'Un rendez-vous important pour la suite de la saison.', 'imgArt3.jpg', 3),
 (20, '2026-02-06 11:00:00', '2026-02-06 15:09:18', 'Week-end décisif pour les SF1', 'Les Séniors Filles 1 s’apprêtent à disputer une rencontre importante.', 'Un match clé pour le classement.', 'Les SF1 abordent ce week-end avec sérieux et détermination face à un adversaire direct.', 'Une préparation rigoureuse', 'Le groupe travaille avec intensité à l’entraînement afin d’aborder cette rencontre dans les meilleures conditions.', 'Un soutien attendu', 'Le public aura un rôle essentiel pour pousser les joueuses et créer une ambiance favorable.', 'Un rendez-vous important pour la suite de la saison.', 'imgArt4.jpg', 3),
-(31, '2026-02-06 15:00:00', NULL, 'Soirée match au BEC : une ambiance engagée', 'Le gymnase a vibré pour une soirée de championnat rythmée par l’intensité et le collectif.', 'Une soirée où le collectif a fait la différence.', 'Vendredi soir, joueurs, staff et supporters se sont retrouvés pour une rencontre disputée et très suivie.', 'Une intensité constante', 'Le BEC a su rester solide grâce à une défense active et une vraie communication entre les lignes.', 'Un club uni', 'Après le match, l’esprit BEC s’est prolongé : échanges, remerciements et convivialité autour du groupe.', 'Une belle soirée qui confirme la force du club quand tout le monde avance ensemble.', 'src/uploads/soiree_match.jpg', 1),
-(32, '2026-02-06 15:05:00', NULL, 'Tournoi intergénérationnel : un moment de partage', 'Le BEC a réuni plusieurs générations sur le terrain dans un esprit festif et bienveillant.', 'Le basket comme lien entre générations.', 'Le temps d’un tournoi, enfants, parents, licenciés et bénévoles ont joué ensemble dans une ambiance conviviale.', 'Un format accessible', 'Les mini-matchs ont permis à chacun de participer, quel que soit le niveau, avec l’envie de partager.', 'Des souvenirs communs', 'Au-delà du jeu, l’événement a renforcé la cohésion et créé de nouveaux souvenirs pour la communauté BEC.', 'Merci à tous : ce type de rendez-vous fait vivre les valeurs du club au quotidien.', 'src/uploads/tournoi_inter.jpg', 1),
-(33, '2026-02-06 15:10:00', NULL, 'Freddy Dogoum : une référence pour les SF1', 'Coach des SF1, Freddy Dogoum incarne l’exigence, la stabilité et la progression collective.', 'Un coach engagé au service du collectif.', 'À la tête des SF1, Freddy construit une dynamique de travail structurée, exigeante et tournée vers la progression.', 'Une méthode claire', 'Rigueur, discipline et confiance : le groupe avance avec des repères solides et une préparation régulière.', 'Une équipe soudée', 'Le coach valorise le collectif : chaque joueuse a un rôle, et l’unité reste la base des performances.', 'Un pilier du projet SF1, moteur de la dynamique et repère pour son groupe.', 'src/uploads/freddy_dogoum.jpg', 2),
-(34, '2026-02-06 15:15:00', NULL, 'Les jeunes du BEC en progression', 'Les équipes jeunes continuent d’apprendre et de construire des repères match après match.', 'Un week-end riche en apprentissages.', 'Sur les dernières rencontres, les jeunes ont montré de l’envie, du sérieux et une belle implication sur les consignes.', 'Former dans la durée', 'Les coachs travaillent les fondamentaux : placements, passes, communication et effort défensif.', 'Une ambiance positive', 'Parents et bénévoles accompagnent les équipes et créent un cadre motivant qui aide à progresser.', 'Ces matchs confirment l’importance de la formation et du plaisir de jouer au BEC.', 'src/uploads/jeunes_progression.jpg', 3),
-(35, '2026-02-06 15:20:00', NULL, 'Le BEC remercie ses bénévoles', 'Derrière chaque match, une équipe de l’ombre s’active : accueil, table, buvette et logistique.', 'Merci à celles et ceux qui rendent tout possible.', 'Chaque week-end, des bénévoles assurent l’organisation et permettent aux équipes de jouer dans de bonnes conditions.', 'Un rôle essentiel', 'Sans eux, pas de matchs fluides, pas d’accueil, pas d’ambiance : leur présence est indispensable.', 'Un esprit club', 'Leur engagement renforce le lien entre générations et donne au BEC son identité conviviale.', 'Un grand merci : votre implication fait grandir le club au quotidien.', 'src/uploads/benevoles.jpg', 2),
-(36, '2026-02-06 15:25:00', NULL, 'Week-end à domicile : le club en action', 'Plusieurs rencontres se sont enchaînées au gymnase avec une organisation solide et une belle ambiance.', 'Un week-end 100% vie de club.', 'Entre l’accueil, la table de marque et la buvette, le BEC a mobilisé beaucoup de monde pour faire vivre le gymnase.', 'Une logistique bien rodée', 'Grâce à l’implication de chacun, les rencontres se sont déroulées dans de bonnes conditions.', 'Une énergie collective', 'Ces journées rapprochent les équipes, les familles et les bénévoles autour d’un même objectif.', 'Le BEC remercie toutes les personnes mobilisées sur ce week-end chargé.', 'src/uploads/weekend_domicile.jpg', 1),
-(37, '2026-02-06 15:30:00', NULL, 'Focus : la défense, base de nos progrès', 'Le BEC met l’accent sur la régularité défensive pour gagner en maîtrise et en stabilité.', 'Construire par l’effort et la discipline.', 'Sur cette période, les équipes travaillent la défense : attitude, entraide et communication pour mieux contrôler le jeu.', 'Un socle collectif', 'Une défense solide permet de rester dans le match, même lorsque l’adresse baisse ou que le rythme change.', 'Des repères à ancrer', 'Répéter les fondamentaux à l’entraînement aide à transformer les efforts en automatismes en match.', 'La progression se construit dans la régularité, match après match.', 'src/uploads/focus_defense.jpg', 3),
-(38, '2026-02-06 15:35:00', NULL, 'Une victoire construite ensemble', 'Une performance collective a permis au BEC de décrocher un succès important à domicile.', 'Une victoire qui récompense le collectif.', 'Portée par l’ambiance, l’équipe a montré de la solidarité et une vraie volonté de jouer juste sur les temps forts.', 'Rester solides', 'Le groupe a su répondre présent en défense et gérer les moments clés avec plus de calme et de discipline.', 'Le public au rendez-vous', 'Les tribunes ont apporté une énergie précieuse, notamment dans les passages décisifs du match.', 'Un succès encourageant, qui donne confiance et confirme la dynamique du groupe.', 'src/uploads/victoire_collectif.jpg', 1),
-(39, '2026-02-06 15:40:00', NULL, 'Un clin d’œil : quand le basket rassemble', 'Parfois, un simple moment au gymnase résume l’esprit du BEC : sourire, respect et partage.', 'Ces instants simples font la force du club.', 'Entre deux matchs, un échange, un encouragement ou une discussion rappelle que le basket dépasse le score.', 'Une ambiance familiale', 'Au BEC, joueurs, familles et bénévoles partagent un même espace, avec une vraie proximité.', 'Une identité forte', 'Ces petits moments créent des souvenirs et renforcent le sentiment d’appartenance à la communauté du club.', 'Le BEC, c’est aussi ça : du sport, du lien, et une énergie collective qui rassemble.', 'src/uploads/clin_oeil.jpg', 4),
-(40, '2026-02-06 15:45:00', NULL, 'Un match formateur malgré le résultat', 'Malgré une rencontre compliquée, le BEC retient une attitude solide et des axes de progrès clairs.', 'Apprendre pour mieux rebondir.', 'Le match n’a pas tourné comme prévu, mais le groupe est resté uni et n’a jamais lâché l’effort.', 'Garder l’état d’esprit', 'Dans les moments difficiles, la solidarité et la communication restent des points essentiels pour progresser.', 'Se remettre au travail', 'Cette rencontre met en lumière des points à corriger, qui seront travaillés dès les prochaines séances.', 'Chaque match compte : l’objectif est de grandir, ensemble, tout au long de la saison.', 'src/uploads/match_formateur.jpg', 3);
+(31, '2026-02-06 15:00:00', '2026-02-06 15:46:33', 'Soirée match au BEC : une ambiance engagée', 'Le gymnase a vibré pour une soirée de championnat rythmée par l’intensité et le collectif.', 'Une soirée où le collectif a fait la différence.', 'Vendredi soir, joueurs, staff et supporters se sont retrouvés pour une rencontre disputée et très suivie.', 'Une intensité constante', 'Le BEC a su rester solide grâce à une défense active et une vraie communication entre les lignes.', 'Un club uni', 'Après le match, l’esprit BEC s’est prolongé : échanges, remerciements et convivialité autour du groupe.', 'Une belle soirée qui confirme la force du club quand tout le monde avance ensemble.', 'imgArt5.jpg', 1),
+(32, '2026-02-06 15:05:00', '2026-02-06 15:46:39', 'Tournoi intergénérationnel : un moment de partage', 'Le BEC a réuni plusieurs générations sur le terrain dans un esprit festif et bienveillant.', 'Le basket comme lien entre générations.', 'Le temps d’un tournoi, enfants, parents, licenciés et bénévoles ont joué ensemble dans une ambiance conviviale.', 'Un format accessible', 'Les mini-matchs ont permis à chacun de participer, quel que soit le niveau, avec l’envie de partager.', 'Des souvenirs communs', 'Au-delà du jeu, l’événement a renforcé la cohésion et créé de nouveaux souvenirs pour la communauté BEC.', 'Merci à tous : ce type de rendez-vous fait vivre les valeurs du club au quotidien.', 'imgArt6.jpg', 1),
+(33, '2026-02-06 15:10:00', '2026-02-06 15:46:44', 'Freddy Dogoum : une référence pour les SF1', 'Coach des SF1, Freddy Dogoum incarne l’exigence, la stabilité et la progression collective.', 'Un coach engagé au service du collectif.', 'À la tête des SF1, Freddy construit une dynamique de travail structurée, exigeante et tournée vers la progression.', 'Une méthode claire', 'Rigueur, discipline et confiance : le groupe avance avec des repères solides et une préparation régulière.', 'Une équipe soudée', 'Le coach valorise le collectif : chaque joueuse a un rôle, et l’unité reste la base des performances.', 'Un pilier du projet SF1, moteur de la dynamique et repère pour son groupe.', 'imgArt7.jpg', 2),
+(34, '2026-02-06 15:15:00', '2026-02-06 15:46:49', 'Les jeunes du BEC en progression', 'Les équipes jeunes continuent d’apprendre et de construire des repères match après match.', 'Un week-end riche en apprentissages.', 'Sur les dernières rencontres, les jeunes ont montré de l’envie, du sérieux et une belle implication sur les consignes.', 'Former dans la durée', 'Les coachs travaillent les fondamentaux : placements, passes, communication et effort défensif.', 'Une ambiance positive', 'Parents et bénévoles accompagnent les équipes et créent un cadre motivant qui aide à progresser.', 'Ces matchs confirment l’importance de la formation et du plaisir de jouer au BEC.', 'imgArt8.jpg', 3),
+(35, '2026-02-06 15:20:00', '2026-02-06 15:46:53', 'Le BEC remercie ses bénévoles', 'Derrière chaque match, une équipe de l’ombre s’active : accueil, table, buvette et logistique.', 'Merci à celles et ceux qui rendent tout possible.', 'Chaque week-end, des bénévoles assurent l’organisation et permettent aux équipes de jouer dans de bonnes conditions.', 'Un rôle essentiel', 'Sans eux, pas de matchs fluides, pas d’accueil, pas d’ambiance : leur présence est indispensable.', 'Un esprit club', 'Leur engagement renforce le lien entre générations et donne au BEC son identité conviviale.', 'Un grand merci : votre implication fait grandir le club au quotidien.', 'imgArt9.jpg', 2),
+(36, '2026-02-06 15:25:00', '2026-02-06 15:46:58', 'Week-end à domicile : le club en action', 'Plusieurs rencontres se sont enchaînées au gymnase avec une organisation solide et une belle ambiance.', 'Un week-end 100% vie de club.', 'Entre l’accueil, la table de marque et la buvette, le BEC a mobilisé beaucoup de monde pour faire vivre le gymnase.', 'Une logistique bien rodée', 'Grâce à l’implication de chacun, les rencontres se sont déroulées dans de bonnes conditions.', 'Une énergie collective', 'Ces journées rapprochent les équipes, les familles et les bénévoles autour d’un même objectif.', 'Le BEC remercie toutes les personnes mobilisées sur ce week-end chargé.', 'imgArt10.jpg', 1),
+(37, '2026-02-06 15:30:00', '2026-02-06 15:47:02', 'Focus : la défense, base de nos progrès', 'Le BEC met l’accent sur la régularité défensive pour gagner en maîtrise et en stabilité.', 'Construire par l’effort et la discipline.', 'Sur cette période, les équipes travaillent la défense : attitude, entraide et communication pour mieux contrôler le jeu.', 'Un socle collectif', 'Une défense solide permet de rester dans le match, même lorsque l’adresse baisse ou que le rythme change.', 'Des repères à ancrer', 'Répéter les fondamentaux à l’entraînement aide à transformer les efforts en automatismes en match.', 'La progression se construit dans la régularité, match après match.', 'imgArt11.jpg', 3),
+(38, '2026-02-06 15:35:00', '2026-02-06 15:47:10', 'Une victoire construite ensemble', 'Une performance collective a permis au BEC de décrocher un succès important à domicile.', 'Une victoire qui récompense le collectif.', 'Portée par l’ambiance, l’équipe a montré de la solidarité et une vraie volonté de jouer juste sur les temps forts.', 'Rester solides', 'Le groupe a su répondre présent en défense et gérer les moments clés avec plus de calme et de discipline.', 'Le public au rendez-vous', 'Les tribunes ont apporté une énergie précieuse, notamment dans les passages décisifs du match.', 'Un succès encourageant, qui donne confiance et confirme la dynamique du groupe.', 'imgArt12.jpg', 1),
+(39, '2026-02-06 15:40:00', '2026-02-06 15:47:14', 'Un clin d’œil : quand le basket rassemble', 'Parfois, un simple moment au gymnase résume l’esprit du BEC : sourire, respect et partage.', 'Ces instants simples font la force du club.', 'Entre deux matchs, un échange, un encouragement ou une discussion rappelle que le basket dépasse le score.', 'Une ambiance familiale', 'Au BEC, joueurs, familles et bénévoles partagent un même espace, avec une vraie proximité.', 'Une identité forte', 'Ces petits moments créent des souvenirs et renforcent le sentiment d’appartenance à la communauté du club.', 'Le BEC, c’est aussi ça : du sport, du lien, et une énergie collective qui rassemble.', 'imgArt13.jpg', 4),
+(40, '2026-02-06 15:45:00', '2026-02-06 15:47:18', 'Un match formateur malgré le résultat', 'Malgré une rencontre compliquée, le BEC retient une attitude solide et des axes de progrès clairs.', 'Apprendre pour mieux rebondir.', 'Le match n’a pas tourné comme prévu, mais le groupe est resté uni et n’a jamais lâché l’effort.', 'Garder l’état d’esprit', 'Dans les moments difficiles, la solidarité et la communication restent des points essentiels pour progresser.', 'Se remettre au travail', 'Cette rencontre met en lumière des points à corriger, qui seront travaillés dès les prochaines séances.', 'Chaque match compte : l’objectif est de grandir, ensemble, tout au long de la saison.', 'imgArt14.jpg', 3);
 
 -- --------------------------------------------------------
 
@@ -122,6 +122,72 @@ CREATE TABLE `COMMENT` (
   `numArt` int NOT NULL,
   `numMemb` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+--
+-- Déchargement des données de la table `COMMENT`
+--
+
+INSERT INTO `COMMENT` (`numCom`, `dtCreaCom`, `libCom`, `dtModCom`, `attModOK`, `notifComKOAff`, `dtDelLogCom`, `delLogiq`, `numArt`, `numMemb`) VALUES
+(305, '2026-02-06 18:00:00', 'Très bon résumé, on sent l’énergie du club.', NULL, 1, NULL, NULL, 0, 37, 7),
+(306, '2026-02-06 18:01:00', 'Très bon résumé, on sent l’énergie du club.', NULL, 1, NULL, NULL, 0, 18, 7),
+(307, '2026-02-06 18:02:00', 'Super ambiance, ça fait plaisir.', NULL, 1, NULL, NULL, 0, 17, 7),
+(308, '2026-02-06 18:03:00', 'Force aux joueurs/joueuses pour le prochain match !', NULL, 1, NULL, NULL, 0, 38, 8),
+(309, '2026-02-06 18:04:00', 'Contenu nickel, merci !', NULL, 1, NULL, NULL, 0, 31, 8),
+(310, '2026-02-06 18:05:00', 'Super article, merci pour le partage !', NULL, 1, NULL, NULL, 0, 20, 8),
+(311, '2026-02-06 18:06:00', 'Merci aux bénévoles, indispensable.', NULL, 1, NULL, NULL, 0, 20, 9),
+(312, '2026-02-06 18:07:00', 'Allez le BEC !', NULL, 1, NULL, NULL, 0, 19, 9),
+(313, '2026-02-06 18:08:00', 'Top ! On retrouve bien l’esprit collectif.', NULL, 1, NULL, NULL, 0, 38, 9),
+(314, '2026-02-06 18:09:00', 'Bravo à l’équipe, continuez comme ça.', NULL, 1, NULL, NULL, 0, 18, 10),
+(315, '2026-02-06 18:10:00', 'Belle dynamique, hâte de voir la suite !', NULL, 1, NULL, NULL, 0, 37, 10),
+(316, '2026-02-06 18:11:00', 'Ça donne envie de venir au gymnase.', NULL, 1, NULL, NULL, 0, 33, 10),
+(317, '2026-02-06 18:12:00', 'Super ambiance, ça fait plaisir.', NULL, 1, NULL, NULL, 0, 31, 11),
+(318, '2026-02-06 18:13:00', 'Super article, merci pour le partage !', NULL, 1, NULL, NULL, 0, 20, 11),
+(319, '2026-02-06 18:14:00', 'Top ! On retrouve bien l’esprit collectif.', NULL, 1, NULL, NULL, 0, 18, 11),
+(320, '2026-02-06 18:15:00', 'Article clair et agréable à lire.', NULL, 1, NULL, NULL, 0, 39, 12),
+(321, '2026-02-06 18:16:00', 'Très bon résumé, on sent l’énergie du club.', NULL, 1, NULL, NULL, 0, 17, 12),
+(322, '2026-02-06 18:17:00', 'Contenu nickel, merci !', NULL, 1, NULL, NULL, 0, 33, 12),
+(323, '2026-02-06 18:18:00', 'Belle dynamique, hâte de voir la suite !', NULL, 1, NULL, NULL, 0, 40, 13),
+(324, '2026-02-06 18:19:00', 'Merci aux bénévoles, indispensable.', NULL, 1, NULL, NULL, 0, 34, 13),
+(325, '2026-02-06 18:20:00', 'Super article, merci pour le partage !', NULL, 1, NULL, NULL, 0, 20, 13),
+(326, '2026-02-06 18:21:00', 'Ça donne envie de venir au gymnase.', NULL, 1, NULL, NULL, 0, 37, 14),
+(327, '2026-02-06 18:22:00', 'Super ambiance, ça fait plaisir.', NULL, 1, NULL, NULL, 0, 35, 14),
+(328, '2026-02-06 18:23:00', 'Bravo à l’équipe, continuez comme ça.', NULL, 1, NULL, NULL, 0, 19, 14),
+(329, '2026-02-06 18:24:00', 'Contenu nickel, merci !', NULL, 1, NULL, NULL, 0, 40, 15),
+(330, '2026-02-06 18:25:00', 'Allez le BEC !', NULL, 1, NULL, NULL, 0, 31, 15),
+(331, '2026-02-06 18:26:00', 'Top ! On retrouve bien l’esprit collectif.', NULL, 1, NULL, NULL, 0, 32, 15),
+(332, '2026-02-06 18:27:00', 'Très bon résumé, on sent l’énergie du club.', NULL, 1, NULL, NULL, 0, 35, 16),
+(333, '2026-02-06 18:28:00', 'Super article, merci pour le partage !', NULL, 1, NULL, NULL, 0, 40, 16),
+(334, '2026-02-06 18:29:00', 'Article clair et agréable à lire.', NULL, 1, NULL, NULL, 0, 38, 16),
+(335, '2026-02-06 18:30:00', 'Merci aux bénévoles, indispensable.', NULL, 1, NULL, NULL, 0, 37, 17),
+(336, '2026-02-06 18:31:00', 'Ça donne envie de venir au gymnase.', NULL, 1, NULL, NULL, 0, 18, 17),
+(337, '2026-02-06 18:32:00', 'Bravo à l’équipe, continuez comme ça.', NULL, 1, NULL, NULL, 0, 20, 17),
+(338, '2026-02-06 18:33:00', 'Super ambiance, ça fait plaisir.', NULL, 1, NULL, NULL, 0, 34, 18),
+(339, '2026-02-06 18:34:00', 'Belle dynamique, hâte de voir la suite !', NULL, 1, NULL, NULL, 0, 19, 18),
+(340, '2026-02-06 18:35:00', 'Top ! On retrouve bien l’esprit collectif.', NULL, 1, NULL, NULL, 0, 32, 18),
+(341, '2026-02-06 18:36:00', 'Force aux joueurs/joueuses pour le prochain match !', NULL, 1, NULL, NULL, 0, 33, 19),
+(342, '2026-02-06 18:37:00', 'Article clair et agréable à lire.', NULL, 1, NULL, NULL, 0, 20, 19),
+(343, '2026-02-06 18:38:00', 'Contenu nickel, merci !', NULL, 1, NULL, NULL, 0, 31, 19),
+(344, '2026-02-06 18:39:00', 'Allez le BEC !', NULL, 1, NULL, NULL, 0, 17, 20),
+(345, '2026-02-06 18:40:00', 'Très bon résumé, on sent l’énergie du club.', NULL, 1, NULL, NULL, 0, 32, 20),
+(346, '2026-02-06 18:41:00', 'Super article, merci pour le partage !', NULL, 1, NULL, NULL, 0, 40, 20),
+(347, '2026-02-06 18:42:00', 'Bravo à l’équipe, continuez comme ça.', NULL, 1, NULL, NULL, 0, 33, 21),
+(348, '2026-02-06 18:43:00', 'Super ambiance, ça fait plaisir.', NULL, 1, NULL, NULL, 0, 35, 21),
+(349, '2026-02-06 18:44:00', 'Ça donne envie de venir au gymnase.', NULL, 1, NULL, NULL, 0, 19, 21),
+(350, '2026-02-06 18:45:00', 'Article clair et agréable à lire.', NULL, 1, NULL, NULL, 0, 31, 22),
+(351, '2026-02-06 18:46:00', 'Merci aux bénévoles, indispensable.', NULL, 1, NULL, NULL, 0, 32, 22),
+(352, '2026-02-06 18:47:00', 'Belle dynamique, hâte de voir la suite !', NULL, 1, NULL, NULL, 0, 18, 22),
+(353, '2026-02-06 18:48:00', 'Contenu nickel, merci !', NULL, 1, NULL, NULL, 0, 34, 23),
+(354, '2026-02-06 18:49:00', 'Top ! On retrouve bien l’esprit collectif.', NULL, 1, NULL, NULL, 0, 17, 23),
+(355, '2026-02-06 18:50:00', 'Allez le BEC !', NULL, 1, NULL, NULL, 0, 39, 23),
+(356, '2026-02-06 18:51:00', 'Super article, merci pour le partage !', NULL, 1, NULL, NULL, 0, 36, 24),
+(357, '2026-02-06 18:52:00', 'Très bon résumé, on sent l’énergie du club.', NULL, 1, NULL, NULL, 0, 33, 24),
+(358, '2026-02-06 18:53:00', 'Bravo à l’équipe, continuez comme ça.', NULL, 1, NULL, NULL, 0, 20, 24),
+(359, '2026-02-06 18:54:00', 'Ça donne envie de venir au gymnase.', NULL, 1, NULL, NULL, 0, 39, 25),
+(360, '2026-02-06 18:55:00', 'Super ambiance, ça fait plaisir.', NULL, 1, NULL, NULL, 0, 35, 25),
+(361, '2026-02-06 18:56:00', 'Article clair et agréable à lire.', NULL, 1, NULL, NULL, 0, 31, 25),
+(362, '2026-02-06 18:57:00', 'Merci aux bénévoles, indispensable.', NULL, 1, NULL, NULL, 0, 19, 26),
+(363, '2026-02-06 18:58:00', 'Contenu nickel, merci !', NULL, 1, NULL, NULL, 0, 36, 26),
+(364, '2026-02-06 18:59:00', 'Top ! On retrouve bien l’esprit collectif.', NULL, 1, NULL, NULL, 0, 38, 26);
 
 -- --------------------------------------------------------
 
@@ -253,6 +319,72 @@ CREATE TABLE `LIKEART` (
   `numArt` int NOT NULL,
   `likeA` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+--
+-- Déchargement des données de la table `LIKEART`
+--
+
+INSERT INTO `LIKEART` (`numMemb`, `numArt`, `likeA`) VALUES
+(7, 17, 1),
+(7, 18, 0),
+(7, 37, 0),
+(8, 20, 1),
+(8, 31, 0),
+(8, 38, 0),
+(9, 19, 1),
+(9, 20, 0),
+(9, 38, 0),
+(10, 18, 0),
+(10, 33, 0),
+(10, 37, 1),
+(11, 18, 0),
+(11, 20, 1),
+(11, 31, 0),
+(12, 17, 1),
+(12, 33, 0),
+(12, 39, 0),
+(13, 20, 0),
+(13, 34, 0),
+(13, 40, 1),
+(14, 19, 0),
+(14, 35, 0),
+(14, 37, 1),
+(15, 31, 1),
+(15, 32, 0),
+(15, 40, 0),
+(16, 35, 0),
+(16, 38, 0),
+(16, 40, 1),
+(17, 18, 1),
+(17, 20, 1),
+(17, 37, 0),
+(18, 19, 0),
+(18, 32, 1),
+(18, 34, 0),
+(19, 20, 0),
+(19, 31, 1),
+(19, 33, 0),
+(20, 17, 0),
+(20, 32, 1),
+(20, 40, 1),
+(21, 19, 1),
+(21, 33, 1),
+(21, 35, 0),
+(22, 18, 1),
+(22, 31, 0),
+(22, 32, 1),
+(23, 17, 0),
+(23, 34, 1),
+(23, 39, 0),
+(24, 20, 1),
+(24, 33, 0),
+(24, 36, 0),
+(25, 31, 0),
+(25, 35, 1),
+(25, 39, 0),
+(26, 19, 1),
+(26, 36, 1),
+(26, 38, 0);
 
 -- --------------------------------------------------------
 
@@ -497,8 +629,8 @@ INSERT INTO `MOTCLE` (`numMotCle`, `libMotCle`) VALUES
 (9, 'Supporter'),
 (10, 'Championnat'),
 (11, 'Victoire'),
-(12, 'Match a domicile'),
-(13, 'Match à l&#039;extérieur'),
+(12, 'Match à domicile'),
+(13, 'Match à l\'exterieur'),
 (14, 'Saison sportive');
 
 -- --------------------------------------------------------
@@ -742,7 +874,7 @@ ALTER TABLE `boutique`
 -- AUTO_INCREMENT pour la table `COMMENT`
 --
 ALTER TABLE `COMMENT`
-  MODIFY `numCom` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=245;
+  MODIFY `numCom` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=365;
 
 --
 -- AUTO_INCREMENT pour la table `EQUIPE`
