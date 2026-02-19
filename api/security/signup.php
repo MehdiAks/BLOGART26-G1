@@ -14,6 +14,16 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
+$ba_bec_signupDisabled = true;
+$ba_bec_signupDisabledMessage = 'La création de compte est pour le moment désactivée.';
+
+if ($ba_bec_signupDisabled) {
+    $_SESSION['signup_disabled_message'] = $ba_bec_signupDisabledMessage;
+    $_SESSION['old'] = $_POST;
+    header('Location: ../../../views/backend/security/signup.php');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['errors'] = [];
     $_SESSION['old'] = $_POST;
