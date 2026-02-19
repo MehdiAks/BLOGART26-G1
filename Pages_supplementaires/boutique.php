@@ -49,6 +49,11 @@ $extractImage = static function ($value): string {
     }
     return '';
 };
+
+$buildPlaceholderText = static function (?string $value, string $placeholder): string {
+    $value = trim((string) $value);
+    return $value !== '' ? $value : $placeholder;
+};
 ?>
 
 <section class="boutique-page">
@@ -83,19 +88,13 @@ $extractImage = static function ($value): string {
                 </div>
                 <div>
                     <div class="boutique-card__category">
-                        <?php echo htmlspecialchars($article['categorieArtBoutique'] ?? 'Boutique'); ?>
+                        <?php echo htmlspecialchars($buildPlaceholderText($article['categorieArtBoutique'] ?? '', 'Catégorie à définir')); ?>
                     </div>
-                    <h2 class="boutique-card__title"><?php echo htmlspecialchars($article['libArtBoutique']); ?></h2>
-                    <?php if (!empty($article['descArtBoutique'])): ?>
-                        <p class="mb-2"><?php echo htmlspecialchars($article['descArtBoutique']); ?></p>
-                    <?php endif; ?>
+                    <h2 class="boutique-card__title"><?php echo htmlspecialchars($buildPlaceholderText($article['libArtBoutique'] ?? '', 'Nom de l\'article à compléter')); ?></h2>
+                    <p class="mb-2"><?php echo htmlspecialchars($buildPlaceholderText($article['descArtBoutique'] ?? '', 'Description à venir pour cet article.')); ?></p>
                     <div class="boutique-card__details">
-                        <?php if (!empty($colors)): ?>
-                            <span><strong>Couleurs :</strong> <?php echo htmlspecialchars($colors); ?></span>
-                        <?php endif; ?>
-                        <?php if (!empty($sizes)): ?>
-                            <span><strong>Tailles :</strong> <?php echo htmlspecialchars($sizes); ?></span>
-                        <?php endif; ?>
+                        <span><strong>Couleurs :</strong> <?php echo htmlspecialchars($colors !== '' ? $colors : 'À renseigner'); ?></span>
+                        <span><strong>Tailles :</strong> <?php echo htmlspecialchars($sizes !== '' ? $sizes : 'À renseigner'); ?></span>
                     </div>
                 </div>
                 <div class="boutique-card__prices">
@@ -106,6 +105,7 @@ $extractImage = static function ($value): string {
                         <span><span>Prix</span><span><?php echo $formatPrice((float) $adultPrice); ?></span></span>
                     <?php endif; ?>
                 </div>
+                <a class="boutique-card__link" href="<?php echo ROOT_URL . '/Pages_supplementaires/article-boutique.php?numArtBoutique=' . (int) $article['numArtBoutique']; ?>">Voir le détail</a>
             </article>
         <?php endforeach; ?>
     </div>
