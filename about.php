@@ -10,6 +10,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
         Ce site a été conçu par <strong>Les égarés</strong>, une équipe d’étudiants passionnés
         qui a imaginé et développé cette vitrine autour du BEC Basket.
     </p>
+    <p>Mehdi Afankous, Romain Bezombes, Alvin Bonaventure-Sanchez, Juliette Rieunau, Phuong-My Nguyen</p>
     <p>
         Merci à <strong>Martine Bornerie</strong>, l’enseignante qui a supervisé le cours
         et accompagné le projet.
