@@ -25,12 +25,6 @@ $ba_bec_missing_table_labels = [
 
 $ba_bec_players = [];
 $ba_bec_teams = [];
-$ba_bec_sort = isset($_GET['tri']) ? (string) $_GET['tri'] : 'nom';
-$ba_bec_allowed_sorts = ['nom', 'equipe'];
-if (!in_array($ba_bec_sort, $ba_bec_allowed_sorts, true)) {
-    $ba_bec_sort = 'nom';
-}
-
 $ba_bec_selected_teams = $_GET['teams'] ?? [];
 if (!is_array($ba_bec_selected_teams)) {
     $ba_bec_selected_teams = [$ba_bec_selected_teams];
@@ -40,9 +34,7 @@ $ba_bec_selected_teams = array_values(array_unique(array_filter(array_map('strva
 if (!in_array(true, $ba_bec_is_missing_table, true)) {
     $ba_bec_teams = $DB->query('SELECT codeEquipe, nomEquipe FROM EQUIPE ORDER BY nomEquipe ASC')->fetchAll(PDO::FETCH_ASSOC);
 
-    $orderBy = $ba_bec_sort === 'equipe'
-        ? 'e.nomEquipe IS NULL, e.nomEquipe ASC, j.nomJoueur ASC, j.prenomJoueur ASC'
-        : 'j.nomJoueur ASC, j.prenomJoueur ASC';
+    $orderBy = 'e.nomEquipe IS NULL, e.nomEquipe ASC, j.nomJoueur ASC, j.prenomJoueur ASC';
 
     $whereClause = '';
     $queryParams = [];
@@ -101,6 +93,13 @@ function format_age(?string $birthDate): string
     }
     return (string) $date->diff(new DateTime())->y;
 }
+
+$ba_bec_list_query_params = [];
+if (!empty($ba_bec_selected_teams)) {
+    $ba_bec_list_query_params['teams'] = $ba_bec_selected_teams;
+}
+$ba_bec_list_query = http_build_query($ba_bec_list_query_params);
+$ba_bec_action_query = $ba_bec_list_query !== '' ? ('&' . $ba_bec_list_query) : '';
 ?>
 
 <div class="container">
@@ -125,14 +124,7 @@ function format_age(?string $birthDate): string
 
             <h1>Liste des joueurs</h1>
             <form method="get" class="row g-3 align-items-end mb-3">
-                <div class="col-md-4">
-                    <label for="tri" class="form-label">Trier par</label>
-                    <select name="tri" id="tri" class="form-select">
-                        <option value="nom" <?php echo $ba_bec_sort === 'nom' ? 'selected' : ''; ?>>Nom</option>
-                        <option value="equipe" <?php echo $ba_bec_sort === 'equipe' ? 'selected' : ''; ?>>Équipe</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-8">
                     <label for="team-selector" class="form-label">Filtrer par équipes</label>
                     <div class="d-flex gap-2">
                         <select id="team-selector" class="form-select">
@@ -254,16 +246,14 @@ function format_age(?string $birthDate): string
                     <tbody>
                         <?php $ba_bec_current_team = null; ?>
                         <?php foreach ($ba_bec_players as $ba_bec_player): ?>
-                            <?php if ($ba_bec_sort === 'equipe') : ?>
-                                <?php $ba_bec_team_label = $ba_bec_player['nomEquipe'] ?? 'Non affecté'; ?>
-                                <?php if ($ba_bec_team_label !== $ba_bec_current_team) : ?>
-                                    <tr class="table-secondary">
-                                        <td colspan="7">
-                                            <strong><?php echo htmlspecialchars($ba_bec_team_label); ?></strong>
-                                        </td>
-                                    </tr>
-                                    <?php $ba_bec_current_team = $ba_bec_team_label; ?>
-                                <?php endif; ?>
+                            <?php $ba_bec_team_label = $ba_bec_player['nomEquipe'] ?? 'Non affecté'; ?>
+                            <?php if ($ba_bec_team_label !== $ba_bec_current_team) : ?>
+                                <tr class="table-secondary">
+                                    <td colspan="7">
+                                        <strong><?php echo htmlspecialchars($ba_bec_team_label); ?></strong>
+                                    </td>
+                                </tr>
+                                <?php $ba_bec_current_team = $ba_bec_team_label; ?>
                             <?php endif; ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($ba_bec_player['numJoueur']); ?></td>
@@ -273,8 +263,8 @@ function format_age(?string $birthDate): string
                                 <td><?php echo htmlspecialchars(format_poste($ba_bec_player['posteJoueur'] ?? null)); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_player['numeroMaillot'] ?? ''); ?></td>
                                 <td>
-                                    <a href="edit.php?numJoueur=<?php echo $ba_bec_player['numJoueur']; ?>" class="btn btn-primary">Edit</a>
-                                    <a href="delete.php?numJoueur=<?php echo $ba_bec_player['numJoueur']; ?>" class="btn btn-danger">Delete</a>
+                                    <a href="edit.php?numJoueur=<?php echo $ba_bec_player['numJoueur']; ?><?php echo htmlspecialchars($ba_bec_action_query); ?>" class="btn btn-primary">Edit</a>
+                                    <a href="delete.php?numJoueur=<?php echo $ba_bec_player['numJoueur']; ?><?php echo htmlspecialchars($ba_bec_action_query); ?>" class="btn btn-danger">Delete</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
