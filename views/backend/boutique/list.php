@@ -47,6 +47,20 @@ $ba_bec_extract_first_image = static function ($value): string {
 
     return '';
 };
+
+
+$resolve_boutique_image_url = static function (string $value): string {
+    $value = trim($value);
+    if ($value === '') {
+        return '';
+    }
+
+    if (strpos($value, '/src/') === 0) {
+        return ROOT_URL . $value;
+    }
+
+    return ROOT_URL . '/src/images/article-boutique/' . rawurlencode($value);
+};
 ?>
 
 <div class="container">
@@ -103,7 +117,7 @@ $ba_bec_extract_first_image = static function ($value): string {
                                 </td>
                                 <td>
                                     <?php if ($ba_bec_first_image !== ''): ?>
-                                        <?php echo htmlspecialchars($ba_bec_first_image); ?>
+                                        <a href="<?php echo htmlspecialchars($resolve_boutique_image_url($ba_bec_first_image)); ?>" target="_blank" rel="noopener noreferrer"><?php echo htmlspecialchars($ba_bec_first_image); ?></a>
                                     <?php else: ?>
                                         -
                                     <?php endif; ?>

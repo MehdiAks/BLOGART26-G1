@@ -48,6 +48,20 @@ $ba_bec_parse_first_image = static function ($value): string {
     }
     return '';
 };
+
+
+$resolve_boutique_image_url = static function (string $value): string {
+    $value = trim($value);
+    if ($value === '') {
+        return '';
+    }
+
+    if (strpos($value, '/src/') === 0) {
+        return ROOT_URL . $value;
+    }
+
+    return ROOT_URL . '/src/images/article-boutique/' . rawurlencode($value);
+};
 ?>
 
 <div class="container boutique-admin-edit py-4">
@@ -59,7 +73,7 @@ $ba_bec_parse_first_image = static function ($value): string {
                 <div class="alert alert-danger">Article introuvable.</div>
                 <a href="<?php echo ROOT_URL . '/views/backend/boutique/list.php'; ?>" class="btn btn-secondary">Retour</a>
             <?php else: ?>
-                <form action="<?php echo ROOT_URL . '/api/boutique/update.php'; ?>" method="post">
+                <form action="<?php echo ROOT_URL . '/api/boutique/update.php'; ?>" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="numArtBoutique" value="<?php echo (int) $ba_bec_article['numArtBoutique']; ?>">
 
                     <div class="row g-4">
@@ -67,7 +81,7 @@ $ba_bec_parse_first_image = static function ($value): string {
                             <div class="boutique-admin-edit__image-panel">
                                 <?php $ba_bec_currentImage = $ba_bec_parse_first_image($ba_bec_article['urlPhotoArtBoutique'] ?? ''); ?>
                                 <?php if (!empty($ba_bec_currentImage)): ?>
-                                    <img src="<?php echo ROOT_URL . '/src/images/article-boutique/' . rawurlencode($ba_bec_currentImage); ?>" alt="Image de l'article">
+                                    <img src="<?php echo htmlspecialchars($resolve_boutique_image_url($ba_bec_currentImage)); ?>" alt="Image de l'article">
                                 <?php else: ?>
                                     <div class="boutique-admin-edit__placeholder">Image de l'article (placeholder)</div>
                                 <?php endif; ?>
@@ -107,8 +121,14 @@ $ba_bec_parse_first_image = static function ($value): string {
                                     </div>
                                 </div>
                                 <div class="form-group mt-2">
-                                    <label for="urlPhotoArtBoutique">Nom du fichier image</label>
-                                    <input id="urlPhotoArtBoutique" name="urlPhotoArtBoutique" class="form-control" type="text" placeholder="Ex : maillot-domicile.jpg" value="<?php echo htmlspecialchars($ba_bec_currentImage); ?>">
+                                    <label for="urlPhotoArtBoutique">Lien de l'image</label>
+                                    <input id="urlPhotoArtBoutique" name="urlPhotoArtBoutique" class="form-control" type="text" placeholder="Ex : /src/uploads/photos-boutiques/maillot.jpg" value="<?php echo htmlspecialchars($ba_bec_currentImage); ?>">
+                                    <small class="form-text text-muted">Vous pouvez coller un lien existant ou envoyer un nouveau fichier ci-dessous.</small>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label for="photoArtBoutique">Uploader une nouvelle image</label>
+                                    <input id="photoArtBoutique" name="photoArtBoutique" class="form-control" type="file" accept=".jpg,.jpeg,.png,.webp,.gif">
+                                    <small class="form-text text-muted">Le fichier sera stocké dans /src/uploads/photos-boutiques/</small>
                                 </div>
                             </div>
                         </div>

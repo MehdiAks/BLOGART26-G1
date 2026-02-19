@@ -50,6 +50,20 @@ $extractImage = static function ($value): string {
     return '';
 };
 
+
+$resolve_boutique_image_url = static function (string $value): string {
+    $value = trim($value);
+    if ($value === '') {
+        return '';
+    }
+
+    if (strpos($value, '/src/') === 0) {
+        return ROOT_URL . $value;
+    }
+
+    return ROOT_URL . '/src/images/article-boutique/' . rawurlencode($value);
+};
+
 $buildPlaceholderText = static function (?string $value, string $placeholder): string {
     $value = trim((string) $value);
     return $value !== '' ? $value : $placeholder;
@@ -72,7 +86,7 @@ $buildPlaceholderText = static function (?string $value, string $placeholder): s
         <?php foreach ($ba_bec_articles as $article): ?>
             <?php
             $imageName = $extractImage($article['urlPhotoArtBoutique'] ?? '');
-            $imageUrl = $imageName ? ROOT_URL . '/src/images/article-boutique/' . htmlspecialchars($imageName) : '';
+            $imageUrl = $imageName ? $resolve_boutique_image_url($imageName) : '';
             $adultPrice = $article['prixAdulteArtBoutique'] ?? null;
             $childPrice = $article['prixEnfantArtBoutique'] ?? null;
             $colors = $formatList($article['couleursArtBoutique'] ?? '');
