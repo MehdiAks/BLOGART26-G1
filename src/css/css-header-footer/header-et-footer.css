@@ -571,11 +571,17 @@
             background: transparent;
             border-radius: 0;
             box-shadow: none;
+            opacity: 0;
+            visibility: hidden;
+            transform: none;
+            display: none;
+            gap: 8px;
+        }
+
+        .header-burger-panel .header-submenu.is-open .submenu-list {
             opacity: 1;
             visibility: visible;
-            transform: none;
             display: grid;
-            gap: 8px;
         }
 
         .header-burger-group {

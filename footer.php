@@ -49,6 +49,8 @@
     <script>
         document.querySelectorAll('.header-submenu').forEach((submenu) => {
             const toggle = submenu.querySelector('.submenu-toggle');
+            const container = submenu.closest('.header-nav, .header-burger-panel') || document;
+
             const closeSubmenu = () => {
                 submenu.classList.remove('is-open');
                 if (toggle) {
@@ -64,7 +66,7 @@
                 event.preventDefault();
                 const isOpen = submenu.classList.contains('is-open');
 
-                document.querySelectorAll('.header-submenu.is-open').forEach((openSubmenu) => {
+                container.querySelectorAll('.header-submenu.is-open').forEach((openSubmenu) => {
                     if (openSubmenu !== submenu) {
                         const openToggle = openSubmenu.querySelector('.submenu-toggle');
                         openSubmenu.classList.remove('is-open');
