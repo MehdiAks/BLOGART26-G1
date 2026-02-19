@@ -16,21 +16,34 @@ function render_missing_table_page(PDOException $exception): void
     }
 }
 
-function ba_bec_team_photo_url(?string $codeEquipe, string $suffix): string
+function ba_bec_team_photo_url(?string $photoPath, ?string $nomEquipe, ?string $codeEquipe, string $suffix): string
 {
-    if (!$codeEquipe) {
+    if (!empty($photoPath)) {
+        $relative = ltrim((string) $photoPath, '/');
+        if (strpos($relative, 'src/uploads/') === 0) {
+            $relative = substr($relative, strlen('src/uploads/'));
+        }
+        $absolutePath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $relative;
+        if (file_exists($absolutePath)) {
+            return ROOT_URL . '/src/uploads/' . $relative;
+        }
+    }
+
+    $slug = strtolower((string) iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', (string) ($nomEquipe ?: $codeEquipe)));
+    $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+    $slug = trim((string) $slug, '-');
+    if ($slug === '') {
         return '';
     }
 
-    $fileName = sprintf('%s-%s.jpeg', $codeEquipe, $suffix);
-    $relativePath = '/src/uploads/photos-equipes/' . $fileName;
-    $absolutePath = $_SERVER['DOCUMENT_ROOT'] . $relativePath;
-
-    if (!file_exists($absolutePath)) {
-        return '';
+    foreach (['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'] as $ext) {
+        $relativePath = '/src/uploads/photos-equipes/' . $slug . '-' . $suffix . '.' . $ext;
+        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $relativePath)) {
+            return ROOT_URL . $relativePath;
+        }
     }
 
-    return ROOT_URL . $relativePath;
+    return '';
 }
 
 function format_poste(?int $poste): string
@@ -192,8 +205,8 @@ $bannerImage = ROOT_URL . '/src/images/background/background-index-4.webp';
 $defaultTeamImage = ROOT_URL . '/src/images/image-defaut.jpeg';
 
 $teamName = $team['nomEquipe'] ?? '';
-$teamPhotoUrl = ba_bec_team_photo_url($team['codeEquipe'] ?? '', 'photo-equipe') ?: $defaultTeamImage;
-$staffPhotoUrl = ba_bec_team_photo_url($team['codeEquipe'] ?? '', 'photo-staff') ?: $defaultTeamImage;
+$teamPhotoUrl = ba_bec_team_photo_url($team['photoDLequipe'] ?? null, $team['nomEquipe'] ?? null, $team['codeEquipe'] ?? null, 'photo-equipe') ?: $defaultTeamImage;
+$staffPhotoUrl = ba_bec_team_photo_url($team['photoStaff'] ?? null, $team['nomEquipe'] ?? null, $team['codeEquipe'] ?? null, 'photo-staff') ?: $defaultTeamImage;
 
 $stats = [
     'home' => ['matches' => 0, 'pointsFor' => 0, 'pointsAgainst' => 0],

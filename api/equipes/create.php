@@ -30,10 +30,14 @@ function team_upload_dir(): string
     return rtrim($baseDir, '/') . '/src/uploads/photos-equipes/';
 }
 
-function sanitize_code_equipe(string $codeEquipe): string
+function sanitize_team_slug(string $teamName, string $fallbackCode = ''): string
 {
-    $sanitized = preg_replace('/[^A-Za-z0-9_-]+/', '', $codeEquipe);
-    return $sanitized !== '' ? $sanitized : 'equipe';
+    $base = trim($teamName) !== '' ? $teamName : $fallbackCode;
+    $slug = strtolower((string) iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $base));
+    $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+    $slug = trim((string) $slug, '-');
+
+    return $slug !== '' ? $slug : 'equipe';
 }
 
 function upload_error_message(int $errorCode): string
@@ -49,7 +53,7 @@ function upload_error_message(int $errorCode): string
     };
 }
 
-function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, array &$errors): ?string
+function upload_team_photo(string $fileKey, string $teamSlug, string $suffix, array &$errors): ?string
 {
     if (!isset($_FILES[$fileKey])) {
         return null;
@@ -111,8 +115,8 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
         }
     }
 
-    $codeEquipeSafe = sanitize_code_equipe($codeEquipe);
-    $fileName = $codeEquipeSafe . '-' . $suffix . '.' . $extension;
+    $safeTeamSlug = sanitize_team_slug($teamSlug);
+    $fileName = $safeTeamSlug . '-' . $suffix . '.' . $extension;
     $uploadDir = team_upload_dir();
     ensure_upload_dir($uploadDir);
     $destination = $uploadDir . $fileName;
@@ -125,9 +129,9 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
     return 'photos-equipes/' . $fileName;
 }
 
-function process_equipe_upload(string $fileKey, string $codeEquipe, string $suffix, array &$errors): ?string
+function process_equipe_upload(string $fileKey, string $teamSlug, string $suffix, array &$errors): ?string
 {
-    return upload_team_photo($fileKey, $codeEquipe, $suffix, $errors);
+    return upload_team_photo($fileKey, $teamSlug, $suffix, $errors);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -156,8 +160,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_photoEquipe = null;
     $ba_bec_photoStaff = null;
     if (empty($ba_bec_errors)) {
-        $ba_bec_photoEquipe = process_equipe_upload('photoDLequipe', $ba_bec_codeEquipe, 'photo-equipe', $ba_bec_errors);
-        $ba_bec_photoStaff = process_equipe_upload('photoStaff', $ba_bec_codeEquipe, 'photo-staff', $ba_bec_errors);
+        $ba_bec_teamSlug = sanitize_team_slug($ba_bec_nomEquipe, $ba_bec_codeEquipe);
+        $ba_bec_photoEquipe = process_equipe_upload('photoDLequipe', $ba_bec_teamSlug, 'photo-equipe', $ba_bec_errors);
+        $ba_bec_photoStaff = process_equipe_upload('photoStaff', $ba_bec_teamSlug, 'photo-staff', $ba_bec_errors);
     }
 
     if (empty($ba_bec_errors)) {
