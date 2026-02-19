@@ -51,6 +51,20 @@ $extractImage = static function ($value): string {
     }
     return '';
 };
+
+
+$resolve_boutique_image_url = static function (string $value): string {
+    $value = trim($value);
+    if ($value === '') {
+        return '';
+    }
+
+    if (strpos($value, '/src/') === 0) {
+        return ROOT_URL . $value;
+    }
+
+    return ROOT_URL . '/src/images/article-boutique/' . rawurlencode($value);
+};
 ?>
 
 <section class="boutique-page">
@@ -59,7 +73,7 @@ $extractImage = static function ($value): string {
     <?php else: ?>
         <?php
         $imageName = $extractImage($ba_bec_article['urlPhotoArtBoutique'] ?? '');
-        $imageUrl = $imageName ? ROOT_URL . '/src/images/article-boutique/' . htmlspecialchars($imageName) : '';
+        $imageUrl = $imageName ? $resolve_boutique_image_url($imageName) : '';
         $title = trim((string) ($ba_bec_article['libArtBoutique'] ?? ''));
         $category = trim((string) ($ba_bec_article['categorieArtBoutique'] ?? ''));
         $description = trim((string) ($ba_bec_article['descArtBoutique'] ?? ''));
