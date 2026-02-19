@@ -161,23 +161,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($ba_bec_errors)) {
-        $insertEquipe = $DB->prepare(
-            'INSERT INTO EQUIPE (codeEquipe, nomEquipe, club, categorie, section, niveau, descriptionEquipe, photoDLequipe, photoStaff)
-             VALUES (:codeEquipe, :nomEquipe, :club, :categorie, :section, :niveau, :descriptionEquipe, :photoEquipe, :photoStaff)'
-        );
-        $insertEquipe->execute([
-            ':codeEquipe' => $ba_bec_codeEquipe,
-            ':nomEquipe' => $ba_bec_nomEquipe,
-            ':club' => $ba_bec_club,
-            ':categorie' => $ba_bec_categorieEquipe !== '' ? $ba_bec_categorieEquipe : 'Non renseigné',
-            ':section' => $ba_bec_sectionEquipe !== '' ? $ba_bec_sectionEquipe : 'Non renseigné',
-            ':niveau' => $ba_bec_niveauEquipe !== '' ? $ba_bec_niveauEquipe : 'Non renseigné',
-            ':descriptionEquipe' => $ba_bec_descriptionEquipe !== '' ? $ba_bec_descriptionEquipe : null,
-            ':photoEquipe' => $ba_bec_photoEquipe,
-            ':photoStaff' => $ba_bec_photoStaff,
-        ]);
-        header('Location: ../../views/backend/equipes/list.php');
-        exit();
+        try {
+            $insertEquipe = $DB->prepare(
+                'INSERT INTO EQUIPE (codeEquipe, nomEquipe, club, categorie, section, niveau, descriptionEquipe, photoDLequipe, photoStaff)
+                 VALUES (:codeEquipe, :nomEquipe, :club, :categorie, :section, :niveau, :descriptionEquipe, :photoEquipe, :photoStaff)'
+            );
+            $insertEquipe->execute([
+                ':codeEquipe' => $ba_bec_codeEquipe,
+                ':nomEquipe' => $ba_bec_nomEquipe,
+                ':club' => $ba_bec_club,
+                ':categorie' => $ba_bec_categorieEquipe !== '' ? $ba_bec_categorieEquipe : 'Non renseigné',
+                ':section' => $ba_bec_sectionEquipe !== '' ? $ba_bec_sectionEquipe : 'Non renseigné',
+                ':niveau' => $ba_bec_niveauEquipe !== '' ? $ba_bec_niveauEquipe : 'Non renseigné',
+                ':descriptionEquipe' => $ba_bec_descriptionEquipe !== '' ? $ba_bec_descriptionEquipe : null,
+                ':photoEquipe' => $ba_bec_photoEquipe,
+                ':photoStaff' => $ba_bec_photoStaff,
+            ]);
+            header('Location: ../../views/backend/equipes/list.php');
+            exit();
+        } catch (PDOException $ba_bec_exception) {
+            $ba_bec_message = strtolower($ba_bec_exception->getMessage());
+            if (str_contains($ba_bec_message, 'duplicate') || str_contains($ba_bec_message, 'unique')) {
+                $ba_bec_errors[] = 'Ce code équipe existe déjà. Merci d’en choisir un autre.';
+            } else {
+                $ba_bec_errors[] = 'Une erreur est survenue lors de la création. Merci de réessayer.';
+            }
+        } catch (Throwable $ba_bec_exception) {
+            $ba_bec_errors[] = 'Une erreur inattendue est survenue pendant le traitement des images. Merci de réessayer.';
+        }
     }
 }
 ?>
