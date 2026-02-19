@@ -1,25 +1,2 @@
 ErrorDocument 404 /erreur404.php
 
-# Désactive l'indexation des répertoires.
-Options -Indexes
-
-<IfModule mod_headers.c>
-    Header always set X-Frame-Options "SAMEORIGIN"
-    Header always set X-Content-Type-Options "nosniff"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
-</IfModule>
-
-# Bloque l'accès HTTP aux fichiers sensibles.
-<FilesMatch "^(\.env|\.git|composer\.(json|lock)|package(-lock)?\.json|yarn\.lock)$">
-    Require all denied
-</FilesMatch>
-
-# Bloque les dumps SQL et fichiers de sauvegarde.
-<FilesMatch "\.(sql|bak|old|dist|fla|psd|ini|log|sh)$">
-    Require all denied
-</FilesMatch>
-
-# Bloque l'accès direct aux dossiers de données/archives.
-RewriteEngine On
-RewriteRule ^(BDD|BDD_A_Exporter)/ - [F,L,NC]
