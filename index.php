@@ -295,6 +295,7 @@ if (!$becMatchesAvailable) {
         position: relative;
         display: inline-block;
         white-space: nowrap;
+        max-width: 100%;
     }
     .typewriter-line::after {
         content: "";
@@ -316,6 +317,13 @@ if (!$becMatchesAvailable) {
     @media (prefers-reduced-motion: reduce) {
         .typewriter-line::after {
             animation: none;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .typewriter-line {
+            white-space: normal;
+            overflow-wrap: anywhere;
         }
     }
 
