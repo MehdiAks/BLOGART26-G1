@@ -16,8 +16,13 @@ if (session_status() === PHP_SESSION_NONE) {
 // Configuration : Nom du cookie et durée de validité (ici 1 an).
 // Ces constantes sont utilisées dans toutes les fonctions pour éviter la duplication
 // et garantir la cohérence entre la lecture/écriture du cookie.
-define('COOKIE_DURATION', 365 * 24 * 60 * 60);
-define('COOKIE_NAME', 'bec_cookie_consent');
+if (!defined('COOKIE_DURATION')) {
+    define('COOKIE_DURATION', 365 * 24 * 60 * 60);
+}
+
+if (!defined('COOKIE_NAME')) {
+    define('COOKIE_NAME', 'bec_cookie_consent');
+}
 
 /* ==========================================================================
    OUTILS : Fonctions utilitaires
@@ -67,32 +72,43 @@ function getCookieConsent($pdo) {
 
     // --- CAS 1 : L'UTILISATEUR EST CONNECTÉ ---
     if (!empty($_SESSION['user_id'])) {
-        // 1. On cherche d'abord la valeur stockée dans son profil membre
-        $stmt = $pdo->prepare("SELECT cookieMemb FROM membre WHERE numMemb = ?");
-        $stmt->execute([$_SESSION['user_id']]);
-        $memberConsent = $stmt->fetchColumn();
+        try {
+            // 1. On cherche d'abord la valeur stockée dans son profil membre
+            $stmt = $pdo->prepare("SELECT cookieMemb FROM membre WHERE numMemb = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            $memberConsent = $stmt->fetchColumn();
 
-        // Si une valeur existe en BDD (différente de vide ou false), on la retourne
-        if ($memberConsent !== false && $memberConsent !== null && $memberConsent !== '') {
-            // Valeur BDD trouvée : elle prime sur le cookie navigateur.
-            return $memberConsent;
+            // Si une valeur existe en BDD (différente de vide ou false), on la retourne
+            if ($memberConsent !== false && $memberConsent !== null && $memberConsent !== '') {
+                // Valeur BDD trouvée : elle prime sur le cookie navigateur.
+                return (int) $memberConsent;
+            }
+
+            // 2. Si rien en BDD mais qu'un cookie existe sur le navigateur, on synchronise
+            if (isset($_COOKIE[COOKIE_NAME])) {
+                $cookieConsent = (int) $_COOKIE[COOKIE_NAME];
+
+                // On enregistre le choix du cookie dans le compte du membre
+                // pour qu'il soit persisté côté serveur (multi-appareils).
+                $stmt = $pdo->prepare(
+                    "UPDATE membre 
+                     SET cookieMemb = ?, dtMajMemb = NOW() 
+                     WHERE numMemb = ?"
+                );
+                $stmt->execute([$cookieConsent, $_SESSION['user_id']]);
+
+                return $cookieConsent;
+            }
+        } catch (Throwable $exception) {
+            // En production, certaines BDD n'ont pas encore la colonne cookieMemb.
+            // On revient alors à une lecture uniquement via cookie pour éviter une page blanche.
+            if (isset($_COOKIE[COOKIE_NAME])) {
+                return (int) $_COOKIE[COOKIE_NAME];
+            }
+
+            return null;
         }
 
-        // 2. Si rien en BDD mais qu'un cookie existe sur le navigateur, on synchronise
-        if (isset($_COOKIE[COOKIE_NAME])) {
-            $cookieConsent = (int) $_COOKIE[COOKIE_NAME];
-            
-            // On enregistre le choix du cookie dans le compte du membre
-            // pour qu'il soit persisté côté serveur (multi-appareils).
-            $stmt = $pdo->prepare(
-                "UPDATE membre 
-                 SET cookieMemb = ?, dtMajMemb = NOW() 
-                 WHERE numMemb = ?"
-            );
-            $stmt->execute([$cookieConsent, $_SESSION['user_id']]);
-            
-            return $cookieConsent;
-        }
         // Ni cookie navigateur ni valeur BDD : l'utilisateur n'a pas encore choisi.
         return null;
     }
@@ -127,14 +143,18 @@ function saveCookieConsent($pdo, int $consent) {
 
     // --- SI CONNECTÉ : Sauvegarde BDD + Cookie ---
     if (!empty($_SESSION['user_id'])) {
-        // Mise à jour du profil membre pour conserver une trace durable côté serveur.
-        $stmt = $pdo->prepare(
-            "UPDATE membre 
-             SET cookieMemb = ?, dtMajMemb = NOW() 
-             WHERE numMemb = ?"
-        );
-        $stmt->execute([$consent, $_SESSION['user_id']]);
-        
+        try {
+            // Mise à jour du profil membre pour conserver une trace durable côté serveur.
+            $stmt = $pdo->prepare(
+                "UPDATE membre 
+                 SET cookieMemb = ?, dtMajMemb = NOW() 
+                 WHERE numMemb = ?"
+            );
+            $stmt->execute([$consent, $_SESSION['user_id']]);
+        } catch (Throwable $exception) {
+            // Si la colonne BDD n'existe pas encore, on continue sans bloquer la navigation.
+        }
+
         // On crée aussi le cookie pour que le choix soit persistant côté client
         setConsentCookie($consent);
         return;
