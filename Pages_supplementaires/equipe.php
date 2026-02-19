@@ -16,21 +16,21 @@ function render_missing_table_page(PDOException $exception): void
     }
 }
 
-function ba_bec_team_photo_url(?string $path): string
+function ba_bec_team_photo_url(?string $codeEquipe, string $suffix): string
 {
-    if (!$path) {
+    if (!$codeEquipe) {
         return '';
     }
 
-    if (preg_match('/^(https?:\/\/|\/)/', $path)) {
-        return $path;
+    $fileName = sprintf('%s-%s.jpeg', $codeEquipe, $suffix);
+    $relativePath = '/src/uploads/photos-equipes/' . $fileName;
+    $absolutePath = $_SERVER['DOCUMENT_ROOT'] . $relativePath;
+
+    if (!file_exists($absolutePath)) {
+        return '';
     }
 
-    if (strpos($path, 'photos-equipes/') === 0) {
-        return ROOT_URL . '/src/uploads/' . ltrim($path, '/');
-    }
-
-    return ROOT_URL . '/src/uploads/photos-equipes/' . ltrim($path, '/');
+    return ROOT_URL . $relativePath;
 }
 
 function format_poste(?int $poste): string
@@ -192,8 +192,8 @@ $bannerImage = ROOT_URL . '/src/images/background/background-index-4.webp';
 $defaultTeamImage = ROOT_URL . '/src/images/image-defaut.jpeg';
 
 $teamName = $team['nomEquipe'] ?? '';
-$teamPhotoUrl = ba_bec_team_photo_url($team['photoDLequipe'] ?? '') ?: $defaultTeamImage;
-$staffPhotoUrl = ba_bec_team_photo_url($team['photoStaff'] ?? '') ?: $defaultTeamImage;
+$teamPhotoUrl = ba_bec_team_photo_url($team['codeEquipe'] ?? '', 'photo-equipe') ?: $defaultTeamImage;
+$staffPhotoUrl = ba_bec_team_photo_url($team['codeEquipe'] ?? '', 'photo-staff') ?: $defaultTeamImage;
 
 $stats = [
     'home' => ['matches' => 0, 'pointsFor' => 0, 'pointsAgainst' => 0],
