@@ -201,12 +201,12 @@ $teamMatches = array_map(
     $teamMatches
 );
 
-$bannerImage = ROOT_URL . '/src/images/background/background-index-4.webp';
 $defaultTeamImage = ROOT_URL . '/src/images/image-defaut.jpeg';
 
 $teamName = $team['nomEquipe'] ?? '';
 $teamPhotoUrl = ba_bec_team_photo_url($team['photoDLequipe'] ?? null, $team['nomEquipe'] ?? null, $team['codeEquipe'] ?? null, 'photo-equipe') ?: $defaultTeamImage;
 $staffPhotoUrl = ba_bec_team_photo_url($team['photoStaff'] ?? null, $team['nomEquipe'] ?? null, $team['codeEquipe'] ?? null, 'photo-staff') ?: $defaultTeamImage;
+$bannerImage = $teamPhotoUrl;
 
 $stats = [
     'home' => ['matches' => 0, 'pointsFor' => 0, 'pointsAgainst' => 0],
