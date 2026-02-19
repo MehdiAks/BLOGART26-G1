@@ -303,10 +303,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        if ($hasEquipeUpload && $ba_bec_oldTeamSlug) {
+        if ($hasEquipeUpload && $ba_bec_oldTeamSlug && $ba_bec_oldTeamSlug !== $ba_bec_newTeamSlug) {
             delete_team_photo_variants($ba_bec_oldTeamSlug, 'photo-equipe');
         }
-        if ($hasStaffUpload && $ba_bec_oldTeamSlug) {
+        if ($hasStaffUpload && $ba_bec_oldTeamSlug && $ba_bec_oldTeamSlug !== $ba_bec_newTeamSlug) {
             delete_team_photo_variants($ba_bec_oldTeamSlug, 'photo-staff');
         }
     }
