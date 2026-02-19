@@ -335,6 +335,15 @@
             display: none;
         }
 
+        .site-footer .footer-credit-link {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .site-footer .footer-credit-link:is(:hover, :focus-visible) {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
         .mb-1 {
             padding-top: 50px;
         }
