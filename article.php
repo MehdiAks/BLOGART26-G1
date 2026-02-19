@@ -70,6 +70,11 @@ $userVote = null;
 $ba_bec_libCom = isset($_POST['libCom']) ? ctrlSaisies($_POST['libCom']) : null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_verify($_POST['csrf_token'] ?? null)) {
+        http_response_code(403);
+        exit('Requête invalide.');
+    }
+
     // Vérifier si l'utilisateur est connecté
     if (!isset($_SESSION['user_id'])) {
         $_SESSION['error'] = "Vous devez être connecté pour ajouter un commentaire ou un like.";
@@ -229,6 +234,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                             <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post">
                                 <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
                                 <input type="hidden" name="likeA" value="1">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token(), ENT_QUOTES); ?>">
                                 <button type="submit" class="btn btn-light d-flex align-items-center gap-2 btn-vote <?php echo $userVote === 1 ? 'active-like' : ''; ?>">
                                     <img src="<?php echo ROOT_URL . '/src/images/icon/pnglike.png'; ?>" alt="Like">
                                     <span><?php echo $likeCount; ?></span>
@@ -238,6 +244,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                             <form action="article.php?numArt=<?php echo $ba_bec_numArt; ?>" method="post">
                                 <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>">
                                 <input type="hidden" name="likeA" value="0">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token(), ENT_QUOTES); ?>">
                                 <button type="submit" class="btn btn-light d-flex align-items-center gap-2 btn-vote <?php echo $userVote === 0 ? 'active-dislike' : ''; ?>">
                                     <img src="<?php echo ROOT_URL . '/src/images/icon/pngdislike.png'; ?>"  alt="Dislike">
                                     <span><?php echo $dislikeCount; ?></span>
@@ -253,6 +260,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
                                 <textarea id="libCom" name="libCom" class="form-control" type="text" required></textarea>
                             </div>
                             <input type="hidden" name="numArt" value="<?php echo $ba_bec_numArt; ?>" />
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token(), ENT_QUOTES); ?>" />
                             <div class="btn-se-connecter">
                                 <button type="submit" class="btn btn-primary">Envoyer</button>
                             </div>  
