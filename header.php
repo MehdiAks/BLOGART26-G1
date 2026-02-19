@@ -172,6 +172,11 @@ if (function_exists('sql_connect')) {
                                     <li>
                                         <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
                                     </li>
+                                    <li>
+                                        <a class="header-burger-boutique-link<?php if ($current_page == '/Pages_supplementaires/boutique.php') echo ' current'; ?>" href="<?php echo ROOT_URL . '/Pages_supplementaires/boutique.php'; ?>">
+                                            Boutique
+                                        </a>
+                                    </li>
                                     <!--<li>
                                         <a href="<?php echo ROOT_URL . '/Pages_supplementaires/nos-partenaires.php'; ?>" <?php if ($current_page == '/Pages_supplementaires/nos-partenaires.php') echo 'class="current"'; ?>>Nos partenaires</a>
                                     </li>-->

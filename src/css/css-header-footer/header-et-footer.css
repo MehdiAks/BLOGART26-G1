@@ -626,6 +626,20 @@
             color: var(--bec-accent);
         }
 
+        .header-burger-nav .header-burger-boutique-link {
+            border: 1px solid #d4af37;
+            background: transparent;
+            color: #d4af37;
+        }
+
+        .header-burger-nav .header-burger-boutique-link:hover,
+        .header-burger-nav .header-burger-boutique-link:focus,
+        .header-burger-nav .header-burger-boutique-link.current {
+            background: #d4af37;
+            border-color: #d4af37;
+            color: #fff;
+        }
+
         .header-burger-actions {
             display: grid;
             gap: 16px;
