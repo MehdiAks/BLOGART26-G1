@@ -40,7 +40,7 @@ include '../../header.php';
             </div>
         </div>
         <div class="row g-4">
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-4">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Matchs</h5>
@@ -54,7 +54,7 @@ include '../../header.php';
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-4">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">Articles</h5>
@@ -64,6 +64,20 @@ include '../../header.php';
                             <a href="/public/index.php?controller=article&action=create" class="btn btn-success">Créer</a>
                             <a href="/views/backend/articles/edit.php" class="btn btn-warning disabled">Modifier</a>
                             <a href="/views/backend/articles/delete.php" class="btn btn-danger disabled">Supprimer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Boutique</h5>
+                        <p class="card-text">Gérez les produits, prix, tailles, couleurs et visuels de la boutique.</p>
+                        <div class="admin-actions d-flex flex-wrap gap-2">
+                            <a href="/views/backend/boutique/list.php" class="btn btn-primary">Voir la liste</a>
+                            <a href="/views/backend/boutique/create.php" class="btn btn-success">Créer</a>
+                            <a href="/views/backend/boutique/edit.php" class="btn btn-warning disabled">Modifier</a>
+                            <a href="/views/backend/boutique/delete.php" class="btn btn-danger disabled">Supprimer</a>
                         </div>
                     </div>
                 </div>
