@@ -374,65 +374,63 @@ if (!$coachLead && !empty($assistantCoaches)) {
         </div>
     </section>
 
-    <section class="team-detail-section">
+    <section class="team-detail-section team-stats-section">
         <h2>Quelques statistiques</h2>
         <div class="row g-3">
             <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h3 class="h6 text-uppercase text-muted">Matchs joués</h3>
-                        <p class="mb-1"><strong>Domicile :</strong>
-                            <?php echo htmlspecialchars((string) $stats['home']['matches']); ?></p>
-                        <p class="mb-1"><strong>Extérieur :</strong>
-                            <?php echo htmlspecialchars((string) $stats['away']['matches']); ?></p>
-                        <p class="mb-0"><strong>Total :</strong>
-                            <?php echo htmlspecialchars((string) $stats['total']['matches']); ?></p>
+                <div class="team-stat-card h-100">
+                    <div class="team-stat-card-body">
+                        <h3 class="team-stat-title">Matchs joués</h3>
+                        <div class="team-stat-list">
+                            <p><span>Domicile</span><strong><?php echo htmlspecialchars((string) $stats['home']['matches']); ?></strong></p>
+                            <p><span>Extérieur</span><strong><?php echo htmlspecialchars((string) $stats['away']['matches']); ?></strong></p>
+                            <p class="team-stat-total"><span>Total</span><strong><?php echo htmlspecialchars((string) $stats['total']['matches']); ?></strong></p>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h3 class="h6 text-uppercase text-muted">Points marqués</h3>
-                        <p class="mb-1"><strong>Domicile :</strong>
-                            <?php echo htmlspecialchars((string) $stats['home']['pointsFor']); ?></p>
-                        <p class="mb-1"><strong>Extérieur :</strong>
-                            <?php echo htmlspecialchars((string) $stats['away']['pointsFor']); ?></p>
-                        <p class="mb-0"><strong>Total :</strong>
-                            <?php echo htmlspecialchars((string) $stats['total']['pointsFor']); ?></p>
+                <div class="team-stat-card h-100">
+                    <div class="team-stat-card-body">
+                        <h3 class="team-stat-title">Points marqués</h3>
+                        <div class="team-stat-list">
+                            <p><span>Domicile</span><strong><?php echo htmlspecialchars((string) $stats['home']['pointsFor']); ?></strong></p>
+                            <p><span>Extérieur</span><strong><?php echo htmlspecialchars((string) $stats['away']['pointsFor']); ?></strong></p>
+                            <p class="team-stat-total"><span>Total</span><strong><?php echo htmlspecialchars((string) $stats['total']['pointsFor']); ?></strong></p>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h3 class="h6 text-uppercase text-muted">Points encaissés</h3>
-                        <p class="mb-1"><strong>Domicile :</strong>
-                            <?php echo htmlspecialchars((string) $stats['home']['pointsAgainst']); ?></p>
-                        <p class="mb-1"><strong>Extérieur :</strong>
-                            <?php echo htmlspecialchars((string) $stats['away']['pointsAgainst']); ?></p>
-                        <p class="mb-0"><strong>Total :</strong>
-                            <?php echo htmlspecialchars((string) $stats['total']['pointsAgainst']); ?></p>
+                <div class="team-stat-card h-100">
+                    <div class="team-stat-card-body">
+                        <h3 class="team-stat-title">Points encaissés</h3>
+                        <div class="team-stat-list">
+                            <p><span>Domicile</span><strong><?php echo htmlspecialchars((string) $stats['home']['pointsAgainst']); ?></strong></p>
+                            <p><span>Extérieur</span><strong><?php echo htmlspecialchars((string) $stats['away']['pointsAgainst']); ?></strong></p>
+                            <p class="team-stat-total"><span>Total</span><strong><?php echo htmlspecialchars((string) $stats['total']['pointsAgainst']); ?></strong></p>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h3 class="h6 text-uppercase text-muted">Matchs gagnés</h3>
-                        <p class="display-6 mb-0"><?php echo htmlspecialchars((string) $stats['wins']); ?></p>
+                <div class="team-stat-card team-stat-highlight h-100">
+                    <div class="team-stat-card-body">
+                        <h3 class="team-stat-title">Matchs gagnés</h3>
+                        <p class="team-stat-big-number"><?php echo htmlspecialchars((string) $stats['wins']); ?></p>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h3 class="h6 text-uppercase text-muted">Meilleure différence</h3>
+                <div class="team-stat-card team-stat-highlight h-100">
+                    <div class="team-stat-card-body">
+                        <h3 class="team-stat-title">Meilleure différence</h3>
                         <?php if ($stats['bestWin']): ?>
-                            <p class="mb-1">
-                                <strong>+<?php echo htmlspecialchars((string) $stats['bestWin']['diff']); ?></strong></p>
+                            <p class="team-stat-big-number team-stat-big-number-sm">
+                                +<?php echo htmlspecialchars((string) $stats['bestWin']['diff']); ?>
+                            </p>
                             <?php if (!empty($stats['bestWin']['opponent'])): ?>
-                                <p class="mb-0 text-muted">
+                                <p class="team-stat-subtitle mb-0">
                                     <?php echo htmlspecialchars($stats['bestWin']['opponent']); ?>
                                     <?php if (!empty($stats['bestWin']['date'])): ?>
                                         · <?php echo htmlspecialchars($stats['bestWin']['date']); ?>
@@ -440,7 +438,7 @@ if (!$coachLead && !empty($assistantCoaches)) {
                                 </p>
                             <?php endif; ?>
                         <?php else: ?>
-                            <p class="mb-0 text-muted">Aucune victoire enregistrée.</p>
+                            <p class="team-stat-subtitle mb-0">Aucune victoire enregistrée.</p>
                         <?php endif; ?>
                     </div>
                 </div>
