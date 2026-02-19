@@ -24,15 +24,38 @@ $ba_bec_missing_table_labels = [
 ];
 
 $ba_bec_players = [];
+$ba_bec_teams = [];
 $ba_bec_sort = isset($_GET['tri']) ? (string) $_GET['tri'] : 'nom';
 $ba_bec_allowed_sorts = ['nom', 'equipe'];
 if (!in_array($ba_bec_sort, $ba_bec_allowed_sorts, true)) {
     $ba_bec_sort = 'nom';
 }
+
+$ba_bec_selected_teams = $_GET['teams'] ?? [];
+if (!is_array($ba_bec_selected_teams)) {
+    $ba_bec_selected_teams = [$ba_bec_selected_teams];
+}
+$ba_bec_selected_teams = array_values(array_unique(array_filter(array_map('strval', $ba_bec_selected_teams), 'strlen')));
+
 if (!in_array(true, $ba_bec_is_missing_table, true)) {
+    $ba_bec_teams = $DB->query('SELECT codeEquipe, nomEquipe FROM EQUIPE ORDER BY nomEquipe ASC')->fetchAll(PDO::FETCH_ASSOC);
+
     $orderBy = $ba_bec_sort === 'equipe'
         ? 'e.nomEquipe IS NULL, e.nomEquipe ASC, j.nomJoueur ASC, j.prenomJoueur ASC'
         : 'j.nomJoueur ASC, j.prenomJoueur ASC';
+
+    $whereClause = '';
+    $queryParams = [];
+    if (!empty($ba_bec_selected_teams)) {
+        $placeholders = [];
+        foreach ($ba_bec_selected_teams as $teamIndex => $teamCode) {
+            $placeholder = ':team' . $teamIndex;
+            $placeholders[] = $placeholder;
+            $queryParams[$placeholder] = $teamCode;
+        }
+        $whereClause = 'WHERE j.codeEquipe IN (' . implode(', ', $placeholders) . ')';
+    }
+
     $playersQuery = "SELECT
             j.numJoueur,
             j.prenomJoueur,
@@ -41,11 +64,15 @@ if (!in_array(true, $ba_bec_is_missing_table, true)) {
             j.dateNaissance,
             j.numeroMaillot,
             j.posteJoueur,
+            j.codeEquipe,
             e.nomEquipe
         FROM JOUEUR j
         LEFT JOIN EQUIPE e ON j.codeEquipe = e.codeEquipe
+        {$whereClause}
         ORDER BY {$orderBy}";
-    $ba_bec_players = $DB->query($playersQuery)->fetchAll(PDO::FETCH_ASSOC);
+    $playersStmt = $DB->prepare($playersQuery);
+    $playersStmt->execute($queryParams);
+    $ba_bec_players = $playersStmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function format_poste(?int $poste): string
@@ -106,9 +133,109 @@ function format_age(?string $birthDate): string
                     </select>
                 </div>
                 <div class="col-md-4">
+                    <label for="team-selector" class="form-label">Filtrer par équipes</label>
+                    <div class="d-flex gap-2">
+                        <select id="team-selector" class="form-select">
+                            <option value="">Choisir une équipe</option>
+                            <?php foreach ($ba_bec_teams as $ba_bec_team): ?>
+                                <?php $ba_bec_team_code = (string) ($ba_bec_team['codeEquipe'] ?? ''); ?>
+                                <?php if ($ba_bec_team_code === '') {
+                                    continue;
+                                } ?>
+                                <option value="<?php echo htmlspecialchars($ba_bec_team_code); ?>">
+                                    <?php echo htmlspecialchars($ba_bec_team['nomEquipe'] ?? $ba_bec_team_code); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <button type="button" class="btn btn-outline-primary" id="add-team-filter">Ajouter</button>
+                    </div>
+                    <div class="form-text">Chaque équipe ajoutée devient un filtre. Vous pouvez en sélectionner plusieurs.</div>
+                    <div id="selected-teams" class="d-flex flex-wrap gap-2 mt-2">
+                        <?php foreach ($ba_bec_selected_teams as $ba_bec_team_code): ?>
+                            <?php
+                            $ba_bec_team_name = $ba_bec_team_code;
+                            foreach ($ba_bec_teams as $ba_bec_team) {
+                                if ((string) ($ba_bec_team['codeEquipe'] ?? '') === $ba_bec_team_code) {
+                                    $ba_bec_team_name = (string) ($ba_bec_team['nomEquipe'] ?? $ba_bec_team_code);
+                                    break;
+                                }
+                            }
+                            ?>
+                            <span class="badge bg-primary d-inline-flex align-items-center gap-2 team-pill" data-team-code="<?php echo htmlspecialchars($ba_bec_team_code); ?>">
+                                <?php echo htmlspecialchars($ba_bec_team_name); ?>
+                                <button type="button" class="btn-close btn-close-white" aria-label="Retirer l'équipe"></button>
+                                <input type="hidden" name="teams[]" value="<?php echo htmlspecialchars($ba_bec_team_code); ?>">
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="col-md-4">
                     <button type="submit" class="btn btn-primary">Appliquer</button>
                 </div>
             </form>
+            <script>
+                (function () {
+                    const teamSelector = document.getElementById('team-selector');
+                    const addTeamButton = document.getElementById('add-team-filter');
+                    const selectedTeamsContainer = document.getElementById('selected-teams');
+
+                    if (!teamSelector || !addTeamButton || !selectedTeamsContainer) {
+                        return;
+                    }
+
+                    const addTeam = () => {
+                        const teamCode = teamSelector.value;
+                        const teamName = teamSelector.options[teamSelector.selectedIndex]?.text || teamCode;
+
+                        if (!teamCode) {
+                            return;
+                        }
+
+                        if (selectedTeamsContainer.querySelector('[data-team-code="' + CSS.escape(teamCode) + '"]')) {
+                            return;
+                        }
+
+                        const pill = document.createElement('span');
+                        pill.className = 'badge bg-primary d-inline-flex align-items-center gap-2 team-pill';
+                        pill.dataset.teamCode = teamCode;
+
+                        const label = document.createElement('span');
+                        label.textContent = teamName;
+
+                        const removeBtn = document.createElement('button');
+                        removeBtn.type = 'button';
+                        removeBtn.className = 'btn-close btn-close-white';
+                        removeBtn.setAttribute('aria-label', 'Retirer l\'équipe');
+
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'teams[]';
+                        hiddenInput.value = teamCode;
+
+                        removeBtn.addEventListener('click', () => {
+                            pill.remove();
+                        });
+
+                        pill.appendChild(label);
+                        pill.appendChild(removeBtn);
+                        pill.appendChild(hiddenInput);
+                        selectedTeamsContainer.appendChild(pill);
+
+                        teamSelector.value = '';
+                    };
+
+                    addTeamButton.addEventListener('click', addTeam);
+
+                    selectedTeamsContainer.querySelectorAll('.team-pill .btn-close').forEach((removeBtn) => {
+                        removeBtn.addEventListener('click', () => {
+                            const pill = removeBtn.closest('.team-pill');
+                            if (pill) {
+                                pill.remove();
+                            }
+                        });
+                    });
+                })();
+            </script>
             <?php if (empty($ba_bec_players)) : ?>
                 <div class="alert alert-info">Aucun joueur trouvé.</div>
             <?php else : ?>
