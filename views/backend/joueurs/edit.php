@@ -46,6 +46,16 @@ if (!$ba_bec_joueur) {
     exit;
 }
 
+$ba_bec_return_teams = $_GET['teams'] ?? [];
+if (!is_array($ba_bec_return_teams)) {
+    $ba_bec_return_teams = [$ba_bec_return_teams];
+}
+$ba_bec_return_teams = array_values(array_unique(array_filter(array_map('strval', $ba_bec_return_teams), 'strlen')));
+$ba_bec_return_query = '';
+if (!empty($ba_bec_return_teams)) {
+    $ba_bec_return_query = '?' . http_build_query(['teams' => $ba_bec_return_teams]);
+}
+
 function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
 {
     $label = $ba_bec_equipe['nomEquipe'] ?? '';
@@ -58,7 +68,7 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3">
-                <a href="<?php echo ROOT_URL . '/views/backend/joueurs/list.php'; ?>" class="btn btn-secondary">
+                <a href="<?php echo ROOT_URL . '/views/backend/joueurs/list.php' . $ba_bec_return_query; ?>" class="btn btn-secondary">
                     Retour à la liste
                 </a>
             </div>
@@ -68,6 +78,9 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
             <form action="<?php echo ROOT_URL . '/api/joueurs/update.php'; ?>" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="numJoueur" value="<?php echo htmlspecialchars($ba_bec_joueur['numJoueur']); ?>" />
                 <input type="hidden" name="photoActuelle" value="<?php echo htmlspecialchars($ba_bec_joueur['urlPhotoJoueur'] ?? ''); ?>" />
+                <?php foreach ($ba_bec_return_teams as $ba_bec_return_team): ?>
+                    <input type="hidden" name="teams[]" value="<?php echo htmlspecialchars($ba_bec_return_team); ?>" />
+                <?php endforeach; ?>
                 <div class="form-group">
                     <label for="surnomJoueur">Surnom</label>
                     <input id="surnomJoueur" name="surnomJoueur" class="form-control" type="text"
