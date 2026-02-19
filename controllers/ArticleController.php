@@ -3,6 +3,11 @@
 class ArticleController
 {
     /**
+     * Dossier cible utilisé pour stocker les images d'articles.
+     */
+    private const ARTICLE_UPLOAD_FOLDER = 'photos-boutiques';
+
+    /**
      * Vérifie que le dossier d'upload existe avant d'enregistrer des fichiers.
      * Crée l'arborescence avec les permissions adaptées si besoin.
      */
@@ -19,7 +24,7 @@ class ArticleController
      */
     private function buildArticleImagePath(int $numArt, string $extension): string
     {
-        return 'article/article-' . $numArt . '.' . $extension;
+        return self::ARTICLE_UPLOAD_FOLDER . '/article-' . $numArt . '.' . $extension;
     }
 
     /**
@@ -203,7 +208,7 @@ class ArticleController
 
         if ($ba_bec_imagePayload) {
             // Crée le dossier d'uploads et déplace l'image à son emplacement final.
-            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/article/';
+            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . self::ARTICLE_UPLOAD_FOLDER . '/';
             $this->ensureUploadDirectory($ba_bec_uploadDir);
             $ba_bec_nom_image = $this->buildArticleImagePath((int) $ba_bec_lastArt, $ba_bec_imagePayload['extension']);
             $ba_bec_destination = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_nom_image;
@@ -343,7 +348,7 @@ class ArticleController
 
             // Déplace la nouvelle image et nettoie l'ancienne si besoin.
             $ba_bec_nom_image = $this->buildArticleImagePath((int) $ba_bec_numArt, $ba_bec_extension);
-            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/article/';
+            $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . self::ARTICLE_UPLOAD_FOLDER . '/';
             $this->ensureUploadDirectory($ba_bec_uploadDir);
             $ba_bec_destination = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_nom_image;
 
@@ -357,16 +362,15 @@ class ArticleController
                     unlink($ba_bec_oldPath);
                 }
             }
-            $ba_bec_nom_image = $ba_bec_relativePath;
         } else {
             // Conserve l'image existante. Si chemin legacy, on migre.
             $ba_bec_nom_image = $ba_bec_ancienneImage;
-            if ($ba_bec_nom_image && strpos($ba_bec_nom_image, 'article/') !== 0) {
+            if ($ba_bec_nom_image && strpos($ba_bec_nom_image, self::ARTICLE_UPLOAD_FOLDER . '/') !== 0) {
                 $ba_bec_legacyPath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_nom_image;
                 if (file_exists($ba_bec_legacyPath)) {
                     $ba_bec_extension = strtolower(pathinfo($ba_bec_nom_image, PATHINFO_EXTENSION));
                     $ba_bec_nom_image = $this->buildArticleImagePath((int) $ba_bec_numArt, $ba_bec_extension);
-                    $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/article/';
+                    $ba_bec_uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . self::ARTICLE_UPLOAD_FOLDER . '/';
                     $this->ensureUploadDirectory($ba_bec_uploadDir);
                     $ba_bec_destination = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $ba_bec_nom_image;
                     if (!rename($ba_bec_legacyPath, $ba_bec_destination)) {
