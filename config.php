@@ -36,6 +36,32 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Compatibilité PHP < 8 : certaines pages utilisent les helpers str_* natifs.
+if (!function_exists('str_contains')) {
+    function str_contains(string $haystack, string $needle): bool
+    {
+        return $needle === '' || strpos($haystack, $needle) !== false;
+    }
+}
+
+if (!function_exists('str_starts_with')) {
+    function str_starts_with(string $haystack, string $needle): bool
+    {
+        return $needle === '' || strpos($haystack, $needle) === 0;
+    }
+}
+
+if (!function_exists('str_ends_with')) {
+    function str_ends_with(string $haystack, string $needle): bool
+    {
+        if ($needle === '') {
+            return true;
+        }
+        $needleLength = strlen($needle);
+        return substr($haystack, -$needleLength) === $needle;
+    }
+}
+
 // Récupère le chemin du script courant (ex : /api/security/login.php).
 // L'opérateur ?? '' évite un Notice si SCRIPT_NAME n'est pas défini.
 $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
