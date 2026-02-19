@@ -20,6 +20,7 @@ $club_pages = [
     '/Pages_supplementaires/organigramme-benevoles.php',
     '/Pages_supplementaires/equipes.php',
     '/Pages_supplementaires/joueurs.php',
+    '/Pages_supplementaires/nos-partenaires.php',
 ];
 
 $ba_bec_cookieConsent = null;
@@ -99,6 +100,9 @@ if (function_exists('sql_connect')) {
                                 <li>
                                     <a href="<?php echo ROOT_URL . '/Pages_supplementaires/equipes.php'; ?>" <?php if ($current_page == '/Pages_supplementaires/equipes.php') echo 'class="current"'; ?>>Équipes</a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo ROOT_URL . '/Pages_supplementaires/nos-partenaires.php'; ?>" <?php if ($current_page == '/Pages_supplementaires/nos-partenaires.php') echo 'class="current"'; ?>>Nos partenaires</a>
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -114,9 +118,6 @@ if (function_exists('sql_connect')) {
                     <li>
                         <a href="<?php echo ROOT_URL . '/anciens-et-amis.php'; ?>" <?php if ($current_page == '/anciens-et-amis.php') echo 'class="current"'; ?>>Anciens et amis</a>
                     </li>
-                    <!--<li>
-                        <a href="<?php echo ROOT_URL . '/Pages_supplementaires/nos-partenaires.php'; ?>" <?php if ($current_page == '/Pages_supplementaires/nos-partenaires.php') echo 'class="current"'; ?>>Nos partenaires</a>
-                    </li>-->
                 </ul>
             </nav>
 
@@ -159,6 +160,9 @@ if (function_exists('sql_connect')) {
                                                 <li>
                                                     <a href="<?php echo ROOT_URL . '/Pages_supplementaires/equipes.php'; ?>" <?php if ($current_page == '/Pages_supplementaires/equipes.php') echo 'class="current"'; ?>>Équipes</a>
                                                 </li>
+                                                <li>
+                                                    <a href="<?php echo ROOT_URL . '/Pages_supplementaires/nos-partenaires.php'; ?>" <?php if ($current_page == '/Pages_supplementaires/nos-partenaires.php') echo 'class="current"'; ?>>Nos partenaires</a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </li>
@@ -177,9 +181,6 @@ if (function_exists('sql_connect')) {
                                             Boutique
                                         </a>
                                     </li>
-                                    <!--<li>
-                                        <a href="<?php echo ROOT_URL . '/Pages_supplementaires/nos-partenaires.php'; ?>" <?php if ($current_page == '/Pages_supplementaires/nos-partenaires.php') echo 'class="current"'; ?>>Nos partenaires</a>
-                                    </li>-->
                                 </ul>
                             </nav>
                         
