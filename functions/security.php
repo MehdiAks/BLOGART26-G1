@@ -97,20 +97,40 @@ function verifyRecaptcha($token, $action, $threshold = null) {
         'response' => $token
     ]);
 
-    // Initialise la requête cURL vers l'endpoint de vérification reCAPTCHA.
-    $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
-    // Demande à cURL de retourner la réponse sous forme de chaîne.
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    // Force la méthode POST.
-    curl_setopt($ch, CURLOPT_POST, true);
-    // Ajoute le payload POST.
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-    // Exécute la requête et récupère la réponse.
-    $response = curl_exec($ch);
-    // Capture une éventuelle erreur cURL.
-    $curlError = curl_error($ch);
-    // Ferme la ressource cURL pour libérer la mémoire.
-    curl_close($ch);
+    $response = false;
+    $curlError = '';
+
+    // Utilise cURL si l'extension est disponible (cas le plus courant).
+    if (function_exists('curl_init')) {
+        // Initialise la requête cURL vers l'endpoint de vérification reCAPTCHA.
+        $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+        // Demande à cURL de retourner la réponse sous forme de chaîne.
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // Force la méthode POST.
+        curl_setopt($ch, CURLOPT_POST, true);
+        // Ajoute le payload POST.
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        // Exécute la requête et récupère la réponse.
+        $response = curl_exec($ch);
+        // Capture une éventuelle erreur cURL.
+        $curlError = curl_error($ch);
+        // Ferme la ressource cURL pour libérer la mémoire.
+        curl_close($ch);
+    } else {
+        // Fallback si cURL n'est pas disponible (certains hébergements mutualisés).
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'content' => $payload,
+                'timeout' => 10,
+            ],
+        ]);
+        $response = @file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+        if ($response === false) {
+            $curlError = 'HTTP fallback failed';
+        }
+    }
 
     // Si la requête a échoué (response false), retour erreur.
     if ($response === false) {
