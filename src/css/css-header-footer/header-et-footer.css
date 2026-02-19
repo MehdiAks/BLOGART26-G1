@@ -636,9 +636,10 @@
         }
 
         .header-burger-nav .header-burger-boutique-link {
-            border: 1px solid #d4af37;
+            border: 2px solid #d4af37;
             background: transparent;
-            color: #d4af37;
+            font-weight: 600;
+            color: #fff;
         }
 
         .header-burger-nav .header-burger-boutique-link:hover,
@@ -705,9 +706,10 @@
             font-size: 16px;
             padding: 6px 16px;
             border-radius: 999px;
-            border: 1px solid #d4af37;
-            background-color: transparent;
-            color: #d4af37;
+            border: 3px solid #d4af37;
+            background-color: #d4af37;
+            color: #fff;
+            font-weight: 500;
             text-decoration: none;
             transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
