@@ -203,6 +203,9 @@ if (function_exists('sql_connect')) {
                 <!-- menu compte -->
 
                 <div class="header-compte-wrapper">
+                    <a class="btn btn-boutique-header" href="<?php echo ROOT_URL . '/Pages_supplementaires/boutique.php'; ?>" <?php if ($current_page == '/Pages_supplementaires/boutique.php') echo 'aria-current="page"'; ?>>
+                        Boutique
+                    </a>
                     <details class="header-compte-menu">
                         <summary class="btn btn-bec-primary btn-compte" aria-label="Ouvrir le menu">
                             <?php echo $ba_bec_pseudoMemb ? htmlspecialchars($ba_bec_pseudoMemb) : 'Compte'; ?>
