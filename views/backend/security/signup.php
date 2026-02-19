@@ -16,6 +16,9 @@ $pageStyles = [
 
 include '../../../header.php';
 
+$ba_bec_signupDisabled = true;
+$ba_bec_signupDisabledMessage = $_SESSION['signup_disabled_message'] ?? 'La création de compte est pour le moment désactivée.';
+
 // Récupération des données de session
 $ba_bec_errors = $_SESSION['errors'] ?? [];
 $ba_bec_old = $_SESSION['old'] ?? [];
@@ -23,12 +26,18 @@ $ba_bec_recaptchaSiteKey = getenv('RECAPTCHA_SITE_KEY');
 $ba_bec_recaptchaSiteKeyEscaped = htmlspecialchars($ba_bec_recaptchaSiteKey ?? '', ENT_QUOTES, 'UTF-8');
 
 // Nettoyage des données de session après récupération
-unset($_SESSION['errors'], $_SESSION['old']);
+unset($_SESSION['signup_disabled_message'], $_SESSION['errors'], $_SESSION['old']);
 ?>
 
 <main class="auth-page">
     <section class="auth-card">
         <h1>Créer mon compte</h1>
+
+        <?php if ($ba_bec_signupDisabled): ?>
+            <div class="alert alert-warning" role="alert">
+                <?= htmlspecialchars($ba_bec_signupDisabledMessage) ?>
+            </div>
+        <?php endif; ?>
 
         <div class="container mb-4">
             <?php if (!empty($ba_bec_errors)): ?>
@@ -121,7 +130,7 @@ unset($_SESSION['errors'], $_SESSION['old']);
             </div>
             <!-- Boutons -->
             <div class="btn-se-connecter">
-                <button type="submit">Créer mon compte</button>
+                <button type="submit" <?= $ba_bec_signupDisabled ? "disabled" : ""; ?>><?= $ba_bec_signupDisabled ? "Création de compte désactivée" : "Créer mon compte"; ?></button>
             </div>
 
             <p>Vous possédez déjà un compte ? <a href="/views/backend/security/login.php" class="link">Se connecter</a></p>
