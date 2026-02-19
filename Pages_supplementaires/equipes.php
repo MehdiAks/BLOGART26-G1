@@ -5,21 +5,21 @@ $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
-function ba_bec_team_photo_url(?string $path): string
+function ba_bec_team_photo_url(?string $codeEquipe, string $suffix): string
 {
-    if (!$path) {
+    if (!$codeEquipe) {
         return '';
     }
 
-    if (preg_match('/^(https?:\/\/|\/)/', $path)) {
-        return $path;
+    $fileName = sprintf('%s-%s.jpeg', $codeEquipe, $suffix);
+    $relativePath = '/src/uploads/photos-equipes/' . $fileName;
+    $absolutePath = $_SERVER['DOCUMENT_ROOT'] . $relativePath;
+
+    if (!file_exists($absolutePath)) {
+        return '';
     }
 
-    if (strpos($path, 'photos-equipes/') === 0) {
-        return ROOT_URL . '/src/uploads/' . ltrim($path, '/');
-    }
-
-    return ROOT_URL . '/src/uploads/photos-equipes/' . ltrim($path, '/');
+    return ROOT_URL . $relativePath;
 }
 
 sql_connect();
@@ -68,7 +68,7 @@ foreach ($coaches ?? [] as $coach) {
             <?php foreach ($teams as $team) : ?>
                 <?php
                 $teamName = $team['nomEquipe'] ?? '';
-                $teamPhotoUrl = ba_bec_team_photo_url($team['photoDLequipe'] ?? '') ?: $defaultTeamImage;
+                $teamPhotoUrl = ba_bec_team_photo_url($team['codeEquipe'] ?? '', 'photo-equipe') ?: $defaultTeamImage;
                 ?>
                 <article class="team-card">
                     <div class="team-card-content">
