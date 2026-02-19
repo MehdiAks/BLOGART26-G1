@@ -83,7 +83,7 @@ $matchesQuery = "SELECT
         e.nomEquipe AS teamName
     FROM `MATCH` m
     INNER JOIN EQUIPE e ON m.codeEquipe = e.codeEquipe
-    WHERE m.dateMatch >= CURDATE()
+    WHERE m.dateMatch BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
     ORDER BY m.dateMatch ASC, m.heureMatch ASC";
 $lastUpdateQuery = "SELECT MAX(dateMatch) AS lastUpdate FROM `MATCH`";
 
@@ -118,14 +118,8 @@ $buildOpponent = static function (array $match): string {
     return $opponent !== '' ? $opponent : 'Adversaire';
 };
 
-$today = new DateTimeImmutable('today');
-$daysUntilSaturday = (6 - (int) $today->format('N') + 7) % 7;
-$weekendStart = $today->modify('+' . $daysUntilSaturday . ' day');
-$weekendEnd = $weekendStart->modify('+1 day');
-
-$weekendHomeMatches = [];
-$weekendAwayMatches = [];
-$remainingMatches = [];
+$homeMatches = [];
+$awayMatches = [];
 foreach ($allMatches as $ba_bec_match) {
     $side = $resolveMatchSide((string) ($ba_bec_match['location'] ?? ''));
     $opponent = $buildOpponent($ba_bec_match);
@@ -134,24 +128,12 @@ foreach ($allMatches as $ba_bec_match) {
     $ba_bec_match['teamAway'] = $isHome ? $opponent : ($ba_bec_match['teamName'] ?? 'BEC');
     $ba_bec_match['scoreHome'] = $isHome ? ($ba_bec_match['scoreBec'] ?? null) : ($ba_bec_match['scoreAdversaire'] ?? null);
     $ba_bec_match['scoreAway'] = $isHome ? ($ba_bec_match['scoreAdversaire'] ?? null) : ($ba_bec_match['scoreBec'] ?? null);
-    $matchDate = DateTimeImmutable::createFromFormat('Y-m-d', (string) ($ba_bec_match['matchDate'] ?? ''));
-    $isWeekendMatch = $matchDate instanceof DateTimeImmutable
-        && $matchDate >= $weekendStart
-        && $matchDate <= $weekendEnd;
-
-    if (!$isWeekendMatch) {
-        $remainingMatches[] = $ba_bec_match;
-        continue;
-    }
-
     if ($side === 'away') {
-        $weekendAwayMatches[] = $ba_bec_match;
+        $awayMatches[] = $ba_bec_match;
     } else {
-        $weekendHomeMatches[] = $ba_bec_match;
+        $homeMatches[] = $ba_bec_match;
     }
 }
-
-$extraMatches = array_slice($remainingMatches, 0, 10);
 
 $lastUpdate = null;
 if ($becMatchesAvailable) {
@@ -224,9 +206,9 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
 <main class="container py-5">
     <section class="matches-hero">
         <p class="matches-hero__eyebrow">Calendrier</p>
-        <h1 class="matches-hero__title">Voilà les prochains matchs du weekend qui arrive</h1>
+        <h1 class="matches-hero__title">Les prochains matchs des équipes seniors</h1>
         <p class="matches-hero__text">
-            Retrouvez ici les rencontres prévues ce samedi et ce dimanche pour nos équipes.
+            Retrouvez ici le prochain match de chaque équipe senior du club, affiché selon la date du jour.
         </p>
         <div class="matches-hero__meta">
             <?php if ($becMatchesAvailable && !empty($lastUpdate)): ?>
@@ -240,37 +222,22 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
             <div class="alert alert-light border matches-empty" role="status">
                 Le calendrier n'est pas disponible pour le moment.
             </div>
-        <?php elseif (!empty($weekendHomeMatches) || !empty($weekendAwayMatches)): ?>
-            <?php if (!empty($weekendHomeMatches)): ?>
+        <?php elseif (!empty($homeMatches) || !empty($awayMatches)): ?>
+            <?php if (!empty($homeMatches)): ?>
                 <div class="mb-5">
                     <h2 class="matches-list__title">Matchs à domicile</h2>
                     <div class="row g-4">
-                        <?php foreach ($weekendHomeMatches as $ba_bec_match): ?>
+                        <?php foreach ($homeMatches as $ba_bec_match): ?>
                             <?php echo $renderMatchCard($ba_bec_match); ?>
                         <?php endforeach; ?>
                     </div>
                 </div>
             <?php endif; ?>
-            <?php if (!empty($weekendAwayMatches)): ?>
+            <?php if (!empty($awayMatches)): ?>
                 <div>
                     <h2 class="matches-list__title">Matchs à l'extérieur</h2>
                     <div class="row g-4">
-                        <?php foreach ($weekendAwayMatches as $ba_bec_match): ?>
-                            <?php echo $renderMatchCard($ba_bec_match); ?>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-            <?php if (!empty($extraMatches)): ?>
-                <div class="text-center mt-4">
-                    <button id="show-more-matches" class="btn-more" type="button" aria-expanded="false" aria-controls="more-matches">
-                        Afficher les 10 prochains matchs supplémentaires
-                    </button>
-                </div>
-                <div id="more-matches" class="mt-4 d-none">
-                    <h2 class="matches-list__title">10 matchs supplémentaires</h2>
-                    <div class="row g-4">
-                        <?php foreach ($extraMatches as $ba_bec_match): ?>
+                        <?php foreach ($awayMatches as $ba_bec_match): ?>
                             <?php echo $renderMatchCard($ba_bec_match); ?>
                         <?php endforeach; ?>
                     </div>
@@ -283,22 +250,6 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
         <?php endif; ?>
     </section>
 </main>
-
-<script>
-    const showMoreMatchesButton = document.getElementById('show-more-matches');
-    const moreMatchesSection = document.getElementById('more-matches');
-
-    if (showMoreMatchesButton && moreMatchesSection) {
-        showMoreMatchesButton.addEventListener('click', () => {
-            const isHidden = moreMatchesSection.classList.contains('d-none');
-            moreMatchesSection.classList.toggle('d-none');
-            showMoreMatchesButton.setAttribute('aria-expanded', String(isHidden));
-            showMoreMatchesButton.textContent = isHidden
-                ? 'Masquer les matchs supplémentaires'
-                : 'Afficher les 10 prochains matchs supplémentaires';
-        });
-    }
-</script>
 
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
