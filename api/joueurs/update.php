@@ -68,6 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ba_bec_codeEquipe = ctrlSaisies($_POST['codeEquipe'] ?? '');
     $ba_bec_dateRecrutement = ctrlSaisies($_POST['dateRecrutement'] ?? '');
     $ba_bec_dateNaissance = ctrlSaisies($_POST['dateNaissance'] ?? '');
+    $ba_bec_return_teams = $_POST['teams'] ?? [];
+    if (!is_array($ba_bec_return_teams)) {
+        $ba_bec_return_teams = [$ba_bec_return_teams];
+    }
+    $ba_bec_return_teams = array_values(array_unique(array_filter(array_map('strval', $ba_bec_return_teams), 'strlen')));
     $ba_bec_errors = [];
     $ba_bec_clubsPrecedentsInput = $_POST['clubsPrecedents'] ?? '';
     $ba_bec_clubsList = [];
@@ -204,7 +209,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':numJoueur' => $ba_bec_numJoueur,
         ]);
 
-        header('Location: ../../views/backend/joueurs/list.php');
+        $ba_bec_redirect_url = '../../views/backend/joueurs/list.php';
+        if (!empty($ba_bec_return_teams)) {
+            $ba_bec_redirect_url .= '?' . http_build_query(['teams' => $ba_bec_return_teams]);
+        }
+        header('Location: ' . $ba_bec_redirect_url);
         exit();
     }
 }
