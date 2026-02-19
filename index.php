@@ -400,7 +400,7 @@ if (!$becMatchesAvailable) {
     }
 </style>
 <section class="home-hero full-bleed">
-    <div class="home-hero-content text-start">
+    <div class="home-hero-content text-center">
         <h2 class="fw-bold mb-0 typewriter-line" data-typewriter data-text="Bordeaux étudiant club"></h2><br>
         <h3 class="fw-bold mb-0 typewriter-line" data-typewriter data-text="Basket-ball"></h3>
     </div>
