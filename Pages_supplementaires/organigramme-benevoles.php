@@ -133,6 +133,10 @@ function branch_id(string $label): string
                 <p><?php echo htmlspecialchars($branchDescriptions[$branchName] ?? ''); ?></p>
             </div>
 
+            <div class="members-divider" role="presentation" aria-hidden="true">
+                <span>Afficher les membres&nbsp;: <?php echo htmlspecialchars($branchName); ?></span>
+            </div>
+
             <?php if (empty($branchMembers)) : ?>
                 <div class="empty-state">
                     <p>Aucun bénévole n'est encore renseigné pour cette branche.</p>
