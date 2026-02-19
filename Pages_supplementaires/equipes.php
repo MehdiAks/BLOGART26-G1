@@ -5,21 +5,34 @@ $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
-function ba_bec_team_photo_url(?string $codeEquipe, string $suffix): string
+function ba_bec_team_photo_url(?string $photoPath, ?string $nomEquipe, ?string $codeEquipe, string $suffix): string
 {
-    if (!$codeEquipe) {
+    if (!empty($photoPath)) {
+        $relative = ltrim((string) $photoPath, '/');
+        if (strpos($relative, 'src/uploads/') === 0) {
+            $relative = substr($relative, strlen('src/uploads/'));
+        }
+        $absolutePath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $relative;
+        if (file_exists($absolutePath)) {
+            return ROOT_URL . '/src/uploads/' . $relative;
+        }
+    }
+
+    $slug = strtolower((string) iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', (string) ($nomEquipe ?: $codeEquipe)));
+    $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+    $slug = trim((string) $slug, '-');
+    if ($slug === '') {
         return '';
     }
 
-    $fileName = sprintf('%s-%s.jpeg', $codeEquipe, $suffix);
-    $relativePath = '/src/uploads/photos-equipes/' . $fileName;
-    $absolutePath = $_SERVER['DOCUMENT_ROOT'] . $relativePath;
-
-    if (!file_exists($absolutePath)) {
-        return '';
+    foreach (['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'] as $ext) {
+        $relativePath = '/src/uploads/photos-equipes/' . $slug . '-' . $suffix . '.' . $ext;
+        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $relativePath)) {
+            return ROOT_URL . $relativePath;
+        }
     }
 
-    return ROOT_URL . $relativePath;
+    return '';
 }
 
 sql_connect();
@@ -68,7 +81,7 @@ foreach ($coaches ?? [] as $coach) {
             <?php foreach ($teams as $team) : ?>
                 <?php
                 $teamName = $team['nomEquipe'] ?? '';
-                $teamPhotoUrl = ba_bec_team_photo_url($team['codeEquipe'] ?? '', 'photo-equipe') ?: $defaultTeamImage;
+                $teamPhotoUrl = ba_bec_team_photo_url($team['photoDLequipe'] ?? null, $team['nomEquipe'] ?? null, $team['codeEquipe'] ?? null, 'photo-equipe') ?: $defaultTeamImage;
                 ?>
                 <article class="team-card">
                     <div class="team-card-content">

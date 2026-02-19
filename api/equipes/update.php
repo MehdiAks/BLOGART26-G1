@@ -53,10 +53,14 @@ function normalize_upload_path(?string $path): ?string
     return ltrim($path, '/');
 }
 
-function sanitize_code_equipe(string $codeEquipe): string
+function sanitize_team_slug(string $teamName, string $fallbackCode = ''): string
 {
-    $sanitized = preg_replace('/[^A-Za-z0-9_-]+/', '', $codeEquipe);
-    return $sanitized !== '' ? $sanitized : 'equipe';
+    $base = trim($teamName) !== '' ? $teamName : $fallbackCode;
+    $slug = strtolower((string) iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $base));
+    $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+    $slug = trim((string) $slug, '-');
+
+    return $slug !== '' ? $slug : 'equipe';
 }
 
 function upload_error_message(int $errorCode): string
@@ -72,7 +76,7 @@ function upload_error_message(int $errorCode): string
     };
 }
 
-function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, array &$errors): ?string
+function upload_team_photo(string $fileKey, string $teamSlug, string $suffix, array &$errors): ?string
 {
     if (!isset($_FILES[$fileKey])) {
         return null;
@@ -134,8 +138,8 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
         }
     }
 
-    $codeEquipeSafe = sanitize_code_equipe($codeEquipe);
-    $fileName = $codeEquipeSafe . '-' . $suffix . '.' . $extension;
+    $safeTeamSlug = sanitize_team_slug($teamSlug);
+    $fileName = $safeTeamSlug . '-' . $suffix . '.' . $extension;
     $uploadDir = team_upload_dir();
     ensure_upload_dir($uploadDir);
     $destination = $uploadDir . $fileName;
@@ -148,9 +152,9 @@ function upload_team_photo(string $fileKey, string $codeEquipe, string $suffix, 
     return 'photos-equipes/' . $fileName;
 }
 
-function process_equipe_upload(string $fileKey, string $codeEquipe, string $suffix, array &$errors): ?string
+function process_equipe_upload(string $fileKey, string $teamSlug, string $suffix, array &$errors): ?string
 {
-    return upload_team_photo($fileKey, $codeEquipe, $suffix, $errors);
+    return upload_team_photo($fileKey, $teamSlug, $suffix, $errors);
 }
 
 function rename_team_photo_variants(string $oldCode, string $newCode, string $suffix): void
@@ -205,17 +209,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $ba_bec_existingPhotos = null;
     if ($ba_bec_numEquipe > 0) {
-        $photoStmt = $DB->prepare('SELECT photoDLequipe, photoStaff FROM EQUIPE WHERE numEquipe = :numEquipe');
+        $photoStmt = $DB->prepare('SELECT photoDLequipe, photoStaff, nomEquipe, codeEquipe FROM EQUIPE WHERE numEquipe = :numEquipe');
         $photoStmt->execute([':numEquipe' => $ba_bec_numEquipe]);
         $ba_bec_existingPhotos = $photoStmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
     $ba_bec_photoEquipe = $ba_bec_existingPhotos['photoDLequipe'] ?? null;
     $ba_bec_photoStaff = $ba_bec_existingPhotos['photoStaff'] ?? null;
+    $ba_bec_existingName = $ba_bec_existingPhotos['nomEquipe'] ?? '';
+    $ba_bec_existingCode = $ba_bec_existingPhotos['codeEquipe'] ?? '';
+    $ba_bec_oldTeamSlug = sanitize_team_slug((string) $ba_bec_existingName, (string) $ba_bec_existingCode);
+    $ba_bec_newTeamSlug = sanitize_team_slug($ba_bec_nomEquipe, $ba_bec_codeEquipe);
 
     if (empty($ba_bec_errors)) {
-        $ba_bec_photoEquipeUploaded = process_equipe_upload('photoDLequipe', $ba_bec_codeEquipe, 'photo-equipe', $ba_bec_errors);
-        $ba_bec_photoStaffUploaded = process_equipe_upload('photoStaff', $ba_bec_codeEquipe, 'photo-staff', $ba_bec_errors);
+        $ba_bec_photoEquipeUploaded = process_equipe_upload('photoDLequipe', $ba_bec_newTeamSlug, 'photo-equipe', $ba_bec_errors);
+        $ba_bec_photoStaffUploaded = process_equipe_upload('photoStaff', $ba_bec_newTeamSlug, 'photo-staff', $ba_bec_errors);
 
         if ($ba_bec_photoEquipeUploaded) {
             $oldRelative = normalize_upload_path($ba_bec_photoEquipe);
@@ -231,15 +239,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($oldRelative) {
                 $extension = strtolower(pathinfo($oldRelative, PATHINFO_EXTENSION));
                 if ($extension !== '') {
-                    $safeCode = sanitize_code_equipe($ba_bec_codeEquipe);
-                    $targetRelative = 'photos-equipes/' . $safeCode . '-photo-equipe.' . $extension;
+                    $targetRelative = 'photos-equipes/' . $ba_bec_newTeamSlug . '-photo-equipe.' . $extension;
                     if ($oldRelative !== $targetRelative) {
                         $oldPath = uploads_root_dir() . $oldRelative;
                         $newDir = team_upload_dir();
                         if (!is_dir($newDir)) {
                             mkdir($newDir, 0755, true);
                         }
-                        $newPath = $newDir . $safeCode . '-photo-equipe.' . $extension;
+                        $newPath = $newDir . $ba_bec_newTeamSlug . '-photo-equipe.' . $extension;
                         if (file_exists($oldPath) && rename($oldPath, $newPath)) {
                             $ba_bec_photoEquipe = $targetRelative;
                         }
@@ -264,15 +271,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($oldRelative) {
                 $extension = strtolower(pathinfo($oldRelative, PATHINFO_EXTENSION));
                 if ($extension !== '') {
-                    $safeCode = sanitize_code_equipe($ba_bec_codeEquipe);
-                    $targetRelative = 'photos-equipes/' . $safeCode . '-photo-staff.' . $extension;
+                    $targetRelative = 'photos-equipes/' . $ba_bec_newTeamSlug . '-photo-staff.' . $extension;
                     if ($oldRelative !== $targetRelative) {
                         $oldPath = uploads_root_dir() . $oldRelative;
                         $newDir = team_upload_dir();
                         if (!is_dir($newDir)) {
                             mkdir($newDir, 0755, true);
                         }
-                        $newPath = $newDir . $safeCode . '-photo-staff.' . $extension;
+                        $newPath = $newDir . $ba_bec_newTeamSlug . '-photo-staff.' . $extension;
                         if (file_exists($oldPath) && rename($oldPath, $newPath)) {
                             $ba_bec_photoStaff = $targetRelative;
                         }
@@ -285,36 +291,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($ba_bec_errors)) {
-        $ba_bec_existingCode = '';
-        if ($ba_bec_numEquipe > 0) {
-            $codeStmt = $DB->prepare('SELECT codeEquipe FROM EQUIPE WHERE numEquipe = :numEquipe LIMIT 1');
-            $codeStmt->execute([':numEquipe' => $ba_bec_numEquipe]);
-            $ba_bec_existingCode = (string) $codeStmt->fetchColumn();
-        }
-        $ba_bec_existingCodeSafe = $ba_bec_existingCode !== '' ? sanitize_code_equipe($ba_bec_existingCode) : '';
-        $ba_bec_codeEquipeSafe = sanitize_code_equipe($ba_bec_codeEquipe);
-
         $hasEquipeUpload = isset($_FILES['photoDLequipe']) && $_FILES['photoDLequipe']['error'] === 0;
         $hasStaffUpload = isset($_FILES['photoStaff']) && $_FILES['photoStaff']['error'] === 0;
 
-        if ($ba_bec_existingCodeSafe && $ba_bec_existingCodeSafe !== $ba_bec_codeEquipeSafe) {
+        if ($ba_bec_oldTeamSlug && $ba_bec_oldTeamSlug !== $ba_bec_newTeamSlug) {
             if (!$hasEquipeUpload) {
-                rename_team_photo_variants($ba_bec_existingCodeSafe, $ba_bec_codeEquipeSafe, 'photo-equipe');
+                rename_team_photo_variants($ba_bec_oldTeamSlug, $ba_bec_newTeamSlug, 'photo-equipe');
             }
             if (!$hasStaffUpload) {
-                rename_team_photo_variants($ba_bec_existingCodeSafe, $ba_bec_codeEquipeSafe, 'photo-staff');
+                rename_team_photo_variants($ba_bec_oldTeamSlug, $ba_bec_newTeamSlug, 'photo-staff');
             }
         }
 
-        if ($hasEquipeUpload) {
-            if ($ba_bec_existingCodeSafe) {
-                delete_team_photo_variants($ba_bec_existingCodeSafe, 'photo-equipe');
-            }
+        if ($hasEquipeUpload && $ba_bec_oldTeamSlug) {
+            delete_team_photo_variants($ba_bec_oldTeamSlug, 'photo-equipe');
         }
-        if ($hasStaffUpload) {
-            if ($ba_bec_existingCodeSafe) {
-                delete_team_photo_variants($ba_bec_existingCodeSafe, 'photo-staff');
-            }
+        if ($hasStaffUpload && $ba_bec_oldTeamSlug) {
+            delete_team_photo_variants($ba_bec_oldTeamSlug, 'photo-staff');
         }
     }
 
