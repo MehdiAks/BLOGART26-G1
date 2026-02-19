@@ -1,4 +1,23 @@
 <?php
+
+// Génère (ou récupère) un token CSRF de session.
+function csrf_token(): string {
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['csrf_token'];
+}
+
+// Vérifie le token CSRF soumis.
+function csrf_verify(?string $token): bool {
+    if (empty($_SESSION['csrf_token']) || empty($token)) {
+        return false;
+    }
+
+    return hash_equals($_SESSION['csrf_token'], $token);
+}
+
 // Vérifie si l'utilisateur a accès à une ressource selon un niveau requis.
 function check_access($level) {
     // Si l'utilisateur est connecté, son ID est stocké en session.

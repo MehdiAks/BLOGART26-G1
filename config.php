@@ -2,14 +2,36 @@
 // Commentaire : ce fichier centralise la configuration globale de l'application.
 // Il est inclus en début de page (via require_once) afin d'initialiser l'environnement.
 
-// Définition du chemin racine du site (ex : /var/www/html) à partir du DOCUMENT_ROOT serveur.
-define('ROOT', $_SERVER['DOCUMENT_ROOT']);
-// Définition de l'URL de base du site (ex : http://example.com) à partir du Host HTTP.
-define('ROOT_URL', 'http://' . $_SERVER['HTTP_HOST']);
+// Définition robuste du chemin racine du site.
+// __DIR__ évite de dépendre de DOCUMENT_ROOT (peut varier selon l'hébergement).
+define('ROOT', __DIR__);
+
+// Construit une URL de base fiable pour limiter les risques de Host Header Injection.
+$ba_bec_forwardedProto = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '');
+$ba_bec_httpsEnabled = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $ba_bec_forwardedProto === 'https';
+$ba_bec_scheme = $ba_bec_httpsEnabled ? 'https' : 'http';
+$ba_bec_hostHeader = $_SERVER['HTTP_HOST'] ?? 'localhost';
+// On retire les caractères interdits dans un nom d'hôte et on limite la longueur.
+$ba_bec_sanitizedHost = preg_replace('/[^a-zA-Z0-9\.\-:\[\]]/', '', $ba_bec_hostHeader);
+if (!$ba_bec_sanitizedHost) {
+    $ba_bec_sanitizedHost = 'localhost';
+}
+define('ROOT_URL', $ba_bec_scheme . '://' . substr($ba_bec_sanitizedHost, 0, 255));
 
 // S'assure que la session PHP est démarrée pour toutes les pages de l'application.
 // La session sert notamment à stocker l'ID de l'utilisateur connecté et d'autres états.
 if (session_status() === PHP_SESSION_NONE) {
+    $ba_bec_secureCookie = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
+
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => $ba_bec_secureCookie,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
     // Démarre la session (création du cookie PHPSESSID si nécessaire).
     session_start();
 }
