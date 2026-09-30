@@ -41,12 +41,8 @@ function ba_bec_equipe_photo_url(?string $path): string
     if (!$path) {
         return '';
     }
-
-    if (preg_match('/^(https?:\/\/|\/)/', $path)) {
-        return $path;
-    }
-
-    return ROOT_URL . '/src/uploads/photos-equipes/' . ltrim($path, '/');
+    $ba_bec_url = uploaded_file_url($path);
+    return $ba_bec_url !== '' ? $ba_bec_url : uploaded_file_url('photos-equipes/' . ltrim($path, '/'));
 }
 
 $ba_bec_photoEquipeUrl = ba_bec_equipe_photo_url($ba_bec_photoEquipe);
@@ -79,12 +75,13 @@ function ba_bec_photo_url(string $codeEquipe, string $suffix): ?string
     if ($codeEquipe === '') {
         return null;
     }
-    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'];
+    $extensions = ['jpg', 'jpeg', 'png', 'avif', 'webp'];
     foreach ($extensions as $extension) {
         $fileName = $codeEquipe . '-' . $suffix . '.' . $extension;
         $path = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/photos-equipes/' . $fileName;
-        if (file_exists($path)) {
-            return ROOT_URL . '/src/uploads/photos-equipes/' . $fileName;
+        $url = uploaded_file_url('photos-equipes/' . $fileName);
+        if ($url !== '') {
+            return $url;
         }
     }
     return null;
@@ -106,6 +103,7 @@ $ba_bec_photoStaffUrl = $ba_bec_photoStaffUrl ?: ba_bec_photo_url($ba_bec_equipe
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/equipes/update.php'; ?>" method="post" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="numEquipe" value="<?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?>" />
                 <div class="form-group">
                     <label for="codeEquipe">Code équipe</label>
@@ -171,7 +169,7 @@ $ba_bec_photoStaffUrl = $ba_bec_photoStaffUrl ?: ba_bec_photo_url($ba_bec_equipe
                 <div class="form-group mt-2">
                     <label for="photoDLequipe">Photo de l'équipe (upload)</label>
                     <input id="photoDLequipe" name="photoDLequipe" class="form-control" type="file"
-                        accept=".png, .jpeg, .jpg, .avif, .svg, .webp, .gif" />
+                        accept=".png, .jpeg, .jpg, .avif, .webp" />
                     <?php if ($ba_bec_photoEquipeUrl): ?>
                         <div class="mt-2">
                             <img src="<?php echo htmlspecialchars($ba_bec_photoEquipeUrl); ?>" alt="Photo équipe" style="max-width: 160px;" />
@@ -181,7 +179,7 @@ $ba_bec_photoStaffUrl = $ba_bec_photoStaffUrl ?: ba_bec_photo_url($ba_bec_equipe
                 <div class="form-group mt-2">
                     <label for="photoStaff">Photo staff (upload)</label>
                     <input id="photoStaff" name="photoStaff" class="form-control" type="file"
-                        accept=".png, .jpeg, .jpg, .avif, .svg, .webp, .gif" />
+                        accept=".png, .jpeg, .jpg, .avif, .webp" />
                     <?php if ($ba_bec_photoStaffUrl): ?>
                         <div class="mt-2">
                             <img src="<?php echo htmlspecialchars($ba_bec_photoStaffUrl); ?>" alt="Photo staff" style="max-width: 160px;" />

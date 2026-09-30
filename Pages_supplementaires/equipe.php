@@ -19,13 +19,9 @@ function render_missing_table_page(PDOException $exception): void
 function ba_bec_team_photo_url(?string $photoPath, ?string $nomEquipe, ?string $codeEquipe, string $suffix): string
 {
     if (!empty($photoPath)) {
-        $relative = ltrim((string) $photoPath, '/');
-        if (strpos($relative, 'src/uploads/') === 0) {
-            $relative = substr($relative, strlen('src/uploads/'));
-        }
-        $absolutePath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $relative;
-        if (file_exists($absolutePath)) {
-            return ROOT_URL . '/src/uploads/' . $relative;
+        $uploadedUrl = uploaded_file_url($photoPath);
+        if ($uploadedUrl !== '') {
+            return $uploadedUrl;
         }
     }
 
@@ -36,10 +32,10 @@ function ba_bec_team_photo_url(?string $photoPath, ?string $nomEquipe, ?string $
         return '';
     }
 
-    foreach (['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'] as $ext) {
-        $relativePath = '/src/uploads/photos-equipes/' . $slug . '-' . $suffix . '.' . $ext;
-        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $relativePath)) {
-            return ROOT_URL . $relativePath;
+    foreach (['jpg', 'jpeg', 'png', 'avif', 'webp'] as $ext) {
+        $uploadedUrl = uploaded_file_url('photos-equipes/' . $slug . '-' . $suffix . '.' . $ext);
+        if ($uploadedUrl !== '') {
+            return $uploadedUrl;
         }
     }
 
@@ -141,7 +137,9 @@ if ($dbAvailable) {
         $teamMatches = $matchesStmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $exception) {
         render_missing_table_page($exception);
-        throw $exception;
+        error_log('Erreur chargement équipe: ' . $exception->getMessage());
+        http_response_code(500);
+        exit('Une erreur est survenue lors du chargement de la page.');
     }
 } else {
     $team = [
@@ -340,7 +338,10 @@ if (!$coachLead && !empty($assistantCoaches)) {
 }
 ?>
 
-<?php require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php'; ?>
+<?php
+$pageTitle = $teamName !== '' ? $teamName : 'Équipe';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
+?>
 
 <section class="team-detail">
     <header class="team-detail-header">
@@ -365,12 +366,12 @@ if (!$coachLead && !empty($assistantCoaches)) {
                     <div class="team-profile-gallery">
                         <div class="team-profile-photo">
                             <p class="team-profile-label">Photo équipe</p>
-                            <img src="<?php echo htmlspecialchars($teamPhotoUrl); ?>"
+                            <img src="<?php echo htmlspecialchars($teamPhotoUrl); ?>" loading="lazy" decoding="async"
                                 alt="<?php echo htmlspecialchars($teamName); ?>">
                         </div>
                         <div class="team-profile-photo">
                             <p class="team-profile-label">Photo staff</p>
-                            <img src="<?php echo htmlspecialchars($staffPhotoUrl); ?>"
+                            <img src="<?php echo htmlspecialchars($staffPhotoUrl); ?>" loading="lazy" decoding="async"
                                 alt="Photo du staff <?php echo htmlspecialchars($teamName); ?>">
                         </div>
                     </div>
@@ -446,7 +447,7 @@ if (!$coachLead && !empty($assistantCoaches)) {
                                 <p class="team-stat-subtitle mb-0">
                                     <?php echo htmlspecialchars($stats['bestWin']['opponent']); ?>
                                     <?php if (!empty($stats['bestWin']['date'])): ?>
-                                        · <?php echo htmlspecialchars($stats['bestWin']['date']); ?>
+                                        · <?php echo e(format_date_fr($stats['bestWin']['date'])); ?>
                                     <?php endif; ?>
                                 </p>
                             <?php endif; ?>
@@ -543,7 +544,7 @@ if (!$coachLead && !empty($assistantCoaches)) {
                     </div>
                 </div>
                 <div class="match-details">
-                    <p><?php echo htmlspecialchars($nextMatch['dateMatch'] ?? ''); ?><?php echo !empty($nextMatch['heureMatch']) ? ' · ' . htmlspecialchars($nextMatch['heureMatch']) : ''; ?>
+                    <p><?php echo e(format_match_date_fr($nextMatch['dateMatch'] ?? '', $nextMatch['heureMatch'] ?? null)); ?>
                     </p>
                     <p class="text-muted"><?php echo htmlspecialchars($nextMatch['lieuMatch'] ?? 'Lieu à confirmer'); ?></p>
                 </div>
@@ -559,7 +560,7 @@ if (!$coachLead && !empty($assistantCoaches)) {
                         <p class="match-card-opponent">
                             <?php echo htmlspecialchars(($match['teamHome'] ?? '') . ' vs ' . ($match['teamAway'] ?? '')); ?>
                         </p>
-                        <p class="match-card-date"><?php echo htmlspecialchars($match['dateMatch'] ?? ''); ?></p>
+                        <p class="match-card-date"><?php echo e(format_match_date_fr($match['dateMatch'] ?? '', $match['heureMatch'] ?? null)); ?></p>
                     </article>
                 <?php endforeach; ?>
             </div>
@@ -604,19 +605,13 @@ if (!$coachLead && !empty($assistantCoaches)) {
             <div class="players-grid">
                 <?php foreach ($players as $player): ?>
                     <?php
-                    $playerPhoto = $player['urlPhotoJoueur'] ?? '';
-                    $playerPhotoUrl = '';
-                    if (!empty($playerPhoto)) {
-                        $playerPhotoUrl = preg_match('/^(https?:\/\/|\/)/', $playerPhoto)
-                            ? $playerPhoto
-                            : ROOT_URL . '/src/uploads/' . $playerPhoto;
-                    }
+                    $playerPhotoUrl = uploaded_file_url($player['urlPhotoJoueur'] ?? '');
                     ?>
                     <article class="player-card">
                         <h3><?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?></h3>
                         <div class="player-photo">
                             <?php if ($playerPhotoUrl): ?>
-                                <img src="<?php echo htmlspecialchars($playerPhotoUrl); ?>"
+                                <img src="<?php echo htmlspecialchars($playerPhotoUrl); ?>" loading="lazy" decoding="async"
                                     alt="<?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>"
                                     loading="lazy">
                             <?php else: ?>

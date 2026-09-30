@@ -16,7 +16,7 @@ sql_connect();
 $ba_bec_equipe = null;
 if (isset($_GET['numEquipe'])) {
     $ba_bec_numEquipe = (int) $_GET['numEquipe'];
-    $ba_bec_equipe = sql_select('EQUIPE', '*', "numEquipe = '$ba_bec_numEquipe'");
+    $ba_bec_equipe = sql_select('EQUIPE', '*', 'numEquipe = ?', null, null, '1', [$ba_bec_numEquipe]);
     $ba_bec_equipe = $ba_bec_equipe[0] ?? null;
 }
 ?>
@@ -29,9 +29,10 @@ if (isset($_GET['numEquipe'])) {
         <div class="col-md-12">
             <?php if ($ba_bec_equipe) : ?>
                 <form action="<?php echo ROOT_URL . '/api/equipes/delete.php' ?>" method="post">
+                    <?php echo csrf_field(); ?>
                     <div class="form-group">
                         <label for="numEquipe">ID équipe</label>
-                        <input id="numEquipe" name="numEquipe" class="form-control" type="text" value="<?php echo $ba_bec_equipe['numEquipe']; ?>" readonly />
+                        <input id="numEquipe" name="numEquipe" class="form-control" type="text" value="<?php echo (int) $ba_bec_equipe['numEquipe']; ?>" readonly />
                     </div>
                     <div class="form-group mt-2">
                         <label for="summary">Nom</label>

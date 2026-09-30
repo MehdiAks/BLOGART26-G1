@@ -5,6 +5,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 $pageStyles = [
     ROOT_URL . '/src/css/anciens-et-amis.css',
 ];
+$pageTitle = 'Anciens et amis';
+$pageDescription = 'L’association des Anciens et Amis du Bordeaux Étudiant Club.';
 
 require_once 'header.php';
 ?>
@@ -30,6 +32,7 @@ require_once 'header.php';
                     src="src/images/background/background-actualite.jpg"
                     class="article-image mb-3"
                     alt="Ancien joueur en entraînement"
+                    loading="lazy" decoding="async"
                 >
                 <h2 class="h5">Annuaire</h2>
                 <p>
@@ -47,6 +50,7 @@ require_once 'header.php';
                     src="src/images/background/background-article.jpg"
                     class="article-image mb-3"
                     alt="Supporters réunis"
+                    loading="lazy" decoding="async"
                 >
                 <h2 class="h5">Amis et événements</h2>
                 <p>
@@ -64,6 +68,7 @@ require_once 'header.php';
                     src="src/images/background/background-index-1.webp"
                     class="article-image mb-3"
                     alt="Moment de convivialité"
+                    loading="lazy" decoding="async"
                 >
                 <h2 class="h5">Retrouvailles et évenements</h2>
                 <p>

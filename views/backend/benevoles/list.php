@@ -9,6 +9,7 @@
  */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+$pageTitle = 'Bénévoles · Administration';
 include '../../../header.php';
 
 $ba_bec_benevoles = sql_select('PERSONNEL', '*', null, null, 'nomPersonnel ASC, prenomPersonnel ASC');
@@ -24,9 +25,7 @@ $ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3">
-                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
-                    Retour au panneau admin
-                </a>
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="admin-back-link">← Tableau de bord</a>
             </div>
             <h1>Bénévoles</h1>
             <?php if ($ba_bec_is_missing_table): ?>
@@ -53,12 +52,17 @@ $ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
                     <?php if (!empty($ba_bec_benevoles)): ?>
                         <?php foreach ($ba_bec_benevoles as $ba_bec_benevole): ?>
                             <tr>
-                                <td><?php echo $ba_bec_benevole['numPersonnel']; ?></td>
-                                <td><?php echo $ba_bec_benevole['prenomPersonnel']; ?></td>
-                                <td><?php echo $ba_bec_benevole['nomPersonnel']; ?></td>
+                                <td><?php echo (int) $ba_bec_benevole['numPersonnel']; ?></td>
+                                <td><?php echo e($ba_bec_benevole['prenomPersonnel']); ?></td>
+                                <td><?php echo e($ba_bec_benevole['nomPersonnel']); ?></td>
                                 <td>
                                     <?php if (!empty($ba_bec_benevole['urlPhotoPersonnel'])): ?>
-                                        <a href="<?php echo $ba_bec_benevole['urlPhotoPersonnel']; ?>" target="_blank" rel="noopener">Voir</a>
+                                        <?php $ba_bec_photoUrl = uploaded_file_url($ba_bec_benevole['urlPhotoPersonnel']); ?>
+                                        <?php if ($ba_bec_photoUrl !== ''): ?>
+                                            <a href="<?php echo e($ba_bec_photoUrl); ?>" target="_blank" rel="noopener">Voir</a>
+                                        <?php else: ?>
+                                            Image indisponible
+                                        <?php endif; ?>
                                     <?php else: ?>
                                         -
                                     <?php endif; ?>
@@ -113,8 +117,8 @@ $ba_bec_is_missing_table = sql_is_missing_table('PERSONNEL');
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="edit.php?numPersonnel=<?= htmlspecialchars($ba_bec_benevole['numPersonnel']); ?>" class="btn btn-primary">Edit</a>
-                                    <a href="delete.php?numPersonnel=<?= htmlspecialchars($ba_bec_benevole['numPersonnel']); ?>" class="btn btn-danger">Delete</a>
+                                    <a href="edit.php?numPersonnel=<?= htmlspecialchars($ba_bec_benevole['numPersonnel']); ?>" class="btn btn-primary">Modifier</a>
+                                    <a href="delete.php?numPersonnel=<?= htmlspecialchars($ba_bec_benevole['numPersonnel']); ?>" class="btn btn-danger">Supprimer</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

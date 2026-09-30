@@ -8,6 +8,10 @@
 require_once __DIR__ . '/query/load.php';
 // Charge les helpers de sécurité (auth, vérifications, etc.).
 require_once __DIR__ . '/security.php';
+// Charge les helpers d'upload sécurisé.
+require_once __DIR__ . '/upload.php';
+// Charge les helpers de formatage des dates en français.
+require_once __DIR__ . '/date.php';
 // Charge les utilitaires divers (cURL, BBCode, etc.).
 require_once __DIR__ . '/various.php';
 // Charge les fonctions liées aux données (si elles existent).

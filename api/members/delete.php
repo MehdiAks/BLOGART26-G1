@@ -10,7 +10,6 @@
  * 4) Exécute la requête SQL adaptée (INSERT/UPDATE/DELETE) avec les valeurs préparées.
  * 5) Gère le feedback (flash/session/erreur) et redirige l'utilisateur vers l'écran cible.
  */
-session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
@@ -19,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$ba_bec_numMemb = ctrlSaisies($_POST['numMemb'] ?? '');
+$ba_bec_numMemb = (int) ($_POST['numMemb'] ?? 0);
 $ba_bec_redirectUrl = '../../views/backend/members/delete.php';
 if (!empty($ba_bec_numMemb)) {
     $ba_bec_redirectUrl .= '?numMemb=' . urlencode($ba_bec_numMemb);
@@ -38,7 +37,7 @@ if (empty($ba_bec_numMemb)) {
     exit();
 }
 
-$ba_bec_delete_result = sql_delete('MEMBRE', "numMemb = $ba_bec_numMemb");
+$ba_bec_delete_result = sql_delete('MEMBRE', 'numMemb = ?', [$ba_bec_numMemb]);
 if ($ba_bec_delete_result['success']) {
     flash_success();
 } elseif (!empty($ba_bec_delete_result['constraint']) || sql_is_foreign_key_error($ba_bec_delete_result['message'] ?? '', $ba_bec_delete_result['code'] ?? null)) {

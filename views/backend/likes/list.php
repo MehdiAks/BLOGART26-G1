@@ -7,7 +7,10 @@
  * - Les liens d'action pointent vers les routes backend correspondantes afin d'enchaîner le workflow.
  * - Les classes utilitaires (Bootstrap) gèrent la mise en page et la hiérarchie visuelle des sections.
  */
-include '../../../header.php'; // Contient le header et l'appel à config.php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+$pageTitle = 'Likes · Administration';
+include '../../../header.php';
 
 // Filtres et tri
 $ba_bec_filter_numMemb = isset($_GET['numMemb']) ? trim($_GET['numMemb']) : '';
@@ -16,18 +19,22 @@ $ba_bec_filter_likeA = isset($_GET['likeA']) ? trim($_GET['likeA']) : '';
 $ba_bec_filter_pseudo = isset($_GET['pseudo']) ? trim($_GET['pseudo']) : '';
 
 $ba_bec_filters = [];
+$ba_bec_params = [];
 if ($ba_bec_filter_numMemb !== '' && ctype_digit($ba_bec_filter_numMemb)) {
-    $ba_bec_filters[] = 'l.numMemb = ' . intval($ba_bec_filter_numMemb);
+    $ba_bec_filters[] = 'l.numMemb = ?';
+    $ba_bec_params[] = (int) $ba_bec_filter_numMemb;
 }
 if ($ba_bec_filter_numArt !== '' && ctype_digit($ba_bec_filter_numArt)) {
-    $ba_bec_filters[] = 'l.numArt = ' . intval($ba_bec_filter_numArt);
+    $ba_bec_filters[] = 'l.numArt = ?';
+    $ba_bec_params[] = (int) $ba_bec_filter_numArt;
 }
 if (in_array($ba_bec_filter_likeA, ['0', '1'], true)) {
-    $ba_bec_filters[] = 'l.likeA = ' . intval($ba_bec_filter_likeA);
+    $ba_bec_filters[] = 'l.likeA = ?';
+    $ba_bec_params[] = (int) $ba_bec_filter_likeA;
 }
 if ($ba_bec_filter_pseudo !== '') {
-    $ba_bec_pseudo_safe = sql_escape($ba_bec_filter_pseudo);
-    $ba_bec_filters[] = "m.pseudoMemb LIKE '%" . $ba_bec_pseudo_safe . "%'";
+    $ba_bec_filters[] = 'm.pseudoMemb LIKE ?';
+    $ba_bec_params[] = '%' . $ba_bec_filter_pseudo . '%';
 }
 
 $ba_bec_sort_key = isset($_GET['sort']) ? $_GET['sort'] : 'user';
@@ -53,7 +60,9 @@ $ba_bec_likes = sql_select(
     'l.numMemb, l.numArt, l.likeA, m.pseudoMemb, a.libTitrArt',
     $ba_bec_where,
     null,
-    $ba_bec_order
+    $ba_bec_order,
+    null,
+    $ba_bec_params
 );
 ?>
 
@@ -64,8 +73,8 @@ $ba_bec_likes = sql_select(
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3">
-                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
-                    Retour au panneau admin
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="admin-back-link">
+                    ← Tableau de bord
                 </a>
             </div>
             <h1>Gestion des likes</h1>
@@ -131,10 +140,10 @@ $ba_bec_likes = sql_select(
                                 <?php echo htmlspecialchars($ba_bec_like['numArt'], ENT_QUOTES, 'UTF-8'); ?>
                                 <span class="text-muted">- <?php echo htmlspecialchars($ba_bec_libTitrArt, ENT_QUOTES, 'UTF-8'); ?></span>
                             </td>
-                            <td><?php echo ($ba_bec_typeLike); ?></td> <!-- Affichage du type de like -->
+                            <td><?php echo e($ba_bec_typeLike); ?></td> <!-- Affichage du type de like -->
                             <td>
-                                <a href="edit.php?numArt=<?php echo ($ba_bec_like['numArt']); ?>&numMemb=<?php echo ($ba_bec_like['numMemb']); ?>" class="btn btn-primary">Edit</a>
-                                <a href="delete.php?numArt=<?php echo ($ba_bec_like['numArt']); ?>&numMemb=<?php echo ($ba_bec_like['numMemb']); ?>" class="btn btn-danger">Delete</a>
+                                <a href="edit.php?numArt=<?php echo (int) $ba_bec_like['numArt']; ?>&numMemb=<?php echo (int) $ba_bec_like['numMemb']; ?>" class="btn btn-primary">Modifier</a>
+                                <a href="delete.php?numArt=<?php echo (int) $ba_bec_like['numArt']; ?>&numMemb=<?php echo (int) $ba_bec_like['numMemb']; ?>" class="btn btn-danger">Supprimer</a>
                             </td>
                         </tr>
                     <?php } ?>

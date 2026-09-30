@@ -19,8 +19,8 @@ $ba_bec_recaptchaSiteKey = getenv('RECAPTCHA_SITE_KEY');
 $ba_bec_recaptchaSiteKeyEscaped = htmlspecialchars($ba_bec_recaptchaSiteKey ?? '', ENT_QUOTES, 'UTF-8');
 
 if(isset($_GET['numMemb'])){
-    $ba_bec_numMemb = $_GET['numMemb'];
-    $ba_bec_member = sql_select('MEMBRE', '*', "numMemb = '$ba_bec_numMemb'")[0];
+    $ba_bec_numMemb = (int) $_GET['numMemb'];
+    $ba_bec_member = sql_select('MEMBRE', '*', 'numMemb = ?', null, null, '1', [$ba_bec_numMemb])[0];
     $ba_bec_pseudoMemb = $ba_bec_member['pseudoMemb'];
     $ba_bec_prenomMemb = $ba_bec_member['prenomMemb'];
     $ba_bec_nomMemb = $ba_bec_member['nomMemb'];
@@ -48,11 +48,12 @@ if(isset($_GET['numMemb'])){
         <div class="col-md-12">
             <!-- Formulaire pour supprimer le membre -->
             <form action="<?php echo ROOT_URL . '/api/members/delete.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-delete">
                 <div class="form-group">
                     <!-- NUM -->
                     <label for="numMemb">Numéro du membre</label>
-                    <input id="numMemb" name="numMemb" class="form-control" style="display: none" type="text" value="<?php echo($ba_bec_numMemb); ?>" readonly="readonly" />
+                    <input id="numMemb" name="numMemb" class="form-control" style="display: none" type="text" value="<?php echo (int) $ba_bec_numMemb; ?>" readonly="readonly" />
                     <!-- PRENOM -->
                     <label for="prenomMemb">Prénom du membre</label>
                     <input id="prenomMemb" name="prenomMemb" class="form-control" type="text" value="<?php echo($ba_bec_prenomMemb); ?>" readonly="readonly" disabled />
@@ -81,7 +82,7 @@ if(isset($_GET['numMemb'])){
                             echo 'Membre';
                         }
                      ?>" readonly="readonly" disabled />
-                     <input id="idMemb" name="idMemb" class="form-control" style="display: none" type="text" value="<?php echo($ba_bec_numStat); ?>" readonly="readonly" />
+                     <input id="idMemb" name="idMemb" class="form-control" style="display: none" type="text" value="<?php echo (int) $ba_bec_numStat; ?>" readonly="readonly" />
                 </div>
                 <br />
             <?php 

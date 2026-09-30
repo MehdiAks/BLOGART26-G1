@@ -16,8 +16,14 @@ sql_connect();
 
 $ba_bec_numMatch = (int) ($_POST['numMatch'] ?? 0);
 if ($ba_bec_numMatch > 0) {
-    $deleteStmt = $DB->prepare('DELETE FROM `MATCH` WHERE numMatch = :numMatch');
-    $deleteStmt->execute([':numMatch' => $ba_bec_numMatch]);
+    try {
+        $deleteStmt = $DB->prepare('DELETE FROM `MATCH` WHERE numMatch = :numMatch');
+        $deleteStmt->execute([':numMatch' => $ba_bec_numMatch]);
+    } catch (PDOException $ba_bec_exception) {
+        error_log('Erreur suppression match: ' . $ba_bec_exception->getMessage());
+        http_response_code(400);
+        exit('Impossible de supprimer ce match.');
+    }
 }
 
 header('Location: ../../views/backend/matches/list.php');

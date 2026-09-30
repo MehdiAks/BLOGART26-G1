@@ -19,7 +19,7 @@ if (!isset($_GET['numJoueur'])) {
 sql_connect();
 
 $ba_bec_numJoueur = (int) $_GET['numJoueur'];
-$ba_bec_joueur = sql_select('JOUEUR', '*', "numJoueur = '$ba_bec_numJoueur'");
+$ba_bec_joueur = sql_select('JOUEUR', '*', 'numJoueur = ?', null, null, '1', [$ba_bec_numJoueur]);
 $ba_bec_joueur = $ba_bec_joueur[0] ?? null;
 $ba_bec_equipes = sql_select('EQUIPE', 'codeEquipe, nomEquipe', null, null, 'nomEquipe ASC');
 
@@ -76,6 +76,7 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/joueurs/update.php'; ?>" method="post" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="numJoueur" value="<?php echo htmlspecialchars($ba_bec_joueur['numJoueur']); ?>" />
                 <input type="hidden" name="photoActuelle" value="<?php echo htmlspecialchars($ba_bec_joueur['urlPhotoJoueur'] ?? ''); ?>" />
                 <?php foreach ($ba_bec_return_teams as $ba_bec_return_team): ?>
@@ -115,17 +116,16 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                 <div class="form-group mt-2">
                     <label for="photoJoueur">Photo (upload)</label>
                     <input id="photoJoueur" name="photoJoueur" class="form-control" type="file"
-                        accept=".png, .jpeg, .jpg, .avif, .svg" />
+                        accept=".png, .jpeg, .jpg, .avif, .webp" />
                     <?php if (!empty($ba_bec_joueur['urlPhotoJoueur'])): ?>
                         <?php
-                        $ba_bec_photo = $ba_bec_joueur['urlPhotoJoueur'];
-                        $ba_bec_photoUrl = preg_match('/^(https?:\/\/|\/)/', $ba_bec_photo)
-                            ? $ba_bec_photo
-                            : ROOT_URL . '/src/uploads/' . $ba_bec_photo;
+                        $ba_bec_photoUrl = uploaded_file_url($ba_bec_joueur['urlPhotoJoueur']);
                         ?>
-                        <div class="mt-2">
-                            <img src="<?php echo htmlspecialchars($ba_bec_photoUrl); ?>" alt="Photo actuelle" style="max-width: 120px;" />
-                        </div>
+                        <?php if ($ba_bec_photoUrl): ?>
+                            <div class="mt-2">
+                                <img src="<?php echo e($ba_bec_photoUrl); ?>" alt="Photo actuelle" style="max-width: 120px;" />
+                            </div>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
                 <div class="form-group mt-2">

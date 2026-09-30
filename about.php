@@ -1,6 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 $pageStyles = [ROOT_URL . '/src/css/about.css'];
+$pageTitle = 'À propos';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 ?>
 

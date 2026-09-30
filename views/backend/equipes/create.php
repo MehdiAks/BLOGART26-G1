@@ -47,6 +47,7 @@ $ba_bec_niveaux = array_column(
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/equipes/create.php'; ?>" method="post" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="codeEquipe">Code équipe</label>
                     <input id="codeEquipe" name="codeEquipe" class="form-control" type="text"
@@ -105,12 +106,12 @@ $ba_bec_niveaux = array_column(
                 <div class="form-group mt-2">
                     <label for="photoDLequipe">Photo de l'équipe (upload)</label>
                     <input id="photoDLequipe" name="photoDLequipe" class="form-control" type="file"
-                        accept=".png, .jpeg, .jpg, .avif, .svg, .webp, .gif" />
+                        accept=".png, .jpeg, .jpg, .avif, .webp" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="photoStaff">Photo staff (upload)</label>
                     <input id="photoStaff" name="photoStaff" class="form-control" type="file"
-                        accept=".png, .jpeg, .jpg, .avif, .svg, .webp, .gif" />
+                        accept=".png, .jpeg, .jpg, .avif, .webp" />
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Créer</button>

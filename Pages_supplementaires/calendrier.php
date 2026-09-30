@@ -4,6 +4,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 $pageStyles = [
     ROOT_URL . '/src/css/matches.css',
 ];
+$pageTitle = 'Calendrier';
+$pageDescription = 'Calendrier des matchs du Bordeaux Étudiant Club Basket, à domicile et à l’extérieur.';
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
@@ -83,7 +85,6 @@ $matchesQuery = "SELECT
         e.nomEquipe AS teamName
     FROM `MATCH` m
     INNER JOIN EQUIPE e ON m.codeEquipe = e.codeEquipe
-    WHERE m.dateMatch BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 DAY)
     ORDER BY m.dateMatch ASC, m.heureMatch ASC";
 $lastUpdateQuery = "SELECT MAX(dateMatch) AS lastUpdate FROM `MATCH`";
 
@@ -101,10 +102,10 @@ $resolveMatchSide = static function (string $location): string {
     if ($location === '') {
         return 'home';
     }
-    if (str_contains($location, 'exterieur') || str_contains($location, 'extérieur') || str_contains($location, 'away')) {
+    if (strpos($location, 'exterieur') !== false || strpos($location, 'extérieur') !== false || strpos($location, 'away') !== false) {
         return 'away';
     }
-    if (str_contains($location, 'domicile') || str_contains($location, 'home') || str_contains($location, 'barbey')) {
+    if (strpos($location, 'domicile') !== false || strpos($location, 'home') !== false || strpos($location, 'barbey') !== false) {
         return 'home';
     }
     return 'home';
@@ -128,17 +129,23 @@ foreach ($allMatches as $ba_bec_match) {
     $ba_bec_match['teamAway'] = $isHome ? $opponent : ($ba_bec_match['teamName'] ?? 'BEC');
     $ba_bec_match['scoreHome'] = $isHome ? ($ba_bec_match['scoreBec'] ?? null) : ($ba_bec_match['scoreAdversaire'] ?? null);
     $ba_bec_match['scoreAway'] = $isHome ? ($ba_bec_match['scoreAdversaire'] ?? null) : ($ba_bec_match['scoreBec'] ?? null);
+    $ba_bec_match['isHome'] = $isHome;
     if ($side === 'away') {
         $awayMatches[] = $ba_bec_match;
     } else {
         $homeMatches[] = $ba_bec_match;
     }
 }
+$calendarMatches = array_merge($homeMatches, $awayMatches);
+usort($calendarMatches, static function (array $left, array $right): int {
+    return strcmp(($left['matchDate'] ?? '') . ' ' . ($left['matchTime'] ?? ''), ($right['matchDate'] ?? '') . ' ' . ($right['matchTime'] ?? ''));
+});
 
 $lastUpdate = null;
 if ($becMatchesAvailable) {
     try {
-        $lastUpdateStmt = $DB->query($lastUpdateQuery);
+        $lastUpdateStmt = $DB->prepare($lastUpdateQuery);
+        $lastUpdateStmt->execute();
         $lastUpdateRow = $lastUpdateStmt->fetch(PDO::FETCH_ASSOC);
         $lastUpdate = $lastUpdateRow['lastUpdate'] ?? null;
     } catch (PDOException $exception) {
@@ -147,16 +154,16 @@ if ($becMatchesAvailable) {
 }
 
 $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo): string {
-    $matchDate = new DateTime($ba_bec_match['matchDate']);
-    $displayDate = $matchDate->format('d/m/Y');
-    $displayTime = '';
-    if (!empty($ba_bec_match['matchTime'])) {
-        $matchTime = new DateTime($ba_bec_match['matchTime']);
-        $displayTime = $matchTime->format('H:i');
-    }
+    $displayDate = format_match_date_fr($ba_bec_match['matchDate'] ?? '', $ba_bec_match['matchTime'] ?? null);
     $score = '';
+    $resultLabel = '';
+    $resultClass = '';
     if ($ba_bec_match['scoreHome'] !== null && $ba_bec_match['scoreAway'] !== null) {
         $score = (int) $ba_bec_match['scoreHome'] . ' - ' . (int) $ba_bec_match['scoreAway'];
+        $becScore = !empty($ba_bec_match['isHome']) ? (int) $ba_bec_match['scoreHome'] : (int) $ba_bec_match['scoreAway'];
+        $opponentScore = !empty($ba_bec_match['isHome']) ? (int) $ba_bec_match['scoreAway'] : (int) $ba_bec_match['scoreHome'];
+        $resultLabel = $becScore > $opponentScore ? 'Victoire' : ($becScore < $opponentScore ? 'Défaite' : 'Égalité');
+        $resultClass = $becScore > $opponentScore ? ' match-card__result--win' : ' match-card__result--loss';
     }
 
     $homeLogo = $resolveTeamLogo($ba_bec_match['teamHome'], $ba_bec_match['teamName'] ?? '');
@@ -169,18 +176,14 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
             <header class="match-card__header">
                 <div>
                     <p class="match-card__competition"><?php echo htmlspecialchars($ba_bec_match['teamName'] ?? 'Match'); ?></p>
-                    <p class="match-card__date">
-                        <?php echo htmlspecialchars($displayDate); ?>
-                        <?php if ($displayTime !== ''): ?>
-                            <span>• <?php echo htmlspecialchars($displayTime); ?></span>
-                        <?php endif; ?>
-                    </p>
+                    <p class="match-card__date"><?php echo e($displayDate); ?></p>
                 </div>
+                <div class="match-card__status"><span class="match-card__badge"><?php echo !empty($ba_bec_match['isHome']) ? 'Domicile' : 'Extérieur'; ?></span><?php if ($resultLabel !== ''): ?><strong class="match-card__result<?php echo $resultClass; ?>"><?php echo e($resultLabel); ?></strong><?php endif; ?></div>
             </header>
             <div class="wrapper">
                 <div class="match-card__team">
                     <span>Domicile</span>
-                    <img class="match-card__logo" src="<?php echo htmlspecialchars($homeLogo); ?>" alt="Logo <?php echo htmlspecialchars($ba_bec_match['teamHome']); ?>">
+                    <img class="match-card__logo" src="<?php echo htmlspecialchars($homeLogo); ?>" alt="Logo <?php echo htmlspecialchars($ba_bec_match['teamHome']); ?>" loading="lazy" decoding="async">
                     <strong><?php echo htmlspecialchars($ba_bec_match['teamHome']); ?></strong>
                 </div>
                 <div class="match-card__score">
@@ -188,11 +191,12 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
                 </div>
                 <div class="match-card__team">
                     <span>Extérieur</span>
-                    <img class="match-card__logo" src="<?php echo htmlspecialchars($awayLogo); ?>" alt="Logo <?php echo htmlspecialchars($ba_bec_match['teamAway']); ?>">
+                    <img class="match-card__logo" src="<?php echo htmlspecialchars($awayLogo); ?>" alt="Logo <?php echo htmlspecialchars($ba_bec_match['teamAway']); ?>" loading="lazy" decoding="async">
                     <strong><?php echo htmlspecialchars($ba_bec_match['teamAway']); ?></strong>
                 </div>
             </div>
-            <?php if (!empty($ba_bec_match['location'])): ?>
+            <?php $ba_bec_locationKey = strtolower(trim((string) ($ba_bec_match['location'] ?? ''))); ?>
+            <?php if ($ba_bec_locationKey !== '' && !in_array($ba_bec_locationKey, ['domicile', 'extérieur', 'exterieur', 'home', 'away'], true)): ?>
                 <p class="match-card__location">Lieu : <?php echo htmlspecialchars($ba_bec_match['location']); ?></p>
             <?php endif; ?>
         </article>
@@ -205,14 +209,13 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
 
 <main class="container py-5">
     <section class="matches-hero">
-        <p class="matches-hero__eyebrow">Calendrier</p>
-        <h1 class="matches-hero__title">Les prochains matchs des équipes seniors</h1>
+        <h1 class="matches-hero__title">Calendrier</h1>
         <p class="matches-hero__text">
             Retrouvez ici le prochain match de chaque équipe senior du club, affiché selon la date du jour.
         </p>
         <div class="matches-hero__meta">
             <?php if ($becMatchesAvailable && !empty($lastUpdate)): ?>
-                <span class="matches-hero__update">Dernière mise à jour : <?php echo htmlspecialchars($lastUpdate); ?></span>
+                <span class="matches-hero__update">Dernière mise à jour : <?php echo e(format_date_fr($lastUpdate)); ?></span>
             <?php endif; ?>
         </div>
     </section>
@@ -222,27 +225,25 @@ $renderMatchCard = static function (array $ba_bec_match) use ($resolveTeamLogo):
             <div class="alert alert-light border matches-empty" role="status">
                 Le calendrier n'est pas disponible pour le moment.
             </div>
-        <?php elseif (!empty($homeMatches) || !empty($awayMatches)): ?>
-            <?php if (!empty($homeMatches)): ?>
-                <div class="mb-5">
-                    <h2 class="matches-list__title">Matchs à domicile</h2>
-                    <div class="row g-4">
-                        <?php foreach ($homeMatches as $ba_bec_match): ?>
-                            <?php echo $renderMatchCard($ba_bec_match); ?>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-            <?php if (!empty($awayMatches)): ?>
-                <div>
-                    <h2 class="matches-list__title">Matchs à l'extérieur</h2>
-                    <div class="row g-4">
-                        <?php foreach ($awayMatches as $ba_bec_match): ?>
-                            <?php echo $renderMatchCard($ba_bec_match); ?>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
+        <?php elseif (!empty($allMatches)): ?>
+            <?php
+            $ba_bec_monthNames = [1 => 'Janvier', 2 => 'Février', 3 => 'Mars', 4 => 'Avril', 5 => 'Mai', 6 => 'Juin', 7 => 'Juillet', 8 => 'Août', 9 => 'Septembre', 10 => 'Octobre', 11 => 'Novembre', 12 => 'Décembre'];
+            $ba_bec_currentMonth = '';
+            ?>
+            <?php foreach ($calendarMatches as $ba_bec_match): ?>
+                <?php
+                $ba_bec_matchMonth = substr((string) $ba_bec_match['matchDate'], 0, 7);
+                if ($ba_bec_matchMonth !== $ba_bec_currentMonth):
+                    if ($ba_bec_currentMonth !== ''): ?></div><?php endif;
+                    $ba_bec_currentMonth = $ba_bec_matchMonth;
+                    $ba_bec_monthDate = new DateTime($ba_bec_match['matchDate']);
+                    ?>
+                    <h2 class="matches-list__title"><?php echo e($ba_bec_monthNames[(int) $ba_bec_monthDate->format('n')] . ' ' . $ba_bec_monthDate->format('Y')); ?></h2>
+                    <div class="row">
+                <?php endif; ?>
+                <?php echo $renderMatchCard($ba_bec_match); ?>
+            <?php endforeach; ?>
+            <?php if ($ba_bec_currentMonth !== ''): ?></div><?php endif; ?>
         <?php else: ?>
             <div class="alert alert-light border matches-empty" role="status">
                 Aucun match n'est disponible pour le moment.

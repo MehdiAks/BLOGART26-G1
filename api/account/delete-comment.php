@@ -13,7 +13,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 // Étape 1: récupérer l'identifiant membre depuis la session.
-$ba_bec_numMemb = $_SESSION['user_id'] ?? null;
+$ba_bec_numMemb = current_user_id();
 if (!$ba_bec_numMemb) {
     $_SESSION['error'] = 'Vous devez être connecté pour supprimer un commentaire.';
     header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
@@ -36,7 +36,7 @@ if ($ba_bec_numCom <= 0) {
 }
 
 // Étape 4: vérifier que le commentaire appartient bien au membre courant.
-$ba_bec_comment = sql_select('comment', 'numCom', "numCom = $ba_bec_numCom AND numMemb = $ba_bec_numMemb")[0] ?? null;
+$ba_bec_comment = sql_select('COMMENT', 'numCom', 'numCom = ? AND numMemb = ?', null, null, '1', [$ba_bec_numCom, $ba_bec_numMemb])[0] ?? null;
 if (!$ba_bec_comment) {
     $_SESSION['error'] = 'Vous ne pouvez pas supprimer ce commentaire.';
     header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
@@ -44,7 +44,7 @@ if (!$ba_bec_comment) {
 }
 
 // Étape 5: suppression logique (flag + date) et confirmation utilisateur.
-sql_update('comment', "delLogiq = 1, dtDelLogCom = NOW()", "numCom = $ba_bec_numCom AND numMemb = $ba_bec_numMemb");
+sql_update('COMMENT', 'delLogiq = 1, dtDelLogCom = NOW()', 'numCom = ? AND numMemb = ?', [$ba_bec_numCom, $ba_bec_numMemb]);
 $_SESSION['success'] = 'Votre commentaire a été masqué.';
 header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
 exit();

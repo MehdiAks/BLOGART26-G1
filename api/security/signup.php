@@ -10,7 +10,6 @@
  * 4) Si aucune erreur, hash le mot de passe puis insère le membre en base.
  * 5) Redirige vers login en succès ou vers le formulaire d'inscription en cas d'erreur.
  */
-session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
@@ -19,14 +18,18 @@ $ba_bec_signupDisabledMessage = 'La création de compte est pour le moment désa
 
 if ($ba_bec_signupDisabled) {
     $_SESSION['signup_disabled_message'] = $ba_bec_signupDisabledMessage;
-    $_SESSION['old'] = $_POST;
+    $_SESSION['old'] = array_intersect_key($_POST, array_flip([
+        'nomMemb', 'prenomMemb', 'pseudoMemb', 'eMailMemb', 'eMailMemb2', 'accordMemb'
+    ]));
     header('Location: ../../../views/backend/security/signup.php');
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['errors'] = [];
-    $_SESSION['old'] = $_POST;
+    $_SESSION['old'] = array_intersect_key($_POST, array_flip([
+        'nomMemb', 'prenomMemb', 'pseudoMemb', 'eMailMemb', 'eMailMemb2', 'accordMemb'
+    ]));
 
     // Récupération des données
     $ba_bec_nomMemb = ctrlSaisies($_POST['nomMemb'] ?? '');
@@ -57,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validation nom d'utilisateur
     if (strlen($ba_bec_pseudoMemb) < 6 || strlen($ba_bec_pseudoMemb) > 70) {
         $_SESSION['errors'][] = "Le nom d'utilisateur doit contenir entre 6 et 70 caractères";
-    } elseif (!empty(sql_select('MEMBRE', 'pseudoMemb', "pseudoMemb = '$ba_bec_pseudoMemb'"))) {
+    } elseif (!empty(sql_select('MEMBRE', 'pseudoMemb', 'pseudoMemb = ?', null, null, '1', [$ba_bec_pseudoMemb]))) {
         $_SESSION['errors'][] = "Nom d'utilisateur déjà utilisé";
     }
 
     // Validation mot de passe
-    if (strlen($ba_bec_passMemb) < 8 || strlen($ba_bec_passMemb) > 15) {
-        $_SESSION['errors'][] = 'Le mot de passe doit contenir entre 8 et 15 caractères';
+    if (strlen($ba_bec_passMemb) < 8 || strlen($ba_bec_passMemb) > 72) {
+        $_SESSION['errors'][] = 'Le mot de passe doit contenir entre 8 et 72 caractères';
     } elseif (
         !preg_match('/[A-Z]/', $ba_bec_passMemb) ||
         !preg_match('/[a-z]/', $ba_bec_passMemb) ||
@@ -80,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['errors'][] = 'Email invalide';
     } elseif ($ba_bec_eMailMemb !== $ba_bec_eMailMemb2) {
         $_SESSION['errors'][] = 'Les emails ne correspondent pas';
-    } elseif (!empty(sql_select('MEMBRE', 'eMailMemb', "eMailMemb = '$ba_bec_eMailMemb'"))) {
+    } elseif (!empty(sql_select('MEMBRE', 'eMailMemb', 'eMailMemb = ?', null, null, '1', [$ba_bec_eMailMemb]))) {
         $_SESSION['errors'][] = 'Email déjà utilisé';
     }
 
@@ -100,7 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             sql_insert(
                 'MEMBRE',
                 'nomMemb, prenomMemb, pseudoMemb, passMemb, eMailMemb, dtCreaMemb, accordMemb, numStat',
-                "'$ba_bec_nomMemb','$ba_bec_prenomMemb','$ba_bec_pseudoMemb','$ba_bec_hashedPass','$ba_bec_eMailMemb','$ba_bec_dtCreaMemb','$ba_bec_accordMemb','$ba_bec_numStat'"
+                '?, ?, ?, ?, ?, ?, ?, ?',
+                [$ba_bec_nomMemb, $ba_bec_prenomMemb, $ba_bec_pseudoMemb, $ba_bec_hashedPass, $ba_bec_eMailMemb, $ba_bec_dtCreaMemb, $ba_bec_accordMemb, $ba_bec_numStat]
             );
 
             // Redirection en succès.
@@ -108,7 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ../../../views/backend/security/login.php');
             exit();
         } catch (Exception $ba_bec_e) {
-            $_SESSION['errors'][] = 'Erreur technique : ' . $ba_bec_e->getMessage();
+            error_log('Erreur inscription: ' . $ba_bec_e->getMessage());
+            $_SESSION['errors'][] = 'Une erreur technique est survenue.';
         }
     }
 

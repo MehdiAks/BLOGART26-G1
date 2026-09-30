@@ -12,11 +12,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
 if (isset($_GET['numMotCle'])) {
-    $ba_bec_numMotCle = $_GET['numMotCle'];
-    $ba_bec_libMotCle = sql_select("MOTCLE", "libMotCle", "numMotCle = $ba_bec_numMotCle")[0]['libMotCle'];
+    $ba_bec_numMotCle = (int) $_GET['numMotCle'];
+    $ba_bec_libMotCle = sql_select('MOTCLE', 'libMotCle', 'numMotCle = ?', null, null, '1', [$ba_bec_numMotCle])[0]['libMotCle'];
 
     // Vérifie si le statut est utilisé par au moins un membre
-    $ba_bec_countnumMotCle = sql_select("MOTCLEARTICLE", "COUNT(*) AS total", "numMotCle = $ba_bec_numMotCle")[0]['total'];
+    $ba_bec_countnumMotCle = sql_select('MOTCLEARTICLE', 'COUNT(*) AS total', 'numMotCle = ?', null, null, null, [$ba_bec_numMotCle])[0]['total'];
     $ba_bec_ifnumMotCleUsed = $ba_bec_countnumMotCle > 0; // true si au moins un membre a ce statut
 }
 ?>
@@ -28,19 +28,20 @@ if (isset($_GET['numMotCle'])) {
             <?php if ($ba_bec_ifnumMotCleUsed) : ?>
                 <div class="alert alert-danger">
                     <?php if ($ba_bec_countnumMotCle > 1) : ?>
-                        ⚠ Impossible de supprimer ce Mot-clé car il est utilisés par <?php echo $ba_bec_countnumMotCle; ?> articles.
+                        ⚠ Impossible de supprimer ce Mot-clé car il est utilisés par <?php echo (int) $ba_bec_countnumMotCle; ?> articles.
                     <?php else : ?>
-                        ⚠ Impossible de supprimer ce Mot-clé car il est utilisé par <?php echo $ba_bec_countnumMotCle; ?> article.
+                        ⚠ Impossible de supprimer ce Mot-clé car il est utilisé par <?php echo (int) $ba_bec_countnumMotCle; ?> article.
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/keywords/delete.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="libMotCle">Nom du Mot-clé</label>
-                    <input id="numMotCle" name="numMotCle" class="form-control" style="display: none" type="text" value="<?php echo($ba_bec_numMotCle); ?>" readonly />
-                    <input id="libMotCle" name="libMotCle" class="form-control" type="text" value="<?php echo($ba_bec_libMotCle); ?>" readonly disabled />
+                    <input id="numMotCle" name="numMotCle" class="form-control" style="display: none" type="text" value="<?php echo (int) $ba_bec_numMotCle; ?>" readonly />
+                    <input id="libMotCle" name="libMotCle" class="form-control" type="text" value="<?php echo e($ba_bec_libMotCle); ?>" readonly disabled />
                 </div>
                 <br />
                 <div class="form-group mt-2">

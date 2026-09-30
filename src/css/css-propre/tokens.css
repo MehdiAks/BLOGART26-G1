@@ -1,0 +1,49 @@
+:root {
+    --bec-bordeaux: #6B0F24;
+    --bec-bordeaux-rgb: 107, 15, 36;
+    --bec-bordeaux-900: #4A0818;
+    --bec-jaune: #F2C230;
+    --bec-ink: #17120F;
+    --bec-ink-2: #5B524C;
+    --bec-bg: #FAF8F5;
+    --bec-surface: #FFFFFF;
+    --bec-line: #E6E0D8;
+    --bec-on-dark-muted: rgba(255, 255, 255, .78);
+    --radius: 12px;
+    --radius-sm: 6px;
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+    --space-9: 96px;
+    --menu-shadow: 0 8px 24px rgba(23, 18, 15, .12);
+    --bec-accent: var(--bec-bordeaux);
+    --bec-dark: var(--bec-ink);
+    --bec-offwhite: var(--bec-bg);
+    --primary-color: var(--bec-ink);
+    --bs-primary: var(--bec-bordeaux);
+    --bs-primary-rgb: var(--bec-bordeaux-rgb);
+    --bs-body-bg: var(--bec-bg);
+    --bs-body-color: var(--bec-ink);
+    --bs-border-color: var(--bec-line);
+    --bs-link-color: var(--bec-bordeaux);
+    --bs-link-hover-color: var(--bec-bordeaux-900);
+    --bs-font-sans-serif: "Epilogue", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--bec-bordeaux);
+    --bs-btn-border-color: var(--bec-bordeaux);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--bec-bordeaux-900);
+    --bs-btn-hover-border-color: var(--bec-bordeaux-900);
+    --bs-btn-focus-shadow-rgb: 242, 194, 48;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--bec-bordeaux-900);
+    --bs-btn-active-border-color: var(--bec-bordeaux-900);
+}

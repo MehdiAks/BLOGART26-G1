@@ -7,25 +7,17 @@
      * - Les classes utilitaires s'occupent de la mise en page et de la hiérarchie visuelle.
      */
 -->
-<?
-include '../../../header.php';
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirecmodo.php';
+include '../../../header.php';
 
 if(isset($_GET['numCom'])){
-    $ba_bec_numCom = $_GET['numCom'];
-    $ba_bec_dtCreaCom = sql_select("comment", "dtCreaCom", "numCom = $ba_bec_numCom")[0]['dtCreaCom'];
-    $ba_bec_libCom = sql_select("comment", "libCom", "numCom = $ba_bec_numCom")[0]['libCom'];
-    $ba_bec_dtModCom = sql_select("comment", "dtModCom", "numCom = $ba_bec_numCom")[0]['dtModCom'];
-    $ba_bec_attModOK = sql_select("comment", "attModOK", "numCom = $ba_bec_numCom")[0]['attModOK'];
-    $ba_bec_notifComKOAff = sql_select("comment", "notifComKOAff", "numCom = $ba_bec_numCom")[0]['notifComKOAff'];
-    $ba_bec_dtDelLogCom = sql_select("comment", "dtDelLogCom", "numCom = $ba_bec_numCom")[0]['dtDelLogCom'];
-    $ba_bec_delLogiq = sql_select("comment", "delLogiq", "numCom = $ba_bec_numCom")[0]['delLogiq'];
-    $ba_bec_numArt = sql_select("comment", "numArt", "numCom = $ba_bec_numCom")[0]['numArt'];
-    $ba_bec_numMemb = sql_select("comment", "numMemb", "numCom = $ba_bec_numCom")[0]['numMemb'];
-
-    $ba_bec_pseudoMemb = sql_select("membre", "pseudoMemb", "numMemb = $ba_bec_numMemb")[0]['pseudoMemb'];
-    $ba_bec_libTitrArt = sql_select("article", "libTitrArt", "numArt = $ba_bec_numArt")[0]['libTitrArt'];
-    $ba_bec_parag1Art = sql_select("article", "parag1Art", "numArt = $ba_bec_numArt")[0]['parag1Art'];
+    $ba_bec_numCom = (int) $_GET['numCom'];
+    $ba_bec_currentCom = sql_select('COMMENT c INNER JOIN MEMBRE m ON c.numMemb = m.numMemb INNER JOIN ARTICLE a ON c.numArt = a.numArt', 'c.*, m.pseudoMemb, a.libTitrArt, a.parag1Art', 'c.numCom = ?', null, null, '1', [$ba_bec_numCom])[0] ?? [];
+    foreach ($ba_bec_currentCom as $ba_bec_key => $ba_bec_value) {
+        ${'ba_bec_' . $ba_bec_key} = e($ba_bec_value);
+    }
 }
 ?>
 
@@ -38,6 +30,7 @@ if(isset($_GET['numCom'])){
         <div class="col-md-12">
             <!-- Form to create a new statut -->
             <form action="<?php echo ROOT_URL . '/api/comments/update.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
 
                 <div class="form-group">
                     <label for="numArt">Numéro D'article</label>

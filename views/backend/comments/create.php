@@ -22,6 +22,7 @@ include '../../../header.php';
         <div class="col-md-12">
             <!-- Form to create a new motcle -->
             <form action="<?php echo ROOT_URL . '/api/comments/create.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="libCom">Commentaires</label>
                     <input id="libCom" name="libCom" class="form-control" type="text" autofocus="autofocus"

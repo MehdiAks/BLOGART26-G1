@@ -1,210 +1,277 @@
 <?php
 
-// Génère (ou récupère) un token CSRF de session.
+// Échappe une valeur HTML sans réencoder les entités déjà stockées.
+function e($value): string {
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8', false);
+}
+
+// Génère ou retourne le jeton CSRF de la session courante.
 function csrf_token(): string {
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
-
     return $_SESSION['csrf_token'];
 }
 
-// Vérifie le token CSRF soumis.
+// Produit le champ caché CSRF commun à tous les formulaires POST.
+function csrf_field(): string {
+    return '<input type="hidden" name="csrf_token" value="' . e(csrf_token()) . '">';
+}
+
+// Vérifie un jeton CSRF avec une comparaison résistante au timing.
 function csrf_verify(?string $token): bool {
-    if (empty($_SESSION['csrf_token']) || empty($token)) {
-        return false;
-    }
-
-    return hash_equals($_SESSION['csrf_token'], $token);
+    return !empty($_SESSION['csrf_token']) && !empty($token)
+        && hash_equals($_SESSION['csrf_token'], $token);
 }
 
-// Vérifie si l'utilisateur a accès à une ressource selon un niveau requis.
-function check_access($level) {
-    // Si l'utilisateur est connecté, son ID est stocké en session.
-    if(isset($_SESSION['id_user'])){
-        // Récupère le niveau (numStat) de l'utilisateur depuis la table MEMBRE.
-        $user_level = sql_select("MEMBRE", 'numStat', "numMemb = " . $_SESSION['id_user'])[0]['numStat'];
-        // Si le niveau est inférieur ou égal au niveau requis, accès autorisé.
-        if($user_level <= $level){
-            return true;
-        }else{
-            // Sinon, accès refusé.
-            return false;
+// Retourne l'identifiant entier du membre connecté.
+function current_user_id(): ?int {
+    $ba_bec_userId = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : 0;
+    return $ba_bec_userId > 0 ? $ba_bec_userId : null;
+}
+
+// Relit en base le statut courant du membre une seule fois par requête.
+function current_user_stat(): ?int {
+    static $ba_bec_loaded = false;
+    static $ba_bec_stat = null;
+
+    if ($ba_bec_loaded) {
+        return $ba_bec_stat;
+    }
+    $ba_bec_loaded = true;
+    $ba_bec_userId = current_user_id();
+    if ($ba_bec_userId === null) {
+        return null;
+    }
+
+    $ba_bec_member = sql_select('MEMBRE', 'numStat, pseudoMemb', 'numMemb = ?', null, null, '1', [$ba_bec_userId]);
+    if (empty($ba_bec_member)) {
+        if (sql_get_last_error() !== null) {
+            return null;
         }
-    }else{
-        // Aucun utilisateur en session : accès refusé.
+        $_SESSION = [];
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
+        return null;
+    }
+
+    $ba_bec_stat = (int) $ba_bec_member[0]['numStat'];
+    $_SESSION['numStat'] = $ba_bec_stat;
+    $_SESSION['pseudoMemb'] = $ba_bec_member[0]['pseudoMemb'];
+    return $ba_bec_stat;
+}
+
+// Indique si le script courant appartient à l'API.
+function is_api_request(): bool {
+    return strpos($_SERVER['SCRIPT_NAME'] ?? '', '/api/') !== false;
+}
+
+// Exige une session membre valide et adapte la réponse au contexte API ou page.
+function require_login(): void {
+    if (current_user_id() !== null && current_user_stat() !== null) {
+        return;
+    }
+    if (is_api_request()) {
+        http_response_code(403);
+        exit('Accès interdit.');
+    }
+    header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
+    exit();
+}
+
+// Exige un niveau de statut inférieur ou égal au seuil demandé.
+function require_stat(int $maxStat): void {
+    require_login();
+    $ba_bec_stat = current_user_stat();
+    if ($ba_bec_stat !== null && $ba_bec_stat <= $maxStat) {
+        return;
+    }
+    if (is_api_request()) {
+        http_response_code(403);
+        exit('Accès interdit.');
+    }
+    header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
+    exit();
+}
+
+// Vérifie un niveau d'accès sans provoquer de redirection.
+function check_access($level) {
+    $ba_bec_stat = current_user_stat();
+    return $ba_bec_stat !== null && $ba_bec_stat <= (int) $level;
+}
+
+// Restreint une redirection à un chemin local sûr.
+function safe_redirect_target(?string $url, string $fallback): string {
+    $ba_bec_url = (string) $url;
+    if ($ba_bec_url === '' || $ba_bec_url[0] !== '/' || strpos($ba_bec_url, '//') === 0
+        || strpos($ba_bec_url, '/\\') === 0 || preg_match('/[\r\n]/', $ba_bec_url)
+        || preg_match('/^[a-z][a-z0-9+.-]*:/i', $ba_bec_url)) {
+        return $fallback;
+    }
+    return $ba_bec_url;
+}
+
+// Reproduit exactement la transformation appliquée aux anciens mots de passe.
+function legacy_password_variant(string $pw): string {
+    return stripslashes(trim(htmlspecialchars($pw, ENT_QUOTES)));
+}
+
+// Détermine l'adresse cliente en ne faisant confiance au proxy que si cela est explicitement configuré.
+function client_ip(): string {
+    $ba_bec_remoteAddr = trim((string) ($_SERVER['REMOTE_ADDR'] ?? ''));
+    $ba_bec_trustProxy = filter_var(getenv('TRUST_PROXY'), FILTER_VALIDATE_BOOLEAN) === true;
+    if ($ba_bec_trustProxy && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ba_bec_forwardedIps = array_reverse(explode(',', (string) $_SERVER['HTTP_X_FORWARDED_FOR']));
+        foreach ($ba_bec_forwardedIps as $ba_bec_forwardedIp) {
+            $ba_bec_forwardedIp = trim($ba_bec_forwardedIp);
+            if (filter_var($ba_bec_forwardedIp, FILTER_VALIDATE_IP) !== false) {
+                return $ba_bec_forwardedIp;
+            }
+        }
+    }
+    return filter_var($ba_bec_remoteAddr, FILTER_VALIDATE_IP) !== false ? $ba_bec_remoteAddr : '0.0.0.0';
+}
+
+// Prépare la table et purge les anciennes tentatives de connexion.
+function login_throttle_init(): bool {
+    static $ba_bec_ready = null;
+    if ($ba_bec_ready !== null) {
+        return $ba_bec_ready;
+    }
+    $ba_bec_ready = sql_create_table('LOGIN_ATTEMPT');
+    if ($ba_bec_ready) {
+        global $DB;
+        try {
+            $ba_bec_stmt = $DB->prepare('DELETE FROM LOGIN_ATTEMPT WHERE attemptedAt < DATE_SUB(NOW(), INTERVAL 1 DAY)');
+            $ba_bec_stmt->execute();
+        } catch (PDOException $ba_bec_exception) {
+            error_log('Erreur purge LOGIN_ATTEMPT: ' . $ba_bec_exception->getMessage());
+        }
+    }
+    return $ba_bec_ready;
+}
+
+// Indique si l'adresse cliente ou le compte a atteint sa limite sur quinze minutes.
+function login_throttle_blocked($pseudo = ''): bool {
+    if (!login_throttle_init()) {
+        return false;
+    }
+    global $DB;
+    try {
+        $ba_bec_stmt = $DB->prepare(
+            'SELECT
+                SUM(CASE WHEN ip = ? THEN 1 ELSE 0 END) AS ipFailures,
+                SUM(CASE WHEN pseudo = ? THEN 1 ELSE 0 END) AS pseudoFailures
+             FROM LOGIN_ATTEMPT
+             WHERE attemptedAt >= DATE_SUB(NOW(), INTERVAL 15 MINUTE)'
+        );
+        $ba_bec_stmt->execute([client_ip(), substr((string) $pseudo, 0, 70)]);
+        $ba_bec_failures = $ba_bec_stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+        return (int) ($ba_bec_failures['ipFailures'] ?? 0) >= 5
+            || (int) ($ba_bec_failures['pseudoFailures'] ?? 0) >= 10;
+    } catch (PDOException $ba_bec_exception) {
+        error_log('Erreur contrôle LOGIN_ATTEMPT: ' . $ba_bec_exception->getMessage());
         return false;
     }
 }
 
-// Vérifie la validité d'un reCAPTCHA v3 pour une action donnée.
+// Enregistre un échec de connexion pour l'adresse cliente.
+function login_throttle_fail($pseudo): void {
+    if (!login_throttle_init()) {
+        return;
+    }
+    global $DB;
+    try {
+        $ba_bec_stmt = $DB->prepare('INSERT INTO LOGIN_ATTEMPT (ip, pseudo, attemptedAt) VALUES (?, ?, NOW())');
+        $ba_bec_stmt->execute([client_ip(), substr((string) $pseudo, 0, 70)]);
+    } catch (PDOException $ba_bec_exception) {
+        error_log('Erreur écriture LOGIN_ATTEMPT: ' . $ba_bec_exception->getMessage());
+    }
+}
+
+// Efface les tentatives de l'adresse cliente après une connexion réussie.
+function login_throttle_clear(): void {
+    if (!login_throttle_init()) {
+        return;
+    }
+    global $DB;
+    try {
+        $ba_bec_stmt = $DB->prepare('DELETE FROM LOGIN_ATTEMPT WHERE ip = ?');
+        $ba_bec_stmt->execute([client_ip()]);
+    } catch (PDOException $ba_bec_exception) {
+        error_log('Erreur nettoyage LOGIN_ATTEMPT: ' . $ba_bec_exception->getMessage());
+    }
+}
+
+// Vérifie un jeton reCAPTCHA auprès de Google avec contrôle du score et de l'action.
 function verifyRecaptcha($token, $action, $threshold = null) {
-    // Récupère la clé secrète reCAPTCHA depuis les variables d'environnement.
     $secretKey = getenv('RECAPTCHA_SECRET_KEY');
-    // Récupère la clé publique (site key) depuis les variables d'environnement.
     $siteKey = getenv('RECAPTCHA_SITE_KEY');
-    // Seuil minimum : paramètre fourni ou valeur de RECAPTCHA_THRESHOLD (0.5 par défaut).
     $resolvedThreshold = $threshold ?? (float) (getenv('RECAPTCHA_THRESHOLD') ?: 0.5);
-    // Initialise l'état d'activation de reCAPTCHA.
     $recaptchaEnabled = null;
 
-    // Si la variable d'environnement explicite RECAPTCHA_ENABLED existe, on l'utilise.
     if (array_key_exists('RECAPTCHA_ENABLED', $_ENV)) {
-        $recaptchaEnabled = (bool) $_ENV['RECAPTCHA_ENABLED'];
+        $recaptchaEnabled = filter_var($_ENV['RECAPTCHA_ENABLED'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
-
-    // Sinon, active reCAPTCHA si les deux clés sont présentes.
     if ($recaptchaEnabled === null) {
         $recaptchaEnabled = !empty($secretKey) && !empty($siteKey);
     }
-
-    // Si reCAPTCHA est désactivé, on retourne un résultat valide.
     if (!$recaptchaEnabled) {
-        // En mode debug, on loggue la désactivation.
-        if (getenv('APP_DEBUG') === 'true') {
-            error_log('reCAPTCHA disabled: skipping verification.');
-        }
-
-        // Renvoie une validation "true" avec score neutre.
-        return [
-            'valid' => true,
-            'score' => 0,
-            'message' => ''
-        ];
+        return ['valid' => true, 'score' => 0, 'message' => ''];
     }
-
-    // Si la clé secrète est absente, on ne peut pas valider.
     if (empty($secretKey)) {
-        return [
-            'valid' => false,
-            'score' => 0,
-            'message' => 'Configuration reCAPTCHA manquante.'
-        ];
+        return ['valid' => false, 'score' => 0, 'message' => 'Configuration reCAPTCHA manquante.'];
     }
-
-    // Si le token est vide, l'utilisateur n'a pas validé le reCAPTCHA.
     if (empty($token)) {
-        return [
-            'valid' => false,
-            'score' => 0,
-            'message' => 'Veuillez valider le reCAPTCHA.'
-        ];
+        return ['valid' => false, 'score' => 0, 'message' => 'Veuillez valider le reCAPTCHA.'];
     }
 
-    // Prépare le payload pour l'appel HTTP vers l'API Google.
-    $payload = http_build_query([
-        'secret' => $secretKey,
-        'response' => $token
-    ]);
-
+    $payload = http_build_query(['secret' => $secretKey, 'response' => $token]);
     $response = false;
-    $curlError = '';
-
-    // Utilise cURL si l'extension est disponible (cas le plus courant).
     if (function_exists('curl_init')) {
-        // Initialise la requête cURL vers l'endpoint de vérification reCAPTCHA.
         $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
-        // Demande à cURL de retourner la réponse sous forme de chaîne.
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // Force la méthode POST.
         curl_setopt($ch, CURLOPT_POST, true);
-        // Ajoute le payload POST.
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-        // Exécute la requête et récupère la réponse.
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         $response = curl_exec($ch);
-        // Capture une éventuelle erreur cURL.
-        $curlError = curl_error($ch);
-        // Ferme la ressource cURL pour libérer la mémoire.
+        if ($response === false) {
+            error_log('Erreur reCAPTCHA: ' . curl_error($ch));
+        }
         curl_close($ch);
     } else {
-        // Fallback si cURL n'est pas disponible (certains hébergements mutualisés).
-        $context = stream_context_create([
-            'http' => [
-                'method' => 'POST',
-                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-                'content' => $payload,
-                'timeout' => 10,
-            ],
-        ]);
+        $context = stream_context_create(['http' => [
+            'method' => 'POST',
+            'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+            'content' => $payload,
+            'timeout' => 10,
+        ]]);
         $response = @file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
-        if ($response === false) {
-            $curlError = 'HTTP fallback failed';
-        }
     }
-
-    // Si la requête a échoué (response false), retour erreur.
     if ($response === false) {
-        return [
-            'valid' => false,
-            'score' => 0,
-            'message' => 'Vérification reCAPTCHA impossible.'
-        ];
+        return ['valid' => false, 'score' => 0, 'message' => 'Vérification reCAPTCHA impossible.'];
     }
-
-    // Décode la réponse JSON en tableau associatif.
     $data = json_decode($response, true);
-    // Si le JSON n'est pas valide, on retourne une erreur.
     if (!is_array($data)) {
-        return [
-            'valid' => false,
-            'score' => 0,
-            'message' => 'Réponse reCAPTCHA invalide.'
-        ];
+        return ['valid' => false, 'score' => 0, 'message' => 'Réponse reCAPTCHA invalide.'];
     }
-
-    // Récupère le statut de succès renvoyé par Google.
     $ba_bec_success = $data['success'] ?? false;
-    // Vérifie si l'API a renvoyé un score.
     $hasScore = array_key_exists('score', $data);
-    // Cast le score en float (0 par défaut si absent).
     $score = $hasScore ? (float) $data['score'] : 0.0;
-    // Récupère l'action retournée par l'API.
     $responseAction = $data['action'] ?? '';
-
-    // En mode debug, on loggue des informations utiles.
-    if (getenv('APP_DEBUG') === 'true') {
-        error_log(sprintf(
-            'reCAPTCHA action=%s success=%s score=%.2f error=%s',
-            $action,
-            $ba_bec_success ? 'true' : 'false',
-            $score,
-            $curlError
-        ));
-    }
-
-    // Si Google renvoie success=false, on considère la validation échouée.
     if (!$ba_bec_success) {
-        return [
-            'valid' => false,
-            'score' => $score,
-            'message' => 'La vérification reCAPTCHA a échoué.'
-        ];
+        return ['valid' => false, 'score' => $score, 'message' => 'La vérification reCAPTCHA a échoué.'];
     }
-
-    // Si un score est présent et l'action ne correspond pas, on refuse.
     if ($hasScore && $responseAction !== $action) {
-        return [
-            'valid' => false,
-            'score' => $score,
-            'message' => 'Action reCAPTCHA invalide.'
-        ];
+        return ['valid' => false, 'score' => $score, 'message' => 'Action reCAPTCHA invalide.'];
     }
-
-    // Si un score est présent et inférieur au seuil, on refuse.
     if ($hasScore && $score < $resolvedThreshold) {
-        return [
-            'valid' => false,
-            'score' => $score,
-            'message' => 'Score reCAPTCHA insuffisant.'
-        ];
+        return ['valid' => false, 'score' => $score, 'message' => 'Score reCAPTCHA insuffisant.'];
     }
-
-    // Sinon, tout est valide : on renvoie un succès.
-    return [
-        'valid' => true,
-        'score' => $score,
-        'message' => ''
-    ];
+    return ['valid' => true, 'score' => $score, 'message' => ''];
 }
 
 ?>

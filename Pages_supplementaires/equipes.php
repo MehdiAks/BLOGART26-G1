@@ -2,19 +2,17 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
+$pageTitle = 'Équipes';
+$pageDescription = 'Les équipes du Bordeaux Étudiant Club Basket, leurs catégories et leur encadrement.';
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
 function ba_bec_team_photo_url(?string $photoPath, ?string $nomEquipe, ?string $codeEquipe, string $suffix): string
 {
     if (!empty($photoPath)) {
-        $relative = ltrim((string) $photoPath, '/');
-        if (strpos($relative, 'src/uploads/') === 0) {
-            $relative = substr($relative, strlen('src/uploads/'));
-        }
-        $absolutePath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $relative;
-        if (file_exists($absolutePath)) {
-            return ROOT_URL . '/src/uploads/' . $relative;
+        $uploadedUrl = uploaded_file_url($photoPath);
+        if ($uploadedUrl !== '') {
+            return $uploadedUrl;
         }
     }
 
@@ -25,10 +23,10 @@ function ba_bec_team_photo_url(?string $photoPath, ?string $nomEquipe, ?string $
         return '';
     }
 
-    foreach (['jpg', 'jpeg', 'png', 'avif', 'svg', 'webp', 'gif'] as $ext) {
-        $relativePath = '/src/uploads/photos-equipes/' . $slug . '-' . $suffix . '.' . $ext;
-        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $relativePath)) {
-            return ROOT_URL . $relativePath;
+    foreach (['jpg', 'jpeg', 'png', 'avif', 'webp'] as $ext) {
+        $uploadedUrl = uploaded_file_url('photos-equipes/' . $slug . '-' . $suffix . '.' . $ext);
+        if ($uploadedUrl !== '') {
+            return $uploadedUrl;
         }
     }
 
@@ -83,7 +81,7 @@ foreach ($coaches ?? [] as $coach) {
                 $teamName = $team['nomEquipe'] ?? '';
                 $teamPhotoUrl = ba_bec_team_photo_url($team['photoDLequipe'] ?? null, $team['nomEquipe'] ?? null, $team['codeEquipe'] ?? null, 'photo-equipe') ?: $defaultTeamImage;
                 ?>
-                <article class="team-card">
+                <a class="team-card" href="<?php echo ROOT_URL . '/Pages_supplementaires/equipe.php?numEquipe=' . urlencode((string) $team['numEquipe']); ?>">
                     <div class="team-card-content">
                         <div class="team-card-info">
                             <div class="team-card-header">
@@ -111,16 +109,14 @@ foreach ($coaches ?? [] as $coach) {
                                     <p>Aucun responsable renseigné.</p>
                                 <?php endif; ?>
                             </div>
-                            <a class="team-link" href="<?php echo ROOT_URL . '/Pages_supplementaires/equipe.php?numEquipe=' . urlencode((string) $team['numEquipe']); ?>">
-                                Voir l'équipe
-                            </a>
+                            <span class="team-link">Voir l'équipe</span>
                         </div>
                         <div class="team-card-photo" role="img"
                             aria-label="Photo de l'équipe <?php echo htmlspecialchars($teamName); ?>"
                             style="background-image: url('<?php echo htmlspecialchars($teamPhotoUrl); ?>');">
                         </div>
                     </div>
-                </article>
+                </a>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>

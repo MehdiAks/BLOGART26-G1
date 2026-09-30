@@ -21,6 +21,7 @@ include '../../../header.php';
         <div class="col-md-12">
             <!-- Form to create a new statut -->
             <form action="<?php echo ROOT_URL . '/api/thematiques/create.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="libThem">Nom de thematique</label>
                     <input id="libThem" name="libThem" class="form-control" type="text" autofocus="autofocus"

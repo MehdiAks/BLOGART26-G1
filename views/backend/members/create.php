@@ -13,8 +13,8 @@ include '../../../header.php';
 
 
 if (isset($_GET['numCom'])) {
-    $ba_bec_numCom = $_GET['numCom'];
-    $ba_bec_comment = sql_select('comment', '*', "numCom ='$ba_bec_numCom'")[0];
+    $ba_bec_numCom = (int) $_GET['numCom'];
+    $ba_bec_comment = sql_select('COMMENT', '*', 'numCom = ?', null, null, '1', [$ba_bec_numCom])[0];
     $ba_bec_pseudoMemb = $ba_bec_comment['pseudoMemb'];
     $ba_bec_numArt = $ba_bec_comment['numArt'];
     $ba_bec_libCom = $ba_bec_comment['libCom'];
@@ -36,6 +36,7 @@ $ba_bec_recaptchaSiteKeyEscaped = htmlspecialchars($ba_bec_recaptchaSiteKey ?? '
         <div class="col-md-12">
             <!-- Form to create a new member -->
             <form action="<?php echo ROOT_URL . '/api/members/create.php' ?>" method="post" id="formCreate">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-create">
                 <div class="form-group">
                     <!-- NOM D'UTILISATEUR -->

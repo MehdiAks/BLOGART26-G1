@@ -2,6 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
+$pageTitle = 'Bénévoles';
 
 function is_missing_table(PDOException $exception): bool
 {
@@ -144,8 +145,9 @@ function branch_id(string $label): string
             <?php else : ?>
                 <div class="club-grid">
                     <?php foreach ($branchMembers as $member) : ?>
+                        <?php $memberPhotoUrl = uploaded_file_url($member['urlPhotoPersonnel'] ?? '', $defaultPhoto); ?>
                         <article class="club-card">
-                            <img src="<?php echo htmlspecialchars($member['urlPhotoPersonnel'] ?: $defaultPhoto); ?>" alt="<?php echo htmlspecialchars($member['prenomPersonnel'] . ' ' . $member['nomPersonnel']); ?>">
+                            <img src="<?php echo e($memberPhotoUrl); ?>" alt="<?php echo e($member['prenomPersonnel'] . ' ' . $member['nomPersonnel']); ?>" loading="lazy" decoding="async">
                             <div class="club-card-body">
                                 <h3 class="club-card-title">
                                     <?php echo htmlspecialchars($member['prenomPersonnel'] . ' ' . $member['nomPersonnel']); ?>

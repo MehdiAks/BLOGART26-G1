@@ -1,3 +1,7 @@
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once ROOT . '/functions/redirec.php';
+?>
 <!--
     /*
      * Vue d'administration (édition) pour le module statuts.
@@ -16,12 +20,13 @@
         <div class="col-md-12">
             <!-- Form to create a new statut -->
             <form action="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=update'; ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="libStat">Nom du statut</label>
                     <input id="numStat" name="numStat" class="form-control" style="display: none" type="text"
-                        value="<?php echo ($ba_bec_numStat); ?>" readonly="readonly" />
+                        value="<?php echo (int) $ba_bec_numStat; ?>" readonly="readonly" />
                     <input id="libStat" name="libStat" class="form-control" type="text"
-                        value="<?php echo ($ba_bec_libStat); ?>" placeholder="Nom du statut..." />
+                        value="<?php echo e($ba_bec_libStat); ?>" placeholder="Nom du statut..." />
                 </div>
                 <br />
                 <div class="form-group mt-2">

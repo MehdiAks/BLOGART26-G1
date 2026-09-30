@@ -13,8 +13,8 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
-$ba_bec_numMemb = ctrlSaisies($_POST['numMemb']);
-$ba_bec_numArt = ctrlSaisies($_POST['numArt']);
+$ba_bec_numMemb = (int) ($_POST['numMemb'] ?? 0);
+$ba_bec_numArt = (int) ($_POST['numArt'] ?? 0);
 $ba_bec_likeA = isset($_POST['likeA']) ? ctrlSaisies($_POST['likeA']) : "0";
 
 if ($ba_bec_likeA !== "1" && $ba_bec_likeA !== "0") {
@@ -25,8 +25,9 @@ $ba_bec_likeA = (int) $ba_bec_likeA;
 // Mise à jour du like dans la base de données
 sql_update(
     'LIKEART', 
-    'likeA = ' . $ba_bec_likeA,
-    'numMemb = ' . $ba_bec_numMemb . ' AND numArt = ' . $ba_bec_numArt
+    'likeA = ?',
+    'numMemb = ? AND numArt = ?',
+    [$ba_bec_likeA, $ba_bec_numMemb, $ba_bec_numArt]
 );
 
 // Redirection vers la liste des likes après modification

@@ -24,7 +24,7 @@ if ($ba_bec_libMotCle === '') {
 $ba_bec_nextNumMotCle = sql_select('MOTCLE', 'COALESCE(MAX(numMotCle), 0) + 1 AS nextNumMotCle');
 $ba_bec_numMotCle = $ba_bec_nextNumMotCle[0]['nextNumMotCle'];
 
-$ba_bec_result = sql_insert('MOTCLE', 'numMotCle, libMotCle', "$ba_bec_numMotCle, '$ba_bec_libMotCle'");
+$ba_bec_result = sql_insert('MOTCLE', 'numMotCle, libMotCle', '?, ?', [(int) $ba_bec_numMotCle, $ba_bec_libMotCle]);
 if ($ba_bec_result['success']) {
     flash_success();
 } else {

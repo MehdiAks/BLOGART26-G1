@@ -9,6 +9,7 @@
  */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+$pageTitle = 'Membres · Administration';
 include '../../../header.php';
 
 
@@ -21,8 +22,8 @@ $ba_bec_members = sql_select("MEMBRE INNER JOIN STATUT ON MEMBRE.numStat = STATU
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3">
-                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
-                    Retour au panneau admin
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="admin-back-link">
+                    ← Tableau de bord
                 </a>
             </div>
             <h1>Membres</h1>
@@ -51,20 +52,20 @@ $ba_bec_members = sql_select("MEMBRE INNER JOIN STATUT ON MEMBRE.numStat = STATU
                     <?php if (!empty($ba_bec_members)): ?>
                         <?php foreach ($ba_bec_members as $ba_bec_mem): ?>
                             <tr>
-                                <td><?php echo ($ba_bec_mem['numMemb']); ?></td>
-                                <td><?php echo ($ba_bec_mem['prenomMemb']); ?></td>
-                                <td><?php echo ($ba_bec_mem['nomMemb']); ?></td>
-                                <td><?php echo ($ba_bec_mem['eMailMemb']); ?></td>
-                                <td><?= $ba_bec_mem['accordMemb'] ? '✅ Oui' : '❌ Non'; ?></td>
-                                <td><?php echo ($ba_bec_mem['libStat']); ?></td>
+                                <td><?php echo (int) $ba_bec_mem['numMemb']; ?></td>
+                                <td><?php echo e($ba_bec_mem['prenomMemb']); ?></td>
+                                <td><?php echo e($ba_bec_mem['nomMemb']); ?></td>
+                                <td><?php echo e($ba_bec_mem['eMailMemb']); ?></td>
+                                <td><?= $ba_bec_mem['accordMemb'] ? 'Oui' : 'Non'; ?></td>
+                                <td><?php echo e($ba_bec_mem['libStat']); ?></td>
                                 <td>
                                     <a href="edit.php?numMemb=<?= htmlspecialchars($ba_bec_mem['numMemb']); ?>"
-                                        class="btn btn-primary">Edit</a>
+                                        class="btn btn-primary">Modifier</a>
                                     <?php if ($ba_bec_mem['numStat'] == 1): ?>
-                                        <button class="btn btn-danger disabled">Delete</button>
+                                        <button class="btn btn-danger disabled">Supprimer</button>
                                     <?php else: ?>
                                         <a href="delete.php?numMemb=<?= htmlspecialchars($ba_bec_mem['numMemb']); ?>"
-                                            class="btn btn-danger">Delete</a>
+                                            class="btn btn-danger">Supprimer</a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

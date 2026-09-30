@@ -13,17 +13,16 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
-$ba_bec_numThem = ctrlSaisies($_POST['numThem']);
+$ba_bec_numThem = (int) ($_POST['numThem'] ?? 0);
 $ba_bec_libThem = ctrlSaisies($_POST['libThem']);
 
-//sql_delete('STATUT', "numStat = $numStat");
-$ba_bec_result = sql_update(table: 'THEMATIQUE', attributs: 'libThem = "'.$ba_bec_libThem.'"' , where: "numThem = $ba_bec_numThem");
+$ba_bec_result = sql_update('THEMATIQUE', 'libThem = ?', 'numThem = ?', [$ba_bec_libThem, $ba_bec_numThem]);
 if ($ba_bec_result['success']) {
     flash_success();
 } else {
     flash_error();
 }
 
-header(header: 'Location: ../../views/backend/thematiques/list.php');
+header('Location: ../../views/backend/thematiques/list.php');
 
 ?>

@@ -5,39 +5,13 @@
  *
  * Déroulé détaillé:
  * 1) Charge la configuration et les helpers nécessaires.
- * 2) Vérifie le token de synchronisation (MATCHES_SYNC_TOKEN) si défini.
- * 3) Récupère le JSON soit depuis le body POST, soit depuis un flux distant (FFBB_MATCHES_FEED).
+ * 2) Reçoit le JSON dans le body POST depuis l'outil d'administration.
  * 4) Normalise chaque match et l'associe à la nouvelle structure BLOGART26.
  * 5) Insère le match (ou l'ignore si déjà présent), puis retourne un bilan JSON (importés/sautés).
  */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 header('Content-Type: application/json; charset=utf-8');
-
-$expectedToken = getenv('MATCHES_SYNC_TOKEN');
-$providedToken = $_GET['token'] ?? '';
-if (!empty($expectedToken) && !hash_equals($expectedToken, $providedToken)) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Token invalide.']);
-    exit;
-}
-
-function fetch_remote_payload(string $url): ?string
-{
-    $context = stream_context_create([
-        'http' => [
-            'timeout' => 15,
-            'header' => "User-Agent: Mozilla/5.0 (compatible; BECBot/1.0)\r\n",
-        ],
-    ]);
-
-    $payload = @file_get_contents($url, false, $context);
-    if ($payload !== false) {
-        return $payload;
-    }
-
-    return null;
-}
 
 function parse_date_and_time(?string $dateRaw, ?string $timeRaw): array
 {
@@ -119,15 +93,7 @@ function build_saison_from_date(string $matchDate): string
 
 sql_connect();
 
-$payload = null;
-if (!empty($_POST['payload'])) {
-    $payload = (string) $_POST['payload'];
-} else {
-    $feedUrl = getenv('FFBB_MATCHES_FEED');
-    if (!empty($feedUrl)) {
-        $payload = fetch_remote_payload($feedUrl);
-    }
-}
+$payload = !empty($_POST['payload']) ? (string) $_POST['payload'] : null;
 
 if ($payload === null) {
     http_response_code(400);
@@ -169,6 +135,7 @@ foreach ($data as $item) {
     $opponentName = $homeIsBec ? $normalized['away'] : $normalized['home'];
     $codeEquipe = slugify_code($becTeamName);
 
+    try {
     $teamStmt = $DB->prepare('SELECT codeEquipe FROM EQUIPE WHERE codeEquipe = :codeEquipe OR nomEquipe = :nomEquipe LIMIT 1');
     $teamStmt->execute([
         ':codeEquipe' => $codeEquipe,
@@ -213,7 +180,6 @@ foreach ($data as $item) {
         'INSERT INTO `MATCH` (codeEquipe, clubAdversaire, saison, phase, journee, dateMatch, heureMatch, lieuMatch, scoreBec, scoreAdversaire)
          VALUES (:codeEquipe, :clubAdversaire, :saison, :phase, :journee, :dateMatch, :heureMatch, :lieuMatch, :scoreBec, :scoreAdversaire)'
     );
-    try {
         $insertMatch->execute([
             ':codeEquipe' => $codeEquipe,
             ':clubAdversaire' => $opponentName,
@@ -228,7 +194,8 @@ foreach ($data as $item) {
         ]);
         $imported++;
     } catch (PDOException $exception) {
-        $errors[] = $exception->getMessage();
+        error_log('Erreur synchronisation match: ' . $exception->getMessage());
+        $errors[] = 'Une erreur est survenue pendant l’import.';
         $skipped++;
     }
 }

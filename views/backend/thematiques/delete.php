@@ -12,11 +12,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
 if (isset($_GET['numThem'])) {
-    $ba_bec_numThem = $_GET['numThem'];
-    $ba_bec_libThem = sql_select("THEMATIQUE", "libThem", "numThem = $ba_bec_numThem")[0]['libThem'];
+    $ba_bec_numThem = (int) $_GET['numThem'];
+    $ba_bec_libThem = sql_select('THEMATIQUE', 'libThem', 'numThem = ?', null, null, '1', [$ba_bec_numThem])[0]['libThem'];
 
     // Vérifie si le statut est utilisé par au moins un membre
-    $ba_bec_countnumThem = sql_select("ARTICLE", "COUNT(*) AS total", "numThem = $ba_bec_numThem")[0]['total'];
+    $ba_bec_countnumThem = sql_select('ARTICLE', 'COUNT(*) AS total', 'numThem = ?', null, null, null, [$ba_bec_numThem])[0]['total'];
     $ba_bec_numThemUsed = $ba_bec_countnumThem > 0; // true si au moins un membre a ce statut
 }
 ?>
@@ -30,9 +30,9 @@ if (isset($_GET['numThem'])) {
             <?php if ($ba_bec_numThemUsed) : ?>
                 <div class="alert alert-danger">
                     <?php if ($ba_bec_countnumThem > 01) : ?>
-                        ⚠ Impossible de supprimer cette thematique car elle est utilisées par <?php echo $ba_bec_countnumThem; ?> articles.
+                        ⚠ Impossible de supprimer cette thematique car elle est utilisées par <?php echo (int) $ba_bec_countnumThem; ?> articles.
                     <?php else : ?>
-                        ⚠ Impossible de supprimer cette thematique car elle est utilisée par <?php echo $ba_bec_countnumThem; ?> article.
+                        ⚠ Impossible de supprimer cette thematique car elle est utilisée par <?php echo (int) $ba_bec_countnumThem; ?> article.
                     <?php endif; ?>
                     
                 </div>
@@ -40,10 +40,11 @@ if (isset($_GET['numThem'])) {
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/thematiques/delete.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="libThem">Nom de Thematique</label>
-                    <input id="numThem" name="numThem" class="form-control" style="display: none" type="text" value="<?php echo($ba_bec_numThem); ?>" readonly />
-                    <input id="libThem" name="libThem" class="form-control" type="text" value="<?php echo($ba_bec_libThem); ?>" readonly disabled />
+                    <input id="numThem" name="numThem" class="form-control" style="display: none" type="text" value="<?php echo (int) $ba_bec_numThem; ?>" readonly />
+                    <input id="libThem" name="libThem" class="form-control" type="text" value="<?php echo e($ba_bec_libThem); ?>" readonly disabled />
                 </div>
                 <br />
                 <div class="form-group mt-2">

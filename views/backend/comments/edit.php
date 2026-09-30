@@ -7,5 +7,6 @@
  * - Les sections HTML isolent les groupes d'attributs pour une édition guidée.
  * - Les actions secondaires permettent de revenir à la liste sans enregistrer.
  */
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once ROOT . '/functions/redirecmodo.php';
 include '../../../header.php';
-

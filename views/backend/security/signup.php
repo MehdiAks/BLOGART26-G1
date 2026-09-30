@@ -6,13 +6,12 @@
  * - Les messages d'aide guident l'utilisateur sur la procédure à suivre.
  * - La vue reste passive : elle ne fait que collecter les données et afficher les retours serveur.
  */
-session_start();
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [
     ROOT_URL . '/src/css/signup.css',
 ];
+$pageTitle = 'Créer mon compte';
 
 include '../../../header.php';
 
@@ -35,7 +34,7 @@ unset($_SESSION['signup_disabled_message'], $_SESSION['errors'], $_SESSION['old'
 
         <?php if ($ba_bec_signupDisabled): ?>
             <div class="alert alert-warning" role="alert">
-                <?= htmlspecialchars($ba_bec_signupDisabledMessage) ?>
+                <?= e($ba_bec_signupDisabledMessage) ?>
             </div>
         <?php endif; ?>
 
@@ -44,25 +43,26 @@ unset($_SESSION['signup_disabled_message'], $_SESSION['errors'], $_SESSION['old'
                 <div class="alert alert-danger">
                     <ul class="mb-2">
                         <?php foreach ($ba_bec_errors as $ba_bec_error): ?>
-                            <?= htmlspecialchars($ba_bec_error) ?><br>
+                            <?= e($ba_bec_error) ?><br>
                         <?php endforeach; ?>
                     </ul>
                 </div>
             <?php endif; ?>
         </div>
         <form action="<?php echo ROOT_URL . '/api/security/signup.php' ?>" method="post" class="auth-form">
+            <?= csrf_field() ?>
             <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-signup">
             <div class="signup-grid">
                 <!-- Prénom -->
                 <div class="champ">
                     <label for="prenomMemb">Prénom :</label>
-                    <input type="text" id="prenomMemb" name="prenomMemb" value="<?= htmlspecialchars($ba_bec_old['prenomMemb'] ?? '') ?>" required>
+                    <input type="text" id="prenomMemb" name="prenomMemb" value="<?= e($ba_bec_old['prenomMemb'] ?? '') ?>" required>
                 </div>
 
                 <!-- Nom -->
                 <div class="champ">
                     <label for="nomMemb">Nom :</label>
-                    <input type="text" id="nomMemb" name="nomMemb" value="<?= htmlspecialchars($ba_bec_old['nomMemb'] ?? '') ?>" required>
+                    <input type="text" id="nomMemb" name="nomMemb" value="<?= e($ba_bec_old['nomMemb'] ?? '') ?>" required>
                 </div>
 
                 <!-- Nom d'utilisateur -->
@@ -71,7 +71,7 @@ unset($_SESSION['signup_disabled_message'], $_SESSION['errors'], $_SESSION['old'
                     <input type="text"
                             id="pseudoMemb"
                             name="pseudoMemb"
-                            value="<?= htmlspecialchars($ba_bec_old['pseudoMemb'] ?? '') ?>"
+                            value="<?= e($ba_bec_old['pseudoMemb'] ?? '') ?>"
                             required>
                     <small class="form-text text-muted">6 à 70 caractères</small>
                 </div>
@@ -79,13 +79,13 @@ unset($_SESSION['signup_disabled_message'], $_SESSION['errors'], $_SESSION['old'
                 <!-- Email -->
                 <div class="champ full">
                     <label for="eMailMemb">Email :</label>
-                    <input type="email" id="eMailMemb" name="eMailMemb" value="<?= htmlspecialchars($ba_bec_old['eMailMemb'] ?? '') ?>" required>
+                    <input type="email" id="eMailMemb" name="eMailMemb" value="<?= e($ba_bec_old['eMailMemb'] ?? '') ?>" required>
                 </div>
 
                 <!-- Confirmation Email -->
                 <div class="champ full offset-right">
                     <label for="eMailMemb2">Confirmer l'email :</label>
-                    <input type="email" id="eMailMemb2" name="eMailMemb2" value="<?= htmlspecialchars($ba_bec_old['eMailMemb2'] ?? '') ?>" required>
+                    <input type="email" id="eMailMemb2" name="eMailMemb2" value="<?= e($ba_bec_old['eMailMemb2'] ?? '') ?>" required>
                 </div>
 
                 <!-- Mot de passe -->
@@ -103,7 +103,7 @@ unset($_SESSION['signup_disabled_message'], $_SESSION['errors'], $_SESSION['old'
                             <span class="icon icon-open">Masquer</span>
                         </button>
                     </div>
-                    <small class="form-text text-muted">Entre 8 et 15 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial</small>
+                    <small class="form-text text-muted">Entre 8 et 72 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial</small>
                 </div>
 
                 <!-- Confirmation mot de passe -->

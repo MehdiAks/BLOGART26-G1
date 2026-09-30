@@ -12,6 +12,16 @@ function sql_create_table($table){
     $table = strtoupper($table);
     // Définition des schémas disponibles (par domaine fonctionnel).
     $schemas = [
+        'LOGIN_ATTEMPT' => [
+            "CREATE TABLE IF NOT EXISTS `LOGIN_ATTEMPT` (
+                `id` int NOT NULL AUTO_INCREMENT,
+                `ip` varchar(45) NOT NULL,
+                `pseudo` varchar(70) NOT NULL,
+                `attemptedAt` datetime NOT NULL,
+                PRIMARY KEY (`id`),
+                KEY `idx_login_attempt_ip_date` (`ip`, `attemptedAt`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+        ],
         'EQUIPE' => [
             "CREATE TABLE IF NOT EXISTS `EQUIPE` (
                 `numEquipe` int NOT NULL AUTO_INCREMENT,
@@ -112,6 +122,7 @@ function sql_create_table($table){
         return true;
     }catch(PDOException $exception){
         // En cas d'erreur, on signale l'échec.
+        error_log('Erreur création table ' . $table . ': ' . $exception->getMessage());
         return false;
     }
 }

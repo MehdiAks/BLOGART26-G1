@@ -10,10 +10,8 @@
  * 4) Exécute la requête SQL adaptée (INSERT/UPDATE/DELETE) avec les valeurs préparées.
  * 5) Gère le feedback (flash/session/erreur) et redirige l'utilisateur vers l'écran cible.
  */
-session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
-include '../../header.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
@@ -27,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $ba_bec_eMailMemb = isset($_POST['eMailMemb']) ? ctrlSaisies($_POST['eMailMemb']) : null;
     $ba_bec_eMailMemb2 = isset($_POST['eMailMemb2']) ? ctrlSaisies($_POST['eMailMemb2']) : null;
     $ba_bec_accordMemb = isset($_POST['accordMemb']) ? ctrlSaisies($_POST['accordMemb']) : null;
-    $ba_bec_numStat = isset($_POST['numStat']) ? ctrlSaisies($_POST['numStat']) : null;
+    $ba_bec_numStat = isset($_POST['numStat']) ? (int) $_POST['numStat'] : 0;
 
     $ba_bec_errors = [];
 
@@ -49,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (strlen($ba_bec_pseudoMemb) < 6 || strlen($ba_bec_pseudoMemb) > 70) {
         $ba_bec_errors[] = "Erreur, le nom d'utilisateur doit contenir entre 6 et 70 caractères.";
     } else {
-        $ba_bec_verif = sql_select('MEMBRE', 'pseudoMemb', "pseudoMemb = '$ba_bec_pseudoMemb'");
+        $ba_bec_verif = sql_select('MEMBRE', 'pseudoMemb', 'pseudoMemb = ?', null, null, '1', [$ba_bec_pseudoMemb]);
         if (!empty($ba_bec_verif)) {
             $ba_bec_errors[] = "Veuillez choisir un nom d'utilisateur disponible.";
             $ba_bec_pseudoMemb = null;
@@ -58,9 +56,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Vérification mot de passe
     $ba_bec_password_valid = true;
-    $ba_bec_pass_length = mb_strlen($ba_bec_passMemb ?? '', 'UTF-8');
-    if ($ba_bec_pass_length < 8 || $ba_bec_pass_length > 15) {
-        $ba_bec_errors[] = "Le mot de passe doit contenir entre 8 et 15 caractères.";
+    $ba_bec_pass_length = strlen((string) $ba_bec_passMemb);
+    if ($ba_bec_pass_length < 8 || $ba_bec_pass_length > 72) {
+        $ba_bec_errors[] = "Le mot de passe doit contenir entre 8 et 72 caractères.";
         $ba_bec_password_valid = false;
     } elseif (
         !preg_match('/[A-Z]/', $ba_bec_passMemb) ||
@@ -89,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($ba_bec_eMailMemb !== $ba_bec_eMailMemb2) {
         $ba_bec_errors[] = "Les adresses mail doivent être identiques.";
         $ba_bec_eMailMemb = null;
-    } elseif (!empty(sql_select('MEMBRE', 'eMailMemb', "eMailMemb = '$ba_bec_eMailMemb'"))) {
+    } elseif (!empty(sql_select('MEMBRE', 'eMailMemb', 'eMailMemb = ?', null, null, '1', [$ba_bec_eMailMemb]))) {
         $ba_bec_errors[] = "Cette adresse email est déjà utilisée.";
         $ba_bec_eMailMemb = null;
     }
@@ -98,11 +96,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($ba_bec_accordMemb !== 'OUI') {
         $ba_bec_errors[] = "Veuillez accepter de partager vos données.";
     }
-    $ba_bec_admin_exist = sql_select('MEMBRE', 'numMemb', "numStat = 1");
-
-    if (!empty($ba_bec_admin_exist) && $ba_bec_numStat == 1) { 
-        $ba_bec_errors[] = "Il y a déjà un administrateur, vous ne pouvez pas en créer un autre.";
-        $ba_bec_numStat = null;
+    if (!in_array($ba_bec_numStat, [1, 2, 3], true)) {
+        $ba_bec_errors[] = 'Statut invalide.';
     }
 
 
@@ -112,7 +107,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $ba_bec_insert_result = sql_insert(
             'MEMBRE',
             'prenomMemb, nomMemb, pseudoMemb, passMemb, eMailMemb, dtCreaMemb, accordMemb, numStat',
-            "'$ba_bec_prenomMemb', '$ba_bec_nomMemb', '$ba_bec_pseudoMemb', '$ba_bec_hash_password', '$ba_bec_eMailMemb', '$ba_bec_dtCreaMemb', '1', '$ba_bec_numStat'"
+            '?, ?, ?, ?, ?, ?, ?, ?',
+            [$ba_bec_prenomMemb, $ba_bec_nomMemb, $ba_bec_pseudoMemb, $ba_bec_hash_password, $ba_bec_eMailMemb, $ba_bec_dtCreaMemb, 1, $ba_bec_numStat]
         );
         if ($ba_bec_insert_result['success']) {
             flash_success();
@@ -134,7 +130,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <div class="alert alert-danger">
                     <ul>
                         <?php foreach ($ba_bec_errors as $ba_bec_error): ?>
-                            <li><?= $ba_bec_error ?></li>
+                            <li><?= e($ba_bec_error) ?></li>
                         <?php endforeach; ?>
                     </ul>
                 </div>

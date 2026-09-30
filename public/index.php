@@ -5,22 +5,19 @@ require_once __DIR__ . '/../config.php';
 
 // Récupère le statut de l'utilisateur depuis la session.
 // Si la clé n'existe pas, on utilise null pour expliciter l'absence d'authentification.
-$ba_bec_numStat = $_SESSION['numStat'] ?? null;
-// Vérifie que l'utilisateur est bien connecté et possède le statut attendu (ici, 1).
-// On cast en int pour éviter les comparaisons ambiguës liées aux chaînes.
-if ($ba_bec_numStat === null || (int) $ba_bec_numStat !== 1) {
-    // Redirige vers la page de connexion si l'utilisateur n'est pas autorisé.
-    // ROOT_URL vient de la configuration et sert à produire une URL absolue cohérente.
-    header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
-    // Interrompt immédiatement l'exécution pour éviter toute action non autorisée.
-    exit;
-}
+require_stat(1);
 
 // Lit le contrôleur demandé dans l'URL (ex: ?controller=article).
 // Si absent, on met une chaîne vide pour forcer la vérification plus bas.
 $controllerKey = $_GET['controller'] ?? '';
 // Lit l'action (méthode) à exécuter ; par défaut "list" si non précisée.
 $action = $_GET['action'] ?? 'list';
+
+if (in_array($action, ['store', 'update', 'destroy'], true) && ($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+    http_response_code(405);
+    header('Allow: POST');
+    exit('Méthode non autorisée.');
+}
 
 // Table de correspondance entre les clés d'URL et les noms de classes contrôleurs.
 // Cela évite d'autoriser des classes arbitraires et limite l'accès aux contrôleurs autorisés.

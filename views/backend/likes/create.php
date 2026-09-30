@@ -9,7 +9,7 @@
  */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirecmodo.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
 $ba_bec_articles = sql_select("ARTICLE", "numArt, libTitrArt", null, null, "numArt ASC");
@@ -39,6 +39,7 @@ foreach ($ba_bec_members as $ba_bec_member) {
         <div class="col-md-12">
             <!-- Form to create a new like -->
             <form action="<?php echo ROOT_URL . '/api/likes/create.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="numArt">Article</label>
                     <input id="numArt" name="numArt" class="form-control" type="text" placeholder="ID article (ex: 42)" required />

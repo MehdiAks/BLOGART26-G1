@@ -1,24 +1,9 @@
 <?php
-// Commentaire: Fichier PHP pour conf.
+$pageTitle = 'Politique de confidentialité';
+$pageDescription = 'Politique de confidentialité et informations RGPD du Bordeaux Étudiant Club.';
 include '../header.php';
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-        <title>Politique de confidentialité | Bordeaux étudiant club</title>
-        <link href="css/style_modif.css" rel="stylesheet"/>
-        <link href="css/font.css" rel="stylesheet"/>
-        
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    </head>
-
-    <body>
-        <main class="container my-5">
+        <main class="container legal-page">
             <h1 class="text-center mb-4">Politique de confidentialité</h1>
 
             <p><b>Dernière mise à jour:  29/02/2025</b></p>
@@ -115,8 +100,6 @@ include '../header.php';
             </ul>
 
         </main>
-    </body>
-</html>
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
 ?>

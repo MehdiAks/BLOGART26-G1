@@ -12,8 +12,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
 if(isset($_GET['numMotCle'])){
-    $ba_bec_numMotCle = $_GET['numMotCle'];
-    $ba_bec_libMotCle = sql_select("MOTCLE", "libMotCle", "numMotCle = $ba_bec_numMotCle")[0]['libMotCle'];
+    $ba_bec_numMotCle = (int) $_GET['numMotCle'];
+    $ba_bec_libMotCle = sql_select('MOTCLE', 'libMotCle', 'numMotCle = ?', null, null, '1', [$ba_bec_numMotCle])[0]['libMotCle'];
 }
 
 ?> 
@@ -25,11 +25,12 @@ if(isset($_GET['numMotCle'])){
         <div class="col-md-12">
             <!-- Form to create a new statut -->
             <form action="<?php echo ROOT_URL . '/api/keywords/update.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="libMotCle">Nom du mots-clés</label>
-                    <input id="numMotCle" name="numMotCle" class="form-control" style="display: none" type="text" value="<?php echo($ba_bec_numMotCle); ?>" readonly="readonly" />
+                    <input id="numMotCle" name="numMotCle" class="form-control" style="display: none" type="text" value="<?php echo (int) $ba_bec_numMotCle; ?>" readonly="readonly" />
                     <input id="libMotCle" name="libMotCle" class="form-control" type="text"
-                        value="<?php echo($ba_bec_libMotCle); ?>" placeholder="Nom du mot-clé..."/>
+                        value="<?php echo e($ba_bec_libMotCle); ?>" placeholder="Nom du mot-clé..."/>
                 </div>
                 <br />
                 <div class="form-group mt-2">

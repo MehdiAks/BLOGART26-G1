@@ -13,7 +13,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 // Étape 1: récupérer l'identifiant du membre connecté.
-$ba_bec_numMemb = $_SESSION['user_id'] ?? null;
+$ba_bec_numMemb = current_user_id();
 if (!$ba_bec_numMemb) {
     $_SESSION['error'] = 'Vous devez être connecté pour supprimer votre compte.';
     header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
@@ -44,7 +44,7 @@ if (!$ba_bec_recaptcha['valid']) {
 }
 
 // Étape 5: vérifier l'existence du membre puis supprimer ses données associées.
-$ba_bec_member = sql_select('MEMBRE', 'numMemb', "numMemb = $ba_bec_numMemb")[0] ?? null;
+$ba_bec_member = sql_select('MEMBRE', 'numMemb', 'numMemb = ?', null, null, '1', [$ba_bec_numMemb])[0] ?? null;
 if (!$ba_bec_member) {
     $_SESSION['error'] = 'Compte introuvable.';
     header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
@@ -52,13 +52,17 @@ if (!$ba_bec_member) {
 }
 
 // Suppressions en cascade côté applicatif: likes, commentaires, puis le membre.
-sql_delete('LIKEART', "numMemb = $ba_bec_numMemb");
-sql_delete('comment', "numMemb = $ba_bec_numMemb");
-sql_delete('MEMBRE', "numMemb = $ba_bec_numMemb");
+sql_delete('LIKEART', 'numMemb = ?', [$ba_bec_numMemb]);
+sql_delete('COMMENT', 'numMemb = ?', [$ba_bec_numMemb]);
+sql_delete('MEMBRE', 'numMemb = ?', [$ba_bec_numMemb]);
 
 // Nettoyage de session et redirection finale.
 $_SESSION = [];
-$_SESSION['success'] = 'Votre compte a bien été supprimé.';
+if (ini_get('session.use_cookies')) {
+    $ba_bec_cookieParams = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 3600, $ba_bec_cookieParams['path'], $ba_bec_cookieParams['domain'], $ba_bec_cookieParams['secure'], $ba_bec_cookieParams['httponly']);
+}
+session_destroy();
 header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
 exit();
 

@@ -5,8 +5,8 @@
     gap: 1rem;
     padding: 0.5rem 0.75rem;
     margin-top: 0.75rem;
-    border-radius: 0.5rem;
-    background: rgba(13, 110, 253, 0.08);
+    border-radius: var(--radius-sm);
+    background: rgba(107, 15, 36, 0.08);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;

@@ -14,26 +14,19 @@ $pageStyles = [
     ROOT_URL . '/src/css/stylearticle.css',
     ROOT_URL . '/src/css/article-editor.css',
 ];
-
+$pageTitle = $pageTitle ?? 'Modifier un article · Administration';
 require_once ROOT . '/header.php';
 
 if (isset($_GET['numArt'])) {
     $ba_bec_numArt = (int) $_GET['numArt'];
-    $ba_bec_article = sql_select("ARTICLE", "*", "numArt = $ba_bec_numArt")[0];
+    $ba_bec_article = sql_select('ARTICLE', '*', 'numArt = ?', null, null, '1', [$ba_bec_numArt])[0];
     $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
     $ba_bec_keywords = sql_select("MOTCLE", "*");
-    $ba_bec_selectedKeywords = sql_select("MOTCLEARTICLE", "*", "numArt = $ba_bec_numArt");
+    $ba_bec_selectedKeywords = sql_select('MOTCLEARTICLE', '*', 'numArt = ?', null, null, null, [$ba_bec_numArt]);
     $ba_bec_selectedKeywordIds = array_map('intval', array_column($ba_bec_selectedKeywords, 'numMotCle'));
-    $ba_bec_numArt = $_GET['numArt'];
     $ba_bec_urlPhotArt = $ba_bec_article['urlPhotArt'];
     $ba_bec_defaultImage = ROOT_URL . '/src/images/article.png';
-    if (!empty($ba_bec_urlPhotArt)) {
-        $ba_bec_photoUrl = preg_match('/^(https?:\/\/|\/)/', $ba_bec_urlPhotArt)
-            ? $ba_bec_urlPhotArt
-            : ROOT_URL . '/src/uploads/' . $ba_bec_urlPhotArt;
-    } else {
-        $ba_bec_photoUrl = $ba_bec_defaultImage;
-    }
+    $ba_bec_photoUrl = uploaded_file_url($ba_bec_urlPhotArt, $ba_bec_defaultImage);
 }
 ?>
 
@@ -51,30 +44,35 @@ if (isset($_GET['numArt'])) {
 
     <form id="article-edit-form" action="<?php echo ROOT_URL . '/public/index.php?controller=article&action=update'; ?>" method="post"
         enctype="multipart/form-data">
-        <input id="numArt" name="numArt" type="hidden" value="<?php echo $ba_bec_article['numArt']; ?>"
+        <?php echo csrf_field(); ?>
+        <input id="numArt" name="numArt" type="hidden" value="<?php echo (int) $ba_bec_article['numArt']; ?>"
             readonly="readonly" />
 
         <section class="article-page article-editor">
+            <div class="row g-4 article-editor-layout">
+                <div class="col-12 col-lg-8 article-editor__main">
             <header class="article-hero"
-                style="--hero-image: url('<?php echo htmlspecialchars($ba_bec_photoUrl); ?>')">
+                style="--hero-image: url('<?php echo e($ba_bec_photoUrl); ?>')">
                 <div class="article-hero__overlay">
                     <p class="article-kicker">Actualités</p>
                     <div class="article-editor-field article-editor-field--light">
+                        <label for="libTitrArt" class="form-label">Titre de l'article</label>
                         <h1 id="preview-title" class="article-title article-editor-display article-editor-display--title"
                             data-placeholder="Titre de l’article"></h1>
                         <input id="libTitrArt" name="libTitrArt" class="article-editor-input article-editor-input--light"
                             type="text" maxlength="100" required data-preview-target="preview-title"
-                            value="<?php echo $ba_bec_article['libTitrArt']; ?>" placeholder="Titre de l’article" />
+                            value="<?php echo e($ba_bec_article['libTitrArt']); ?>" placeholder="Titre de l’article" />
                     </div>
                     <div class="article-meta">
                         <span>Publié le</span>
                         <span class="article-editor-field article-editor-field--light article-editor-field--inline">
+                            <label for="dtCreaArt" class="form-label">Date de publication</label>
                             <span id="preview-date" class="article-editor-display article-editor-display--meta"
                                 data-placeholder="Date de publication"></span>
                             <input id="dtCreaArt" name="dtCreaArt"
                                 class="article-editor-input article-editor-input--light" type="datetime-local" required
                                 data-preview-target="preview-date"
-                                value="<?php echo $ba_bec_article['dtCreaArt']; ?>" placeholder="JJ/MM/AAAA HH:MM" />
+                                value="<?php echo e(date('Y-m-d\TH:i', strtotime($ba_bec_article['dtCreaArt']))); ?>" placeholder="JJ/MM/AAAA HH:MM" />
                         </span>
                         <span class="article-meta__dot">•</span>
                         <span>Lecture 2 min</span>
@@ -85,94 +83,102 @@ if (isset($_GET['numArt'])) {
             <section class="article-body">
                 <div class="container">
                     <div class="article-editor-field">
+                        <label for="libChapoArt" class="form-label">Chapeau</label>
                         <p id="preview-chapo" class="article-lead article-editor-display article-editor-display--lead"
                             data-placeholder="Ajoutez le chapeau de l’article pour donner le ton."></p>
                         <textarea id="libChapoArt" name="libChapoArt" class="article-editor-input" maxlength="500"
                             required data-preview-target="preview-chapo"
-                            placeholder="Ajoutez le chapeau de l’article pour donner le ton."><?php echo $ba_bec_article['libChapoArt']; ?></textarea>
+                            placeholder="Ajoutez le chapeau de l’article pour donner le ton."><?php echo e($ba_bec_article['libChapoArt']); ?></textarea>
                     </div>
 
-                    <div class="row g-4">
-                        <div class="col-12 col-lg-8">
-                            <article class="bg-white">
+                    <article class="bg-white">
                                 <div class="article-editor-field">
+                                    <label for="libAccrochArt" class="form-label">Accroche principale</label>
                                     <h2 id="preview-accroche"
                                         class="phraseaccroche article-editor-display article-editor-display--accroche"
                                         data-placeholder="Ajoutez l’accroche principale."></h2>
                                     <input id="libAccrochArt" name="libAccrochArt" class="article-editor-input"
                                         type="text" maxlength="100" required data-preview-target="preview-accroche"
-                                        value="<?php echo $ba_bec_article['libAccrochArt']; ?>"
+                                        value="<?php echo e($ba_bec_article['libAccrochArt']); ?>"
                                         placeholder="Accroche principale..." />
                                 </div>
 
                                 <div class="article-editor-field">
+                                    <label for="parag1Art" class="form-label">Premier paragraphe</label>
                                     <p id="preview-parag1"
                                         class="paragraphe article-editor-display article-editor-display--paragraph"
                                         data-placeholder="Premier paragraphe : racontez l’essentiel ici."></p>
                                     <textarea id="parag1Art" name="parag1Art" class="article-editor-input"
                                         maxlength="1200" required data-preview-target="preview-parag1"
-                                        placeholder="Premier paragraphe : racontez l’essentiel ici."><?php echo $ba_bec_article['parag1Art']; ?></textarea>
+                                        placeholder="Premier paragraphe : racontez l’essentiel ici."><?php echo e($ba_bec_article['parag1Art']); ?></textarea>
                                 </div>
 
                                 <figure class="article-figure article-editor-figure">
                                     <img class="image2 img-fluid w-100"
                                         src="<?php echo htmlspecialchars($ba_bec_photoUrl); ?>"
-                                        alt="Image de l'article">
+                                        alt="Image de l'article" loading="lazy" decoding="async">
                                     <figcaption class="article-caption">
                                         © Groupe 1 Bordeaux étudiant club + Description de l’image
                                     </figcaption>
                                 </figure>
 
                                 <div class="article-editor-field">
+                                    <label for="libSsTitr1Art" class="form-label">Premier sous-titre</label>
                                     <div id="preview-subtitle1"
                                         class="text-with-line article-editor-display article-editor-display--subtitle"
                                         data-placeholder="Sous-titre 1"></div>
                                     <input id="libSsTitr1Art" name="libSsTitr1Art" class="article-editor-input"
                                         type="text" maxlength="100" required data-preview-target="preview-subtitle1"
-                                        value="<?php echo $ba_bec_article['libSsTitr1Art']; ?>"
+                                        value="<?php echo e($ba_bec_article['libSsTitr1Art']); ?>"
                                         placeholder="Sous-titre 1" />
                                 </div>
 
                                 <div class="article-editor-field">
+                                    <label for="parag2Art" class="form-label">Deuxième paragraphe</label>
                                     <p id="preview-parag2"
                                         class="paragraphe2 article-editor-display article-editor-display--paragraph"
                                         data-placeholder="Deuxième paragraphe : développez votre idée."></p>
                                     <textarea id="parag2Art" name="parag2Art" class="article-editor-input"
                                         maxlength="1200" required data-preview-target="preview-parag2"
-                                        placeholder="Deuxième paragraphe : développez votre idée."><?php echo $ba_bec_article['parag2Art']; ?></textarea>
+                                        placeholder="Deuxième paragraphe : développez votre idée."><?php echo e($ba_bec_article['parag2Art']); ?></textarea>
                                 </div>
 
                                 <div class="article-editor-field">
+                                    <label for="libSsTitr2Art" class="form-label">Deuxième sous-titre</label>
                                     <div id="preview-subtitle2"
                                         class="text-with-line article-editor-display article-editor-display--subtitle"
                                         data-placeholder="Sous-titre 2"></div>
                                     <input id="libSsTitr2Art" name="libSsTitr2Art" class="article-editor-input"
                                         type="text" maxlength="100" required data-preview-target="preview-subtitle2"
-                                        value="<?php echo $ba_bec_article['libSsTitr2Art']; ?>"
+                                        value="<?php echo e($ba_bec_article['libSsTitr2Art']); ?>"
                                         placeholder="Sous-titre 2" />
                                 </div>
 
                                 <div class="article-editor-field">
+                                    <label for="parag3Art" class="form-label">Troisième paragraphe</label>
                                     <p id="preview-parag3"
                                         class="paragraphe3 article-editor-display article-editor-display--paragraph"
                                         data-placeholder="Troisième paragraphe : concluez votre développement."></p>
                                     <textarea id="parag3Art" name="parag3Art" class="article-editor-input"
                                         maxlength="1200" required data-preview-target="preview-parag3"
-                                        placeholder="Troisième paragraphe : concluez votre développement."><?php echo $ba_bec_article['parag3Art']; ?></textarea>
+                                        placeholder="Troisième paragraphe : concluez votre développement."><?php echo e($ba_bec_article['parag3Art']); ?></textarea>
                                 </div>
 
                                 <div class="article-editor-field">
+                                    <label for="libConclArt" class="form-label">Conclusion</label>
                                     <p id="preview-concl"
                                         class="conclusion article-editor-display article-editor-display--conclusion"
                                         data-placeholder="Conclusion : terminez sur une note forte."></p>
                                     <textarea id="libConclArt" name="libConclArt" class="article-editor-input"
                                         maxlength="800" required data-preview-target="preview-concl"
-                                        placeholder="Conclusion : terminez sur une note forte."><?php echo $ba_bec_article['libConclArt']; ?></textarea>
+                                        placeholder="Conclusion : terminez sur une note forte."><?php echo e($ba_bec_article['libConclArt']); ?></textarea>
                                 </div>
-                            </article>
-                        </div>
+                    </article>
+                </div>
+            </section>
+                </div>
 
-                        <aside class="col-12 col-lg-4 article-editor__panel">
+                <aside class="col-12 col-lg-4 article-editor__panel">
                             <div class="card shadow-sm mb-4">
                                 <div class="card-body">
                                     <h2 class="h5 mb-3">Paramètres de publication</h2>
@@ -180,10 +186,10 @@ if (isset($_GET['numArt'])) {
                                         <label for="urlPhotArt" class="form-label">Image actuelle</label>
                                         <img class="img-fluid rounded mb-2"
                                             src="<?php echo htmlspecialchars($ba_bec_photoUrl); ?>"
-                                            alt="Image de l'article">
+                                            alt="Image de l'article" loading="lazy" decoding="async">
                                         <input type="file" id="urlPhotArt" name="urlPhotArt" class="form-control"
-                                            accept=".png, .jpeg, .jpg, .avif, .svg" maxlength="80000">
-                                        <p class="form-text">Extensions acceptées : .png, .jpeg, .jpg, .avif, .svg.</p>
+                                            accept=".png, .jpeg, .jpg, .avif, .webp" maxlength="80000">
+                                        <p class="form-text">Extensions acceptées : .png, .jpeg, .jpg, .avif, .webp.</p>
                                     </div>
 
                                     <div class="mb-3">
@@ -191,8 +197,8 @@ if (isset($_GET['numArt'])) {
                                         <select id="numThem" name="numThem" class="form-select" required>
                                             <option value="">-- Choisissez une thématique --</option>
                                             <?php foreach ($ba_bec_thematiques as $ba_bec_thematique) { ?>
-                                                <option value="<?= $ba_bec_thematique['numThem'] ?>" <?php echo $ba_bec_thematique['numThem'] == $ba_bec_article['numThem'] ? 'selected' : ''; ?>>
-                                                    <?= $ba_bec_thematique['libThem'] ?>
+                                                <option value="<?= (int) $ba_bec_thematique['numThem'] ?>" <?php echo $ba_bec_thematique['numThem'] == $ba_bec_article['numThem'] ? 'selected' : ''; ?>>
+                                                    <?= e($ba_bec_thematique['libThem']) ?>
                                                 </option>
                                             <?php } ?>
                                         </select>
@@ -214,8 +220,9 @@ if (isset($_GET['numArt'])) {
                                                 </select>
                                             </div>
                                             <div class="col-12">
+                                                <label for="newMotCle" class="form-label">Mots-clés retenus (3 minimum)</label>
                                                 <select id="newMotCle" name="motCle[]" class="form-select" size="5"
-                                                    multiple>
+                                                    multiple required>
                                                     <?php
                                                     foreach ($ba_bec_keywords as $ba_bec_req) {
                                                         if (!in_array((int) $ba_bec_req['numMotCle'], $ba_bec_selectedKeywordIds, true)) {
@@ -232,12 +239,14 @@ if (isset($_GET['numArt'])) {
                                     <button type="submit" class="btn btn-primary w-100">Confirmer la mise à jour</button>
                                 </div>
                             </div>
-                        </aside>
-                    </div>
-                </div>
-            </section>
+                </aside>
+            </div>
         </section>
     </form>
+    <details class="article-editor-preview">
+        <summary class="btn btn-outline-primary">Afficher l'aperçu</summary>
+        <article><p class="eyebrow">Aperçu</p><h2 data-preview-source="preview-title"></h2><p data-preview-source="preview-date"></p><p class="lead" data-preview-source="preview-chapo"></p><h3 data-preview-source="preview-accroche"></h3><p data-preview-source="preview-parag1"></p><h3 data-preview-source="preview-subtitle1"></h3><p data-preview-source="preview-parag2"></p><h3 data-preview-source="preview-subtitle2"></h3><p data-preview-source="preview-parag3"></p><p data-preview-source="preview-concl"></p></article>
+    </details>
 </div>
 
 <script>
@@ -290,6 +299,7 @@ if (isset($_GET['numArt'])) {
 
         target.textContent = nextValue;
         target.classList.toggle('is-placeholder', !formattedValue);
+        document.querySelectorAll('[data-preview-source="' + target.id + '"]').forEach((copy) => { copy.textContent = nextValue; });
     };
 
     document.querySelectorAll('[data-preview-target]').forEach((input) => {
@@ -301,5 +311,15 @@ if (isset($_GET['numArt'])) {
         input.addEventListener('input', handler);
         input.addEventListener('change', handler);
         handler();
+    });
+
+    document.getElementById('article-edit-form')?.addEventListener('submit', (event) => {
+        if (newMotCle && newMotCle.options.length < 3) {
+            event.preventDefault();
+            newMotCle.setCustomValidity('Sélectionnez au moins trois mots-clés.');
+            newMotCle.reportValidity();
+        } else if (newMotCle) {
+            newMotCle.setCustomValidity('');
+        }
     });
 </script>

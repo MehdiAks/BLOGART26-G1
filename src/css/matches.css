@@ -1,114 +1,30 @@
-.matches-hero__title {
-    text-align: center;
-    font-size: 60px;
-}
-
-.matches-hero__text {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.matches-hero__meta {
-    margin-top: 60px;
-}
-
-.matches-list__title {
-    text-align: center;
-    margin-top: 90px;
-}
-
-.match-card {
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    background-color: rgba(103, 8, 29, 0.85);
-    border: 1px solid #ddd;
-    padding: 2rem;
-    color: #fff;
-}
-
-.match-card__competition {
-    text-align: left;
-    font-size: 45px;
-}
-
-.match-card::before,
-.match-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 50%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    filter: brightness(0.45) saturate(0.9);
-    z-index: 1;
-}
-
-.match-card::before {
-    left: 0;
-    background-image: var(--match-home-logo);
-}
-
-.match-card::after {
-    right: 0;
-    background-image: var(--match-away-logo);
-}
-
-.match-card > * {
-    position: relative;
-    z-index: 2;
-}
-
-.btn-more {
-    background-color: #67081d;
-    color: #ddd;
-    padding: 10px;
-    border-radius: 25px;
-}
-
-.match-card__date {
-    text-align: right;
-}
-
-.match-card__team {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-    gap: 0.35rem;
-}
-
-.match-card__logo {
-    width: 72px;
-    height: 72px;
-    object-fit: contain;
-    background: #fff;
-    border-radius: 50%;
-    padding: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.wrapper {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    justify-content: center;
-}
-
-.col-12 {
-    margin-bottom: 20px;
-}
-
-.match-card__location {
-    padding: 20px;
-}
-
-.match-card__score {
-    display: flex;
-    font-size: 40px;
-    font-weight: bold;
-    justify-content: center;
-    align-items: center;
+.matches-hero { margin-bottom: var(--space-8); }
+.matches-hero__title { max-width: 12ch; margin-bottom: var(--space-4); }
+.matches-hero__text { max-width: 68ch; color: var(--bec-ink-2); }
+.matches-hero__meta { margin-top: var(--space-4); color: var(--bec-ink-2); font-size: .8rem; font-variant-numeric: tabular-nums; }
+.matches-list__title { margin: var(--space-8) 0 var(--space-5); padding-bottom: var(--space-3); border-bottom: 1px solid var(--bec-line); }
+.match-card { padding: var(--space-5) 0; display: grid; grid-template-columns: 190px 1fr 180px; align-items: center; gap: var(--space-5); border-bottom: 1px solid var(--bec-line); font-variant-numeric: tabular-nums; }
+.match-card__header { grid-column: 1; display: grid; gap: var(--space-3); }
+.match-card__competition { margin: 0; font-weight: 700; }
+.match-card__date { margin: var(--space-2) 0 0; color: var(--bec-ink-2); font-size: .82rem; }
+.match-card__status { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
+.match-card__badge { padding: .35rem .6rem; color: var(--bec-ink); background: var(--bec-bg); border-radius: 999px; font-size: .75rem; font-weight: 700; }
+.match-card__result { font-size: .82rem; }
+.match-card__result--win { color: var(--bec-bordeaux); }
+.match-card__result--loss { color: var(--bec-ink); }
+.wrapper { grid-column: 2; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--space-4); }
+.match-card__team { min-width: 0; display: flex; align-items: center; gap: var(--space-3); }
+.match-card__team:last-child { flex-direction: row-reverse; text-align: right; }
+.match-card__team > span { display: none; }
+.match-card__logo { width: 56px; height: 56px; padding: 5px; flex: 0 0 auto; object-fit: contain; border: 1px solid var(--bec-line); border-radius: 50%; background: #fff; }
+.match-card__score { color: var(--bec-bordeaux); font: 800 2rem/1 "Big Shoulders Display", sans-serif; }
+.match-card__location { grid-column: 3; margin: 0; color: var(--bec-ink-2); font-size: .85rem; text-align: right; }
+.matches-empty { padding: var(--space-7); text-align: center; }
+@media (max-width: 767.98px) {
+    .match-card { grid-template-columns: 1fr; gap: var(--space-4); }
+    .match-card__header, .wrapper, .match-card__location { grid-column: 1; }
+    .match-card__location { text-align: left; }
+    .wrapper { grid-template-columns: 1fr auto 1fr; }
+    .match-card__team { flex-direction: column; text-align: center; }
+    .match-card__team:last-child { flex-direction: column; text-align: center; }
 }

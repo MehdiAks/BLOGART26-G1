@@ -9,10 +9,6 @@
 // On ne démarre la session que si elle n'existe pas encore afin d'éviter les warnings PHP.
 // Cette session sert ensuite à récupérer l'identifiant de l'utilisateur (user_id) pour
 // savoir si on doit lire/écrire le consentement en base de données.
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 // Configuration : Nom du cookie et durée de validité (ici 1 an).
 // Ces constantes sont utilisées dans toutes les fonctions pour éviter la duplication
 // et garantir la cohérence entre la lecture/écriture du cookie.
@@ -37,15 +33,14 @@ if (!defined('COOKIE_NAME')) {
 function setConsentCookie(int $consent) {
     // setcookie() envoie un en-tête HTTP : il faut donc l'appeler avant tout output.
     // La valeur est convertie en string car les cookies sont stockés en texte.
-    setcookie(
-        COOKIE_NAME,
-        (string) $consent,
-        time() + COOKIE_DURATION, // Expiration : maintenant + 1 an
-        '/',                      // Disponible sur tout le domaine
-        '',                       // Domaine vide = domaine actuel
-        false,                    // Secure : false (devrait être true si HTTPS)
-        true                      // HttpOnly : true (protection contre les failles XSS/JS)
-    );
+    $isHttps = !empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off';
+    setcookie(COOKIE_NAME, (string) $consent, [
+        'expires' => time() + COOKIE_DURATION,
+        'path' => '/',
+        'secure' => $isHttps,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
 }
 
 /* ==========================================================================
@@ -74,7 +69,7 @@ function getCookieConsent($pdo) {
     if (!empty($_SESSION['user_id'])) {
         try {
             // 1. On cherche d'abord la valeur stockée dans son profil membre
-            $stmt = $pdo->prepare("SELECT cookieMemb FROM membre WHERE numMemb = ?");
+            $stmt = $pdo->prepare("SELECT cookieMemb FROM MEMBRE WHERE numMemb = ?");
             $stmt->execute([$_SESSION['user_id']]);
             $memberConsent = $stmt->fetchColumn();
 
@@ -91,7 +86,7 @@ function getCookieConsent($pdo) {
                 // On enregistre le choix du cookie dans le compte du membre
                 // pour qu'il soit persisté côté serveur (multi-appareils).
                 $stmt = $pdo->prepare(
-                    "UPDATE membre 
+                    "UPDATE MEMBRE
                      SET cookieMemb = ?, dtMajMemb = NOW() 
                      WHERE numMemb = ?"
                 );
@@ -146,7 +141,7 @@ function saveCookieConsent($pdo, int $consent) {
         try {
             // Mise à jour du profil membre pour conserver une trace durable côté serveur.
             $stmt = $pdo->prepare(
-                "UPDATE membre 
+                "UPDATE MEMBRE
                  SET cookieMemb = ?, dtMajMemb = NOW() 
                  WHERE numMemb = ?"
             );

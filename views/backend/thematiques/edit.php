@@ -14,8 +14,8 @@ include '../../../header.php';
 
 
 if(isset($_GET['numThem'])){
-    $ba_bec_numThem = $_GET['numThem'];
-    $ba_bec_libThem = sql_select("THEMATIQUE", "libThem", "numThem = $ba_bec_numThem")[0]['libThem'];
+    $ba_bec_numThem = (int) $_GET['numThem'];
+    $ba_bec_libThem = sql_select('THEMATIQUE', 'libThem', 'numThem = ?', null, null, '1', [$ba_bec_numThem])[0]['libThem'];
 }
 
 ?> 
@@ -27,11 +27,12 @@ if(isset($_GET['numThem'])){
         <div class="col-md-12">
             <!-- Form to create a new statut -->
             <form action="<?php echo ROOT_URL . '/api/thematiques/update.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="libThem">Nom de Thematique </label>
-                    <input id="numThem" name="numThem" class="form-control" style="display: none" type="text" value="<?php echo($ba_bec_numThem); ?>" readonly="readonly" />
+                    <input id="numThem" name="numThem" class="form-control" style="display: none" type="text" value="<?php echo (int) $ba_bec_numThem; ?>" readonly="readonly" />
                     <input id="libThem" name="libThem" class="form-control" type="text"
-                        value="<?php echo($ba_bec_libThem); ?>" placeholder="Nom de la thématique..."/>
+                        value="<?php echo e($ba_bec_libThem); ?>" placeholder="Nom de la thématique..."/>
                 </div>
                 <br />
                 <div class="form-group mt-2">

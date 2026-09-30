@@ -18,7 +18,7 @@ function sql_is_foreign_key_error(?string $message, ?string $code = null): bool 
 }
 
 // Suppression d'enregistrements en base.
-function sql_delete($table, $where){
+function sql_delete($table, $where, array $params = []){
     global $DB;
     sql_clear_last_error();
 
@@ -34,21 +34,24 @@ function sql_delete($table, $where){
         // Préparation de la requête DELETE.
         $query = "DELETE FROM $table WHERE $where;";
         $request = $DB->prepare($query);
-        $request->execute();
+        $request->execute($params);
         $DB->commit();
         $request->closeCursor();
     }
     catch(PDOException $ba_bec_e){
-        $DB->rollBack();
+        if ($DB->inTransaction()) {
+            $DB->rollBack();
+        }
         if (isset($request)) {
             $request->closeCursor();
         }
         $ba_bec_message = $ba_bec_e->getMessage();
         $ba_bec_code = (string) $ba_bec_e->getCode();
-        sql_set_last_error($ba_bec_message);
+        error_log('Erreur SQL DELETE: ' . $ba_bec_message);
+        sql_set_last_error('Une erreur de base de données est survenue.');
         return [
             'success' => false,
-            'message' => $ba_bec_message,
+            'message' => 'Une erreur de base de données est survenue.',
             'code' => $ba_bec_code,
             'constraint' => sql_is_foreign_key_error($ba_bec_message, $ba_bec_code),
         ];
@@ -59,10 +62,11 @@ function sql_delete($table, $where){
         // Remonte l'erreur SQL si elle existe.
         $ba_bec_message = $ba_bec_error[2];
         $ba_bec_code = (string) $ba_bec_error[0];
-        sql_set_last_error($ba_bec_message);
+        error_log('Erreur SQL DELETE: ' . $ba_bec_message);
+        sql_set_last_error('Une erreur de base de données est survenue.');
         return [
             'success' => false,
-            'message' => $ba_bec_message,
+            'message' => 'Une erreur de base de données est survenue.',
             'code' => $ba_bec_code,
             'constraint' => sql_is_foreign_key_error($ba_bec_message, $ba_bec_code),
         ];

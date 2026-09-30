@@ -8,7 +8,6 @@
  */
 
 
-session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../../functions/ctrlSaisies.php';
 
@@ -22,7 +21,7 @@ $ba_bec_recaptchaSiteKeyEscaped = htmlspecialchars($ba_bec_recaptchaSiteKey ?? '
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $ba_bec_pseudo = ctrlSaisies($_POST['pseudo']);
-    $ba_bec_password = ctrlSaisies($_POST['password']);
+    $ba_bec_password = (string) ($_POST['password'] ?? '');
 
     if (empty($ba_bec_pseudo)) {
         $ba_bec_errorPseudo = "Le nom d'utilisateur est requis.";
@@ -40,18 +39,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (empty($ba_bec_errorPseudo) && empty($ba_bec_errorPassword) && empty($ba_bec_errorCaptcha)) {
-        // Vérifier si l'utilisateur existe
-        $ba_bec_user = sql_select("MEMBRE", "*", "pseudoMemb = '$ba_bec_pseudo'");
+        // Applique la limitation par adresse avant toute lecture du compte.
+        if (login_throttle_blocked($ba_bec_pseudo)) {
+            $ba_bec_errorPassword = 'Trop de tentatives, réessayez dans 15 minutes';
+        }
+        $ba_bec_user = empty($ba_bec_errorPassword)
+            ? sql_select('MEMBRE', '*', 'pseudoMemb = ?', null, null, '1', [$ba_bec_pseudo])
+            : [];
+        $ba_bec_validRaw = $ba_bec_user && password_verify($ba_bec_password, $ba_bec_user[0]['passMemb']);
+        // Reproduit la transformation historique uniquement comme solution de compatibilité.
+        $ba_bec_validLegacy = !$ba_bec_validRaw && $ba_bec_user
+            && password_verify(legacy_password_variant($ba_bec_password), $ba_bec_user[0]['passMemb']);
 
-        if ($ba_bec_user && password_verify($ba_bec_password, $ba_bec_user[0]['passMemb'])) {
+        if ($ba_bec_validRaw || $ba_bec_validLegacy) {
+            // Remplace les anciens hash par un hash du mot de passe brut.
+            if ($ba_bec_validLegacy || password_needs_rehash($ba_bec_user[0]['passMemb'], PASSWORD_DEFAULT)) {
+                sql_update('MEMBRE', 'passMemb = ?', 'numMemb = ?', [password_hash($ba_bec_password, PASSWORD_DEFAULT), (int) $ba_bec_user[0]['numMemb']]);
+            }
+            login_throttle_clear();
+            session_regenerate_id(true);
             // Connexion réussie
-            $_SESSION['user_id'] = $ba_bec_user[0]['numMemb'];
+            $_SESSION['user_id'] = (int) $ba_bec_user[0]['numMemb'];
             $_SESSION['pseudoMemb'] = $ba_bec_user[0]['pseudoMemb'];
-            $_SESSION['numStat'] = $ba_bec_user[0]['numStat']; // ✅ Stocker le statut
+            $_SESSION['numStat'] = (int) $ba_bec_user[0]['numStat'];
             header("Location: " . ROOT_URL . "/index.php");
             exit();
         } else {
-            $ba_bec_errorPassword = "Nom d'utilisateur ou mot de passe incorrect.";
+            if (empty($ba_bec_errorPassword)) {
+                login_throttle_fail($ba_bec_pseudo);
+                $ba_bec_errorPassword = "Nom d'utilisateur ou mot de passe incorrect";
+            }
         }
     }
 }
@@ -61,6 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $pageStyles = [
     ROOT_URL . '/src/css/login.css',
 ];
+$pageTitle = 'Connexion';
 include '../../../header.php'; ?>
 
 
@@ -68,22 +86,23 @@ include '../../../header.php'; ?>
     <section class="auth-card">
         <h1 class="text-center">Se connecter</h1>
         <?php if ($ba_bec_success): ?>
-                <div class="alert alert-success"><?= htmlspecialchars($ba_bec_success) ?></div>
+                <div class="alert alert-success"><?= e($ba_bec_success) ?></div>
         <?php endif; ?>
         <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']) ?></div>
+            <div class="alert alert-danger"><?= e($_SESSION['error']) ?></div>
             <?php unset($_SESSION['error']); ?> <!-- Efface le message après affichage -->
         <?php endif; ?>
 
         <form action="" method="post" class="auth-form">
+            <?= csrf_field() ?>
             <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-login">
             <div class="auth-stack">
                 <!-- Nom d'utilisateur -->
                 <div class="champ">
                     <label for="pseudo">Nom d'utilisateur :</label>
-                    <input type="text" id="pseudo" name="pseudo" value="<?= htmlspecialchars($ba_bec_pseudo) ?>" required>
+                    <input type="text" id="pseudo" name="pseudo" value="<?= e($ba_bec_pseudo) ?>" required>
                     <?php if (!empty($ba_bec_errorPseudo)): ?>
-                        <div class="alert alert-danger mt-2"><?= $ba_bec_errorPseudo ?></div>
+                        <div class="alert alert-danger mt-2"><?= e($ba_bec_errorPseudo) ?></div>
                     <?php endif; ?>
                 </div>
 
@@ -103,10 +122,10 @@ include '../../../header.php'; ?>
                         </button>
                     </div>
                     <?php if (!empty($ba_bec_errorPassword)): ?>
-                        <div class="alert alert-danger mt-2"><?= $ba_bec_errorPassword ?></div>
+                        <div class="alert alert-danger mt-2"><?= e($ba_bec_errorPassword) ?></div>
                     <?php endif; ?>
                     <?php if (!empty($ba_bec_errorCaptcha)): ?>
-                        <div class="alert alert-danger mt-2"><?= $ba_bec_errorCaptcha ?></div>
+                        <div class="alert alert-danger mt-2"><?= e($ba_bec_errorCaptcha) ?></div>
                     <?php endif; ?>
                 </div>
             </div>

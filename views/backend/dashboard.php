@@ -9,29 +9,45 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 $pageStyles = [ROOT_URL . '/src/css/dashboard.css'];
-$adminReferrer = $_SERVER['HTTP_REFERER'] ?? '';
-$isBackendReferrer = str_contains($adminReferrer, '/views/backend/');
-$showAdminLoading = $adminReferrer !== '' && !$isBackendReferrer;
+$pageTitle = 'Tableau de bord · Administration';
+$ba_bec_referrer = $_SERVER['HTTP_REFERER'] ?? '';
+$ba_bec_referrerPath = parse_url($ba_bec_referrer, PHP_URL_PATH);
+$ba_bec_adminReferrer = safe_redirect_target(is_string($ba_bec_referrerPath) ? $ba_bec_referrerPath : null, '');
+$ba_bec_isBackendReferrer = strpos($ba_bec_adminReferrer, '/views/backend/') !== false;
+$showAdminLoading = false;
 include '../../header.php';
-
-
+$ba_bec_modules = [
+    ['Matchs', 'Planifiez les rencontres, horaires et résultats.', '/views/backend/matches/list.php', '/views/backend/matches/create.php'],
+    ['Articles', 'Créez les articles, images et mots-clés associés.', '/public/index.php?controller=article&action=list', '/public/index.php?controller=article&action=create'],
+    ['Boutique', 'Gérez les produits, prix et visuels de la boutique.', '/views/backend/boutique/list.php', '/views/backend/boutique/create.php'],
+    ['Likes', 'Suivez les appréciations des articles.', '/views/backend/likes/list.php', '/views/backend/likes/create.php'],
+    ['Commentaires', 'Modérez et organisez les retours des lecteurs.', '/views/backend/comments/list.php', '/views/backend/comments/create.php'],
+    ['Mots-clés', 'Classez les articles par mots-clés.', '/views/backend/keywords/list.php', '/views/backend/keywords/create.php'],
+    ['Thématiques', 'Structurez les catégories du blog.', '/views/backend/thematiques/list.php', '/views/backend/thematiques/create.php'],
+    ['Statuts', 'Gérez les rôles et permissions.', '/public/index.php?controller=statut&action=list', '/public/index.php?controller=statut&action=create'],
+    ['Membres', 'Administrez les comptes et leurs accès.', '/views/backend/members/list.php', '/views/backend/members/create.php'],
+    ['Joueurs', 'Ajoutez et mettez à jour les joueurs.', '/views/backend/joueurs/list.php', '/views/backend/joueurs/create.php'],
+    ['Bénévoles', 'Gérez les bénévoles et leurs profils.', '/views/backend/benevoles/list.php', '/views/backend/benevoles/create.php'],
+    ['Équipes', 'Structurez et mettez à jour les équipes.', '/views/backend/equipes/list.php', '/views/backend/equipes/create.php'],
+];
 ?>
 
-<?php if ($showAdminLoading) : ?>
-    <div class="admin-loading" id="admin-loading" aria-hidden="true">
-        <div class="admin-loading__content">
-            <img
-                class="admin-loading__logo"
-                src="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo.png'; ?>"
-                alt="Logo BEC"
-            >
+<main class="admin-dashboard admin-dashboard--modules">
+    <div class="container">
+        <header class="admin-dashboard__header"><p class="eyebrow">Administration</p><h1>Tableau de bord</h1></header>
+        <div class="admin-module-grid">
+            <?php foreach ($ba_bec_modules as $ba_bec_module): ?>
+                <section class="admin-module-row">
+                    <div class="admin-module-row__copy"><h2><?php echo e($ba_bec_module[0]); ?></h2><p><?php echo e($ba_bec_module[1]); ?></p></div>
+                    <div class="admin-module-row__actions"><a class="btn btn-outline-primary" href="<?php echo e(ROOT_URL . $ba_bec_module[2]); ?>">Voir la liste</a><a class="btn btn-primary" href="<?php echo e(ROOT_URL . $ba_bec_module[3]); ?>">Ajouter</a></div>
+                </section>
+            <?php endforeach; ?>
         </div>
-        <p class="admin-loading__title">Acces au pannel admin..</p>
     </div>
-<?php endif; ?>
+</main>
 
 <!-- Bootstrap admin dashboard template -->
-<div class="admin-dashboard"> 
+<div class="admin-dashboard admin-dashboard--legacy" aria-hidden="true">
     <hr class="my-3">
     <div class="container">
         <div class="row mb-4">
@@ -217,26 +233,3 @@ include '../../header.php';
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const loading = document.getElementById('admin-loading');
-
-        if (!loading) {
-            return;
-        }
-
-        const logoDelay = 300;
-        const logoDuration = 1200;
-        const buffer = 500;
-        const totalDuration = logoDelay + logoDuration + buffer;
-
-        window.setTimeout(function () {
-            loading.classList.add('admin-loading--done');
-        }, totalDuration);
-
-        window.setTimeout(function () {
-            loading.remove();
-        }, totalDuration + 700);
-    });
-</script>
