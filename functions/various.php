@@ -9,10 +9,10 @@ function curl($url, $type, $data = null, $headers = null){
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     // Définit la méthode HTTP (GET, POST, PUT, DELETE, etc.).
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $type);
-    // Désactive la vérification du nom d'hôte SSL (à utiliser prudemment).
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    // Désactive la vérification du certificat SSL (à utiliser prudemment).
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    // Vérifie le nom d'hôte et le certificat SSL.
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     // Si des données sont fournies, les envoie en body.
     if($data){
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -23,9 +23,9 @@ function curl($url, $type, $data = null, $headers = null){
     }
     // Exécute l'appel HTTP.
     $ba_bec_result = curl_exec($ch);
-    // Si une erreur cURL survient, on l'affiche.
+    // Journalise les erreurs cURL sans les exposer au navigateur.
     if(curl_errno($ch)){
-        echo 'Error:' . curl_error($ch);
+        error_log('Erreur cURL: ' . curl_error($ch));
     }
     // Ferme la session cURL pour libérer les ressources.
     curl_close($ch);
@@ -43,7 +43,10 @@ function isAllowedBbcodeUrl($url) {
     }
 
     // Autorise les ancres (#) et les chemins relatifs (/...).
-    if (str_starts_with($url, '#') || str_starts_with($url, '/')) {
+    if (str_starts_with($url, '#')) {
+        return true;
+    }
+    if (str_starts_with($url, '/') && !str_starts_with($url, '//') && !str_starts_with($url, '/\\')) {
         return true;
     }
 
@@ -119,7 +122,7 @@ function isValidBbcodeContent($text) {
 // Rend le BBCode en HTML sécurisé.
 function renderBbcode($text) {
     // Échappe d'abord tout le texte pour éviter l'injection HTML.
-    $safeText = htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8');
+    $safeText = e($text);
 
     // Transforme les balises [url=...]texte[/url] en liens HTML.
     $safeText = preg_replace_callback('/\\[url=(.*?)\\](.*?)\\[\\/url\\]/is', function ($matches) {

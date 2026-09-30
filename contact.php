@@ -1,6 +1,8 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 $pageStyles = [ROOT_URL . '/src/css/contact.css'];
+$pageTitle = 'Contact';
+$pageDescription = 'Coordonnées et contact du Bordeaux Étudiant Club Basket à la salle Barbey.';
 require_once 'header.php';
 
 ?>
@@ -9,10 +11,7 @@ require_once 'header.php';
     <div class="row align-items-start g-5">
         <div class="col-lg-6">
             <h1 class="mb-3">Contact</h1>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque laoreet feugiat lorem, sed
-                pharetra mi pulvinar nec. Sed accumsan dolor ut orci dignissim, non faucibus neque egestas.
-            </p>
+            <p>Retrouvez le BEC Basket à la salle Barbey, 8 cours Barbey à Bordeaux. Pour toute question sur le club, contactez le secrétariat.</p>
             <div class="article-content mt-4">
                 <h2 class="h5">Nous écrire</h2>
                 <p>

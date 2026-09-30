@@ -11,8 +11,6 @@ function ctrlSaisies($saisie){
     $saisie = htmlspecialchars((string) $saisie, ENT_QUOTES);
     // Supprime les espaces et caractères invisibles en début et fin de chaîne.
     $saisie = trim($saisie);
-    // Retire les antislashs ajoutés par magic_quotes (si activé dans l'environnement).
-    $saisie = stripslashes($saisie);
     // Retourne la saisie nettoyée et sécurisée.
     return $saisie;
 }

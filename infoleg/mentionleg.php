@@ -1,29 +1,9 @@
 <?php
-// Commentaire: Fichier PHP pour mentionleg.
+$pageTitle = 'Mentions légales';
+$pageDescription = 'Mentions légales du site du Bordeaux Étudiant Club.';
 include '../header.php';
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Mentions légales | Bordeaux Étudiant Club</title>
-
-        <!-- Link to Bootstrap -->
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-        <!-- Optional custom styles -->
-        <link href="css/style_modif.css" rel="stylesheet"/>
-        <link href="css/font.css" rel="stylesheet"/>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    </head>
-
-    <body>
-
-
-        <main class="container my-5">
+        <main class="container legal-page">
             <h1 class="text-center mb-4">Mentions légales</h1>
 
             <h2>Éditeur</h2>
@@ -59,9 +39,6 @@ include '../header.php';
 
             
         </main>
-
-    </body>
-</html>
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
 ?>

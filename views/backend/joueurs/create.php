@@ -43,6 +43,7 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/joueurs/create.php'; ?>" method="post" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="surnomJoueur">Surnom</label>
                     <input id="surnomJoueur" name="surnomJoueur" class="form-control" type="text"
@@ -61,7 +62,7 @@ function ba_bec_formatEquipeLabel(array $ba_bec_equipe): string
                 <div class="form-group mt-2">
                     <label for="photoJoueur">Photo (upload)</label>
                     <input id="photoJoueur" name="photoJoueur" class="form-control" type="file"
-                        accept=".png, .jpeg, .jpg, .avif, .svg" />
+                        accept=".png, .jpeg, .jpg, .avif, .webp" />
                 </div>
                 <div class="form-group mt-2">
                     <label for="dateNaissance">Date de naissance</label>

@@ -1,47 +1,43 @@
 <?php
-/*
- * Endpoint API: api/security/login.php
- * Rôle: authentifier un membre et initialiser sa session.
- *
- * Déroulé détaillé:
- * 1) Charge la configuration et les helpers de sanitisation.
- * 2) Démarre la session PHP pour stocker l'identité de l'utilisateur.
- * 3) Nettoie les champs pseudo/mot de passe soumis via POST.
- * 4) Récupère le membre en base puis vérifie le mot de passe via password_verify.
- * 5) Stocke l'identité en session et redirige vers la page d'accueil (ou renvoie une erreur).
- */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-require_once '../../functions/ctrlSaisies.php';
-session_start();
+require_once ROOT . '/functions/ctrlSaisies.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Étape 1: nettoyer les entrées utilisateur.
-    $ba_bec_pseudo = ctrlSaisies($_POST['pseudo']);
-    $ba_bec_password = ctrlSaisies($_POST['password']);
+// Lit le pseudo nettoyé tout en conservant le mot de passe brut pour sa vérification.
+$ba_bec_pseudo = ctrlSaisies($_POST['pseudo'] ?? '');
+$ba_bec_password = (string) ($_POST['password'] ?? '');
+$ba_bec_error = "Nom d'utilisateur ou mot de passe incorrect";
 
-    // Vérifier si l'utilisateur existe avec ce nom d'utilisateur
-    $ba_bec_user = sql_select("MEMBRE", "*", "pseudoMemb = '$ba_bec_pseudo'");
-    
-    if ($ba_bec_user) {
-        // Utiliser password_verify pour comparer le mot de passe saisi avec celui haché
-        if (password_verify($ba_bec_password, $ba_bec_user[0]['passMemb'])) {
-            // Étape 2: ouvrir la session applicative et conserver l'identifiant membre.
-            $_SESSION['user_id'] = $ba_bec_user[0]['numMemb'];
-            $_SESSION['pseudoMemb'] = $ba_bec_user[0]['pseudoMemb'];
-
-            // Étape 3: rediriger après authentification réussie.
-            header("Location: " . ROOT_URL . "/index.php");
-            $_SESSION['pseudoMemb'] = $ba_bec_pseudo; // Stocke le nom d'utilisateur en session
-            exit();
-        } else {
-            // Mot de passe invalide: renvoyer une erreur explicite.
-            header("Location: " . ROOT_URL . "/views/security/login.php?error=Mot de passe incorrect");
-            exit();
-        }
-    } else {
-        // Aucun utilisateur trouvé avec ce pseudo: renvoyer l'erreur générique.
-        header("Location: " . ROOT_URL . "/views/security/login.php?error=Nom d'utilisateur ou mot de passe incorrect");
-        exit();
-    }
+// Bloque temporairement l'adresse après cinq échecs récents.
+if (login_throttle_blocked($ba_bec_pseudo)) {
+    $_SESSION['error'] = 'Trop de tentatives, réessayez dans 15 minutes';
+    header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
+    exit();
 }
+
+// Vérifie d'abord le mot de passe brut, puis la variante historique exacte.
+$ba_bec_user = sql_select('MEMBRE', '*', 'pseudoMemb = ?', null, null, '1', [$ba_bec_pseudo]);
+$ba_bec_validRaw = !empty($ba_bec_user) && password_verify($ba_bec_password, $ba_bec_user[0]['passMemb']);
+$ba_bec_validLegacy = !$ba_bec_validRaw && !empty($ba_bec_user)
+    && password_verify(legacy_password_variant($ba_bec_password), $ba_bec_user[0]['passMemb']);
+
+if (!$ba_bec_validRaw && !$ba_bec_validLegacy) {
+    login_throttle_fail($ba_bec_pseudo);
+    $_SESSION['error'] = $ba_bec_error;
+    header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
+    exit();
+}
+
+// Remplace les anciens hash par un hash du mot de passe brut.
+if ($ba_bec_validLegacy || password_needs_rehash($ba_bec_user[0]['passMemb'], PASSWORD_DEFAULT)) {
+    sql_update('MEMBRE', 'passMemb = ?', 'numMemb = ?', [password_hash($ba_bec_password, PASSWORD_DEFAULT), (int) $ba_bec_user[0]['numMemb']]);
+}
+
+// Régénère la session avant d'enregistrer l'identité authentifiée.
+login_throttle_clear();
+session_regenerate_id(true);
+$_SESSION['user_id'] = (int) $ba_bec_user[0]['numMemb'];
+$_SESSION['pseudoMemb'] = $ba_bec_user[0]['pseudoMemb'];
+$_SESSION['numStat'] = (int) $ba_bec_user[0]['numStat'];
+header('Location: ' . ROOT_URL . '/index.php');
+exit();
 ?>

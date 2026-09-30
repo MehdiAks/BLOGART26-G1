@@ -39,6 +39,7 @@ $ba_bec_scoreBecValue = $ba_bec_scoreBec !== '' ? (int) $ba_bec_scoreBec : null;
 $ba_bec_scoreAdversaireValue = $ba_bec_scoreAdversaire !== '' ? (int) $ba_bec_scoreAdversaire : null;
 $ba_bec_numeroEquipeAdverseValue = $ba_bec_numeroEquipeAdverse > 0 ? $ba_bec_numeroEquipeAdverse : null;
 
+try {
 $matchStmt = $DB->prepare(
     'UPDATE `MATCH`
         SET codeEquipe = :codeEquipe,
@@ -68,5 +69,10 @@ $matchStmt->execute([
     ':scoreAdversaire' => $ba_bec_scoreAdversaireValue,
     ':numMatch' => $ba_bec_numMatch,
 ]);
+} catch (PDOException $ba_bec_exception) {
+    error_log('Erreur modification match: ' . $ba_bec_exception->getMessage());
+    http_response_code(400);
+    exit('Impossible de modifier ce match.');
+}
 
 header('Location: ../../views/backend/matches/list.php');

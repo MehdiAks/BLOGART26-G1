@@ -1,28 +1,5 @@
-.champ input {
-    width: 100%;
-    border-radius: 0.375rem;
-    border: 1px solid #ced4da;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.95rem;
-}
-
-.champ input::placeholder {
-    color: #adb5bd;
-}
-
-.champ input:focus {
-    border-color: var(--bec-accent);
-    box-shadow: 0 0 0 0.2rem rgba(103, 8, 29, 0.25);
-    outline: none;
-}
-
-.champ input.msg{
-    height: 100px;
-}
-
-.btn_envoyer{
-    background-color: #67081d;
-    color: #ddd;
-    padding: 10px;
-    border-radius: 25px;
-}
+#main-content > main.container { max-width: 1200px; }
+.champ { margin-bottom: var(--space-4); }
+.champ input { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--bec-line); border-radius: var(--radius-sm); background: #fff; }
+.champ input.msg { min-height: 140px; }
+.btn_envoyer { padding: 12px 20px; background: var(--bec-bordeaux); border: 1px solid var(--bec-bordeaux); color: #fff; }

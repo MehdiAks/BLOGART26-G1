@@ -9,6 +9,7 @@
  */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+$pageTitle = 'Joueurs · Administration';
 include '../../../header.php';
 
 sql_connect();
@@ -106,8 +107,8 @@ $ba_bec_action_query = $ba_bec_list_query !== '' ? ('&' . $ba_bec_list_query) : 
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3">
-                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
-                    Retour au panneau admin
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="admin-back-link">
+                    ← Tableau de bord
                 </a>
                 <a href="<?php echo ROOT_URL . '/views/backend/joueurs/create.php'; ?>" class="btn btn-success">
                     Ajouter un joueur
@@ -263,8 +264,8 @@ $ba_bec_action_query = $ba_bec_list_query !== '' ? ('&' . $ba_bec_list_query) : 
                                 <td><?php echo htmlspecialchars(format_poste($ba_bec_player['posteJoueur'] ?? null)); ?></td>
                                 <td><?php echo htmlspecialchars($ba_bec_player['numeroMaillot'] ?? ''); ?></td>
                                 <td>
-                                    <a href="edit.php?numJoueur=<?php echo $ba_bec_player['numJoueur']; ?><?php echo htmlspecialchars($ba_bec_action_query); ?>" class="btn btn-primary">Edit</a>
-                                    <a href="delete.php?numJoueur=<?php echo $ba_bec_player['numJoueur']; ?><?php echo htmlspecialchars($ba_bec_action_query); ?>" class="btn btn-danger">Delete</a>
+                                    <a href="edit.php?numJoueur=<?php echo (int) $ba_bec_player['numJoueur']; ?><?php echo e($ba_bec_action_query); ?>" class="btn btn-primary">Modifier</a>
+                                    <a href="delete.php?numJoueur=<?php echo (int) $ba_bec_player['numJoueur']; ?><?php echo e($ba_bec_action_query); ?>" class="btn btn-danger">Supprimer</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

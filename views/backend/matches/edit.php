@@ -68,6 +68,7 @@ function ba_bec_team_label(array $team): string
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/matches/update.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="numMatch" value="<?php echo htmlspecialchars((string) $ba_bec_match['numMatch']); ?>" />
                 <div class="form-group">
                     <label for="saison">Saison</label>

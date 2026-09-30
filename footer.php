@@ -1,185 +1,45 @@
-    </main>
-    <footer class="site-footer border-top py-5" id="Contact">
+    </div>
+    <footer class="site-footer" id="Contact">
         <div class="container">
-            <div class="row gy-4 align-items-start">
-                <div class="col-lg-5">
-                    <a class="btn-contact-footer" href="<?php echo ROOT_URL . '/contact.php'; ?>">Contactez-nous :</a>
-                    <p class="mb-1">
-                        <a href="mailto:secretariat@bec-bordeaux?subject=Demande%20de%20contact%20depuis%20le%20site%20BEC%20Bordeaux">
-                            secretariat@bec-bordeaux
-                        </a>
-                    </p>
-                    
-                    <p class="mb-3"><a href="tel:+33671942380">Tel : 06 71 94 23 80</a><br>
-                    <a href="tel:+33556918350">Tel : 05 56 91 83 50</a> </p>
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <a href="https://www.instagram.com/becbasket/?hl=fr" class="social-icon">
-                            <img src="<?php echo ROOT_URL . '/src/images/logo/logo-reseaux-sociaux/instagram.png'; ?>" alt="Instagram">
-                        </a>
-                        <a href="https://www.facebook.com/becofficiel/?locale=fr_FR" class="social-icon">
-                            <img src="<?php echo ROOT_URL . '/src/images/logo/logo-reseaux-sociaux/facebook.png'; ?>" alt="Facebook">
-                        </a>
+            <div class="footer-grid">
+                <section class="footer-column">
+                    <a class="footer-brand" href="<?php echo ROOT_URL . '/index.php'; ?>"><img src="<?php echo ROOT_URL . '/src/images/logo/logo-bec/logo.svg'; ?>" alt=""><span>Bordeaux Étudiant Club</span></a>
+                    <p>Salle Barbey<br>8 cours Barbey<br>33800 Bordeaux</p>
+                    <a href="https://www.openstreetmap.org/search?query=8%20cours%20Barbey%2033800%20Bordeaux" target="_blank" rel="noopener">Itinéraire</a>
+                </section>
+                <section class="footer-column">
+                    <h2>Le club</h2>
+                    <nav class="footer-links" aria-label="Le club">
+                        <a href="<?php echo ROOT_URL . '/Pages_supplementaires/notre-histoire.php'; ?>">Notre histoire</a>
+                        <a href="<?php echo ROOT_URL . '/Pages_supplementaires/equipes.php'; ?>">Équipes</a>
+                        <a href="<?php echo ROOT_URL . '/Pages_supplementaires/joueurs.php'; ?>">Joueurs</a>
+                        <a href="<?php echo ROOT_URL . '/Pages_supplementaires/organigramme-benevoles.php'; ?>">Bénévoles</a>
+                        <a href="<?php echo ROOT_URL . '/Pages_supplementaires/nos-partenaires.php'; ?>">Partenaires</a>
+                    </nav>
+                </section>
+                <section class="footer-column">
+                    <h2>Contact</h2>
+                    <div class="footer-contact">
+                        <a href="mailto:secretariat@bec-bordeaux?subject=Demande%20de%20contact%20depuis%20le%20site%20BEC%20Bordeaux">secretariat@bec-bordeaux</a>
+                        <a href="tel:+33671942380">06 71 94 23 80</a>
+                        <a href="tel:+33556918350">05 56 91 83 50</a>
+                        <a class="btn btn-light mt-2" href="<?php echo ROOT_URL . '/contact.php'; ?>">Nous écrire</a>
                     </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="ratio ratio-4x3 rounded-4 overflow-hidden shadow-sm">
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387.73473039224695!2d-0.5620506434721906!3d44.827972032339!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd55264b1f8d16e7%3A0x60bae14b3c5cbd38!2s8%20Cr%20Barbey%2C%2033800%20Bordeaux!5e0!3m2!1sfr!2sfr!4v1770375688862!5m2!1sfr!2sfr""
-                            style="border:0;"
-                            allowfullscreen=""
-                            loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </section>
+                <section class="footer-column">
+                    <h2>Réseaux</h2>
+                    <div class="footer-socials">
+                        <a href="https://www.instagram.com/becbasket/?hl=fr" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm10.5 1.5a1 1 0 1 1 0 2 1 1 0 0 1 0-2ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg></a>
+                        <a href="https://www.facebook.com/becofficiel/?locale=fr_FR" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4.2c-.5-.1-2.2-.2-4.1-.2C9 4 6.3 6.4 6.3 10.8V14H2v4.3h4.3V24h5.2v-5.7h4.1l.7-4.3h-4.8v-2.8C11.5 9.9 11.9 8 14 8Z"/></svg></a>
                     </div>
-                </div>
+                </section>
             </div>
-            <div class="row mt-4">
-                <div class="col-12 text-center">
-                    <p class="small fst-italic mb-0">
-                        <a href="<?php echo ROOT_URL . '/infoleg/cgu.php'; ?>">Conditions d’utilisation</a>
-                        -
-                        <a href="<?php echo ROOT_URL . '/infoleg/mentionleg.php'; ?>">Mentions légales</a>
-                        -
-                        <a href="<?php echo ROOT_URL . '/infoleg/rgpd.php'; ?>">RGPD</a>
-                    </p>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-12 text-end">
-                    <a class="footer-credit-link" href="<?php echo ROOT_URL . '/about.php'; ?>">Designed by Les égarés</a>
-                </div>
+            <div class="footer-bottom">
+                <nav aria-label="Informations légales"><a href="<?php echo ROOT_URL . '/infoleg/mentionleg.php'; ?>">Mentions légales</a><a href="<?php echo ROOT_URL . '/infoleg/cgu.php'; ?>">CGU</a><a href="<?php echo ROOT_URL . '/infoleg/rgpd.php'; ?>">RGPD</a></nav>
+                <span>© <?php echo date('Y'); ?> Bordeaux Étudiant Club</span>
             </div>
         </div>
     </footer>
-    <script>
-        document.querySelectorAll('.header-submenu').forEach((submenu) => {
-            const toggle = submenu.querySelector('.submenu-toggle');
-            const container = submenu.closest('.header-nav, .header-burger-panel') || document;
-
-            const closeSubmenu = () => {
-                submenu.classList.remove('is-open');
-                if (toggle) {
-                    toggle.setAttribute('aria-expanded', 'false');
-                }
-            };
-
-            if (!toggle) {
-                return;
-            }
-
-            toggle.addEventListener('click', (event) => {
-                event.preventDefault();
-                const isOpen = submenu.classList.contains('is-open');
-
-                container.querySelectorAll('.header-submenu.is-open').forEach((openSubmenu) => {
-                    if (openSubmenu !== submenu) {
-                        const openToggle = openSubmenu.querySelector('.submenu-toggle');
-                        openSubmenu.classList.remove('is-open');
-                        if (openToggle) {
-                            openToggle.setAttribute('aria-expanded', 'false');
-                        }
-                    }
-                });
-
-                if (isOpen) {
-                    closeSubmenu();
-                } else {
-                    submenu.classList.add('is-open');
-                    toggle.setAttribute('aria-expanded', 'true');
-                }
-            });
-
-            document.addEventListener('click', (event) => {
-                if (!submenu.contains(event.target)) {
-                    closeSubmenu();
-                }
-            });
-
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape') {
-                    closeSubmenu();
-                }
-            });
-        });
-    </script>
-    <script>
-        const buttonHoverTargets = document.querySelectorAll(
-            'button:not(.btn-check), input[type="button"], input[type="submit"], input[type="reset"], .btn, .btn-contact-footer, .btn-more, .btn_envoyer, .bouton'
-        );
-
-        buttonHoverTargets.forEach((button) => {
-            if (
-                button.disabled ||
-                button.classList.contains('disabled') ||
-                button.getAttribute('aria-disabled') === 'true'
-            ) {
-                return;
-            }
-
-            const lift = () => {
-                if (
-                    button.disabled ||
-                    button.classList.contains('disabled') ||
-                    button.getAttribute('aria-disabled') === 'true'
-                ) {
-                    return;
-                }
-                button.classList.add('is-lifted');
-            };
-
-            const reset = () => {
-                button.classList.remove('is-lifted');
-            };
-
-            button.addEventListener('pointerenter', lift);
-            button.addEventListener('pointerleave', reset);
-            button.addEventListener('focus', lift);
-            button.addEventListener('blur', reset);
-        });
-    </script>
-    <script>
-        (function () {
-            if (window.matchMedia('(pointer: coarse)').matches) {
-                return;
-            }
-
-            const glow = document.createElement('div');
-            glow.className = 'cursor-glow';
-            document.body.appendChild(glow);
-
-            let currentX = 0;
-            let currentY = 0;
-            let targetX = 0;
-            let targetY = 0;
-            const offset = { x: 0, y: 0 };
-            let isVisible = false;
-
-            const update = () => {
-                currentX += (targetX - currentX) * 0.12;
-                currentY += (targetY - currentY) * 0.12;
-                glow.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate3d(-50%, -50%, 0)`;
-                requestAnimationFrame(update);
-            };
-
-            const handleMove = (event) => {
-                targetX = event.clientX + offset.x;
-                targetY = event.clientY + offset.y;
-                if (!isVisible) {
-                    glow.style.opacity = '1';
-                    isVisible = true;
-                }
-            };
-
-            document.addEventListener('pointermove', handleMove);
-            document.addEventListener('pointerleave', () => {
-                glow.style.opacity = '0';
-                isVisible = false;
-            });
-
-            update();
-        })();
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

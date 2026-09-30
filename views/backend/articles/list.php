@@ -1,3 +1,12 @@
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once ROOT . '/functions/redirec.php';
+// Renvoie l'accès direct vers le contrôleur qui prépare les collections de la vue.
+if (!isset($ba_bec_articles, $ba_bec_keywords, $ba_bec_keywordsart, $ba_bec_thematiques)) {
+    header('Location: ' . ROOT_URL . '/public/index.php?controller=article&action=list');
+    exit();
+}
+?>
 <!--
     /*
      * Vue d'administration (liste) pour le module articles.
@@ -13,9 +22,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3">
-                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
-                    Retour au panneau admin
-                </a>
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="admin-back-link">← Tableau de bord</a>
             </div>
             <h1>Articles</h1>
             <?php
@@ -44,14 +51,14 @@
                     <?php foreach ($ba_bec_articles as $ba_bec_article) {
                         ?>
                         <tr>
-                            <td><?php echo $ba_bec_article['numArt']; ?></td>
-                            <td><?php echo $ba_bec_article['dtCreaArt']; ?></td>
-                            <td><?php echo $ba_bec_article['libTitrArt']; ?></td>
+                            <td><?php echo (int) $ba_bec_article['numArt']; ?></td>
+                            <td><?php echo e(format_date_fr($ba_bec_article['dtCreaArt'], true)); ?></td>
+                            <td><?php echo e($ba_bec_article['libTitrArt']); ?></td>
                             <td style="max-width: 400px; white-space: wrap; overflow: hidden; text-overflow: ellipsis;">
-                                <?php echo substr($ba_bec_article['libChapoArt'], 0, 100) . (strlen($ba_bec_article['libChapoArt']) > 100 ? '...' : ''); ?>
+                                <?php echo e(substr($ba_bec_article['libChapoArt'], 0, 100) . (strlen($ba_bec_article['libChapoArt']) > 100 ? '...' : '')); ?>
                             </td>
                             <td style="max-width: 400px; white-space: wrap; overflow: hidden; text-overflow: ellipsis;">
-                                <?php echo $ba_bec_article['libAccrochArt']; ?>
+                                <?php echo e($ba_bec_article['libAccrochArt']); ?>
                             </td>
                             <td>
                                 <?php
@@ -59,7 +66,7 @@
                                     if ($ba_bec_keywordart['numArt'] == $ba_bec_article['numArt']) {
                                         foreach ($ba_bec_keywords as $ba_bec_keyword) {
                                             if ($ba_bec_keyword['numMotCle'] == $ba_bec_keywordart['numMotCle']) {
-                                                echo $ba_bec_keyword['libMotCle'] . "<br>";
+                                                echo e($ba_bec_keyword['libMotCle']) . "<br>";
                                             }
                                         }
                                     }
@@ -70,17 +77,17 @@
                                 <?php
                                 foreach ($ba_bec_thematiques as $ba_bec_thematique) {
                                     if ($ba_bec_thematique['numThem'] == $ba_bec_article['numThem']) {
-                                        echo $ba_bec_thematique['libThem'];
+                                        echo e($ba_bec_thematique['libThem']);
                                         break;
                                     }
                                 }
                                 ?>
                             </td>
                             <td>
-                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=article&action=edit&numArt=' . $ba_bec_article['numArt']; ?>"
-                                    class="btn btn-primary">Edit</a>
-                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=article&action=delete&numArt=' . $ba_bec_article['numArt']; ?>"
-                                    class="btn btn-danger">Delete</a>
+                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=article&action=edit&numArt=' . (int) $ba_bec_article['numArt']; ?>"
+                                    class="btn btn-primary">Modifier</a>
+                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=article&action=delete&numArt=' . (int) $ba_bec_article['numArt']; ?>"
+                                    class="btn btn-danger">Supprimer</a>
                             </td>
                         </tr>
                     <?php } ?>

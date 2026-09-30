@@ -1,6 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+$pageTitle = 'Boutique · Administration';
 include '../../../header.php';
 
 $ba_bec_articles = sql_select('boutique', '*', null, null, 'numArtBoutique ASC');
@@ -50,16 +51,7 @@ $ba_bec_extract_first_image = static function ($value): string {
 
 
 $resolve_boutique_image_url = static function (string $value): string {
-    $value = trim($value);
-    if ($value === '') {
-        return '';
-    }
-
-    if (strpos($value, '/src/') === 0) {
-        return ROOT_URL . $value;
-    }
-
-    return ROOT_URL . '/src/images/article-boutique/' . rawurlencode($value);
+    return boutique_image_url($value);
 };
 ?>
 
@@ -67,7 +59,7 @@ $resolve_boutique_image_url = static function (string $value): string {
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3 d-flex gap-2 flex-wrap">
-                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">Retour au panneau admin</a>
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="admin-back-link">← Tableau de bord</a>
                 <a href="<?php echo ROOT_URL . '/views/backend/boutique/create.php'; ?>" class="btn btn-success">Ajouter un article</a>
             </div>
 

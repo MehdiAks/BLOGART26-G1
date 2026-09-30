@@ -53,6 +53,7 @@ function ba_bec_team_label(array $team): string
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/matches/create.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="saison">Saison</label>
                     <select id="saison" name="saison" class="form-control" required>

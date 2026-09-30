@@ -1,3 +1,12 @@
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once ROOT . '/functions/redirec.php';
+// Renvoie l'accès direct vers le contrôleur qui prépare la liste des statuts.
+if (!isset($ba_bec_statuts)) {
+    header('Location: ' . ROOT_URL . '/public/index.php?controller=statut&action=list');
+    exit();
+}
+?>
 <!--
     /*
      * Vue d'administration (liste) pour le module statuts.
@@ -13,9 +22,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3">
-                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
-                    Retour au panneau admin
-                </a>
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="admin-back-link">← Tableau de bord</a>
             </div>
             <h1>Statuts</h1>
             <?php
@@ -38,11 +45,11 @@
                 <tbody>
                     <?php foreach($ba_bec_statuts as $ba_bec_statut){ ?>
                         <tr>
-                            <td><?php echo($ba_bec_statut['numStat']); ?></td>
-                            <td><?php echo($ba_bec_statut['libStat']); ?></td>
+                            <td><?php echo (int) $ba_bec_statut['numStat']; ?></td>
+                            <td><?php echo e($ba_bec_statut['libStat']); ?></td>
                             <td>
-                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=edit&numStat=' . $ba_bec_statut['numStat']; ?>" class="btn btn-primary">Edit</a>
-                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=delete&numStat=' . $ba_bec_statut['numStat']; ?>" class="btn btn-danger">Delete</a>
+                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=edit&numStat=' . (int) $ba_bec_statut['numStat']; ?>" class="btn btn-primary">Modifier</a>
+                                <a href="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=delete&numStat=' . (int) $ba_bec_statut['numStat']; ?>" class="btn btn-danger">Supprimer</a>
                             </td>
                         </tr>
                     <?php } ?>

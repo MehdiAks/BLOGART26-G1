@@ -21,7 +21,7 @@ if ($ba_bec_libThem === '') {
     exit;
 }
 
-$ba_bec_result = sql_insert('THEMATIQUE', 'libThem', "'$ba_bec_libThem'");
+$ba_bec_result = sql_insert('THEMATIQUE', 'libThem', '?', [$ba_bec_libThem]);
 if ($ba_bec_result['success']) {
     flash_success();
 } else {

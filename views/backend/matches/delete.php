@@ -26,6 +26,7 @@ if (isset($_GET['numMatch'])) {
         <div class="col-md-12">
             <?php if ($ba_bec_match) : ?>
                 <form action="<?php echo ROOT_URL . '/api/matches/delete.php' ?>" method="post">
+                    <?php echo csrf_field(); ?>
                     <div class="form-group">
                         <label for="numMatch">ID match</label>
                         <input id="numMatch" name="numMatch" class="form-control" type="text" value="<?php echo htmlspecialchars((string) $ba_bec_match['numMatch']); ?>" readonly />

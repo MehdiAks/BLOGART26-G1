@@ -5,6 +5,8 @@ $pageStyles = [
     ROOT_URL . '/src/css/style.css',
     ROOT_URL . '/src/css/actualites.css',
 ];
+$pageTitle = 'Actualités';
+$pageDescription = 'Les actualités, résultats et moments forts du Bordeaux Étudiant Club Basket.';
 
 require_once 'header.php';
 
@@ -18,26 +20,7 @@ $isPartial = isset($_GET['partial']) && $_GET['partial'] === '1';
 
 function resolve_article_image_url(?string $path, string $defaultImage): string
 {
-    if (!$path) {
-        return $defaultImage;
-    }
-
-    if (preg_match('/^https?:\/\//', $path)) {
-        return $path;
-    }
-
-    if (strpos($path, '/src/uploads/') !== false) {
-        $relative = substr($path, strpos($path, '/src/uploads/') + strlen('/src/uploads/'));
-    } else {
-        $relative = ltrim($path, '/');
-    }
-
-    $filePath = $_SERVER['DOCUMENT_ROOT'] . '/src/uploads/' . $relative;
-    if (file_exists($filePath)) {
-        return ROOT_URL . '/src/uploads/' . $relative;
-    }
-
-    return $defaultImage;
+    return uploaded_file_url($path, $defaultImage);
 }
 
 function format_news_count(int $count): string
@@ -79,7 +62,7 @@ $orderMap = [
 ];
 $orderBy = $orderMap[$sort] ?? $orderMap['recent'];
 
-$query = 'SELECT a.numArt, a.libTitrArt, a.libChapoArt, a.urlPhotArt, t.libThem, COALESCE(l.likeCount, 0) as likeCount FROM ARTICLE a INNER JOIN THEMATIQUE t ON a.numThem = t.numThem LEFT JOIN (SELECT numArt, COUNT(*) as likeCount FROM LIKEART WHERE likeA = 1 GROUP BY numArt) l ON a.numArt = l.numArt';
+$query = 'SELECT a.numArt, a.libTitrArt, a.libChapoArt, a.urlPhotArt, a.dtCreaArt, t.libThem, COALESCE(l.likeCount, 0) as likeCount FROM ARTICLE a INNER JOIN THEMATIQUE t ON a.numThem = t.numThem LEFT JOIN (SELECT numArt, COUNT(*) as likeCount FROM LIKEART WHERE likeA = 1 GROUP BY numArt) l ON a.numArt = l.numArt';
 if (!empty($conditions)) {
     $query .= ' WHERE ' . implode(' AND ', $conditions);
 }
@@ -95,7 +78,7 @@ function render_news_grid(array $ba_bec_articles): string
     $countLabel = format_news_count($articleCount);
     ob_start();
     ?>
-    <section class="news-grid" aria-live="polite" data-news-count="<?php echo $articleCount; ?>" data-news-count-label="<?php echo htmlspecialchars($countLabel, ENT_QUOTES); ?>">
+    <section class="news-grid" aria-live="polite" data-news-count="<?php echo (int) $articleCount; ?>" data-news-count-label="<?php echo e($countLabel); ?>">
         <div class="row g-4">
             <?php if (!empty($ba_bec_articles)): ?>
                 <?php foreach ($ba_bec_articles as $ba_bec_article): ?>
@@ -108,24 +91,22 @@ function render_news_grid(array $ba_bec_articles): string
                     $chapoLength = function_exists('mb_strlen') ? mb_strlen($chapo) : strlen($chapo);
                     $excerpt = $excerptBase . ($chapoLength > $maxLength ? '...' : '');
                     ?>
-                    <div class="col-12 col-lg-6">
-                        <div class="card news-card h-100">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <a class="news-card h-100" href="<?php echo ROOT_URL . '/article.php?numArt=' . (int) $ba_bec_article['numArt']; ?>">
                             <div class="ratio ratio-4x3 news-card__media">
-                                <img src="<?php echo $ba_bec_imagePath; ?>" class="news-card__image" alt="<?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>">
+                                <img src="<?php echo e($ba_bec_imagePath); ?>" class="news-card__image" alt="<?php echo e($ba_bec_article['libTitrArt']); ?>" loading="lazy" decoding="async">
                             </div>
                             <div class="card-body d-flex flex-column">
-                                <div class="news-card__meta">
-                                    <span class="badge text-bg-light"><?php echo htmlspecialchars($ba_bec_article['libThem']); ?></span>
-                                </div>
-                                <h2 class="card-title news-card__title">
-                                    <?php echo htmlspecialchars($ba_bec_article['libTitrArt']); ?>
+                                <div class="news-card__meta"><?php echo e($ba_bec_article['libThem']); ?></div>
+                                <h2 class="news-card__title">
+                                    <?php echo e($ba_bec_article['libTitrArt']); ?>
                                 </h2>
                                 <p class="card-text news-card__excerpt">
-                                    <?php echo htmlspecialchars($excerpt); ?>
+                                    <?php echo e($excerpt); ?>
                                 </p>
-                                <a href="<?php echo ROOT_URL . '/article.php?numArt=' . (int) $ba_bec_article['numArt']; ?>" class="btn btn-outline-primary mt-auto">Lire la suite</a>
+                                <time class="news-card__date" datetime="<?php echo e($ba_bec_article['dtCreaArt']); ?>"><?php echo e(format_date_fr($ba_bec_article['dtCreaArt'])); ?></time>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -149,16 +130,15 @@ if ($isPartial) {
 
 <main class="container py-5">
     <section class="news-summary">
-        <p class="news-summary__eyebrow">Actualités</p>
-        <h1 class="news-summary__title">Restez au plus près de la vie du club</h1>
+        <h1 class="news-summary__title">Actualités</h1>
         <p class="news-summary__text">
-            Entre résultats, interviews, moments forts et coulisses, retrouvez ici l'ensemble des actualités du BEC.
-            Ce fil éditorial met en avant les histoires qui font vibrer la communauté, avec des mises à jour régulières
-            pour ne rien manquer des temps forts.
+            Résultats, rencontres et vie du club : retrouvez ici les dernières nouvelles du BEC.
         </p>
     </section>
 
     <section class="news-filters" aria-label="Filtres des actualités">
+        <details class="news-filter-disclosure" open>
+        <summary>Filtrer les actualités</summary>
         <form method="get" class="row g-3 align-items-end">
             <div class="col-12 col-lg-3">
                 <label for="theme" class="form-label">Thématique</label>
@@ -216,6 +196,7 @@ if ($isPartial) {
                 </p>
             </div>
         </form>
+        </details>
     </section>
 
     <?php echo render_news_grid($ba_bec_articles); ?>

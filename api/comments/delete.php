@@ -13,9 +13,9 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
-$ba_bec_numCom = ctrlSaisies($_POST['numCom']);
+$ba_bec_numCom = (int) ($_POST['numCom'] ?? 0);
 
-sql_delete('comment', "numCom = $ba_bec_numCom");
+sql_delete('COMMENT', 'numCom = ?', [$ba_bec_numCom]);
 
 
 header('Location: ../../views/backend/comments/list.php'); 

@@ -34,7 +34,7 @@ $ba_bec_selectedMemberPseudo = '';
 if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
     $ba_bec_numMemb = $_GET['numMemb'];
     $ba_bec_numArt = $_GET['numArt'];
-    $ba_bec_likeA = sql_select("LIKEART", "likeA", "numMemb = $ba_bec_numMemb AND numArt = $ba_bec_numArt")[0]['likeA'];
+    $ba_bec_likeA = sql_select('LIKEART', 'likeA', 'numMemb = ? AND numArt = ?', null, null, '1', [$ba_bec_numMemb, $ba_bec_numArt])[0]['likeA'];
     $ba_bec_selectedArticleTitle = $ba_bec_articleIdToTitle[$ba_bec_numArt] ?? '';
     $ba_bec_selectedMemberPseudo = $ba_bec_memberIdToPseudo[$ba_bec_numMemb] ?? '';
 }
@@ -48,11 +48,12 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
         <div class="col-md-12">
             <!-- Form to edit like -->
             <form action="<?php echo ROOT_URL . '/api/likes/update.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="numArt">Article (ID)</label>
                     <input id="numArt" name="numArt" class="form-control" type="text"
-                        value="<?php echo $ba_bec_numArt; ?>" />
-                    <input id="numArt" name="numArt" class="form-control" type="text" value="<?php echo $ba_bec_numArt; ?>"
+                        value="<?php echo (int) $ba_bec_numArt; ?>" />
+                    <input id="numArt" name="numArt" class="form-control" type="text" value="<?php echo (int) $ba_bec_numArt; ?>"
                         placeholder="ID article (ex: 42)" />
                 </div>
                 <br>
@@ -60,7 +61,7 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
                 <div class="form-group">
                     <label for="numMemb">Utilisateur (ID)</label>
                     <input id="numMemb" name="numMemb" class="form-control" type="text"
-                        value="<?php echo $ba_bec_numMemb; ?>" placeholder="ID utilisateur (ex: 7)" />
+                        value="<?php echo (int) $ba_bec_numMemb; ?>" placeholder="ID utilisateur (ex: 7)" />
                 </div>
                 <br>
 

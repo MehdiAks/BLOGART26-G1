@@ -6,8 +6,6 @@
  * - Les messages d'aide guident l'utilisateur sur la procédure à suivre.
  * - La vue reste passive : elle ne fait que collecter les données et afficher les retours serveur.
  */
-session_start();
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/ctrlSaisies.php';
 
@@ -30,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageStyles = [
     ROOT_URL . '/src/css/login.css',
 ];
+$pageTitle = 'Mot de passe oublié';
 
 include '../../../header.php';
 ?>
@@ -46,6 +45,7 @@ include '../../../header.php';
         <?php endif; ?>
 
         <form action="" method="post" class="auth-form">
+            <?= csrf_field() ?>
             <div class="auth-stack">
                 <div class="champ">
                     <label for="email">Adresse email :</label>

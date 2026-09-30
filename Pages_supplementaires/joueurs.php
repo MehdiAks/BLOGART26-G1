@@ -2,6 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $pageStyles = [ROOT_URL . '/src/css/club-structure.css'];
+$pageTitle = 'Joueurs';
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
@@ -34,15 +35,7 @@ $defaultPhoto = ROOT_URL . '/src/images/image-defaut.jpeg';
 
 function player_photo_url(?string $photo, string $defaultPhoto): string
 {
-    if (!$photo) {
-        return $defaultPhoto;
-    }
-
-    if (preg_match('/^(https?:\/\/|\/)/', $photo)) {
-        return $photo;
-    }
-
-    return ROOT_URL . '/src/uploads/' . $photo;
+    return uploaded_file_url($photo, $defaultPhoto);
 }
 
 function format_age(?string $birthDate): string
@@ -125,8 +118,8 @@ $maxAvailableAge = !empty($allAges) ? max($allAges) : 45;
                     <div class="club-filter-checkboxes">
                         <?php foreach ([1 => 'Meneur', 2 => 'Arrière', 3 => 'Ailier', 4 => 'Ailier fort', 5 => 'Pivot'] as $posteValue => $posteLabel) : ?>
                             <label class="club-check-option">
-                                <input type="checkbox" name="postes[]" value="<?php echo $posteValue; ?>">
-                                <span><?php echo $posteLabel; ?></span>
+                                <input type="checkbox" name="postes[]" value="<?php echo (int) $posteValue; ?>">
+                                <span><?php echo e($posteLabel); ?></span>
                             </label>
                         <?php endforeach; ?>
                     </div>
@@ -144,15 +137,15 @@ $maxAvailableAge = !empty($allAges) ? max($allAges) : 45;
 
                 <div class="col-12 col-lg-4">
                     <p class="club-filter-label">Âge</p>
-                    <div class="club-age-slider" data-min="<?php echo $minAvailableAge; ?>" data-max="<?php echo $maxAvailableAge; ?>">
+                    <div class="club-age-slider" data-min="<?php echo (int) $minAvailableAge; ?>" data-max="<?php echo (int) $maxAvailableAge; ?>">
                         <div class="club-age-values">
-                            <span id="age-min-label"><?php echo $minAvailableAge; ?></span>
+                            <span id="age-min-label"><?php echo (int) $minAvailableAge; ?></span>
                             <span>à</span>
-                            <span id="age-max-label"><?php echo $maxAvailableAge; ?></span>
+                            <span id="age-max-label"><?php echo (int) $maxAvailableAge; ?></span>
                             <span>ans</span>
                         </div>
-                        <input type="range" id="age-min" name="age_min" min="<?php echo $minAvailableAge; ?>" max="<?php echo $maxAvailableAge; ?>" value="<?php echo $minAvailableAge; ?>">
-                        <input type="range" id="age-max" name="age_max" min="<?php echo $minAvailableAge; ?>" max="<?php echo $maxAvailableAge; ?>" value="<?php echo $maxAvailableAge; ?>">
+                        <input type="range" id="age-min" name="age_min" min="<?php echo (int) $minAvailableAge; ?>" max="<?php echo (int) $maxAvailableAge; ?>" value="<?php echo (int) $minAvailableAge; ?>">
+                        <input type="range" id="age-max" name="age_max" min="<?php echo (int) $minAvailableAge; ?>" max="<?php echo (int) $maxAvailableAge; ?>" value="<?php echo (int) $maxAvailableAge; ?>">
                     </div>
                 </div>
 
@@ -172,11 +165,11 @@ $maxAvailableAge = !empty($allAges) ? max($allAges) : 45;
                 ?>
                 <article
                     class="club-card"
-                    data-player-poste="<?php echo $playerPoste; ?>"
+                    data-player-poste="<?php echo (int) $playerPoste; ?>"
                     data-player-age="<?php echo is_numeric($playerAge) ? (int) $playerAge : ''; ?>"
                     data-player-team="<?php echo htmlspecialchars($playerTeam, ENT_QUOTES); ?>"
                 >
-                    <img src="<?php echo htmlspecialchars(player_photo_url($player['urlPhotoJoueur'], $defaultPhoto)); ?>" alt="<?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>">
+                    <img src="<?php echo htmlspecialchars(player_photo_url($player['urlPhotoJoueur'], $defaultPhoto)); ?>" alt="<?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>" loading="lazy" decoding="async">
                     <div class="club-card-body">
                         <h2 class="club-card-title">
                             <?php echo htmlspecialchars($player['prenomJoueur'] . ' ' . $player['nomJoueur']); ?>

@@ -1,3 +1,12 @@
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+require_once ROOT . '/functions/redirec.php';
+// Renvoie l'accès direct vers la route contrôleur du formulaire.
+if (empty($ba_bec_controllerRendered)) {
+    header('Location: ' . ROOT_URL . '/public/index.php?controller=statut&action=create');
+    exit();
+}
+?>
 <!--
     /*
      * Vue d'administration (création) pour le module statuts.
@@ -17,6 +26,7 @@
         <div class="col-md-12">
             <!-- Form to create a new statut -->
             <form action="<?php echo ROOT_URL . '/public/index.php?controller=statut&action=store'; ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="libStat">Nom du statut</label>
                     <input id="libStat" name="libStat" class="form-control" type="text" autofocus="autofocus"

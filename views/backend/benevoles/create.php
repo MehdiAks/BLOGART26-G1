@@ -26,6 +26,7 @@ $ba_bec_teams = sql_select('EQUIPE', 'codeEquipe, nomEquipe', null, null, 'nomEq
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/benevoles/create.php'; ?>" method="post" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
                 <div class="form-group">
                     <label for="prenomPersonnel">Prénom</label>
                     <input id="prenomPersonnel" name="prenomPersonnel" class="form-control" type="text"

@@ -1,4 +1,6 @@
 <?php
+$pageTitle = 'Détail article';
 require_once '../../../header.php';
 
-echo ("Détqil Article");
+echo ("Détail Article");
+require_once '../../../footer.php';

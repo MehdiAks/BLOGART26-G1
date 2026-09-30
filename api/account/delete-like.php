@@ -13,7 +13,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 // Étape 1: vérifier l'authentification.
-$ba_bec_numMemb = $_SESSION['user_id'] ?? null;
+$ba_bec_numMemb = current_user_id();
 if (!$ba_bec_numMemb) {
     $_SESSION['error'] = 'Vous devez être connecté pour supprimer un like.';
     header('Location: ' . ROOT_URL . '/views/backend/security/login.php');
@@ -36,7 +36,7 @@ if ($ba_bec_numArt <= 0) {
 }
 
 // Étape 4: vérifier la propriété du like avant suppression.
-$ba_bec_like = sql_select('LIKEART', 'numArt', "numArt = $ba_bec_numArt AND numMemb = $ba_bec_numMemb")[0] ?? null;
+$ba_bec_like = sql_select('LIKEART', 'numArt', 'numArt = ? AND numMemb = ?', null, null, '1', [$ba_bec_numArt, $ba_bec_numMemb])[0] ?? null;
 if (!$ba_bec_like) {
     $_SESSION['error'] = 'Vous ne pouvez pas supprimer ce like.';
     header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
@@ -44,7 +44,7 @@ if (!$ba_bec_like) {
 }
 
 // Étape 5: suppression et retour utilisateur.
-sql_delete('LIKEART', "numArt = $ba_bec_numArt AND numMemb = $ba_bec_numMemb");
+sql_delete('LIKEART', 'numArt = ? AND numMemb = ?', [$ba_bec_numArt, $ba_bec_numMemb]);
 $_SESSION['success'] = 'Votre like a été supprimé.';
 header('Location: ' . ROOT_URL . '/Pages_supplementaires/compte.php');
 exit();

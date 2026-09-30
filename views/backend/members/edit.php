@@ -28,8 +28,8 @@ $ba_bec_numMemb = $ba_bec_pseudoMemb = $ba_bec_prenomMemb = $ba_bec_nomMemb = $b
 $ba_bec_numStat = 3; // Par défaut, statut "Membre"
 
 if (isset($_GET['numMemb'])) {
-    $ba_bec_numMemb = $_GET['numMemb'];
-    $ba_bec_membre = sql_select("MEMBRE", "*", "numMemb = $ba_bec_numMemb")[0] ?? [];
+    $ba_bec_numMemb = (int) $_GET['numMemb'];
+    $ba_bec_membre = sql_select('MEMBRE', '*', 'numMemb = ?', null, null, '1', [$ba_bec_numMemb])[0] ?? [];
 
     $ba_bec_pseudoMemb = $ba_bec_membre['pseudoMemb'] ?? "";
     $ba_bec_prenomMemb = $ba_bec_membre['prenomMemb'] ?? "";
@@ -58,6 +58,7 @@ if (isset($_GET['numMemb'])) {
         <?php endif; ?>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/members/update.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <input name="numMemb" class="form-control" type="hidden"
                     value="<?php echo htmlspecialchars($ba_bec_numMemb); ?>" />
                 <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-update">

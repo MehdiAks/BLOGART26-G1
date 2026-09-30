@@ -28,7 +28,7 @@ function sql_parse_missing_table($message){
 }
 
 // Sélectionne des enregistrements en base.
-function sql_select($table, $attributs = '*', $where = null, $group = null, $order = null, $limit = null){
+function sql_select($table, $attributs = '*', $where = null, $group = null, $order = null, $limit = null, array $params = []){
     global $DB;
     sql_clear_last_error();
 
@@ -53,12 +53,14 @@ function sql_select($table, $attributs = '*', $where = null, $group = null, $ord
     }
 
     try{
-        $ba_bec_result = $DB->query($query);
+        $ba_bec_result = $DB->prepare($query);
+        $ba_bec_result->execute($params);
         
         $ba_bec_error = $DB->errorInfo();
         if($ba_bec_error[0] != 0){
             // Stocke l'erreur SQL rencontrée.
-            sql_set_last_error($ba_bec_error[2]);
+            error_log('Erreur SQL SELECT: ' . $ba_bec_error[2]);
+            sql_set_last_error('Une erreur de base de données est survenue.');
         }else{
             $ba_bec_result = $ba_bec_result->fetchAll();
         }
@@ -74,7 +76,8 @@ function sql_select($table, $attributs = '*', $where = null, $group = null, $ord
             $ba_bec_result = [];
         }else{
             // Autres erreurs SQL : on les remonte.
-            sql_set_last_error($ba_bec_error_message);
+            error_log('Erreur SQL SELECT: ' . $ba_bec_error_message);
+            sql_set_last_error('Une erreur de base de données est survenue.');
             $ba_bec_result = [];
         }
     }

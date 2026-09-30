@@ -9,6 +9,7 @@
  */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+$pageTitle = 'Équipes · Administration';
 include '../../../header.php';
 
 sql_connect();
@@ -21,16 +22,8 @@ function ba_bec_equipe_photo_url(?string $path): string
     if (!$path) {
         return '';
     }
-
-    if (preg_match('/^(https?:\/\/|\/)/', $path)) {
-        return $path;
-    }
-
-    if (strpos($path, 'photos-equipes/') === 0) {
-        return ROOT_URL . '/src/uploads/' . ltrim($path, '/');
-    }
-
-    return ROOT_URL . '/src/uploads/photos-equipes/' . ltrim($path, '/');
+    $ba_bec_url = uploaded_file_url($path);
+    return $ba_bec_url !== '' ? $ba_bec_url : uploaded_file_url('photos-equipes/' . ltrim($path, '/'));
 }
 
 if (!$ba_bec_is_missing_table) {
@@ -48,8 +41,8 @@ if (!$ba_bec_is_missing_table) {
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3">
-                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
-                    Retour au panneau admin
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="admin-back-link">
+                    ← Tableau de bord
                 </a>
                 <a href="<?php echo ROOT_URL . '/views/backend/equipes/create.php'; ?>" class="btn btn-success">
                     Ajouter une équipe
@@ -97,32 +90,32 @@ if (!$ba_bec_is_missing_table) {
                             $ba_bec_photoStaffUrl = ba_bec_equipe_photo_url($ba_bec_equipe['photoStaff'] ?? '');
                             ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['numEquipe']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['codeEquipe']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['nomEquipe']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['club']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['categorie']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['section']); ?></td>
-                                <td><?php echo htmlspecialchars($ba_bec_equipe['niveau']); ?></td>
+                                <td><?php echo (int) $ba_bec_equipe['numEquipe']; ?></td>
+                                <td><?php echo e($ba_bec_equipe['codeEquipe']); ?></td>
+                                <td><?php echo e($ba_bec_equipe['nomEquipe']); ?></td>
+                                <td><?php echo e($ba_bec_equipe['club']); ?></td>
+                                <td><?php echo e($ba_bec_equipe['categorie']); ?></td>
+                                <td><?php echo e($ba_bec_equipe['section']); ?></td>
+                                <td><?php echo e($ba_bec_equipe['niveau']); ?></td>
                                 <td>
                                     <?php if ($ba_bec_photoEquipeUrl): ?>
-                                        <img src="<?php echo htmlspecialchars($ba_bec_photoEquipeUrl); ?>" alt="Photo équipe"
+                                        <img src="<?php echo e($ba_bec_photoEquipeUrl); ?>" alt="Photo équipe" loading="lazy" decoding="async"
                                             style="max-width: 80px; height: auto;">
                                     <?php else : ?>
-                                        <span class="text-muted">—</span>
+                                        <span class="text-muted">Non renseignée</span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php if ($ba_bec_photoStaffUrl): ?>
-                                        <img src="<?php echo htmlspecialchars($ba_bec_photoStaffUrl); ?>" alt="Photo staff"
+                                        <img src="<?php echo e($ba_bec_photoStaffUrl); ?>" alt="Photo staff" loading="lazy" decoding="async"
                                             style="max-width: 80px; height: auto;">
                                     <?php else : ?>
-                                        <span class="text-muted">—</span>
+                                        <span class="text-muted">Non renseignée</span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="edit.php?numEquipe=<?php echo $ba_bec_equipe['numEquipe']; ?>" class="btn btn-primary">Edit</a>
-                                    <a href="delete.php?numEquipe=<?php echo $ba_bec_equipe['numEquipe']; ?>" class="btn btn-danger">Delete</a>
+                                    <a href="edit.php?numEquipe=<?php echo (int) $ba_bec_equipe['numEquipe']; ?>" class="btn btn-primary">Modifier</a>
+                                    <a href="delete.php?numEquipe=<?php echo (int) $ba_bec_equipe['numEquipe']; ?>" class="btn btn-danger">Supprimer</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

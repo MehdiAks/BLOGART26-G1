@@ -4,8 +4,16 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 $pageStyles = [
     ROOT_URL . '/src/css/nos-partenaires.css',
 ];
+$pageTitle = 'Partenaires';
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
+
+$renderPartnerVisual = static function (?string $fileName, string $partnerName): string {
+    if ($fileName !== null && is_file(ROOT . '/src/images/Logo partenaires/' . $fileName)) {
+        return '<img src="' . e(ROOT_URL . '/src/images/Logo%20partenaires/' . rawurlencode($fileName)) . '" class="partenaire-image mb-3" alt="' . e($partnerName) . '" loading="lazy" decoding="async">';
+    }
+    return '<div class="partenaire-image partenaire-image--fallback mb-3"><strong>' . e($partnerName) . '</strong></div>';
+};
 ?> 
 
 <main class="container py-5" id="Nospartenaires">
@@ -19,11 +27,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
     <div class="row g-4">
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src="/src/images/Logo partenaires/Caisseepargne.png"
-                    class="partenaire-image mb-3"
-                    alt="logo caisse-epargne"
-                >
+                <?php echo $renderPartnerVisual('Caisseepargne.png', "Caisse d'épargne"); ?>
                 <h2 class="h5">Caisse d'épargne</h2>
                 <a href="https://www.caisse-epargne.fr/cepac/">
                     Voir le site
@@ -33,11 +37,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src="/src/images/Logo partenaires/Proprietepriv.png"
-                    class="partenaire-image mb-3"
-                    alt="Logo Propriétés privées"
-                >
+                <?php echo $renderPartnerVisual('Proprietepriv.png', 'Propriétés-privées'); ?>
                 <h2 class="h5">Propriétés-privées</h2>
                 
                 <a href="https://www.proprietes-privees.org/notre-offre-pro/?utm_source=instagram-naturel&utm_campaign=tea
@@ -50,11 +50,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src="/src/images/Logo partenaires/Thecockandbull.png"
-                    class="partenaire-image mb-3"
-                    alt="Logo the cock and bull"
-                >
+                <?php echo $renderPartnerVisual('Thecockandbull.png', 'The Cock And Bull'); ?>
                 <h2 class="h5">The Cock And Bull</h2>
                 
                 <a href="https://www.instagram.com/thecockandbullbordeaux/?hl=fr">
@@ -65,11 +61,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src="/src/images/Logo partenaires/PouvoirPlus.png"
-                    class="partenaire-image mb-3"
-                    alt="Logo pouvoir plus"
-                >
+                <?php echo $renderPartnerVisual('PouvoirPlus.png', 'Pouvoir Plus'); ?>
                 <h2 class="h5">Pouvoir Plus</h2>
                 
                 <a href="https://pouvoirplus.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=
@@ -82,11 +74,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src=""
-                    class="partenaire-image mb-3"
-                    alt="Logo DJ Jéjé"
-                >
+                <?php echo $renderPartnerVisual(null, 'DJ Jéjé'); ?>
                 <h2 class="h5">DJ Jéjé</h2>
                 
                 <a href="https://www.instagram.com/chiarottojerome/">
@@ -97,11 +85,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src="/src/images/Logo partenaires/ALEDE_Logo_v3.png"
-                    class="partenaire-image mb-3"
-                    alt="Logo Alexia Elineau "
-                >
+                <?php echo $renderPartnerVisual('ALEDE_Logo_v3.png', 'Alexia Elineau'); ?>
                 <h2 class="h5">Alexia Elineau </h2>
                 
                 <a href="https://alexiaelineau.fr/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bg
@@ -114,11 +98,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
         
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src="/src/images/Logo partenaires/Leetchi.png"
-                    class="partenaire-image mb-3"
-                    alt="Logo Leetchi"
-                >
+                <?php echo $renderPartnerVisual('Leetchi.png', 'Leetchi'); ?>
                 <h2 class="h5">Leetchi</h2>
                 
                 <a href="https://www.leetchi.org/?_gl=1%2Amg4176%2A_gcl_au%2AMTM2NjEwMDMzNi4xNzU5ODQzODgz&utm_source=ig&utm_medium=soc
@@ -131,11 +111,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src="/src/images/Logo partenaires/Logobrasdroit.png"
-                    class="partenaire-image mb-3"
-                    alt="Logo Bras droit des dirigeants"
-                >
+                <?php echo $renderPartnerVisual('Logobrasdroit.png', 'Bras Droit Des Dirigeants'); ?>
                 <h2 class="h5">Bras Droit Des Dirigeants</h2>
                 
                 <a href="https://www.brasdroitdesdirigeants.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh
@@ -147,11 +123,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src="/src/images/Logo partenaires/Miecaline.png"
-                    class="partenaire-image mb-3"
-                    alt="Logo La mie câline "
-                >
+                <?php echo $renderPartnerVisual('Miecaline.png', 'La Mie Câline'); ?>
                 <h2 class="h5">La Mie Câline </h2>
                 
                 <a href="https://www.instagram.com/lamiecalinedebordeaux/">
@@ -162,11 +134,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src=""
-                    class="partenaire-image mb-3"
-                    alt="Logo Château de Bayle "
-                >
+                <?php echo $renderPartnerVisual(null, 'Château de Bayle'); ?>
                 <h2 class="h5">Château de Bayle</h2>
                 
                 <a href="https://www.chateaudebayle.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU
@@ -178,11 +146,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
         <div class="col-lg-4 col-md-6">
             <div class="article-content h-100">
-                <img
-                    src="/src/images/Logo partenaires/lorenzo.png"
-                    class="partenaire-image mb-3"
-                    alt="Logo LR9ByLorenzo "
-                >
+                <?php echo $renderPartnerVisual('lorenzo.png', 'LR9ByLorenzo'); ?>
                 <h2 class="h5">LR9ByLorenzo</h2>
                 
                 <a href="https://www.instagram.com/lr9bylorenzo/">
@@ -196,6 +160,4 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/footer.php';
 ?>
-
-
 

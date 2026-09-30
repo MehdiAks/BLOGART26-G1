@@ -8,13 +8,13 @@
  * - Aucun traitement métier n'est exécuté ici : la vue décrit seulement l'interface.
  */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirecmodo.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
 include '../../../header.php';
 
 if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
     $ba_bec_numMemb = $_GET['numMemb'];
     $ba_bec_numArt = $_GET['numArt'];
-    $ba_bec_likeA = sql_select("LIKEART", "likeA", "numMemb = $ba_bec_numMemb AND numArt = $ba_bec_numArt")[0]['likeA'];
+    $ba_bec_likeA = sql_select('LIKEART', 'likeA', 'numMemb = ? AND numArt = ?', null, null, '1', [$ba_bec_numMemb, $ba_bec_numArt])[0]['likeA'];
 }
 ?>
 
@@ -27,12 +27,13 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
         <div class="col-md-12">
             <!-- Form to delete a like -->
             <form action="<?php echo ROOT_URL . '/api/likes/delete.php' ?>" method="post">
+                <?php echo csrf_field(); ?>
 
                 <div class="form-group">
                     <label for="numArt">Numéro d'article</label>
                     <input id="numArt" name="numArt" class="form-control" style="display: none" type="text"
-                        value="<?php echo $ba_bec_numArt; ?>" readonly="readonly" />
-                    <input id="numArt" name="numArt" class="form-control" type="text" value="<?php echo $ba_bec_numArt; ?>"
+                        value="<?php echo (int) $ba_bec_numArt; ?>" readonly="readonly" />
+                    <input id="numArt" name="numArt" class="form-control" type="text" value="<?php echo (int) $ba_bec_numArt; ?>"
                         disabled />
                 </div>
                 <br>
@@ -40,8 +41,8 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
                 <div class="form-group">
                     <label for="numMemb">Numéro Membre</label>
                     <input id="numMemb" name="numMemb" class="form-control" style="display: none" type="text"
-                        value="<?php echo $ba_bec_numMemb; ?>" readonly="readonly" />
-                    <input id="numMemb" name="numMemb" class="form-control" type="text" value="<?php echo $ba_bec_numMemb; ?>"
+                        value="<?php echo (int) $ba_bec_numMemb; ?>" readonly="readonly" />
+                    <input id="numMemb" name="numMemb" class="form-control" type="text" value="<?php echo (int) $ba_bec_numMemb; ?>"
                         disabled />
                 </div>
                 <br>
@@ -49,7 +50,7 @@ if (isset($_GET['numMemb']) && isset($_GET['numArt'])) {
                 <div class="form-group">
                     <label for="likeA">Like/Dislike</label>
                     <input id="likeA" name="likeA" class="form-control" style="display: none" type="text"
-                        value="<?php echo $ba_bec_likeA; ?>" />
+                        value="<?php echo (int) $ba_bec_likeA; ?>" />
                     <input id="likeA" name="likeA" class="form-control" type="text"
                         value="<?php echo ($ba_bec_likeA == 1 ? 'Like' : 'Dislike'); ?>" disabled />
                 </div>

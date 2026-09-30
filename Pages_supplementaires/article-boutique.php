@@ -4,11 +4,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 $pageStyles = [
     ROOT_URL . '/src/css/boutique.css',
 ];
+$pageTitle = 'Article boutique';
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
 $ba_bec_numArtBoutique = (int) ($_GET['numArtBoutique'] ?? 0);
-$ba_bec_rows = $ba_bec_numArtBoutique > 0 ? sql_select('boutique', '*', "numArtBoutique = '$ba_bec_numArtBoutique'") : [];
+$ba_bec_rows = $ba_bec_numArtBoutique > 0 ? sql_select('boutique', '*', 'numArtBoutique = ?', null, null, '1', [$ba_bec_numArtBoutique]) : [];
 $ba_bec_article = $ba_bec_rows[0] ?? null;
 
 $formatPrice = static function (?float $price): string {
@@ -54,16 +55,7 @@ $extractImage = static function ($value): string {
 
 
 $resolve_boutique_image_url = static function (string $value): string {
-    $value = trim($value);
-    if ($value === '') {
-        return '';
-    }
-
-    if (strpos($value, '/src/') === 0) {
-        return ROOT_URL . $value;
-    }
-
-    return ROOT_URL . '/src/images/article-boutique/' . rawurlencode($value);
+    return boutique_image_url($value);
 };
 ?>
 
@@ -81,7 +73,7 @@ $resolve_boutique_image_url = static function (string $value): string {
         <article class="boutique-detail">
             <div class="boutique-detail__media">
                 <?php if ($imageUrl): ?>
-                    <img src="<?php echo $imageUrl; ?>" alt="<?php echo htmlspecialchars($title !== '' ? $title : 'Article boutique'); ?>">
+                    <img src="<?php echo e($imageUrl); ?>" alt="<?php echo e($title !== '' ? $title : 'Article boutique'); ?>" loading="lazy" decoding="async">
                 <?php else: ?>
                     Image de l'article à venir
                 <?php endif; ?>

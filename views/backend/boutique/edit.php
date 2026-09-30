@@ -11,7 +11,7 @@ include '../../../header.php';
 $ba_bec_article = null;
 $ba_bec_numArtBoutique = (int) ($_GET['numArtBoutique'] ?? 0);
 if ($ba_bec_numArtBoutique > 0) {
-    $ba_bec_rows = sql_select('boutique', '*', "numArtBoutique = '$ba_bec_numArtBoutique'");
+    $ba_bec_rows = sql_select('boutique', '*', 'numArtBoutique = ?', null, null, '1', [$ba_bec_numArtBoutique]);
     $ba_bec_article = $ba_bec_rows[0] ?? null;
 }
 
@@ -51,16 +51,7 @@ $ba_bec_parse_first_image = static function ($value): string {
 
 
 $resolve_boutique_image_url = static function (string $value): string {
-    $value = trim($value);
-    if ($value === '') {
-        return '';
-    }
-
-    if (strpos($value, '/src/') === 0) {
-        return ROOT_URL . $value;
-    }
-
-    return ROOT_URL . '/src/images/article-boutique/' . rawurlencode($value);
+    return boutique_image_url($value);
 };
 ?>
 
@@ -74,6 +65,7 @@ $resolve_boutique_image_url = static function (string $value): string {
                 <a href="<?php echo ROOT_URL . '/views/backend/boutique/list.php'; ?>" class="btn btn-secondary">Retour</a>
             <?php else: ?>
                 <form action="<?php echo ROOT_URL . '/api/boutique/update.php'; ?>" method="post" enctype="multipart/form-data">
+                    <?php echo csrf_field(); ?>
                     <input type="hidden" name="numArtBoutique" value="<?php echo (int) $ba_bec_article['numArtBoutique']; ?>">
 
                     <div class="row g-4">
@@ -127,7 +119,7 @@ $resolve_boutique_image_url = static function (string $value): string {
                                 </div>
                                 <div class="form-group mt-2">
                                     <label for="photoArtBoutique">Uploader une nouvelle image</label>
-                                    <input id="photoArtBoutique" name="photoArtBoutique" class="form-control" type="file" accept=".jpg,.jpeg,.png,.webp,.gif">
+                                    <input id="photoArtBoutique" name="photoArtBoutique" class="form-control" type="file" accept=".jpg,.jpeg,.png,.webp,.avif">
                                     <small class="form-text text-muted">Le fichier sera stocké dans /src/uploads/photos-boutiques/</small>
                                 </div>
                             </div>

@@ -16,8 +16,8 @@ if (!isset($_GET['numPersonnel'])) {
     exit();
 }
 
-$ba_bec_numPersonnel = $_GET['numPersonnel'];
-$ba_bec_benevole = sql_select('PERSONNEL', '*', "numPersonnel = '$ba_bec_numPersonnel'");
+$ba_bec_numPersonnel = (int) $_GET['numPersonnel'];
+$ba_bec_benevole = sql_select('PERSONNEL', '*', 'numPersonnel = ?', null, null, '1', [$ba_bec_numPersonnel]);
 $ba_bec_benevole = $ba_bec_benevole[0] ?? null;
 $ba_bec_teams = sql_select('EQUIPE', 'codeEquipe, nomEquipe', null, null, 'nomEquipe ASC');
 
@@ -39,6 +39,7 @@ if (!$ba_bec_benevole) {
         </div>
         <div class="col-md-12">
             <form action="<?php echo ROOT_URL . '/api/benevoles/update.php'; ?>" method="post" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="numPersonnel" value="<?php echo htmlspecialchars($ba_bec_benevole['numPersonnel']); ?>" />
                 <div class="form-group">
                     <label for="prenomPersonnel">Prénom</label>

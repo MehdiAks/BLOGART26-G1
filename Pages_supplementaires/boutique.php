@@ -4,6 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 $pageStyles = [
     ROOT_URL . '/src/css/boutique.css',
 ];
+$pageTitle = 'Boutique';
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/header.php';
 
@@ -52,16 +53,7 @@ $extractImage = static function ($value): string {
 
 
 $resolve_boutique_image_url = static function (string $value): string {
-    $value = trim($value);
-    if ($value === '') {
-        return '';
-    }
-
-    if (strpos($value, '/src/') === 0) {
-        return ROOT_URL . $value;
-    }
-
-    return ROOT_URL . '/src/images/article-boutique/' . rawurlencode($value);
+    return boutique_image_url($value);
 };
 
 $buildPlaceholderText = static function (?string $value, string $placeholder): string {
@@ -95,7 +87,7 @@ $buildPlaceholderText = static function (?string $value, string $placeholder): s
             <article class="boutique-card">
                 <div class="boutique-card__media">
                     <?php if ($imageUrl): ?>
-                        <img src="<?php echo $imageUrl; ?>" alt="<?php echo htmlspecialchars($article['libArtBoutique']); ?>">
+                        <img src="<?php echo e($imageUrl); ?>" alt="<?php echo e($article['libArtBoutique']); ?>" loading="lazy" decoding="async">
                     <?php else: ?>
                         Image à venir
                     <?php endif; ?>

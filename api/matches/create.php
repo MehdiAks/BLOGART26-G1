@@ -39,23 +39,29 @@ $ba_bec_scoreBecValue = $ba_bec_scoreBec !== '' ? (int) $ba_bec_scoreBec : null;
 $ba_bec_scoreAdversaireValue = $ba_bec_scoreAdversaire !== '' ? (int) $ba_bec_scoreAdversaire : null;
 $ba_bec_numeroEquipeAdverseValue = $ba_bec_numeroEquipeAdverse > 0 ? $ba_bec_numeroEquipeAdverse : null;
 
-$matchStmt = $DB->prepare(
-    'INSERT INTO `MATCH` (codeEquipe, clubAdversaire, numEquipeAdverse, saison, phase, journee, dateMatch, heureMatch, lieuMatch, scoreBec, scoreAdversaire)
-     VALUES (:codeEquipe, :clubAdversaire, :numEquipeAdverse, :saison, :phase, :journee, :dateMatch, :heureMatch, :lieuMatch, :scoreBec, :scoreAdversaire)'
-);
-$matchStmt->execute([
-    ':codeEquipe' => $ba_bec_codeEquipe,
-    ':clubAdversaire' => $ba_bec_clubAdversaire,
-    ':numEquipeAdverse' => $ba_bec_numeroEquipeAdverseValue,
-    ':saison' => $ba_bec_saison,
-    ':phase' => $ba_bec_phase,
-    ':journee' => $ba_bec_journee,
-    ':dateMatch' => $ba_bec_dateMatch,
-    ':heureMatch' => $ba_bec_heureValue,
-    ':lieuMatch' => $ba_bec_lieuValue,
-    ':scoreBec' => $ba_bec_scoreBecValue,
-    ':scoreAdversaire' => $ba_bec_scoreAdversaireValue,
-]);
+try {
+    $matchStmt = $DB->prepare(
+        'INSERT INTO `MATCH` (codeEquipe, clubAdversaire, numEquipeAdverse, saison, phase, journee, dateMatch, heureMatch, lieuMatch, scoreBec, scoreAdversaire)
+         VALUES (:codeEquipe, :clubAdversaire, :numEquipeAdverse, :saison, :phase, :journee, :dateMatch, :heureMatch, :lieuMatch, :scoreBec, :scoreAdversaire)'
+    );
+    $matchStmt->execute([
+        ':codeEquipe' => $ba_bec_codeEquipe,
+        ':clubAdversaire' => $ba_bec_clubAdversaire,
+        ':numEquipeAdverse' => $ba_bec_numeroEquipeAdverseValue,
+        ':saison' => $ba_bec_saison,
+        ':phase' => $ba_bec_phase,
+        ':journee' => $ba_bec_journee,
+        ':dateMatch' => $ba_bec_dateMatch,
+        ':heureMatch' => $ba_bec_heureValue,
+        ':lieuMatch' => $ba_bec_lieuValue,
+        ':scoreBec' => $ba_bec_scoreBecValue,
+        ':scoreAdversaire' => $ba_bec_scoreAdversaireValue,
+    ]);
+} catch (PDOException $ba_bec_exception) {
+    error_log('Erreur création match: ' . $ba_bec_exception->getMessage());
+    http_response_code(400);
+    exit('Impossible de créer ce match.');
+}
 
 if ($ba_bec_createRetour) {
     $ba_bec_lieuRetour = $ba_bec_lieuValue;

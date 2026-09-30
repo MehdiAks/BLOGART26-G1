@@ -9,6 +9,7 @@
  */
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/functions/redirec.php';
+$pageTitle = 'Thématiques · Administration';
 include '../../../header.php'; 
 
 //Load all statuts
@@ -20,9 +21,7 @@ $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3">
-                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="btn btn-secondary">
-                    Retour au panneau admin
-                </a>
+                <a href="<?php echo ROOT_URL . '/views/backend/dashboard.php'; ?>" class="admin-back-link">← Tableau de bord</a>
             </div>
             <h1>Thematiques</h1>
             <?php
@@ -45,11 +44,11 @@ $ba_bec_thematiques = sql_select("THEMATIQUE", "*");
                 <tbody>
                     <?php foreach ($ba_bec_thematiques as $ba_bec_thematique) { ?>
                         <tr>
-                            <td><?php echo $ba_bec_thematique['numThem']; ?></td>
-                            <td><?php echo $ba_bec_thematique['libThem']; ?></td>
+                            <td><?php echo (int) $ba_bec_thematique['numThem']; ?></td>
+                            <td><?php echo e($ba_bec_thematique['libThem']); ?></td>
                             <td>
-                                <a href="edit.php?numThem=<?php echo($ba_bec_thematique['numThem']); ?>" class="btn btn-primary">Edit</a>
-                                <a href="delete.php?numThem=<?php echo($ba_bec_thematique['numThem']); ?>" class="btn btn-danger">Delete</a>
+                                <a href="edit.php?numThem=<?php echo (int) $ba_bec_thematique['numThem']; ?>" class="btn btn-primary">Modifier</a>
+                                <a href="delete.php?numThem=<?php echo (int) $ba_bec_thematique['numThem']; ?>" class="btn btn-danger">Supprimer</a>
                             </td>
                         </tr>
                     <?php } ?>

@@ -62,33 +62,6 @@ if (!function_exists('str_ends_with')) {
     }
 }
 
-// Récupère le chemin du script courant (ex : /api/security/login.php).
-// L'opérateur ?? '' évite un Notice si SCRIPT_NAME n'est pas défini.
-$scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
-// Si la page appartient à l'API (préfixe /api/), on applique des règles d'accès.
-if (strpos($scriptName, '/api/') === 0) {
-    // Liste blanche des endpoints accessibles sans authentification.
-    $publicApiEndpoints = [
-        '/api/security/signup.php',
-        '/api/security/login.php',
-        '/api/security/disconnect.php',
-        '/api/security/cookie-consent.php',
-    ];
-
-    // Vérifie si l'endpoint courant est public (comparaison stricte).
-    $isPublicEndpoint = in_array($scriptName, $publicApiEndpoints, true);
-    // Vérifie si l'utilisateur est authentifié (ID utilisateur en session).
-    $isAuthenticated = !empty($_SESSION['user_id']);
-
-    // Si l'endpoint n'est pas public ET que l'utilisateur n'est pas connecté :
-    if (!$isPublicEndpoint && !$isAuthenticated) {
-        // Retourne un code HTTP 403 (Forbidden).
-        http_response_code(403);
-        // Stoppe l'exécution en renvoyant un message d'erreur.
-        exit('Accès interdit.');
-    }
-}
-
 // Charge la classe DotEnv (bibliothèque interne) pour lire le fichier .env.
 require_once ROOT . '/includes/libs/DotEnv.php';
 // Instancie DotEnv avec le chemin du fichier .env et charge les variables d'environnement.
@@ -108,5 +81,42 @@ require_once ROOT . '/functions/global.inc.php';
 
 // Charge la configuration sécurité (ex : helpers/constantes de sécurité).
 require_once ROOT . '/config/security.php';
+
+// Toutes les requêtes POST doivent provenir d'un formulaire de la session courante.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    $ba_bec_csrfToken = $_POST['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? null);
+    if (!csrf_verify($ba_bec_csrfToken)) {
+        http_response_code(403);
+        exit('Session expirée, rechargez la page');
+    }
+}
+
+// Applique les droits d'accès aux endpoints API.
+$scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+$ba_bec_apiOffset = strpos($scriptName, '/api/');
+if ($ba_bec_apiOffset !== false) {
+    $ba_bec_apiPath = substr($scriptName, $ba_bec_apiOffset);
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+        http_response_code(405);
+        header('Allow: POST');
+        exit('Méthode non autorisée.');
+    }
+
+    $publicApiEndpoints = [
+        '/api/security/signup.php',
+        '/api/security/login.php',
+        '/api/security/disconnect.php',
+        '/api/security/cookie-consent.php',
+    ];
+    if (!in_array($ba_bec_apiPath, $publicApiEndpoints, true)) {
+        if (strpos($ba_bec_apiPath, '/api/account/') === 0) {
+            require_login();
+        } elseif (strpos($ba_bec_apiPath, '/api/comments/') === 0) {
+            require_stat(2);
+        } else {
+            require_stat(1);
+        }
+    }
+}
 
 ?>

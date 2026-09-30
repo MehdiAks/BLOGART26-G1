@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
@@ -23,13 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ba_bec_json_couleurs = $ba_bec_parse_to_json($ba_bec_couleurs);
         $ba_bec_json_tailles = $ba_bec_parse_to_json($ba_bec_tailles);
         $ba_bec_json_photo = json_encode($ba_bec_photo !== '' ? [$ba_bec_photo] : [], JSON_UNESCAPED_UNICODE);
-        $ba_bec_desc_value = $ba_bec_desc !== '' ? "'" . addslashes($ba_bec_desc) . "'" : 'NULL';
-        $ba_bec_prix_enfant_value = $ba_bec_prix_enfant !== null ? "'" . number_format($ba_bec_prix_enfant, 2, '.', '') . "'" : 'NULL';
-
         sql_insert(
             'boutique',
             'libArtBoutique, descArtBoutique, couleursArtBoutique, taillesArtBoutique, prixAdulteArtBoutique, prixEnfantArtBoutique, urlPhotoArtBoutique, categorieArtBoutique',
-            "'" . addslashes($ba_bec_lib) . "', $ba_bec_desc_value, '" . addslashes($ba_bec_json_couleurs) . "', '" . addslashes($ba_bec_json_tailles) . "', '" . number_format($ba_bec_prix_adulte, 2, '.', '') . "', $ba_bec_prix_enfant_value, '" . addslashes($ba_bec_json_photo) . "', '" . addslashes($ba_bec_categorie) . "'"
+            '?, ?, ?, ?, ?, ?, ?, ?',
+            [$ba_bec_lib, $ba_bec_desc !== '' ? $ba_bec_desc : null, $ba_bec_json_couleurs, $ba_bec_json_tailles, number_format($ba_bec_prix_adulte, 2, '.', ''), $ba_bec_prix_enfant !== null ? number_format($ba_bec_prix_enfant, 2, '.', '') : null, $ba_bec_json_photo, $ba_bec_categorie]
         );
     }
 

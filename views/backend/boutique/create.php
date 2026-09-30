@@ -9,6 +9,7 @@ include '../../../header.php';
         <div class="col-md-12">
             <h1>Ajouter un article boutique</h1>
             <form action="<?php echo ROOT_URL . '/api/boutique/create.php'; ?>" method="post">
+                <?php echo csrf_field(); ?>
                 <div class="form-group mt-2">
                     <label for="libArtBoutique">Nom *</label>
                     <input id="libArtBoutique" name="libArtBoutique" class="form-control" type="text" required maxlength="255">

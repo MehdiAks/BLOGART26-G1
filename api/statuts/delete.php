@@ -14,10 +14,10 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 require_once '../../functions/ctrlSaisies.php';
 
-$ba_bec_numStat = ctrlSaisies($_POST['numStat']);
+$ba_bec_numStat = (int) ($_POST['numStat'] ?? 0);
 
 // Vérifie si le statut est utilisé
-$ba_bec_countnumStat = sql_select("MEMBRE", "COUNT(*) AS total", "numStat = $ba_bec_numStat")[0]['total'];
+$ba_bec_countnumStat = sql_select('MEMBRE', 'COUNT(*) AS total', 'numStat = ?', null, null, null, [$ba_bec_numStat])[0]['total'];
 
 if ($ba_bec_countnumStat > 0) {
     // Redirection avec message d'erreur
@@ -27,7 +27,7 @@ if ($ba_bec_countnumStat > 0) {
 }
 
 // Si le statut n'est pas utilisé, suppression
-$ba_bec_result = sql_delete('STATUT', "numStat = $ba_bec_numStat");
+$ba_bec_result = sql_delete('STATUT', 'numStat = ?', [$ba_bec_numStat]);
 if ($ba_bec_result['success']) {
     flash_success();
 } else {
